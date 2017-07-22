@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+// link style
+@mixin anc(
+   $link    : $a-default
+  ,$visited : $a-visited
+  ,$hover   : $a-hover
+  ,$active  : $a-active
+  // ,$focus   : $a-focus
+  ,$deco-l  : none
+  ,$deco-v  : none
+  ,$deco-h  : underline
+  ,$deco-a  : underline
+  // ,$deco-f  : underline
+) {
+  &:link {
+    color : $link;
+    text-decoration : $deco-l;
+  }
+  &:visited {
+    color : $visited;
+    text-decoration : $deco-v;
+  }
+  &:hover {
+    color : $hover;
+    text-decoration : $deco-h;
+  }
+  &:visited:hover {
+    color : $hover;
+    text-decoration : $deco-h;
+  }
+  &:active {
+    color : $active;
+    text-decoration : $deco-a;
+  }
+  &:focus {
+    color : $link;
+    text-decoration : $deco-l;
+  }
+}

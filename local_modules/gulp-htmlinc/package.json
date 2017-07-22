@@ -1,0 +1,16 @@
+{
+  "name": "gulp-htmlinc",
+  "version": "1.0.0",
+  "description": "local module",
+  "main": "gulp_htmlinc.js",
+  "private": true,
+  "author": "https://github.com/NNobutoshi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NNobutoshi/gulp-htmlinc"
+  },
+  "devDependencies": {
+    "through2": "^2.0.3"
+  }
+}
