@@ -1,10 +1,3 @@
-/*!
-* gulp_htmlinc.js
-* version : 1.0.0
-* link    : https://github.com/NNobutoshi/gulp-htmlinc.git
-* License : MIT
-*/
-
 var
    through = require('through2')
   ,fs      = require('fs')

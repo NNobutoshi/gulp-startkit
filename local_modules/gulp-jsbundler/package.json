@@ -1,6 +1,6 @@
 {
   "name": "gulp-jsbundler",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "local module",
   "main": "gulp_jsbundler.js",
   "private": true,
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/NNobutoshi/gulp-jsbundler"
   },
-  "devDependencies": {
+  "dependencies": {
     "through2": "^2.0.3"
   }
 }
