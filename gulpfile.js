@@ -13,6 +13,7 @@ var
   ,cssMqpacker  = require("css-mqpacker")
   ,jsbundler    = require('gulp-jsbundler') /* local module */
   ,htmlinc      = require('gulp-htmlinc') /* local module */
+  ,te           = require('node-template-engine') /* local module */
   ,liveReload   = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
   ,dist            = './htdocs'
   ,src             = './src'
@@ -60,6 +61,11 @@ var
       ,watch   : true
       ,default : true
     }
+    ,'html:te' : {
+       src     : [ src + '/html/_template/**/*.html' ]
+      ,watch   : true
+      ,default : true
+    }
     ,'watch' : {
       default : true
     }
@@ -91,16 +97,29 @@ gulp.task( 'css:sass', function() {
      ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( plugins ) )
-    .pipe( sourcemap.write('./') )
+    .pipe( gulpIf(
+       needsSourcemap
+      ,sourcemap.write('./')
+     ) )
     .pipe( gulp.dest( dist ) )
   ;
-} );
+} )
+;
 
 gulp.task( 'html:inc', function() {
   return gulp
     .src( tasks[ 'html:inc' ].src )
     .pipe( plumber() )
     .pipe( htmlinc( dist ) )
+  ;
+} )
+;
+
+gulp.task( 'html:te', function() {
+  return  gulp
+    .src( tasks[ 'html:te' ].src )
+    .pipe( plumber() )
+    .unpipe( te() )
   ;
 } )
 ;
@@ -125,7 +144,8 @@ gulp.task( 'js:ordinary',function() {
      ) )
     .pipe( gulp.dest( dist ) )
   ;
-} );
+} )
+;
 
 gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
   var

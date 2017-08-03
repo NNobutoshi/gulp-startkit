@@ -15,7 +15,7 @@ var
     if( type === 'normal') {
       bs( {
         server : {
-            baseDir: documentRoot
+          baseDir: documentRoot
         }
         ,port : port
       } );
