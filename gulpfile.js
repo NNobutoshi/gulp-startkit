@@ -17,13 +17,13 @@ var
   ,liveReload   = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
   ,dist            = './htdocs'
   ,src             = './src'
-  ,needsUglify     = true
   ,needsSourcemap  = true
-  ,needsCssMqpack  = false
+  ,needsCssMqpack  = true
+  ,needsUglify     = true
   ,options         = {
     uglify : {
       output : {
-        comments : /^!?[\s\S]*?(@preserve|@cc_on|\(c\)|[Ll]icense|[Cc]opyright)[\s\S]*?/
+        comments : /^!?[\s\S]*?(@preserve|@cc_on|\(c\)|license|copyright)[\s\S]*?/i
       }
     }
     ,sass : {
@@ -38,6 +38,8 @@ var
        src     : [ src + '/sass/**/*.scss' ]
       ,watch   : true
       ,default : true
+      // ,needsCssMqpack: false
+      // ,needsSourcemap: false
      }
     ,'js:bundle' : {
       src : [
@@ -47,6 +49,8 @@ var
       ]
       ,watch   : true
       ,default : true
+      // ,needsUglify: false
+      // ,needsSourcemap: false
     }
     ,'js:ordinary' : {
       src : [
@@ -55,6 +59,8 @@ var
       ]
       ,watch   : true
       ,default : true
+      // ,needsUglify: false
+      // ,needsSourcemap: false
     }
     ,'html:inc' : {
        src     : [ src + '/html/_includes/**/*.html' ]
@@ -81,24 +87,27 @@ if( typeof liveReload === 'function' && liveReload.needs === true ) {
 
 gulp.task( 'css:sass', function() {
   var
-    plugins = [ autoprefixer( options.autoprefixer ) ]
+     plugins = [ autoprefixer( options.autoprefixer ) ]
+    ,self    = tasks[ 'css:sass' ]
+    ,flagCssMqpack = ( typeof self.needsCssMqpack === 'boolean' )? self.needsCssMqpack: needsCssMqpack
+    ,flagSourcemap = ( typeof self.needsSourcemap === 'boolean' )? self.needsSourcemap: needsSourcemap
   ;
-  if( needsCssMqpack ) {
+  if( flagCssMqpack ) {
     plugins.push( cssMqpacker() );
   }
   return gulp
     .src(
-      tasks[ 'css:sass' ].src
+      self.src
     )
     .pipe( plumber() )
     .pipe( gulpIf(
-       needsSourcemap
+       flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
      ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( plugins ) )
     .pipe( gulpIf(
-       needsSourcemap
+       flagSourcemap
       ,sourcemap.write('./')
      ) )
     .pipe( gulp.dest( dist ) )
@@ -127,19 +136,24 @@ gulp.task( 'html:te', function() {
 gulp.task( 'js', [ 'js:ordinary', 'js:bundle' ] );
 
 gulp.task( 'js:ordinary',function() {
+  var
+     self = tasks[ 'js:ordinary' ]
+    ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
+    ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: needsSourcemap
+  ;
   return gulp
-    .src( tasks[ 'js:ordinary' ].src )
+    .src( self.src )
     .pipe( plumber() )
     .pipe( gulpIf(
-       needsSourcemap
+       flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
      ) )
     .pipe( gulpIf(
-        needsUglify
+        flagUglify
        ,uglify( options.uglify )
      ) )
     .pipe( gulpIf(
-       needsSourcemap
+       flagSourcemap
       ,sourcemap.write('./')
      ) )
     .pipe( gulp.dest( dist ) )
@@ -150,6 +164,9 @@ gulp.task( 'js:ordinary',function() {
 gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
   var
      sources = jsbundler.sources
+    ,self    = tasks[ 'js:bundle' ]
+    ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
+    ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: needsSourcemap
     ,streams
   ;
   streams = sources.map( function( item ) {
@@ -157,11 +174,11 @@ gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
       .src( item.urls, { base: 'src/javascript' } )
       .pipe( plumber() )
       .pipe( gulpIf(
-         needsSourcemap
+         flagSourcemap
         ,sourcemap.init( { loadMaps: true } )
        ) )
       .pipe( gulpIf(
-          needsUglify
+          flagUglify
          ,gulpIf(
              _ignore( /\.min\.js$/ )
             ,uglify( options.uglify )
@@ -169,7 +186,7 @@ gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
        ) )
       .pipe( concat( item.name ) )
       .pipe( gulpIf(
-         needsSourcemap
+         flagSourcemap
         ,sourcemap.write('./')
        ) )
       .pipe( gulp.dest( dist + item.dist ) )
@@ -192,10 +209,9 @@ gulp.task( 'js:bundle:setup', function() {
 } )
 ;
 
-gulp.task( 'watch', _callWatchTasks ( tasks ) )
-;
+gulp.task( 'watch', _callWatchTasks );
 
-gulp.task( 'default', _filterDefaultTasks( tasks ) );
+gulp.task( 'default', _filterDefaultTasks() );
 
 function _ignore( regex ) {
   return function( obj ) {
@@ -203,21 +219,21 @@ function _ignore( regex ) {
   };
 }
 
-function _callWatchTasks( obj ) {
+function _callWatchTasks() {
   Object
-    .keys( obj )
+    .keys( tasks )
     .forEach( function( key ) {
-      if ( obj[ key ].watch && obj[ key ].watch === true ) {
-        gulp.watch( obj[ key ].src, [ key ] );
+      if ( tasks[ key ].watch && tasks[ key ].watch === true ) {
+        gulp.watch( tasks[ key ].src, [ key ] );
       }
   } );
 }
 
-function _filterDefaultTasks( obj ) {
+function _filterDefaultTasks() {
   return Object
-    .keys( obj )
+    .keys( tasks )
     .filter( function( key ) {
-      if ( obj[ key ].default && obj[ key ].default === true ) {
+      if ( tasks[ key ].default && tasks[ key ].default === true ) {
         return key;
       }
   } );
