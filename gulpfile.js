@@ -15,8 +15,8 @@ var
   ,htmlinc      = require('gulp-htmlinc') /* local module */
   ,te           = require('node-template-engine') /* local module */
   ,liveReload   = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
-  ,dist            = './htdocs'
-  ,src             = './src'
+  ,dist            = 'htdocs'
+  ,src             = 'src'
   ,needsSourcemap  = true
   ,needsCssMqpack  = true
   ,needsUglify     = true
