@@ -43,9 +43,8 @@ var
      }
     ,'js:bundle' : {
       src : [
-         src + '/**/*.bundle.js'
-        ,src + '/**/_*/*.js'
-        ,src + '/**/_*.js'
+         src + '/javascript/**/_*/*.js'
+        ,src + '/javascript/**/+(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
@@ -54,8 +53,7 @@ var
     }
     ,'js:ordinary' : {
       src : [
-         '!' + src + '/**/*.bundle.js'
-        ,src + '/**/!_*/!_*.js'
+        src + '/javascript/**/!(_)*/!(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
