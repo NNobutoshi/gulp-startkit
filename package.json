@@ -13,10 +13,11 @@
   },
   "devDependencies": {
     "gulp-htmlinc": "./local_modules/gulp-htmlinc",
+    "gulp-iconfont": "^9.0.0",
+    "gulp-iconfont-css": "^2.1.0",
     "gulp-jsbundler": "./local_modules/gulp-jsbundler",
     "node-template-engine": "./local_modules/node-template-engine"
   },
-  "optionalDependencies": {
-  },
+  "optionalDependencies": {},
   "dependencies": {}
 }

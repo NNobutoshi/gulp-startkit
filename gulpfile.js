@@ -11,12 +11,16 @@ var
   ,mergeStream  = require('merge-stream')
   ,autoprefixer = require('autoprefixer')
   ,cssMqpacker  = require("css-mqpacker")
+  ,iconfont     = require('gulp-iconfont')
+  ,iconfontCss  = require('gulp-iconfont-css')
   ,jsbundler    = require('gulp-jsbundler') /* local module */
   ,htmlinc      = require('gulp-htmlinc') /* local module */
   ,te           = require('node-template-engine') /* local module */
   ,liveReload   = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
   ,dist            = 'htdocs'
   ,src             = 'src'
+  ,fontName        = 'icons'
+  ,runTimestamp    = Math.round( Date.now()/1000 )
   ,needsSourcemap  = true
   ,needsCssMqpack  = true
   ,needsUglify     = true
@@ -32,6 +36,19 @@ var
     ,autoprefixer : {
       browsers: [ 'last 2 version', 'ie 9', 'ios 7', 'android 4']
     }
+    ,iconfontCss: {
+       fontName   : fontName
+      ,path       : src + '/sass/_templates/_icons.scss'
+      ,targetPath : '../../sass/css/_icons.scss'
+      ,fontPath   : '../fonts/icons/'
+    }
+    ,iconfont :{
+       fontName       : fontName
+      ,prependUnicode : true
+      ,formats        : [ 'ttf', 'eot', 'woff' ]
+      ,timestamp      : runTimestamp
+      ,normalize      : true
+    }
   }
   ,tasks = {
     'css:sass' : {
@@ -41,6 +58,11 @@ var
       // ,needsCssMqpack: false
       // ,needsSourcemap: false
      }
+    ,'iconfont' : {
+       src : [ src + '/fonts/icons/*.svg' ]
+      ,watch   : true
+      ,default : true
+    }
     ,'js:bundle' : {
       src : [
          src + '/javascript/**/_*/*.js'
@@ -111,6 +133,23 @@ gulp.task( 'css:sass', function() {
     .pipe( gulp.dest( dist ) )
   ;
 } )
+;
+
+gulp.task( 'iconfont', function() {
+  var
+     self = tasks.iconfont
+  ;
+  return gulp.src( self.src )
+    .pipe( iconfontCss( options.iconfontCss ) )
+    .pipe( iconfont( options.iconfont ) )
+    .pipe( gulp.dest( src + '/fonts/icons/' ))
+    .on( 'finish', function() {
+      gulp.src( src + '/fonts/icons/*' )
+        .pipe( gulp.dest( dist + '/fonts/icons') )
+      ;
+    } )
+  ;
+})
 ;
 
 gulp.task( 'html:inc', function() {
