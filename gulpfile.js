@@ -41,7 +41,7 @@ var
       ,padding   : 10
       ,cssTemplate : 'sprite.scss.handlebars'
       ,cssVarMap   : function ( sprite ) {
-        sprite.name = 'spr-' + sprite.name;
+        sprite.name = 'sheet-' + sprite.name;
       }
     }
   }
