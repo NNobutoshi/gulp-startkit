@@ -10,9 +10,10 @@ var
   ,postcss      = require('gulp-postcss')
   ,mergeStream  = require('merge-stream')
   ,autoprefixer = require('autoprefixer')
-  ,cssMqpacker  = require("css-mqpacker")
   ,iconfont     = require('gulp-iconfont')
   ,iconfontCss  = require('gulp-iconfont-css')
+  ,cssMqpacker  = require('css-mqpacker')
+  ,sprite       = require('gulp.spritesmith')
   ,jsbundler    = require('gulp-jsbundler') /* local module */
   ,htmlinc      = require('gulp-htmlinc') /* local module */
   ,te           = require('node-template-engine') /* local module */
@@ -34,7 +35,18 @@ var
       outputStyle : 'compact' // nested, compact, compressed, expanded
     }
     ,autoprefixer : {
-      browsers: [ 'last 2 version', 'ie 9', 'ios 7', 'android 4']
+      browsers: [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
+    }
+    ,sprite : {
+       cssName   : '_mixins_sprite.scss'
+      ,imgName   : 'common_sprite.png'
+      ,imgPath   : '../img/common_sprite.png'
+      ,cssFormat : 'scss'
+      ,padding   : 10
+      ,cssTemplate : 'sprite.scss.handlebars'
+      ,cssVarMap   : function ( sprite ) {
+        sprite.name = 'sheet-' + sprite.name;
+      }
     }
     ,iconfontCss: {
        fontName   : fontName
@@ -89,6 +101,11 @@ var
     }
     ,'html:te' : {
        src     : [ src + '/html/_template/**/*.html' ]
+      ,watch   : true
+      ,default : true
+    }
+    ,'sprite'  : {
+       src     : [ src + '/images/img/sprite/*.png' ]
       ,watch   : true
       ,default : true
     }
@@ -243,6 +260,30 @@ gulp.task( 'js:bundle:setup', function() {
       ,base   : 'src/javascript'
     } ) )
   ;
+} )
+;
+
+gulp.task( 'sprite', function() {
+  var
+     self = tasks.sprite
+    ,spriteData
+    ,imgStream
+    ,cSSStream
+  ;
+  spriteData = gulp
+    .src( self.src )
+    .pipe( plumber() )
+    .pipe( sprite( options.sprite ) )
+  ;
+  imgStream = spriteData
+    .img
+    .pipe( gulp.dest( dist + '/img' ) )
+  ;
+  cSSStream = spriteData
+    .css
+    .pipe( gulp.dest( src + '/sass/css') )
+  ;
+  return mergeStream( imgStream, cSSStream );
 } )
 ;
 

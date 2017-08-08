@@ -16,6 +16,7 @@
     "gulp-iconfont": "^9.0.0",
     "gulp-iconfont-css": "^2.1.0",
     "gulp-jsbundler": "./local_modules/gulp-jsbundler",
+    "gulp.spritesmith": "^6.5.1",
     "node-template-engine": "./local_modules/node-template-engine"
   },
   "optionalDependencies": {},

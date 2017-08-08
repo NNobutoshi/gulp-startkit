@@ -3,4 +3,13 @@
  'variables'
 ,'mixins'
 ,'icons'
+,'mixins_sprite'
 ;
+
+.icon-network {
+  &:before {
+    content: '';
+    @include sprite-2x($sheet-network);
+    display: inline-block;
+  }
+}
