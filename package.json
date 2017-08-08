@@ -14,9 +14,9 @@
   "devDependencies": {
     "gulp-htmlinc": "./local_modules/gulp-htmlinc",
     "gulp-jsbundler": "./local_modules/gulp-jsbundler",
+    "gulp.spritesmith": "^6.5.1",
     "node-template-engine": "./local_modules/node-template-engine"
   },
-  "optionalDependencies": {
-  },
+  "optionalDependencies": {},
   "dependencies": {}
 }
