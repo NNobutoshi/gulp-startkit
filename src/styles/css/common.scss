@@ -6,10 +6,20 @@
 ,'mixins_sprite'
 ;
 
-.icon-network {
+.siteGlobalNav-01 {
+  .links {
+    & > li > a {
+      @include icon(arrow1_r);
+      &:before {
+        font-size: 12px;
+      }
+    }
+  }
+}
+.pHead-01 {
   &:before {
     content: '';
-    @include sprite($sheet-network,2);
+    @include sprite($sheet-home);
     display: inline-block;
   }
 }

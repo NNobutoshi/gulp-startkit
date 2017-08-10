@@ -93,8 +93,8 @@ $spritesheet: (210px, 102px, '../img/common_sprite.png', $spritesheet-sprites, )
 }
 
 @mixin sprite-position($sprite, $ratio:1) {
-  $sprite-offset-x: nth($sprite, 3);
-  $sprite-offset-y: nth($sprite, 4);
+  $sprite-offset-x: nth($sprite, 3)/$ratio;
+  $sprite-offset-y: nth($sprite, 4)/$ratio;
   background-position: $sprite-offset-x  $sprite-offset-y;
 }
 
