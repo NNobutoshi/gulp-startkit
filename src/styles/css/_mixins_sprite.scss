@@ -9,10 +9,53 @@
 //
 // At the bottom of this section, we provide information about the spritesheet itself
 // $spritesheet: width height image $spritesheet-sprites;
+$sheet-factory-name: 'sheet-factory';
+$sheet-factory-x: 0px;
+$sheet-factory-y: 74px;
+$sheet-factory-offset-x: 0px;
+$sheet-factory-offset-y: -74px;
+$sheet-factory-width: 50px;
+$sheet-factory-height: 28px;
+$sheet-factory-total-width: 210px;
+$sheet-factory-total-height: 102px;
+$sheet-factory-image: '../img/common_sprite.png';
 $sheet-factory: (0px, 74px, 0px, -74px, 50px, 28px, 210px, 102px, '../img/common_sprite.png', 'sheet-factory', );
+$sheet-home-name: 'sheet-home';
+$sheet-home-x: 110px;
+$sheet-home-y: 0px;
+$sheet-home-offset-x: -110px;
+$sheet-home-offset-y: 0px;
+$sheet-home-width: 100px;
+$sheet-home-height: 62px;
+$sheet-home-total-width: 210px;
+$sheet-home-total-height: 102px;
+$sheet-home-image: '../img/common_sprite.png';
 $sheet-home: (110px, 0px, -110px, 0px, 100px, 62px, 210px, 102px, '../img/common_sprite.png', 'sheet-home', );
+$sheet-mail-name: 'sheet-mail';
+$sheet-mail-x: 0px;
+$sheet-mail-y: 0px;
+$sheet-mail-offset-x: 0px;
+$sheet-mail-offset-y: 0px;
+$sheet-mail-width: 100px;
+$sheet-mail-height: 64px;
+$sheet-mail-total-width: 210px;
+$sheet-mail-total-height: 102px;
+$sheet-mail-image: '../img/common_sprite.png';
 $sheet-mail: (0px, 0px, 0px, 0px, 100px, 64px, 210px, 102px, '../img/common_sprite.png', 'sheet-mail', );
+$sheet-network-name: 'sheet-network';
+$sheet-network-x: 60px;
+$sheet-network-y: 74px;
+$sheet-network-offset-x: -60px;
+$sheet-network-offset-y: -74px;
+$sheet-network-width: 44px;
+$sheet-network-height: 26px;
+$sheet-network-total-width: 210px;
+$sheet-network-total-height: 102px;
+$sheet-network-image: '../img/common_sprite.png';
 $sheet-network: (60px, 74px, -60px, -74px, 44px, 26px, 210px, 102px, '../img/common_sprite.png', 'sheet-network', );
+$spritesheet-width: 210px;
+$spritesheet-height: 102px;
+$spritesheet-image: '../img/common_sprite.png';
 $spritesheet-sprites: ($sheet-factory, $sheet-home, $sheet-mail, $sheet-network, );
 $spritesheet: (210px, 102px, '../img/common_sprite.png', $spritesheet-sprites, );
 
@@ -40,15 +83,16 @@ $spritesheet: (210px, 102px, '../img/common_sprite.png', $spritesheet-sprites, )
 //
 // // HTML
 // <i class="icon icon-home"></i>
-@mixin sprite-width($sprite) {
-  width: nth($sprite, 5);
+
+@mixin sprite-width($sprite, $ratio:1) {
+  width: nth($sprite, 5)/$ratio;
 }
 
-@mixin sprite-height($sprite) {
-  height: nth($sprite, 6);
+@mixin sprite-height($sprite, $ratio:1) {
+  height: nth($sprite, 6)/$ratio;
 }
 
-@mixin sprite-position($sprite) {
+@mixin sprite-position($sprite, $ratio:1) {
   $sprite-offset-x: nth($sprite, 3);
   $sprite-offset-y: nth($sprite, 4);
   background-position: $sprite-offset-x  $sprite-offset-y;
@@ -59,11 +103,16 @@ $spritesheet: (210px, 102px, '../img/common_sprite.png', $spritesheet-sprites, )
   background-image: url(#{$sprite-image});
 }
 
-@mixin sprite($sprite) {
+@mixin sprite-size($sprite, $ratio:1) {
+  background-size: nth($sprite, 7)/$ratio nth($sprite, 8)/$ratio;
+}
+
+@mixin sprite($sprite, $ratio:1) {
   @include sprite-image($sprite);
-  @include sprite-position($sprite);
-  @include sprite-width($sprite);
-  @include sprite-height($sprite);
+  @include sprite-position($sprite, $ratio);
+  @include sprite-width($sprite, $ratio);
+  @include sprite-height($sprite, $ratio);
+  @include sprite-size($sprite, $ratio);
 }
 
 // The `sprites` mixin generates identical output to the CSS template
@@ -77,34 +126,4 @@ $spritesheet: (210px, 102px, '../img/common_sprite.png', $spritesheet-sprites, )
       @include sprite($sprite);
     }
   }
-}
-
-
-//
-//
-
-@mixin sprite-width-2x($sprite) {
-  width: nth($sprite, 5)/2;
-}
-
-@mixin sprite-height-2x($sprite) {
-  height: nth($sprite, 6)/2;
-}
-
-@mixin sprite-position-2x($sprite) {
-  $sprite-offset-x: nth($sprite, 3)/2;
-  $sprite-offset-y: nth($sprite, 4)/2;
-  background-position: $sprite-offset-x  $sprite-offset-y;
-}
-
-@mixin sprite-size-2x($sprite) {
-  background-size: nth($sprite, 7)/2 nth($sprite, 8)/2;
-}
-
-@mixin sprite-2x($sprite) {
-  @include sprite-image($sprite);
-  @include sprite-position-2x($sprite);
-  @include sprite-width-2x($sprite);
-  @include sprite-height-2x($sprite);
-  @include sprite-size-2x($sprite);
 }

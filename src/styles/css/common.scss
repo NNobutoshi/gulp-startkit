@@ -9,7 +9,7 @@
 .icon-network {
   &:before {
     content: '';
-    @include sprite-2x($sheet-network);
+    @include sprite($sheet-network,2);
     display: inline-block;
   }
 }

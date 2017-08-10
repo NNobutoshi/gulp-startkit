@@ -28,11 +28,14 @@ var
   ,options         = {
     uglify : {
       output : {
-        comments : /^!?[\s\S]*?(@preserve|@cc_on|\(c\)|license|copyright)[\s\S]*?/i
+        comments    : /^!?[\s\S]*?(@preserve|@cc_on|\(c\)|license|copyright)[\s\S]*?/i
       }
     }
     ,sass : {
-      outputStyle : 'compact' // nested, compact, compressed, expanded
+       outputStyle : 'compact' // nested, compact, compressed, expanded
+      ,linefeed    : 'lf' // 'crlf', 'lf'
+      ,indentType  : 'space' // 'space', 'tab'
+      ,indentWidth : 2
     }
     ,autoprefixer : {
       browsers: [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
@@ -43,28 +46,39 @@ var
       ,imgPath   : '../img/common_sprite.png'
       ,cssFormat : 'scss'
       ,padding   : 10
-      ,cssTemplate : 'sprite.scss.handlebars'
+      ,cssTemplate : src + '/styles/_templates/scss.template.handlebars'
       ,cssVarMap   : function ( sprite ) {
         sprite.name = 'sheet-' + sprite.name;
       }
     }
-    ,iconfontCss: {
-       fontName   : fontName
-      ,path       : src + '/sass/_templates/_icons.scss'
-      ,targetPath : '../../sass/css/_icons.scss'
-      ,fontPath   : '../fonts/icons/'
-    }
-    ,iconfont :{
+    ,iconfont : {
        fontName       : fontName
       ,prependUnicode : true
       ,formats        : [ 'ttf', 'eot', 'woff' ]
       ,timestamp      : runTimestamp
       ,normalize      : true
     }
+    ,iconfontCss : {
+       fontName   : fontName
+      ,path       : src + '/styles/_templates/_icons.scss'
+      ,targetPath : '../../styles/css/_icons.scss'
+      ,fontPath   : '../fonts/icons/'
+    }
+    ,jsbundler : {
+       suffix : '.bundle'
+      ,base   : 'src/scripts'
+    }
+    ,te: {
+      x2j : {
+         input   : './sitemap.xlsx'
+        ,output  : './sitemap_output.json'
+        ,sheet   : 'Sheet1'
+      }
+    }
   }
   ,tasks = {
     'css:sass' : {
-       src     : [ src + '/sass/**/*.scss' ]
+       src     : [ src + '/styles/**/*.scss' ]
       ,watch   : true
       ,default : true
       // ,needsCssMqpack: false
@@ -77,8 +91,8 @@ var
     }
     ,'js:bundle' : {
       src : [
-         src + '/javascript/**/_*/*.js'
-        ,src + '/javascript/**/+(_*|*.bundle).js'
+         src + '/scripts/**/_*/*.js'
+        ,src + '/scripts/**/+(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
@@ -87,7 +101,7 @@ var
     }
     ,'js:ordinary' : {
       src : [
-        src + '/javascript/**/!(_)*/!(_*|*.bundle).js'
+        src + '/scripts/**/!(_)*/!(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
@@ -100,7 +114,7 @@ var
       ,default : true
     }
     ,'html:te' : {
-       src     : [ src + '/html/_template/**/*.html' ]
+       src     : [ src + '/html/_templates/**/*.html' ]
       ,watch   : true
       ,default : true
     }
@@ -145,7 +159,7 @@ gulp.task( 'css:sass', function() {
     .pipe( postcss( plugins ) )
     .pipe( gulpIf(
        flagSourcemap
-      ,sourcemap.write('./')
+      ,sourcemap.write( './' )
      ) )
     .pipe( gulp.dest( dist ) )
   ;
@@ -182,7 +196,7 @@ gulp.task( 'html:te', function() {
   return  gulp
     .src( tasks[ 'html:te' ].src )
     .pipe( plumber() )
-    .unpipe( te() )
+    .unpipe( te( options.te ) )
   ;
 } )
 ;
@@ -208,7 +222,7 @@ gulp.task( 'js:ordinary',function() {
      ) )
     .pipe( gulpIf(
        flagSourcemap
-      ,sourcemap.write('./')
+      ,sourcemap.write( './' )
      ) )
     .pipe( gulp.dest( dist ) )
   ;
@@ -225,7 +239,7 @@ gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
   ;
   streams = sources.map( function( item ) {
     return gulp
-      .src( item.urls, { base: 'src/javascript' } )
+      .src( item.urls, { base: options.jsbundler.base } )
       .pipe( plumber() )
       .pipe( gulpIf(
          flagSourcemap
@@ -241,7 +255,7 @@ gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
       .pipe( concat( item.name ) )
       .pipe( gulpIf(
          flagSourcemap
-        ,sourcemap.write('./')
+        ,sourcemap.write( './' )
        ) )
       .pipe( gulp.dest( dist + item.dist ) )
     ;
@@ -255,10 +269,7 @@ gulp.task( 'js:bundle:setup', function() {
   return gulp
     .src( tasks[ 'js:bundle' ].src )
     .pipe( plumber() )
-    .pipe( jsbundler( {
-       suffix : '.bundle'
-      ,base   : 'src/javascript'
-    } ) )
+    .pipe( jsbundler( options.jsbundler ) )
   ;
 } )
 ;
@@ -281,7 +292,7 @@ gulp.task( 'sprite', function() {
   ;
   cSSStream = spriteData
     .css
-    .pipe( gulp.dest( src + '/sass/css') )
+    .pipe( gulp.dest( src + '/styles/css') )
   ;
   return mergeStream( imgStream, cSSStream );
 } )

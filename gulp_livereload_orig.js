@@ -28,6 +28,7 @@ var
       return false;
     }
     gulp.watch( documentRoot + '/**', function() {
+      clearTimeout( timeoutId );
       timeoutId = null;
       timeoutId = setTimeout( bs.reload, time );
     });
