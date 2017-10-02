@@ -129,7 +129,7 @@ var
   }
 ;
 
-if( typeof liveReload === 'function' && liveReload.needs === true ) {
+if ( typeof liveReload === 'function' && liveReload.needs === true ) {
   gulp.task( 'livereload', liveReload );
   tasks.livereload = {
     default : true
@@ -143,7 +143,7 @@ gulp.task( 'css:sass', function() {
     ,flagCssMqpack = ( typeof self.needsCssMqpack === 'boolean' )? self.needsCssMqpack: needsCssMqpack
     ,flagSourcemap = ( typeof self.needsSourcemap === 'boolean' )? self.needsSourcemap: needsSourcemap
   ;
-  if( flagCssMqpack ) {
+  if ( flagCssMqpack ) {
     plugins.push( cssMqpacker() );
   }
   return gulp

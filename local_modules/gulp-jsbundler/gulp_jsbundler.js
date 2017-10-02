@@ -1,10 +1,3 @@
-/*!
-* gulp_jsbundler.js
-* version : 1.0.2
-* link    : https://github.com/NNobutoshi/gulp-jsbundler
-* License : MIT
-*/
-
 var
    through  = require('through2')
   ,path     = require('path')
@@ -28,14 +21,14 @@ function _init( arg ) {
       ,fileName = path.basename( filePath )
       ,obj      = {}
     ;
-    if( matches !== null ) {
+    if ( matches !== null ) {
       obj.urls = matches
         .map( function( item ) {
           var
             dirName = path.dirname( filePath )
           ;
           item = item.replace( regex, '$1' );
-          if( item.indexOf('/') === 0 ) {
+          if ( item.indexOf('/') === 0 ) {
             return '.' + item;
           } else {
             return  path
@@ -46,12 +39,12 @@ function _init( arg ) {
           }
         } )
       ;
-      if( suffix && typeof suffix === 'string' ) {
+      if ( suffix && typeof suffix === 'string' ) {
         obj.name = fileName.replace( suffix, '' );
       } else {
         obj.name = fileName;
       }
-      if( base && typeof base === 'string' ) {
+      if ( base && typeof base === 'string' ) {
         obj.dist = filePath
           .replace( __dirname, '.' )
           .replace( /\\/g ,'/' )

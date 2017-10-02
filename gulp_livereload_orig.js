@@ -12,7 +12,7 @@ var
        timeoutId = null
       ,time      = 300
     ;
-    if( type === 'normal') {
+    if ( type === 'normal') {
       bs( {
         server : {
           baseDir: documentRoot
