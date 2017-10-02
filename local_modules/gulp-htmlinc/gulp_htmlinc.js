@@ -26,12 +26,12 @@ function _init( arg ) {
     included.all = file._contents + '';
     store = included.all.split('\n');
     len = store.length;
-    if( len >= 3) {
+    if ( len >= 3 ) {
       store.forEach( function( item, index ) {
-        if( index === 0 ) {
+        if ( index === 0 ) {
           included.start = item.replace( escapeRegex, '\\$1' );
         }
-        if( index === len - 1 ) {
+        if ( index === len - 1 ) {
           included.end = item.replace( escapeRegex, '\\$1' );
         }
       } );
@@ -46,7 +46,7 @@ function _init( arg ) {
   }
   function _eachDir( path, callback ) {
     fs.readdir( path, function( err, files ) {
-      if( err ){
+      if ( err ){
         console.info( err );
         return;
       }
@@ -55,10 +55,10 @@ function _init( arg ) {
            dir  = path + '/' + file
           ,stat = fs.statSync
         ;
-        if( stat( dir ).isDirectory() ){
+        if ( stat( dir ).isDirectory() ){
           _eachDir( dir, _write );
-        } else if( stat( dir ).isFile() ) {
-          if( /\.html?$/.test( dir ) ){
+        } else if ( stat( dir ).isFile() ) {
+          if ( /\.html?$/.test( dir ) ){
             callback( dir );
           }
         }
