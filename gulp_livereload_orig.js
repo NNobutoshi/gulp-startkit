@@ -9,8 +9,7 @@ var
   ,flag         = true
   ,_init        = function() {
     var
-       timeoutId = null
-      ,time      = 300
+      time      = 300
     ;
     if ( type === 'normal') {
       bs( {
@@ -27,11 +26,17 @@ var
     } else {
       return false;
     }
-    gulp.watch( documentRoot + '/**', function() {
-      clearTimeout( timeoutId );
-      timeoutId = null;
-      timeoutId = setTimeout( bs.reload, time );
-    });
+    gulp.watch(
+       [
+          documentRoot + "/**/*.html"
+         ,documentRoot + "/**/*.css"
+         ,documentRoot + "/**/*.js"
+         ,documentRoot + "/**/*.png"
+         ,documentRoot + "/**/*.jpg"
+       ]
+      ,{ interval: time }
+      ,bs.reload
+    );
   }
 ;
 

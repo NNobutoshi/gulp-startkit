@@ -203,7 +203,7 @@ gulp.task( 'html:te', function() {
 
 gulp.task( 'js', [ 'js:ordinary', 'js:bundle' ] );
 
-gulp.task( 'js:ordinary',function() {
+gulp.task( 'js:ordinary', function() {
   var
      self = tasks[ 'js:ordinary' ]
     ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
