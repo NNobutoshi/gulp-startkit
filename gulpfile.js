@@ -46,7 +46,7 @@ var
       ,imgPath   : '../img/common_sprite.png'
       ,cssFormat : 'scss'
       ,padding   : 10
-      ,cssTemplate : src + '/styles/_templates/scss.template.handlebars'
+      ,cssTemplate : src + '/_templates/scss.template.handlebars'
       ,cssVarMap   : function ( sprite ) {
         sprite.name = 'sheet-' + sprite.name;
       }
@@ -60,13 +60,13 @@ var
     }
     ,iconfontCss : {
        fontName   : fontName
-      ,path       : src + '/styles/_templates/_icons.scss'
-      ,targetPath : '../../styles/css/_icons.scss'
+      ,path       : src + '/_templates/_icons.scss'
+      ,targetPath : '../../css/_icons.scss'
       ,fontPath   : '../fonts/icons/'
     }
     ,jsbundler : {
        suffix : '.bundle'
-      ,base   : 'src/scripts'
+      ,base   : 'src'
     }
     ,te: {
       x2j : {
@@ -78,7 +78,7 @@ var
   }
   ,tasks = {
     'css:sass' : {
-       src     : [ src + '/styles/**/*.scss' ]
+       src     : [ src + '/**/*.scss' ]
       ,watch   : true
       ,default : true
       // ,needsCssMqpack: false
@@ -91,8 +91,8 @@ var
     }
     ,'js:bundle' : {
       src : [
-         src + '/scripts/**/_*/*.js'
-        ,src + '/scripts/**/+(_*|*.bundle).js'
+         src + '/**/_*/*.js'
+        ,src + '/**/+(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
@@ -101,7 +101,7 @@ var
     }
     ,'js:ordinary' : {
       src : [
-        src + '/scripts/**/!(_)*/!(_*|*.bundle).js'
+        src + '/**/!(_)*/!(_*|*.bundle).js'
       ]
       ,watch   : true
       ,default : true
@@ -109,17 +109,17 @@ var
       // ,needsSourcemap: false
     }
     ,'html:inc' : {
-       src     : [ src + '/html/_includes/**/*.html' ]
+       src     : [ src + '/_includes/**/*.html' ]
       ,watch   : true
       ,default : true
     }
     ,'html:te' : {
-       src     : [ src + '/html/_templates/**/*.html' ]
+       src     : [ src + '/_templates/**/*.html' ]
       ,watch   : true
       ,default : true
     }
     ,'sprite'  : {
-       src     : [ src + '/images/img/sprite/*.png' ]
+       src     : [ src + '/img/sprite/*.png' ]
       ,watch   : true
       ,default : true
     }
@@ -292,7 +292,7 @@ gulp.task( 'sprite', function() {
   ;
   cSSStream = spriteData
     .css
-    .pipe( gulp.dest( src + '/styles/css') )
+    .pipe( gulp.dest( src + '/css') )
   ;
   return mergeStream( imgStream, cSSStream );
 } )
