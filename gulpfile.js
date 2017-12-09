@@ -61,7 +61,7 @@ var
     ,iconfontCss : {
        fontName   : fontName
       ,path       : src + '/_templates/_icons.scss'
-      ,targetPath : '../../css/_icons.scss'
+      ,targetPath : '../css/_icons.scss'
       ,fontPath   : '../fonts/icons/'
     }
     ,jsbundler : {
@@ -69,7 +69,9 @@ var
       ,base   : 'src'
     }
     ,te: {
-      x2j : {
+       src       : './src/_templates'
+      ,template  : './src/_templates/template_default.html'
+      ,x2j : {
          input   : './sitemap.xlsx'
         ,output  : './sitemap_output.json'
         ,sheet   : 'Sheet1'
@@ -85,7 +87,7 @@ var
       // ,needsSourcemap: false
      }
     ,'iconfont' : {
-       src : [ src + '/fonts/icons/*.svg' ]
+       src : [ src + '/fonts/*.svg' ]
       ,watch   : true
       ,default : true
     }
@@ -119,7 +121,7 @@ var
       ,default : true
     }
     ,'sprite'  : {
-       src     : [ src + '/img/sprite/*.png' ]
+       src     : [ src + '/img/_sprite/*.png' ]
       ,watch   : true
       ,default : true
     }
@@ -173,9 +175,9 @@ gulp.task( 'iconfont', function() {
   return gulp.src( self.src )
     .pipe( iconfontCss( options.iconfontCss ) )
     .pipe( iconfont( options.iconfont ) )
-    .pipe( gulp.dest( src + '/fonts/icons/' ))
+    .pipe( gulp.dest( src + '/fonts' ))
     .on( 'finish', function() {
-      gulp.src( src + '/fonts/icons/*' )
+      gulp.src( src + '/fonts/*' )
         .pipe( gulp.dest( dist + '/fonts/icons') )
       ;
     } )
