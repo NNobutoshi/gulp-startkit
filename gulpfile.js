@@ -55,7 +55,7 @@ var
        fontName       : fontName
       ,prependUnicode : true
       ,formats        : [ 'ttf', 'eot', 'woff' ]
-      ,timestamp      : runTimestamp
+      // ,timestamp      : Math.round( Date.now()/1000 )
       ,normalize      : true
     }
     ,iconfontCss : {
