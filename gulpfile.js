@@ -68,6 +68,9 @@ var
        suffix : '.bundle'
       ,base   : 'src'
     }
+    ,htmlinc : {
+      dist: dist
+    }
     ,te: {
        src       : './src/_templates'
       ,template  : './src/_templates/template_default.html'
@@ -189,7 +192,7 @@ gulp.task( 'html:inc', function() {
   return gulp
     .src( tasks[ 'html:inc' ].src )
     .pipe( plumber() )
-    .pipe( htmlinc( dist ) )
+    .pipe( htmlinc( opcions.htmlinc ) )
   ;
 } )
 ;
