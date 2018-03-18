@@ -192,7 +192,7 @@ gulp.task( 'html:inc', function() {
   return gulp
     .src( tasks[ 'html:inc' ].src )
     .pipe( plumber() )
-    .pipe( htmlinc( opcions.htmlinc ) )
+    .pipe( htmlinc( options.htmlinc ) )
   ;
 } )
 ;
