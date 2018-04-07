@@ -1,6 +1,6 @@
 
 var
-   gulp         = require('gulp')
+  gulp          = require('gulp')
   ,bs           = require('browser-sync')
   ,type         = 'normal' // 'normal' or 'proxy'
   ,proxy        = 'localhost:8000'
@@ -20,20 +20,20 @@ var
       } );
     } else if ( type === 'proxy' ) {
       bs( {
-       proxy : proxy
-      ,port  : port
+        proxy : proxy
+        ,port : port
       } );
     } else {
       return false;
     }
     gulp.watch(
-       [
-          documentRoot + "/**/*.html"
-         ,documentRoot + "/**/*.css"
-         ,documentRoot + "/**/*.js"
-         ,documentRoot + "/**/*.png"
-         ,documentRoot + "/**/*.jpg"
-       ]
+      [
+        documentRoot  + "/**/*.html"
+        ,documentRoot + "/**/*.css"
+        ,documentRoot + "/**/*.js"
+        ,documentRoot + "/**/*.png"
+        ,documentRoot + "/**/*.jpg"
+      ]
       ,{ interval: time }
       ,bs.reload
     );
