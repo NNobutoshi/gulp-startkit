@@ -17,7 +17,6 @@
     "node-template-engine": "./local_modules/node-template-engine"
   },
   "optionalDependencies": {
-    "browser-sync": "^2.23.6"
   },
   "dependencies": {}
 }
