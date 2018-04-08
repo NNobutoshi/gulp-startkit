@@ -5,7 +5,7 @@ var
   ,type         = 'normal' // 'normal' or 'proxy'
   ,proxy        = 'localhost:8000'
   ,port         = 9000
-  ,documentRoot = './htdocs'
+  ,documentRoot = './html'
   ,flag         = true
   ,_init        = function() {
     var
