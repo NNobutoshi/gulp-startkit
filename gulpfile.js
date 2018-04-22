@@ -21,7 +21,7 @@ var
   ,tempEngine   = require('node-template-engine') /* local module */
 
   ,liveReload      = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
-  ,dist            = 'htdocs'
+  ,dist            = 'html'
   ,src             = 'src'
   ,needsSourcemap  = true
   ,needsCssMqpack  = true
@@ -75,6 +75,7 @@ var
     ,tempEngine : {
       src       : './src/_templates'
       ,template : './src/_templates/template_default.html'
+      ,dest     : dist
       ,x2j      : {
          input  : './sitemap.xlsx'
         ,output : './sitemap_output.json'
