@@ -86,37 +86,36 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    # sudo yum -y install httpd
-    # sudo yum install -y gcc gcc-c++ make
-    # cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
-    sed -i -e "\\%<Directory \"/var/www/html\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
+    sudo yum -y install httpd
+    sudo yum install -y gcc gcc-c++ make
+    cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
     sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%#EnableMMAP off%EnableMMAP off%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
-    # ln -s /home/vagrant/www/package.json /home/vagrant
-    # ln -s /home/vagrant/www/package-lock.json /home/vagrant
-    # ln -s /home/vagrant/www/local_modules /home/vagrant
-    # systemctl enable httpd.service
-    # systemctl restart httpd.service
-    # curl -sL https://rpm.nodesource.com/setup_7.x | sudo bash -
-    # sudo yum install -y nodejs-7.10.1
-    # cd /home/vagrant
-    # npm install -g gulp
-    # npm install --save-dev autoprefixer
-    # npm install --save-dev css-mqpacker
-    # npm install --save-dev gulp
-    # npm install --save-dev gulp-concat
-    # npm install --save-dev gulp-if
-    # npm install --save-dev gulp-plumber
-    # npm install --save-dev gulp-postcss
-    # npm install --save-dev gulp-sass
-    # npm install --save-dev gulp-sourcemaps
-    # npm install --save-dev gulp-uglify
-    # npm install --save-dev merge-stream
-    # sudo npm install --save-dev gulp-iconfont
-    # npm install --save-dev gulp-iconfont-css
-    # npm install --save-dev gulp.spritesmith
-    # npm install --save-optional browser-sync
-    # sudo npm install
+    ln -s /home/vagrant/www/package.json /home/vagrant
+    ln -s /home/vagrant/www/package-lock.json /home/vagrant
+    ln -s /home/vagrant/www/local_modules /home/vagrant
+    systemctl enable httpd.service
+    systemctl restart httpd.service
+    curl -sL https://rpm.nodesource.com/setup_7.x | sudo bash -
+    sudo yum install -y nodejs-7.10.1
+    cd /home/vagrant
+    npm install -g gulp
+    npm install --save-dev autoprefixer
+    npm install --save-dev css-mqpacker
+    npm install --save-dev gulp
+    npm install --save-dev gulp-concat
+    npm install --save-dev gulp-if
+    npm install --save-dev gulp-plumber
+    npm install --save-dev gulp-postcss
+    npm install --save-dev gulp-sass
+    npm install --save-dev gulp-sourcemaps
+    npm install --save-dev gulp-uglify
+    npm install --save-dev merge-stream
+    sudo npm install --save-dev gulp-iconfont
+    npm install --save-dev gulp-iconfont-css
+    npm install --save-dev gulp.spritesmith
+    npm install --save-optional browser-sync
+    sudo npm install
   SHELL
 end
