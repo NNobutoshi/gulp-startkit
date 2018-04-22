@@ -12,26 +12,8 @@
     "type": "git"
   },
   "devDependencies": {
-    "autoprefixer": "^8.2.0",
-    "css-mqpacker": "^6.0.2",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-htmlinc": "./local_modules/gulp-htmlinc",
-    "gulp-iconfont": "^9.1.0",
-    "gulp-iconfont-css": "^2.1.0",
-    "gulp-if": "^2.0.2",
-    "gulp-jsbundler": "./local_modules/gulp-jsbundler",
-    "gulp-plumber": "^1.2.0",
-    "gulp-postcss": "^7.0.1",
-    "gulp-sass": "^3.2.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.0",
-    "gulp.spritesmith": "^6.9.0",
-    "merge-stream": "^1.0.1",
-    "node-template-engine": "./local_modules/node-template-engine"
   },
   "optionalDependencies": {
-    "browser-sync": "^2.23.6"
   },
   "dependencies": {}
 }
