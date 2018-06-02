@@ -8,16 +8,20 @@ var
   ,iconfontCss = require('gulp-iconfont-css')
   ,gulpIf      = require('gulp-if')
   ,jsbundler   = require('gulp-jsbundler') /* local module */
+  ,notify      = require('gulp-notify')
   ,plumber     = require('gulp-plumber')
   ,postcss     = require('gulp-postcss')
   ,sass        = require('gulp-sass')
   ,sourcemap   = require('gulp-sourcemaps')
   ,sprite      = require('gulp.spritesmith')
+  ,tap         = require('gulp-tap')
   ,uglify      = require('gulp-uglify')
 
   ,autoprefixer = require('autoprefixer')
+  ,beautifyHtml = require('js-beautify').html
   ,cssMqpacker  = require('css-mqpacker')
   ,mergeStream  = require('merge-stream')
+  ,pug          = require('pug')
   ,tempEngine   = require('node-template-engine') /* local module */
 
   ,liveReload      = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
@@ -27,30 +31,15 @@ var
   ,needsCssMqpack  = true
   ,needsUglify     = true
   ,options         = {
-    uglify : {
-      output : {
-        comments   : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i
-      }
-    }
-    ,sass : {
-      outputStyle  : 'compact' // nested, compact, compressed, expanded
-      ,linefeed    : 'lf' // 'crlf', 'lf'
-      ,indentType  : 'space' // 'space', 'tab'
-      ,indentWidth : 2
-    }
-    ,autoprefixer : {
+    autoprefixer : {
       browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
     }
-    ,sprite : {
-      cssName      : '_mixins_sprite.scss'
-      ,imgName     : 'common_sprite.png'
-      ,imgPath     : '../img/common_sprite.png'
-      ,cssFormat   : 'scss'
-      ,padding     : 10
-      ,cssTemplate : src + '/_templates/scss.template.handlebars'
-      ,cssVarMap   : function ( sprite ) {
-        sprite.name = 'sheet-' + sprite.name;
-      }
+    ,beautifyHtml : {
+      indent_size  : 2
+      ,indent_char : " "
+    }
+    ,htmlinc : {
+      dist: dist
     }
     ,iconfont : {
       fontName        : 'icons'
@@ -69,8 +58,28 @@ var
       suffix  : '.bundle'
       ,base   : 'src'
     }
-    ,htmlinc : {
-      dist: dist
+    ,plumber : {
+      errorHandler: notify.onError("Error: <%= error.message %>")
+    }
+    ,pug : {
+      pretty : true
+    }
+    ,sass : {
+      outputStyle  : 'compact' // nested, compact, compressed, expanded
+      ,linefeed    : 'lf' // 'crlf', 'lf'
+      ,indentType  : 'space' // 'space', 'tab'
+      ,indentWidth : 2
+    }
+    ,sprite : {
+      cssName      : '_mixins_sprite.scss'
+      ,imgName     : 'common_sprite.png'
+      ,imgPath     : '../img/common_sprite.png'
+      ,cssFormat   : 'scss'
+      ,padding     : 10
+      ,cssTemplate : src + '/_templates/scss.template.handlebars'
+      ,cssVarMap   : function ( sprite ) {
+        sprite.name = 'sheet-' + sprite.name;
+      }
     }
     ,tempEngine : {
       src       : './src/_templates'
@@ -80,6 +89,11 @@ var
          input  : './sitemap.xlsx'
         ,output : './sitemap_output.json'
         ,sheet  : 'Sheet1'
+      }
+    }
+    ,uglify : {
+      output : {
+        comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i
       }
     }
   }
@@ -112,6 +126,11 @@ var
       ,default : true
       // ,needsUglify: false
       // ,needsSourcemap: false
+    }
+    ,'html:pug' : {
+      src       : [ src + '/**/*.pug' ]
+      ,watch    : true
+      ,default : true
     }
     ,'html:inc' : {
       src      : [ src + '/_includes/**/*.html' ]
@@ -187,6 +206,44 @@ gulp.task( 'iconfont', function() {
   ;
 })
 ;
+
+gulp.task( 'html:pug', function() {
+  var
+    self = tasks[ 'html:pug' ]
+    ,stream
+    ,errorHandler = options.plumber.errorHandler
+  ;
+  stream = gulp
+    .src( tasks[ 'html:pug' ].src )
+    .pipe( plumber() )
+    .pipe( tap( function( file, t ) {
+      var
+        contents = ''
+        ,path = ''
+        ,regEx1 = /([\t ]*)[^\r\n]*?<a .*?>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*/g
+        ,regEx2 = /(<\/.+?>)(\r?\n|\r)(\s*)(<!-- ?[\.#].+?-->)/g
+      ;
+      path = file.path.replace( file.base , '' );
+      if( path.match( /[\\\/]?_/ ) === null ) {
+        options.pug.filename = file.path;
+        try {
+          contents = pug.render( String( file.contents ), options.pug );
+          console.info( 'okk' );
+        } catch( e ) {
+          errorHandler( e );
+        }
+        file.contents = new Buffer( contents );
+        file.path = file.path.replace( /\.pug$/, '.html');
+        return t.through( gulp.dest, [ dist ] );
+      }
+    } ) )
+    .pipe( tap( function( file, t ) {
+      console.info( file.path );
+    } ) )
+  ;
+  return stream;
+} );
+
 
 gulp.task( 'html:inc', function() {
   return gulp
@@ -328,6 +385,7 @@ function _filterDefaultTasks() {
     .keys( tasks )
     .filter( function( key ) {
       if ( tasks[ key ].default && tasks[ key ].default === true ) {
+        console.info( key );
         return key;
       }
   } );
