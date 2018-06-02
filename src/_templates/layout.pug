@@ -16,13 +16,15 @@ html(lang="ja")
   body
     div.page#page
       block pageHead
+        //
         header.pgHead#pgHead
           div.pgHead-core
             a.siteId.pgHead-siteId
               div.siteId=title
         // /.pgHead#pgHead
       block pageBody
-        div.pgBody=foo
+        div.pgBody
+          p=foo
         // /.pgBody
       block pageFoot
         footer.pgFoot#pgFoot
