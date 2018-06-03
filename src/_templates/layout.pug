@@ -2,7 +2,8 @@
   let
     title = "サイト",
     h1 = title,
-    cssDir = "css",
+    cssDir = "/css",
+    jsDir = "/js"
     foo = "foo"
 
 block config
@@ -13,6 +14,7 @@ html(lang="ja")
     meta(charset="utf-8")
     title=title
     link(rel="stylesheet", href=cssDir + "/common.css")
+    script(src=jsDir + "/common_head.js")
   body
     div.page#page
       block pageHead
@@ -29,3 +31,4 @@ html(lang="ja")
       block pageFoot
         footer.pgFoot#pgFoot
     // /.page#page
+    script(src=jsDir + "/common_body.js")

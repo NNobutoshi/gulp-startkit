@@ -7,7 +7,6 @@ var
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
   ,gulpIf      = require('gulp-if')
-  ,jsbundler   = require('gulp-jsbundler') /* local module */
   ,notify      = require('gulp-notify')
   ,plumber     = require('gulp-plumber')
   ,postcss     = require('gulp-postcss')
@@ -18,11 +17,13 @@ var
   ,uglify      = require('gulp-uglify')
 
   ,autoprefixer = require('autoprefixer')
-  ,beautifyHtml = require('js-beautify').html
+  ,browserify   = require('browserify')
   ,cssMqpacker  = require('css-mqpacker')
+  ,buffer       = require('gulp-buffer')
+  ,beautifyHtml = require('js-beautify').html
   ,mergeStream  = require('merge-stream')
-  ,pug          = require('pug')
   ,tempEngine   = require('node-template-engine') /* local module */
+  ,pug          = require('pug')
 
   ,liveReload      = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
   ,dist            = 'html'
@@ -44,6 +45,9 @@ var
     ,beautifyHtml : {
       indent_size  : 2
       ,indent_char : " "
+    }
+    ,browserify : {
+      debug: true
     }
     ,htmlinc : {
       dist: dist
@@ -118,17 +122,7 @@ var
       ,default : false
     }
     ,'js:bundle' : {
-      src : [
-        src  + '/**/_*/*.js'
-        ,src + '/**/+(_*|*.bundle).js'
-      ]
-      ,watch   : true
-      ,default : true
-      // ,needsUglify: false
-      // ,needsSourcemap: false
-    }
-    ,'js:normal' : {
-      src      : [ src + '/**/!(_)*/!(_*|*.bundle).js' ]
+      src : [ src  + '/**/*.js' ]
       ,watch   : true
       ,default : true
       // ,needsUglify: false
@@ -281,16 +275,12 @@ gulp.task( 'html:pug', function() {
           } );
         }
         if( options.assistPretty.emptyLine === true ) {
-          console.info('come');
           contents = contents.replace( emptyCommentRegEx, '' );
         }
         file.contents = new Buffer( contents );
         file.path = file.path.replace( /\.pug$/, '.html');
         return t.through( gulp.dest, [ dist ] );
       }
-    } ) )
-    .pipe( tap( function( file, t ) {
-      console.info( file.path );
     } ) )
   ;
   return stream;
@@ -314,76 +304,49 @@ gulp.task( 'html:te', function() {
 } )
 ;
 
-gulp.task( 'js', [ 'js:normal', 'js:bundle' ] );
-
-gulp.task( 'js:normal', function() {
+gulp.task( 'js:bundle', function() {
   var
-    self           = tasks[ 'js:normal' ]
+    self           = tasks[ 'js:bundle' ]
     ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
     ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: needsSourcemap
+    ,stream
   ;
-  return gulp
-    .src( self.src )
-    .pipe( plumber() )
+  stream = gulp
+    .src( self.src, { read: false } )
+    .pipe( gulpIf(
+      _match( /\.bundle\.js$/, true )
+      ,tap( function( file ) {
+        file.contents = browserify( file.path, options.browserify )
+          .bundle()
+          .on( 'error', function( error ) {
+            options.plumber.errorHandler( error );
+            stream.emit('end');
+          } )
+        ;
+        file.path = file.path.replace( /\.bundle\.js$/, '.js' );
+      } )
+    ) )
+    .pipe( buffer() )
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
      ) )
     .pipe( gulpIf(
       flagUglify
-      ,uglify( options.uglify )
+       ,uglify( options.uglify )
      ) )
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.write( './' )
      ) )
-    .pipe( gulp.dest( dist ) )
+    .pipe( tap( function( file, t ) {
+      var path = file.path.replace( file.base , '' );
+      if ( path.match( /([\\\/]_)|^_/g ) === null ) {
+        return t.through( gulp.dest, [ dist ] );
+      }
+    } ) )
   ;
-} )
-;
-
-gulp.task( 'js:bundle', [ 'js:bundle:setup' ], function() {
-  var
-    sources        = jsbundler.sources
-    ,self          = tasks[ 'js:bundle' ]
-    ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
-    ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: needsSourcemap
-    ,streams
-  ;
-  streams = sources.map( function( item ) {
-    return gulp
-      .src( item.urls, { base: options.jsbundler.base } )
-      .pipe( plumber() )
-      .pipe( gulpIf(
-         flagSourcemap
-        ,sourcemap.init( { loadMaps: true } )
-       ) )
-      .pipe( gulpIf(
-          flagUglify
-         ,gulpIf(
-             _ignore( /\.min\.js$/ )
-            ,uglify( options.uglify )
-          )
-       ) )
-      .pipe( concat( item.name ) )
-      .pipe( gulpIf(
-         flagSourcemap
-        ,sourcemap.write( './' )
-       ) )
-      .pipe( gulp.dest( dist + item.dist ) )
-    ;
-  } )
-  ;
-  return mergeStream( streams );
-} )
-;
-
-gulp.task( 'js:bundle:setup', function() {
-  return gulp
-    .src( tasks[ 'js:bundle' ].src )
-    .pipe( plumber() )
-    .pipe( jsbundler( options.jsbundler ) )
-  ;
+  return stream;
 } )
 ;
 
@@ -415,9 +378,13 @@ gulp.task( 'watch', _callWatchTasks );
 
 gulp.task( 'default', _filterDefaultTasks() );
 
-function _ignore( regex ) {
+function _match( regex, flag ) {
   return function( obj ) {
-    return !regex.test( obj.path );
+    if( flag ) {
+      return regex.test( obj.path );
+    } else {
+      return !regex.test( obj.path );
+    }
   };
 }
 

@@ -1,8 +1,10 @@
-( function( d ) {
+
+module.exports = function( className, d ) {
+  'use strict';
   var
      htmlElement = d.getElementsByTagName('html')[0]
     ,classNames  = htmlElement.className.split(' ')
   ;
-  classNames.push('js');
+  classNames.push( className );
   htmlElement.className = classNames.join(' ');
-} )( document );
+};
