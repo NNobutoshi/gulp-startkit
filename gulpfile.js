@@ -129,9 +129,13 @@ var
       // ,needsSourcemap: false
     }
     ,'html:pug' : {
-      src       : [ src + '/**/*.pug' ]
-      ,watch    : true
-      ,default  : true
+      src : [
+               src + '/**/*.pug'
+        ,'!' + src + '/**/_*/*.pug'
+        ,'!' + src + '/**/_*.pug'
+      ]
+      ,watch   : [ src + '/**/*.pug' ]
+      ,default : true
     }
     ,'html:inc' : {
       src      : [ src + '/_includes/**/*.html' ]
@@ -219,67 +223,63 @@ gulp.task( 'html:pug', function() {
     .pipe( tap( function( file, t ) {
       var
         contents = ''
-        ,path = ''
         ,ugliyAElementRegEx = /([\t ]*)[^\r\n]*?<a .*?>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*/g
         ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)(<!-- \/?[\.#].+?-->)/mg
         ,emptyCommentRegEx = /^\s+<!---->$/mg
       ;
-      path = file.path.replace( file.base , '' );
-      if ( path.match( /[\\\/]?_/ ) === null ) {
-        options.pug.filename = file.path;
-        try {
-          contents = pug.render( String( file.contents ), options.pug );
-        } catch( e ) {
-          errorHandler( e );
-        }
-        if ( options.assistPretty.assistAElement ) {
-          contents = contents.replace( ugliyAElementRegEx, function( m0, m1, m2 ) {
-            return beautifyHtml( m0, options.beautifyHtml ).replace( /^/mg, m1 );
-          } );
-        }
-        if ( options.assistPretty.indent === false ) {
-          contents = contents.replace( /^([\t ]+)/mg, '' );
-        }
-        if ( options.assistPretty.commentPosition ) {
-          contents = contents.replace( endCommentRegEx, function( all, endTag, lineFeed, indent, comment ) {
-            if ( options.assistPretty.commentPosition === 'inside' ) {
-              if ( options.assistPretty.commentOnOneLine === true ) {
-                if ( options.assistPretty.emptyLine === true ) {
-                  return comment + endTag + lineFeed;
-                } else {
-                  return comment + endTag;
-                }
+      options.pug.filename = file.path;
+      try {
+        contents = pug.render( String( file.contents ), options.pug );
+      } catch( e ) {
+        errorHandler( e );
+      }
+      if ( options.assistPretty.assistAElement ) {
+        contents = contents.replace( ugliyAElementRegEx, function( m0, m1, m2 ) {
+          return beautifyHtml( m0, options.beautifyHtml ).replace( /^/mg, m1 );
+        } );
+      }
+      if ( options.assistPretty.indent === false ) {
+        contents = contents.replace( /^([\t ]+)/mg, '' );
+      }
+      if ( options.assistPretty.commentPosition ) {
+        contents = contents.replace( endCommentRegEx, function( all, endTag, lineFeed, indent, comment ) {
+          if ( options.assistPretty.commentPosition === 'inside' ) {
+            if ( options.assistPretty.commentOnOneLine === true ) {
+              if ( options.assistPretty.emptyLine === true ) {
+                return comment + endTag + lineFeed;
               } else {
-                if ( options.assistPretty.emptyLine === true ) {
-                  return comment + lineFeed + indent + endTag + lineFeed;
-                } else {
-                  return comment + lineFeed + indent + endTag;
-                }
+                return comment + endTag;
               }
             } else {
-              if ( options.assistPretty.commentOnOneLine === true ) {
-                if ( options.assistPretty.emptyLine === true ) {
-                  return endTag + comment + lineFeed;
-                } else {
-                  return endTag + comment;
-                }
+              if ( options.assistPretty.emptyLine === true ) {
+                return comment + lineFeed + indent + endTag + lineFeed;
               } else {
-                if ( options.assistPretty.emptyLine === true ) {
-                  return endTag + lineFeed + indent + comment + lineFeed;
-                } else {
-                  return endTag + lineFeed + indent + comment;
-                }
+                return comment + lineFeed + indent + endTag;
               }
             }
-          } );
-        }
-        if( options.assistPretty.emptyLine === true ) {
-          contents = contents.replace( emptyCommentRegEx, '' );
-        }
-        file.contents = new Buffer( contents );
-        file.path = file.path.replace( /\.pug$/, '.html');
-        return t.through( gulp.dest, [ dist ] );
+          } else {
+            if ( options.assistPretty.commentOnOneLine === true ) {
+              if ( options.assistPretty.emptyLine === true ) {
+                return endTag + comment + lineFeed;
+              } else {
+                return endTag + comment;
+              }
+            } else {
+              if ( options.assistPretty.emptyLine === true ) {
+                return endTag + lineFeed + indent + comment + lineFeed;
+              } else {
+                return endTag + lineFeed + indent + comment;
+              }
+            }
+          }
+        } );
       }
+      if( options.assistPretty.emptyLine === true ) {
+        contents = contents.replace( emptyCommentRegEx, '' );
+      }
+      file.contents = new Buffer( contents );
+      file.path = file.path.replace( /\.pug$/, '.html');
+      return t.through( gulp.dest, [ dist ] );
     } ) )
   ;
   return stream;
