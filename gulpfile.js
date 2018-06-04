@@ -19,6 +19,7 @@ var
   ,autoprefixer = require('autoprefixer')
   ,browserify   = require('browserify')
   ,cssMqpacker  = require('css-mqpacker')
+  ,del          = require('del')
   ,buffer       = require('gulp-buffer')
   ,beautifyHtml = require('js-beautify').html
   ,mergeStream  = require('merge-stream')
@@ -49,6 +50,9 @@ var
     ,browserify : {
       debug: true
     }
+    ,del : {
+      dist : [ dist + '/**/*.map']
+    }
     ,htmlinc : {
       dist: dist
     }
@@ -64,10 +68,6 @@ var
       ,path       : src + '/_templates/_icons.scss'
       ,targetPath : '../css/_icons.scss'
       ,fontPath   : '../fonts/icons/'
-    }
-    ,jsbundler : {
-      suffix  : '.bundle'
-      ,base   : 'src'
     }
     ,plumber : {
       errorHandler: notify.onError("Error: <%= error.message %>")
@@ -122,8 +122,8 @@ var
       ,default : false
     }
     ,'js:bundle' : {
-      src : [ src  + '/**/*.js' ]
-      ,watch   : true
+      src      : [ src + '/**/*bundle.js' ]
+      ,watch   : [ src + '/**/*.js' ]
       ,default : true
       // ,needsUglify: false
       // ,needsSourcemap: false
@@ -216,7 +216,6 @@ gulp.task( 'html:pug', function() {
   ;
   stream = gulp
     .src( tasks[ 'html:pug' ].src )
-    .pipe( plumber() )
     .pipe( tap( function( file, t ) {
       var
         contents = ''
@@ -304,7 +303,7 @@ gulp.task( 'html:te', function() {
 } )
 ;
 
-gulp.task( 'js:bundle', function() {
+gulp.task( 'js:bundle', [ 'clean' ], function() {
   var
     self           = tasks[ 'js:bundle' ]
     ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
@@ -312,20 +311,17 @@ gulp.task( 'js:bundle', function() {
     ,stream
   ;
   stream = gulp
-    .src( self.src, { read: false } )
-    .pipe( gulpIf(
-      _match( /\.bundle\.js$/, true )
-      ,tap( function( file ) {
-        file.contents = browserify( file.path, options.browserify )
-          .bundle()
-          .on( 'error', function( error ) {
-            options.plumber.errorHandler( error );
-            stream.emit('end');
-          } )
-        ;
-        file.path = file.path.replace( /\.bundle\.js$/, '.js' );
-      } )
-    ) )
+    .src( self.src )
+    .pipe( tap( function( file, t ) {
+      file.contents = browserify( file.path, options.browserify )
+        .bundle()
+        .on( 'error', function( error ) {
+          options.plumber.errorHandler( error );
+          stream.emit('end');
+        } )
+      ;
+      file.path = file.path.replace( /\.bundle\.js$/, '.js' );
+    } ) )
     .pipe( buffer() )
     .pipe( gulpIf(
       flagSourcemap
@@ -339,12 +335,7 @@ gulp.task( 'js:bundle', function() {
       flagSourcemap
       ,sourcemap.write( './' )
      ) )
-    .pipe( tap( function( file, t ) {
-      var path = file.path.replace( file.base , '' );
-      if ( path.match( /([\\\/]_)|^_/g ) === null ) {
-        return t.through( gulp.dest, [ dist ] );
-      }
-    } ) )
+    .pipe( gulp.dest( dist ) )
   ;
   return stream;
 } )
@@ -374,6 +365,11 @@ gulp.task( 'sprite', function() {
 } )
 ;
 
+gulp.task( 'clean', function() {
+  return del( options.del.dist );
+} )
+;
+
 gulp.task( 'watch', _callWatchTasks );
 
 gulp.task( 'default', _filterDefaultTasks() );
@@ -392,8 +388,13 @@ function _callWatchTasks() {
   Object
     .keys( tasks )
     .forEach( function( key ) {
-      if ( tasks[ key ].watch && tasks[ key ].watch === true ) {
-        gulp.watch( tasks[ key ].src, [ key ] );
+      var watch = tasks[ key ].watch;
+      if( watch ) {
+        if ( watch === true ) {
+          gulp.watch( tasks[ key ].src, [ key ] );
+        } else if ( Array.isArray( watch ) ) {
+          gulp.watch( watch, [ key ] );
+        }
       }
   } );
 }
