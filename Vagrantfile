@@ -102,7 +102,12 @@ Vagrant.configure("2") do |config|
     cd /home/vagrant
     npm install -g gulp
     npm install --save-dev autoprefixer
+    npm install --save-dev babel-core
+    npm install --save-dev babel-preset-env
+    npm install --save-dev babelify
+    npm install --save-dev browserify
     npm install --save-dev css-mqpacker
+    npm install --save-dev del
     npm install --save-dev gulp
     npm install --save-dev gulp-concat
     sudo npm install --save-dev gulp-iconfont

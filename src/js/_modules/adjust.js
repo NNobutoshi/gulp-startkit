@@ -1,7 +1,7 @@
 
 module.exports = function( className, d ) {
   'use strict';
-  var
+  const
      htmlElement = d.getElementsByTagName('html')[0]
     ,classNames  = htmlElement.className.split(' ')
   ;

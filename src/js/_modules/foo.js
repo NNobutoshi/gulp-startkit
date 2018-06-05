@@ -3,5 +3,5 @@ var
 ;
 module.exports = function( selector ) {
   'use strict';
-  console.info( $('body').length );
+  console.info( $( selector ).length );
 };

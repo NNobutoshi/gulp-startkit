@@ -2,7 +2,6 @@ var
   fs = require('fs')
 
   ,gulp        = require('gulp')
-  ,concat      = require('gulp-concat')
   ,htmlinc     = require('gulp-htmlinc') /* local module */
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
@@ -17,6 +16,7 @@ var
   ,uglify      = require('gulp-uglify')
 
   ,autoprefixer = require('autoprefixer')
+  ,babelify     = require('babelify')
   ,browserify   = require('browserify')
   ,cssMqpacker  = require('css-mqpacker')
   ,del          = require('del')
@@ -31,7 +31,7 @@ var
   ,src             = 'src'
   ,needsSourcemap  = true
   ,needsCssMqpack  = true
-  ,needsUglify     = true
+  ,needsUglify     = false
   ,options         = {
     autoprefixer : {
       browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
@@ -45,10 +45,11 @@ var
     }
     ,beautifyHtml : {
       indent_size  : 2
-      ,indent_char : " "
+      ,indent_char : ' '
     }
     ,browserify : {
       debug: true
+      ,
     }
     ,del : {
       dist : [ dist + '/**/*.map']
@@ -70,7 +71,7 @@ var
       ,fontPath   : '../fonts/icons/'
     }
     ,plumber : {
-      errorHandler: notify.onError("Error: <%= error.message %>")
+      errorHandler: notify.onError('Error: <%= error.message %>')
     }
     ,pug : {
       pretty : true
@@ -97,7 +98,7 @@ var
       ,template : './src/_templates/template_default.html'
       ,dest     : dist
       ,x2j      : {
-         input  : './sitemap.xlsx'
+        input   : './sitemap.xlsx'
         ,output : './sitemap_output.json'
         ,sheet  : 'Sheet1'
       }
@@ -115,7 +116,7 @@ var
       ,default : true
       // ,needsCssMqpack: false
       // ,needsSourcemap: false
-     }
+    }
     ,'iconfont' : {
       src      : [ src + '/fonts/*.svg' ]
       ,watch   : true
@@ -130,7 +131,7 @@ var
     }
     ,'html:pug' : {
       src : [
-               src + '/**/*.pug'
+        ''   + src + '/**/*.pug'
         ,'!' + src + '/**/_*/*.pug'
         ,'!' + src + '/**/_*.pug'
       ]
@@ -181,15 +182,15 @@ gulp.task( 'css:sass', function() {
     )
     .pipe( plumber() )
     .pipe( gulpIf(
-       flagSourcemap
+      flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
-     ) )
+    ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( plugins ) )
     .pipe( gulpIf(
-       flagSourcemap
+      flagSourcemap
       ,sourcemap.write( './' )
-     ) )
+    ) )
     .pipe( gulp.dest( dist ) )
   ;
 } )
@@ -219,12 +220,12 @@ gulp.task( 'html:pug', function() {
     ,errorHandler = options.plumber.errorHandler
   ;
   stream = gulp
-    .src( tasks[ 'html:pug' ].src )
+    .src( self.src )
     .pipe( tap( function( file, t ) {
       var
         contents = ''
         ,ugliyAElementRegEx = /([\t ]*)[^\r\n]*?<a .*?>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*/g
-        ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)(<!-- \/?[\.#].+?-->)/mg
+        ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)(<!-- \/?[.#].+?-->)/mg
         ,emptyCommentRegEx = /^\s+<!---->$/mg
       ;
       options.pug.filename = file.path;
@@ -234,7 +235,7 @@ gulp.task( 'html:pug', function() {
         errorHandler( e );
       }
       if ( options.assistPretty.assistAElement ) {
-        contents = contents.replace( ugliyAElementRegEx, function( m0, m1, m2 ) {
+        contents = contents.replace( ugliyAElementRegEx, function( m0, m1 ) {
           return beautifyHtml( m0, options.beautifyHtml ).replace( /^/mg, m1 );
         } );
       }
@@ -277,7 +278,7 @@ gulp.task( 'html:pug', function() {
       if( options.assistPretty.emptyLine === true ) {
         contents = contents.replace( emptyCommentRegEx, '' );
       }
-      file.contents = new Buffer( contents );
+      file.contents = new global.Buffer( contents );
       file.path = file.path.replace( /\.pug$/, '.html');
       return t.through( gulp.dest, [ dist ] );
     } ) )
@@ -312,8 +313,9 @@ gulp.task( 'js:bundle', [ 'clean' ], function() {
   ;
   stream = gulp
     .src( self.src )
-    .pipe( tap( function( file, t ) {
+    .pipe( tap( function( file ) {
       file.contents = browserify( file.path, options.browserify )
+        .transform( babelify )
         .bundle()
         .on( 'error', function( error ) {
           options.plumber.errorHandler( error );
@@ -326,15 +328,15 @@ gulp.task( 'js:bundle', [ 'clean' ], function() {
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
-     ) )
+    ) )
     .pipe( gulpIf(
       flagUglify
-       ,uglify( options.uglify )
-     ) )
+      ,uglify( options.uglify )
+    ) )
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.write( './' )
-     ) )
+    ) )
     .pipe( gulp.dest( dist ) )
   ;
   return stream;
@@ -374,15 +376,15 @@ gulp.task( 'watch', _callWatchTasks );
 
 gulp.task( 'default', _filterDefaultTasks() );
 
-function _match( regex, flag ) {
-  return function( obj ) {
-    if( flag ) {
-      return regex.test( obj.path );
-    } else {
-      return !regex.test( obj.path );
-    }
-  };
-}
+// function _match( regex, flag ) {
+//   return function( obj ) {
+//     if( flag ) {
+//       return regex.test( obj.path );
+//     } else {
+//       return !regex.test( obj.path );
+//     }
+//   };
+// }
 
 function _callWatchTasks() {
   Object
@@ -396,7 +398,8 @@ function _callWatchTasks() {
           gulp.watch( watch, [ key ] );
         }
       }
-  } );
+    } )
+  ;
 }
 
 function _filterDefaultTasks() {
@@ -406,5 +409,6 @@ function _filterDefaultTasks() {
       if ( tasks[ key ].default && tasks[ key ].default === true ) {
         return key;
       }
-  } );
+    } )
+  ;
 }
