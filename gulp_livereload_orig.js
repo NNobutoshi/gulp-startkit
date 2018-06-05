@@ -28,11 +28,11 @@ var
     }
     gulp.watch(
       [
-        documentRoot  + "/**/*.html"
-        ,documentRoot + "/**/*.css"
-        ,documentRoot + "/**/*.js"
-        ,documentRoot + "/**/*.png"
-        ,documentRoot + "/**/*.jpg"
+        documentRoot  + '/**/*.html'
+        ,documentRoot + '/**/*.css'
+        ,documentRoot + '/**/*.js'
+        ,documentRoot + '/**/*.png'
+        ,documentRoot + '/**/*.jpg'
       ]
       ,{ interval: time }
       ,bs.reload

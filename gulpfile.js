@@ -2,6 +2,7 @@ var
   fs = require('fs')
 
   ,gulp        = require('gulp')
+  ,eSLint      = require('gulp-eslint')
   ,htmlinc     = require('gulp-htmlinc') /* local module */
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
@@ -53,6 +54,9 @@ var
     }
     ,del : {
       dist : [ dist + '/**/*.map']
+    }
+    ,eSLint : {
+      useEslintrc: true
     }
     ,htmlinc : {
       dist: dist
@@ -129,6 +133,17 @@ var
       // ,needsUglify: false
       // ,needsSourcemap: false
     }
+    ,'js:eslint' : {
+      src      : [
+        ''   + '*.js'
+        ,''  + src + '/**/*.js'
+        ,'!' + src + '/**/_vendor/*.js'
+      ]
+      ,watch   : true
+      ,default : true
+      // ,needsUglify: false
+      // ,needsSourcemap: false
+    }
     ,'html:pug' : {
       src : [
         ''   + src + '/**/*.pug'
@@ -180,7 +195,7 @@ gulp.task( 'css:sass', function() {
     .src(
       self.src
     )
-    .pipe( plumber() )
+    .pipe( plumber( options.plumber ) )
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.init( { loadMaps: true } )
@@ -364,6 +379,20 @@ gulp.task( 'sprite', function() {
     .pipe( gulp.dest( src + '/css') )
   ;
   return mergeStream( imgStream, cSSStream );
+} )
+;
+
+gulp.task( 'js:eslint', function () {
+  var
+    self = tasks[ 'js:eslint' ]
+  ;
+  return gulp
+    .src( self.src )
+    .pipe( plumber( options.plumber ) )
+    .pipe( eSLint( options.eSLint ) )
+    .pipe( eSLint.format() )
+    .pipe( eSLint.failAfterError() )
+  ;
 } )
 ;
 
