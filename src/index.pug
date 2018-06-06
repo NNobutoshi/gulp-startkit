@@ -1,5 +1,12 @@
-extends _templates/layout.pug
+extends /_layout.pug
 
 block config
   -
     title = "トップページ"
+    ogPrefix = "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#"
+    ogType = "website"
+
+append style
+  // local style 
+  link(rel="stylesheet", href=cssCommonDir + "/index.css")
+  // local style 

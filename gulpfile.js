@@ -79,6 +79,7 @@ var
     }
     ,pug : {
       pretty : true
+      ,basedir: src
     }
     ,sass : {
       outputStyle  : 'compact' // nested, compact, compressed, expanded
