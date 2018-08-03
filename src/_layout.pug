@@ -1,0 +1,65 @@
+-
+  let
+    lang         = "ja"
+    viewport     = "width=device-width, initial-scale=1"
+    siteName     = "サイト"
+    description  = "ディスクリプション"
+    keywords     = "キーワード"
+    ogPrefix     = "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#"
+    ogType       = "article"
+    ogImg        = ""
+    url          = ""
+    title        = "サイト"
+    h1           = title
+    cssCommonDir = "/css"
+    jsCommonDir  = "/js"
+    favicon      = ""
+    icon         = "/img/chrome-touch-icon-192x192.png"
+    appleIcon    = "/img/apple-touch-icon-114x114.png"
+    foo          = "foo"
+
+block config
+
+doctype html
+html(lang=lang)
+  head(prefix=ogPrefix)
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content=viewport)
+    meta(name="format-detection", content="telephone=no")
+    meta(name="description", content=description)
+    meta(name="keywords", content=keywords)
+    meta(property="og:type", content=ogType)
+    meta(property="og:site_name", content=siteName)
+    meta(property="og:title", content=title)
+    meta(property="og:description", content=description)
+    meta(property="og:url", content=url)
+    meta(property="og:image", content=ogImg)
+    meta(name="msapplication-tap-highlight", content="no")
+    meta(name="application-name",content=siteName)
+    meta(name="apple-mobile-web-app-title", content=siteName)
+    title #{title}
+    link(rel="shortcut icon", href=favicon, type="image/vnd.microsoft.icon")
+    link(rel="icon", sizes="192x192", href=icon)
+    link(rel="apple-touch-icon-precomposed", type="image/png", sizes="114x114", href=appleIcon)
+    block style
+      link(rel="stylesheet", href=cssCommonDir + "/common.css")
+    block script head
+      script(src=jsCommonDir + "/common_head.js")
+  body
+    div.page#page
+      block pageHead
+        //
+        header.pgHead#pgHead
+          div.pgHead-core
+            div.siteId.pgHead-siteId
+              a.siteId-link
+        // /.pgHead#pgHead 
+      block pageBody
+        main.pgBody
+          p #{foo}
+        // /.pgBody 
+      block pageFoot
+        footer.pgFoot#pgFoot
+    // /.page#page 
+    script(src=jsCommonDir + "/common_body.js")

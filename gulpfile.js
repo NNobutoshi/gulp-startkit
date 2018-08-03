@@ -2,6 +2,7 @@ var
   fs = require('fs')
 
   ,gulp        = require('gulp')
+  ,buffer      = require('gulp-buffer')
   ,eSLint      = require('gulp-eslint')
   ,htmlinc     = require('gulp-htmlinc') /* local module */
   ,iconfont    = require('gulp-iconfont')
@@ -21,7 +22,6 @@ var
   ,browserify   = require('browserify')
   ,cssMqpacker  = require('css-mqpacker')
   ,del          = require('del')
-  ,buffer       = require('gulp-buffer')
   ,beautifyHtml = require('js-beautify').html
   ,mergeStream  = require('merge-stream')
   ,tempEngine   = require('node-template-engine') /* local module */
