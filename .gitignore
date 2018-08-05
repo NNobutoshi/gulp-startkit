@@ -4,3 +4,5 @@
 /.npm-version
 /.node-version
 /.vagrant
+/package-lock.json
+/config.yml

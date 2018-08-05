@@ -1,2 +1,4 @@
-//@import('./_adjust.js')
-//@import('../_vendor/modernizr-custom.js')
+require('./_vendor/modernizr-custom.js');
+var adjust = require('./_modules/adjust.js');
+
+adjust( 'js', document );

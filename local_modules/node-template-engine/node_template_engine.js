@@ -1,25 +1,25 @@
 var
-   nodeX2j  = require("xls-to-json")
+  nodeX2j   = require('xls-to-json')
   ,fs       = require('fs')
   ,charset  = 'utf-8'
   ,settings = {
-     dest      : './htdocs'
+    dest       : './htdocs'
     ,src       : './src/_templates'
     ,template  : './src/_templates/template_default.html'
     ,indexfile : 'index.html'
     ,extension : /\.html?$/
     ,linefeed  : 'lf' // 'lf' or 'crlf'
     ,x2j : {
-       input   : './sitemap.xlsx'
+      input    : './sitemap.xlsx'
       ,output  : './output.json'
       ,sheet   : 'Sheet1'
     }
     ,map : {
-       path     : 'url'
+      path      : 'url'
       ,template : 'template'
       ,ignore   : 'skip'
       ,targets  : {
-         'title'       : /(<title>).*?(<\/title>)/g
+        'title'       : /(<title>).*?(<\/title>)/g
         ,'description' : /(<meta name="[Dd]escription" content=").*?(" *\/?>)/g
         ,'keywords'    : /(<meta name="[Kk]eywords" content=").*?(" *\/?>)/g
       }
@@ -49,15 +49,13 @@ function _xls2Json( callback ) {
 
 function _info( max ) {
   var
-     count     = 0
+    count      = 0
     ,comments  = []
     ,timeoutId = null
     ,limit     = 3000
   ;
 
-  return _collect;
-
-  function _collect( comment ) {
+  return function( comment ) {
     ++ count;
     _clear();
     timeoutId = setTimeout( _show, limit );
@@ -69,6 +67,7 @@ function _info( max ) {
       _show();
     }
   }
+  ;
 
   function _show() {
     _clear();
@@ -85,17 +84,16 @@ function _info( max ) {
 
 }
 
-function _eachJsonData( data, index ) {
+function _eachJsonData( data ) {
   var
-     map = settings.map
-    ,ret = {}
+    map = settings.map
   ;
   if ( data[ map.path ] ) {
     data.path = data [ map.path ]
       .trim()
-      .replace( /^https?:\/\/[^\/]+/, '')
+      .replace( /^https?:\/\/[^/]+/, '')
       .replace( /^\/?/, settings.dest + '/' )
-      .replace( /(\/[^\.\/]+)$/, '$1/' )
+      .replace( /(\/[^./]+)$/, '$1/' )
       .replace( /\/$/, '/' + settings.indexfile )
     ;
   } else {
@@ -118,7 +116,7 @@ function _eachJsonData( data, index ) {
 
 function _runRecursively( data, callback ) {
   var
-     leaves = data.path.split('/')
+    leaves  = data.path.split('/')
     ,parent = ''
     ,len    = leaves.length
   ;
@@ -146,7 +144,7 @@ function _runRecursively( data, callback ) {
 
 function _writeFile( data ) {
   var
-     orig       = {}
+    orig        = {}
     ,template   = {}
     ,newContent = ''
     ,isNewFile  = false
@@ -221,10 +219,9 @@ function _replacement( str ) {
 
 function _mergeContent( baseContent, origContent ) {
   var
-     newContent
-    ,commentPettern = /<!-- *{{ *'?(.*?)'? *-->(([^\r\n]*?)|\r?\n?(.*?)\r?\n[\s\S]*?\r?\n(.*?))\r?\n?<!-- *}} *-->/g
-    ,store          = {}
-    ,escapeRegex    = /([.*+?^=!:${}()|[\]\/\\])/g
+    commentPettern = /<!-- *{{ *'?(.*?)'? *-->(([^\r\n]*?)|\r?\n?(.*?)\r?\n[\s\S]*?\r?\n(.*?))\r?\n?<!-- *}} *-->/g
+    ,store         = {}
+    ,escapeRegex   = /([.*+?^=!:${}()|[\]/\\])/g
     ,targets
   ;
   if ( origContent ) {
@@ -237,7 +234,7 @@ function _mergeContent( baseContent, origContent ) {
         ret = item.replace( commentPettern, function( m0, m1, m2, m3, m4, m5 ) {
           if ( m1 ) {
             if ( m3 ) {
-                return m1;
+              return m1;
             } else {
               if ( m4 && m5 ) {
                 m5 = m5.replace( escapeRegex, '\\$1' );
@@ -246,8 +243,8 @@ function _mergeContent( baseContent, origContent ) {
             }
           } else {
             if ( m3 ) {
-                m3 = m3.replace( escapeRegex, '\\$1' );
-                return m3;
+              m3 = m3.replace( escapeRegex, '\\$1' );
+              return m3;
             } else {
               if ( m4 && m5 ) {
                 m4 = m4.replace( escapeRegex, '\\$1' );

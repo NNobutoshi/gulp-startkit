@@ -7,6 +7,7 @@ var
   ,port         = 9000
   ,documentRoot = './html'
   ,flag         = true
+  ,browser      = 'Chrome'
   ,_init        = function() {
     var
       time      = 300
@@ -17,22 +18,24 @@ var
           baseDir: documentRoot
         }
         ,port : port
+        ,browser : browser
       } );
     } else if ( type === 'proxy' ) {
       bs( {
         proxy : proxy
         ,port : port
+        ,browser : browser
       } );
     } else {
       return false;
     }
     gulp.watch(
       [
-        documentRoot  + "/**/*.html"
-        ,documentRoot + "/**/*.css"
-        ,documentRoot + "/**/*.js"
-        ,documentRoot + "/**/*.png"
-        ,documentRoot + "/**/*.jpg"
+        documentRoot  + '/**/*.html'
+        ,documentRoot + '/**/*.css'
+        ,documentRoot + '/**/*.js'
+        ,documentRoot + '/**/*.png'
+        ,documentRoot + '/**/*.jpg'
       ]
       ,{ interval: time }
       ,bs.reload

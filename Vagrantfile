@@ -102,19 +102,28 @@ Vagrant.configure("2") do |config|
     cd /home/vagrant
     npm install -g gulp
     npm install --save-dev autoprefixer
+    npm install --save-dev babel-core
+    npm install --save-dev babel-preset-env
+    npm install --save-dev babelify
+    npm install --save-dev browserify
     npm install --save-dev css-mqpacker
+    npm install --save-dev del
     npm install --save-dev gulp
     npm install --save-dev gulp-concat
+    sudo npm install --save-dev gulp-iconfont
+    npm install --save-dev gulp-iconfont-css
     npm install --save-dev gulp-if
+    npm install --save-dev gulp-notify
     npm install --save-dev gulp-plumber
     npm install --save-dev gulp-postcss
     npm install --save-dev gulp-sass
     npm install --save-dev gulp-sourcemaps
+    npm install --save-dev gulp-tap
     npm install --save-dev gulp-uglify
-    npm install --save-dev merge-stream
-    sudo npm install --save-dev gulp-iconfont
-    npm install --save-dev gulp-iconfont-css
     npm install --save-dev gulp.spritesmith
+    npm install --save-dev js-beautify
+    npm install --save-dev merge-stream
+    npm install --save-dev pug
     npm install --save-optional browser-sync
     sudo npm install
   SHELL

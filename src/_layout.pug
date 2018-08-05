@@ -1,0 +1,60 @@
+block vars
+  -
+    let
+      page = "def"
+
+block config
+  include /_config.pug
+  -
+    siteData = {}
+    for ( var o in SiteData._defaults ) {
+      if ( SiteData[ page ] && SiteData[ page ][ o ] ) {
+        siteData[ o ] = SiteData[ page ][ o ]
+      } else {
+        siteData[ o ] = SiteData._defaults[ o ]
+      }
+    }
+
+doctype html
+html(lang=siteData.lang)
+  head(prefix=siteData.ogPrefix)
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content=siteData.viewport)
+    meta(name="format-detection", content="telephone=no")
+    meta(name="description", content=siteData.description)
+    meta(name="keywords", content=siteData.keywords)
+    meta(property="og:type", content=siteData.ogType)
+    meta(property="og:site_name", content=siteData.siteName)
+    meta(property="og:title", content=siteData.title)
+    meta(property="og:description", content=siteData.description)
+    meta(property="og:url", content=siteData.url)
+    meta(property="og:image", content=siteData.ogImg)
+    meta(name="msapplication-tap-highlight", content="no")
+    meta(name="application-name",content=siteData.siteName)
+    meta(name="apple-mobile-web-app-title", content=siteData.siteName)
+    title #{title}
+    link(rel="shortcut icon", href=siteData.favicon, type="image/vnd.microsoft.icon")
+    link(rel="icon", sizes="192x192", href=siteData.icon)
+    link(rel="apple-touch-icon-precomposed", type="image/png", sizes="114x114", href=appleIcon)
+    block style
+      link(rel="stylesheet", href=siteData.cssCommonDir + "/common.css")
+    block script head
+      script(src=siteData.jsCommonDir + "/common_head.js")
+  body
+    div.page#page
+      block pageHead
+        //
+        header.pgHead#pgHead
+          div.pgHead-core
+            div.siteId.pgHead-siteId
+              a.siteId-link
+        // /.pgHead#pgHead 
+      block pageBody
+        main.pgBody
+          p #{foo}
+        // /.pgBody 
+      block pageFoot
+        footer.pgFoot#pgFoot
+    // /.page#page 
+    script(src=jsCommonDir + "/common_body.js")
