@@ -4,7 +4,6 @@ var
   ,gulp        = require('gulp')
   ,buffer      = require('gulp-buffer')
   ,eSLint      = require('gulp-eslint')
-  ,htmlinc     = require('gulp-htmlinc') /* local module */
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
   ,gulpIf      = require('gulp-if')
@@ -56,9 +55,6 @@ var
     }
     ,eSLint : {
       useEslintrc: true
-    }
-    ,htmlinc : {
-      dist: dist
     }
     ,iconfont : {
       fontName        : 'icons'
@@ -151,11 +147,6 @@ var
         ,'!' + src + '/**/_*.pug'
       ]
       ,watch   : [ src + '/**/*.pug' ]
-      ,default : true
-    }
-    ,'html:inc' : {
-      src      : [ src + '/_includes/**/*.html' ]
-      ,watch   : true
       ,default : true
     }
     ,'html:te' : {
@@ -300,15 +291,6 @@ gulp.task( 'html:pug', function() {
   ;
   return stream;
 } );
-
-gulp.task( 'html:inc', function() {
-  return gulp
-    .src( tasks[ 'html:inc' ].src )
-    .pipe( plumber() )
-    .pipe( htmlinc( options.htmlinc ) )
-  ;
-} )
-;
 
 gulp.task( 'html:te', function() {
   return  gulp
