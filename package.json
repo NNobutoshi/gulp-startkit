@@ -11,7 +11,9 @@
   "repository": {
     "type": "git"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "node-template-engine": "./local_modules/node-template-engine"
+  },
   "optionalDependencies": {},
   "dependencies": {}
 }
