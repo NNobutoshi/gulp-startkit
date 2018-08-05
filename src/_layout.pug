@@ -1,51 +1,46 @@
--
-  let
-    lang         = "ja"
-    viewport     = "width=device-width, initial-scale=1"
-    siteName     = "サイト"
-    description  = "ディスクリプション"
-    keywords     = "キーワード"
-    ogPrefix     = "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#"
-    ogType       = "article"
-    ogImg        = ""
-    url          = ""
-    title        = "サイト"
-    h1           = title
-    cssCommonDir = "/css"
-    jsCommonDir  = "/js"
-    favicon      = ""
-    icon         = "/img/chrome-touch-icon-192x192.png"
-    appleIcon    = "/img/apple-touch-icon-114x114.png"
-    foo          = "foo"
+block vars
+  -
+    let
+      page = "def"
 
 block config
+  include /_config.pug
+  -
+    siteData = {}
+    for ( var o in SiteData._defaults ) {
+      if ( SiteData[ page ] && SiteData[ page ][ o ] ) {
+        siteData[ o ] = SiteData[ page ][ o ]
+      } else {
+        siteData[ o ] = SiteData._defaults[ o ]
+      }
+    }
 
 doctype html
-html(lang=lang)
-  head(prefix=ogPrefix)
+html(lang=siteData.lang)
+  head(prefix=siteData.ogPrefix)
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
-    meta(name="viewport", content=viewport)
+    meta(name="viewport", content=siteData.viewport)
     meta(name="format-detection", content="telephone=no")
-    meta(name="description", content=description)
-    meta(name="keywords", content=keywords)
-    meta(property="og:type", content=ogType)
-    meta(property="og:site_name", content=siteName)
-    meta(property="og:title", content=title)
-    meta(property="og:description", content=description)
-    meta(property="og:url", content=url)
-    meta(property="og:image", content=ogImg)
+    meta(name="description", content=siteData.description)
+    meta(name="keywords", content=siteData.keywords)
+    meta(property="og:type", content=siteData.ogType)
+    meta(property="og:site_name", content=siteData.siteName)
+    meta(property="og:title", content=siteData.title)
+    meta(property="og:description", content=siteData.description)
+    meta(property="og:url", content=siteData.url)
+    meta(property="og:image", content=siteData.ogImg)
     meta(name="msapplication-tap-highlight", content="no")
-    meta(name="application-name",content=siteName)
-    meta(name="apple-mobile-web-app-title", content=siteName)
+    meta(name="application-name",content=siteData.siteName)
+    meta(name="apple-mobile-web-app-title", content=siteData.siteName)
     title #{title}
-    link(rel="shortcut icon", href=favicon, type="image/vnd.microsoft.icon")
-    link(rel="icon", sizes="192x192", href=icon)
+    link(rel="shortcut icon", href=siteData.favicon, type="image/vnd.microsoft.icon")
+    link(rel="icon", sizes="192x192", href=siteData.icon)
     link(rel="apple-touch-icon-precomposed", type="image/png", sizes="114x114", href=appleIcon)
     block style
-      link(rel="stylesheet", href=cssCommonDir + "/common.css")
+      link(rel="stylesheet", href=siteData.cssCommonDir + "/common.css")
     block script head
-      script(src=jsCommonDir + "/common_head.js")
+      script(src=siteData.jsCommonDir + "/common_head.js")
   body
     div.page#page
       block pageHead

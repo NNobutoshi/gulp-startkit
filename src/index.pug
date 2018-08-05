@@ -1,8 +1,11 @@
 extends /_layout.pug
 
-include /_config.pug
+block vars
+  -
+    page = "index"
 
 append style
   // local style 
   link(rel="stylesheet", href=cssCommonDir + "/index.css")
   // local style 
+
