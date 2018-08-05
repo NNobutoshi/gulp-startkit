@@ -50,7 +50,6 @@ var
     }
     ,browserify : {
       debug: true
-      ,
     }
     ,del : {
       dist : [ dist + '/**/*.map']
