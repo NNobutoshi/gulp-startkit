@@ -162,7 +162,7 @@ var
     ,'html:te' : {
       src      : [ src + '/_templates/**/*.html' ]
       ,watch   : true
-      ,default : true
+      ,default : false
     }
     ,'sprite'  : {
       src      : [ src + '/img/_sprite/*.png' ]
@@ -226,7 +226,7 @@ gulp.task( 'iconfont', function() {
       ;
     } )
   ;
-})
+} )
 ;
 
 gulp.task( 'html:pug', function() {
