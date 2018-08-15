@@ -1,5 +1,25 @@
 @charset "UTF-8";
 
+// font size
+@mixin fs($size: 12, $base : 14) {
+  font-size : ($size / $base) * 1rem;
+}
+
+// line-height
+@mixin lh($size : 14, $height : 18) {
+  line-height : ($height / $size);
+}
+
+// メディアクエリ
+@mixin mq($width: $screen_s, $range: max){
+  @if $range == max {
+    @media (max-width: $width) { @content; }
+  }
+  @else {
+    @media (min-width: $width + 1px) { @content; }
+  }
+}
+
 // link style
 @mixin anc(
    $link    : $a-default
