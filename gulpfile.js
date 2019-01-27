@@ -23,7 +23,6 @@ var
   ,del          = require('del')
   ,beautifyHtml = require('js-beautify').html
   ,mergeStream  = require('merge-stream')
-  ,tempEngine   = require('node-template-engine') /* local module */
   ,pug          = require('pug')
 
   ,liveReload      = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
@@ -93,16 +92,6 @@ var
         sprite.name = 'sheet-' + sprite.name;
       }
     }
-    ,tempEngine : {
-      src       : './src/_templates'
-      ,template : './src/_templates/template_default.html'
-      ,dest     : dist
-      ,x2j      : {
-        input   : './sitemap.xlsx'
-        ,output : './sitemap_output.json'
-        ,sheet  : 'Sheet1'
-      }
-    }
     ,uglify : {
       output : {
         comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i
@@ -148,11 +137,6 @@ var
       ]
       ,watch   : [ src + '/**/*.pug' ]
       ,default : true
-    }
-    ,'html:te' : {
-      src      : [ src + '/_templates/**/*.html' ]
-      ,watch   : true
-      ,default : false
     }
     ,'sprite'  : {
       src      : [ src + '/img/_sprite/*.png' ]
@@ -291,15 +275,6 @@ gulp.task( 'html:pug', function() {
   ;
   return stream;
 } );
-
-gulp.task( 'html:te', function() {
-  return  gulp
-    .src( tasks[ 'html:te' ].src )
-    .pipe( plumber() )
-    .unpipe( tempEngine( options.tempEngine ) )
-  ;
-} )
-;
 
 gulp.task( 'js:bundle', [ 'clean' ], function() {
   var

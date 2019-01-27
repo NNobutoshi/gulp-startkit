@@ -13,10 +13,13 @@
 // メディアクエリ
 @mixin mq($width: $screen_s, $range: max){
   @if $range == max {
-    @media (max-width: $width) { @content; }
-  }
-  @else {
-    @media (min-width: $width + 1px) { @content; }
+    @media (max-width: $width) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $width + 1px) {
+      @content;
+    }
   }
 }
 

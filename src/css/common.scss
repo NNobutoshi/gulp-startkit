@@ -1,25 +1,26 @@
-@charset "UTF-8";
+@charset 'UTF-8';
+
 @import
- 'variables'
+'variables'
 ,'mixins'
 ,'icons'
-,'mixins_sprite'
-;
+,'mixins_sprite';
 
 .siteGlobalNav-01 {
   .links {
-    & > li > a {
+    > li > a {
       @include icon(arrow1_r);
-      &:before {
+      &::before {
         font-size: 12px;
       }
     }
   }
 }
+
 .pHead-01 {
-  &:before {
-    content: '';
+  &::before {
     @include sprite($sheet-home);
+    content: '';
     display: inline-block;
   }
 }

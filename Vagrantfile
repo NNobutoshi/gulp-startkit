@@ -94,11 +94,10 @@ Vagrant.configure("2") do |config|
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
     ln -s /home/vagrant/www/package.json /home/vagrant
     ln -s /home/vagrant/www/package-lock.json /home/vagrant
-    ln -s /home/vagrant/www/local_modules /home/vagrant
     systemctl enable httpd.service
     systemctl restart httpd.service
-    curl -sL https://rpm.nodesource.com/setup_7.x | sudo bash -
-    sudo yum install -y nodejs-7.10.1
+    curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+    sudo yum install -y nodejs-10.7.0
     cd /home/vagrant
     npm install -g gulp
     npm install --save-dev autoprefixer
@@ -109,7 +108,9 @@ Vagrant.configure("2") do |config|
     npm install --save-dev css-mqpacker
     npm install --save-dev del
     npm install --save-dev gulp
+    npm install --save-dev gulp-buffer
     npm install --save-dev gulp-concat
+    npm install --save-dev gulp-eslint
     sudo npm install --save-dev gulp-iconfont
     npm install --save-dev gulp-iconfont-css
     npm install --save-dev gulp-if
