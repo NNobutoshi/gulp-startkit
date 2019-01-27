@@ -1,4 +1,2 @@
-const
-  foo = require('./_modules/foo.js')
-;
+import foo from './_modules/foo.js';
 foo('body');

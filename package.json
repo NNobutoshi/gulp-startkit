@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "gulp": "gulp",
-    "lr": "node livereload.js"
+    "lr": "node livereload.js",
+    "start": "npm run gulp & npm run lr"
   },
   "author": "",
   "repository": {

@@ -258,7 +258,7 @@ gulp.task( 'html:pug', function() {
       if( options.assistPretty.emptyLine === true ) {
         contents = contents.replace( emptyCommentRegEx, '' );
       }
-      file.contents = new global.Buffer( contents );
+      file.contents = new global.Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html');
       return t.through( gulp.dest, [ dist ] );
     } ) )

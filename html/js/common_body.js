@@ -2,6 +2,7 @@
 'use strict';
 
 var $ = require('../_vendor/jquery-3.2.1.js');
+
 module.exports = function (selector) {
   'use strict';
 
@@ -9841,8 +9842,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 },{}],3:[function(require,module,exports){
 'use strict';
 
-var foo = require('./_modules/foo.js');
-foo('body');
+var _foo = require('./_modules/foo.js');
+
+var _foo2 = _interopRequireDefault(_foo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _foo2.default)('body');
 
 },{"./_modules/foo.js":1}]},{},[3])
 
