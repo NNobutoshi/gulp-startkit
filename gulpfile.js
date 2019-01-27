@@ -1,7 +1,5 @@
 var
-  fs = require('fs')
-
-  ,gulp        = require('gulp')
+  gulp        = require('gulp')
   ,buffer      = require('gulp-buffer')
   ,eSLint      = require('gulp-eslint')
   ,iconfont    = require('gulp-iconfont')
@@ -25,7 +23,6 @@ var
   ,mergeStream  = require('merge-stream')
   ,pug          = require('pug')
 
-  ,liveReload      = fs.existsSync('./gulp_livereload.js')? require('./gulp_livereload.js'): null
   ,dist            = 'html'
   ,src             = 'src'
   ,needsSourcemap  = true
@@ -132,8 +129,8 @@ var
     ,'html:pug' : {
       src : [
         ''   + src + '/**/*.pug'
-        ,'!' + src + '/**/_*/*.pug'
         ,'!' + src + '/**/_*.pug'
+        ,'!' + src + '/**/_*/**/*.pug'
       ]
       ,watch   : [ src + '/**/*.pug' ]
       ,default : true
@@ -148,13 +145,6 @@ var
     }
   }
 ;
-
-if ( typeof liveReload === 'function' && liveReload.needs === true ) {
-  gulp.task( 'livereload', liveReload );
-  tasks.livereload = {
-    default : true
-  };
-}
 
 gulp.task( 'css:sass', function() {
   var

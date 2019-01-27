@@ -50,10 +50,10 @@ html(lang=siteData.lang)
             div.siteId.pgHead-siteId
               a.siteId-link
         // /.pgHead#pgHead 
-      block pageBody
-        main.pgBody
-          p #{foo}
-        // /.pgBody 
+      main.pgBody
+        block pageBody
+          p foo
+      // /.pgBody 
       block pageFoot
         footer.pgFoot#pgFoot
     // /.page#page 
