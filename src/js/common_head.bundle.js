@@ -1,4 +1,4 @@
-require('./_vendor/modernizr-custom.js');
+'use strict';
 var adjust = require('./_modules/adjust.js');
 
 adjust( 'js', document );

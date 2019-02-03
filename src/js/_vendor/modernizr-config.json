@@ -1,0 +1,9 @@
+{
+  "minify": false,
+  "options": [
+    "mq",
+    "setClasses"
+  ],
+  "feature-detects": [
+  ]
+}

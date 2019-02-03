@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "gulp": "gulp",
-    "lr": "node livereload.js",
-    "start": "npm run gulp & npm run lr"
+    "lr": "node livereload.js"
   },
   "author": "",
   "repository": {
     "type": "git"
+  },
+  "browserify": {
+    "transform": ["babelify"]
   },
   "devDependencies": {
     "autoprefixer": "^9.4.6",
@@ -22,6 +24,7 @@
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
+    "gulp-changed": "^3.2.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^5.0.0",
     "gulp-iconfont": "^10.0.2",

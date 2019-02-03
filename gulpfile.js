@@ -1,6 +1,7 @@
-var
+const
   gulp        = require('gulp')
   ,buffer      = require('gulp-buffer')
+  ,changed     = require('gulp-changed')
   ,eSLint      = require('gulp-eslint')
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
@@ -15,7 +16,6 @@ var
   ,uglify      = require('gulp-uglify')
 
   ,autoprefixer = require('autoprefixer')
-  ,babelify     = require('babelify')
   ,browserify   = require('browserify')
   ,cssMqpacker  = require('css-mqpacker')
   ,del          = require('del')
@@ -132,7 +132,15 @@ var
         ,'!' + src + '/**/_*.pug'
         ,'!' + src + '/**/_*/**/*.pug'
       ]
-      ,watch   : [ src + '/**/*.pug' ]
+      ,watch   : true
+      ,default : true
+    }
+    ,'html:_pug' : {
+      src : [
+        ''   + src + '/**/*.pug'
+        ,'!' + src + '/**/_*.pug'
+      ]
+      ,watch   : [ src + '/**/_*.pug' ]
       ,default : true
     }
     ,'sprite'  : {
@@ -146,8 +154,8 @@ var
   }
 ;
 
-gulp.task( 'css:sass', function() {
-  var
+gulp.task( 'css:sass', () => {
+  const
     plugins        = [ autoprefixer( options.autoprefixer ) ]
     ,self          = tasks[ 'css:sass' ]
     ,flagCssMqpack = ( typeof self.needsCssMqpack === 'boolean' )? self.needsCssMqpack: needsCssMqpack
@@ -176,8 +184,8 @@ gulp.task( 'css:sass', function() {
 } )
 ;
 
-gulp.task( 'iconfont', function() {
-  var
+gulp.task( 'iconfont', () => {
+  const
     self = tasks.iconfont
   ;
   return gulp.src( self.src )
@@ -193,91 +201,51 @@ gulp.task( 'iconfont', function() {
 } )
 ;
 
-gulp.task( 'html:pug', function() {
-  var
+gulp.task( 'html:pug', () => {
+  const
     self = tasks[ 'html:pug' ]
-    ,stream
-    ,errorHandler = options.plumber.errorHandler
+  ;
+  let
+    stream
   ;
   stream = gulp
     .src( self.src )
-    .pipe( tap( function( file, t ) {
-      var
-        contents = ''
-        ,ugliyAElementRegEx = /([\t ]*)[^\r\n]*?<a .*?>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*/g
-        ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)(<!-- \/?[.#].+?-->)/mg
-        ,emptyCommentRegEx = /^\s+<!---->$/mg
-      ;
-      options.pug.filename = file.path;
-      try {
-        contents = pug.render( String( file.contents ), options.pug );
-      } catch( e ) {
-        errorHandler( e );
-      }
-      if ( options.assistPretty.assistAElement ) {
-        contents = contents.replace( ugliyAElementRegEx, function( m0, m1 ) {
-          return beautifyHtml( m0, options.beautifyHtml ).replace( /^/mg, m1 );
-        } );
-      }
-      if ( options.assistPretty.indent === false ) {
-        contents = contents.replace( /^([\t ]+)/mg, '' );
-      }
-      if ( options.assistPretty.commentPosition ) {
-        contents = contents.replace( endCommentRegEx, function( all, endTag, lineFeed, indent, comment ) {
-          if ( options.assistPretty.commentPosition === 'inside' ) {
-            if ( options.assistPretty.commentOnOneLine === true ) {
-              if ( options.assistPretty.emptyLine === true ) {
-                return comment + endTag + lineFeed;
-              } else {
-                return comment + endTag;
-              }
-            } else {
-              if ( options.assistPretty.emptyLine === true ) {
-                return comment + lineFeed + indent + endTag + lineFeed;
-              } else {
-                return comment + lineFeed + indent + endTag;
-              }
-            }
-          } else {
-            if ( options.assistPretty.commentOnOneLine === true ) {
-              if ( options.assistPretty.emptyLine === true ) {
-                return endTag + comment + lineFeed;
-              } else {
-                return endTag + comment;
-              }
-            } else {
-              if ( options.assistPretty.emptyLine === true ) {
-                return endTag + lineFeed + indent + comment + lineFeed;
-              } else {
-                return endTag + lineFeed + indent + comment;
-              }
-            }
-          }
-        } );
-      }
-      if( options.assistPretty.emptyLine === true ) {
-        contents = contents.replace( emptyCommentRegEx, '' );
-      }
-      file.contents = new global.Buffer.from( contents );
-      file.path = file.path.replace( /\.pug$/, '.html');
-      return t.through( gulp.dest, [ dist ] );
+    .pipe( changed( dist, {
+      extension: '.html'
     } ) )
+    .pipe( tap( _pugRender ) )
+    .pipe( gulp.dest( dist ) )
   ;
   return stream;
 } );
 
-gulp.task( 'js:bundle', [ 'clean' ], function() {
-  var
+gulp.task( 'html:_pug', () => {
+  const
+    self = tasks[ 'html:_pug' ]
+  ;
+  let
+    stream
+  ;
+  stream = gulp
+    .src( self.src )
+    .pipe( tap( _pugRender ) )
+    .pipe( gulp.dest( dist ) )
+  ;
+  return stream;
+} );
+gulp.task( 'js:bundle', [ 'clean' ], () => {
+  const
     self           = tasks[ 'js:bundle' ]
     ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
     ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: needsSourcemap
-    ,stream
+  ;
+  let
+    stream
   ;
   stream = gulp
     .src( self.src )
     .pipe( tap( function( file ) {
       file.contents = browserify( file.path, options.browserify )
-        .transform( babelify )
         .bundle()
         .on( 'error', function( error ) {
           options.plumber.errorHandler( error );
@@ -305,10 +273,12 @@ gulp.task( 'js:bundle', [ 'clean' ], function() {
 } )
 ;
 
-gulp.task( 'sprite', function() {
-  var
+gulp.task( 'sprite', () => {
+  const
     self = tasks.sprite
-    ,spriteData
+  ;
+  let
+    spriteData
     ,imgStream
     ,cSSStream
   ;
@@ -329,7 +299,7 @@ gulp.task( 'sprite', function() {
 } )
 ;
 
-gulp.task( 'js:eslint', function () {
+gulp.task( 'js:eslint', () => {
   var
     self = tasks[ 'js:eslint' ]
   ;
@@ -343,7 +313,7 @@ gulp.task( 'js:eslint', function () {
 } )
 ;
 
-gulp.task( 'clean', function() {
+gulp.task( 'clean', () => {
   return del( options.del.dist );
 } )
 ;
@@ -352,15 +322,71 @@ gulp.task( 'watch', _callWatchTasks );
 
 gulp.task( 'default', _filterDefaultTasks() );
 
-// function _match( regex, flag ) {
-//   return function( obj ) {
-//     if( flag ) {
-//       return regex.test( obj.path );
-//     } else {
-//       return !regex.test( obj.path );
-//     }
-//   };
-// }
+function _pugRender( file, t ) {
+  const
+    ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
+    ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/?[.#].+?)-->/mg
+    ,errorHandler = options.plumber.errorHandler
+  ;
+  let
+    contents = ''
+  ;
+  options.pug.filename = file.path;
+  try {
+    contents = pug.render( String( file.contents ), options.pug );
+  } catch( e ) {
+    errorHandler( e );
+  }
+  if ( options.assistPretty.assistAElement ) {
+    contents = contents.replace( ugliyAElementRegEx, function( all, indent, element, linefeed ) {
+      element = element
+        .replace( '><a ', '>' + linefeed + '<a ' )
+        .replace( '</a>', '</a>' + linefeed )        
+      ;
+      return beautifyHtml( element, options.beautifyHtml ).replace( /^/mg, indent );
+    } );
+  }
+  if ( options.assistPretty.indent === false ) {
+    contents = contents.replace( /^([\t ]+)/mg, '' );
+  }
+  if ( options.assistPretty.commentPosition ) {
+    contents = contents.replace( endCommentRegEx, function( all, endTag, lineFeed, indent, comment ) {
+      comment = '<!--' + comment + '-->';
+      if ( options.assistPretty.commentPosition === 'inside' ) {
+        if ( options.assistPretty.commentOnOneLine === true ) {
+          if ( options.assistPretty.emptyLine === true ) {
+            return comment + endTag + lineFeed;
+          } else {
+            return comment + endTag;
+          }
+        } else {
+          if ( options.assistPretty.emptyLine === true ) {
+            return comment + lineFeed + indent + endTag + lineFeed;
+          } else {
+            return comment + lineFeed + indent + endTag;
+          }
+        }
+      } else {
+        if ( options.assistPretty.commentOnOneLine === true ) {
+          if ( options.assistPretty.emptyLine === true ) {
+            return endTag + comment + lineFeed;
+          } else {
+            return endTag + comment;
+          }
+        } else {
+          if ( options.assistPretty.emptyLine === true ) {
+            return endTag + lineFeed + indent + comment + lineFeed;
+          } else {
+            return endTag + lineFeed + indent + comment;
+          }
+        }
+      }
+    } );
+  }
+  file.contents = new global.Buffer.from( contents );
+  file.path = file.path.replace( /\.pug$/, '.html');
+  return t.through;
+}
 
 function _callWatchTasks() {
   Object

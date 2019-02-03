@@ -44,17 +44,17 @@ html(lang=siteData.lang)
   body
     div.page#page
       block pageHead
-        //
+        |#{"\n"}
         header.pgHead#pgHead
           div.pgHead-core
             div.siteId.pgHead-siteId
               a.siteId-link
-        // /.pgHead#pgHead 
+        ///.pgHead#pgHead 
       main.pgBody
         block pageBody
           p foo
-      // /.pgBody 
+      ///.pgBody 
       block pageFoot
         footer.pgFoot#pgFoot
-    // /.page#page 
+    ///.page#page 
     script(src=siteData.jsCommonDir + "/common_body.js")
