@@ -110,6 +110,7 @@ Vagrant.configure("2") do |config|
     npm install --save-dev gulp
     npm install --save-dev gulp-buffer
     npm install --save-dev gulp-concat
+    npm install --save-dev gulp-changed
     npm install --save-dev gulp-eslint
     sudo npm install --save-dev gulp-iconfont
     npm install --save-dev gulp-iconfont-css
