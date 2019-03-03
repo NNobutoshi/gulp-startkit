@@ -15,35 +15,8 @@
     "transform": ["babelify"]
   },
   "devDependencies": {
-    "autoprefixer": "^9.4.6",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0",
-    "browserify": "^16.2.3",
-    "css-mqpacker": "^7.0.0",
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-buffer": "0.0.2",
-    "gulp-changed": "^3.2.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^5.0.0",
-    "gulp-iconfont": "^10.0.2",
-    "gulp-iconfont-css": "^2.3.0",
-    "gulp-if": "^2.0.2",
-    "gulp-notify": "^3.2.0",
-    "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-tap": "^1.0.1",
-    "gulp-uglify": "^3.0.1",
-    "gulp.spritesmith": "^6.9.0",
-    "js-beautify": "^1.8.9",
-    "merge-stream": "^1.0.1",
-    "pug": "^2.0.3"
   },
   "optionalDependencies": {
-    "browser-sync": "^2.24.6"
   },
   "dependencies": {}
 }
