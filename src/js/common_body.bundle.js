@@ -14,11 +14,11 @@ optResize
     console.info('one');
   }, '(min-width: 980px)' )
   .turn( () => {
-    console.info( '(min-width: 979px)' );
-  }, '(min-width: 979px)' )
+    console.info( '(min-width: 980px)' );
+  }, '(min-width: 980px)' )
   .turn( () => {
-    console.info('(max-width: 980px)' );
-  }, '(max-width: 980px)' )
+    console.info('(max-width: 979px)' );
+  }, '(max-width: 979px)' )
   .on( () => {
     console.info('(max-width: 374px)' );
   }, '(max-width: 374px)' )
