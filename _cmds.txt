@@ -1,2 +1,2 @@
-npm install --save-dev autoprefixer babel-core babel-preset-env babelify browserify css-mqpacker del gulp gulp-buffer gulp-concat gulp-eslint gulp-iconfont gulp-iconfont-css gulp-if gulp-notify gulp-plumber gulp-postcss gulp-sass gulp-sourcemaps gulp-tap gulp-uglify gulp.spritesmith js-beautify merge-stream pug
+npm install --save-dev autoprefixer babel-core babel-preset-env babelify browserify css-mqpacker del gulp gulp-buffer gulp-changed gulp-concat gulp-eslint gulp-iconfont gulp-iconfont-css gulp-if gulp-notify gulp-plumber gulp-postcss gulp-sass gulp-sourcemaps gulp-tap gulp-uglify gulp.spritesmith js-beautify merge-stream pug
 npm install --save-optional browser-sync
