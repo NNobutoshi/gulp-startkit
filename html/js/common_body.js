@@ -10461,10 +10461,10 @@ var optResize = new _optimizedresize2.default();
 optResize.one(function () {
   console.info('one');
 }, '(min-width: 980px)').turn(function () {
-  console.info('(min-width: 979px)');
-}, '(min-width: 979px)').turn(function () {
-  console.info('(max-width: 980px)');
-}, '(max-width: 980px)').on(function () {
+  console.info('(min-width: 980px)');
+}, '(min-width: 980px)').turn(function () {
+  console.info('(max-width: 979px)');
+}, '(max-width: 979px)').on(function () {
   console.info('(max-width: 374px)');
 }, '(max-width: 374px)').run();
 

@@ -99,15 +99,15 @@ Vagrant.configure("2") do |config|
     curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
     sudo yum install -y nodejs-10.7.0
     cd /home/vagrant
-    npm install -g gulp@3.9.1
+    npm install -g gulp@3
     npm install --save-dev autoprefixer
     npm install --save-dev babel-core
     npm install --save-dev babel-preset-env
-    npm install --save-dev babelify
+    npm install --save-dev babelify@8
     npm install --save-dev browserify
     npm install --save-dev css-mqpacker
     npm install --save-dev del
-    npm install --save-dev gulp@3.9.1
+    npm install --save-dev gulp@3
     npm install --save-dev gulp-buffer
     npm install --save-dev gulp-concat
     npm install --save-dev gulp-changed
