@@ -9,9 +9,18 @@ const
 
 foo('body');
 
-optResize.one( function() {
-  console.info('one');
-}, '(min-width: 980px)' );
-optResize.turn( function() {
-  console.info('turn');
-}, '(min-width: 980px)' );
+optResize
+  .one( () => {
+    console.info('one');
+  }, '(min-width: 980px)' )
+  .turn( () => {
+    console.info( '(min-width: 979px)' );
+  }, '(min-width: 979px)' )
+  .turn( () => {
+    console.info('(max-width: 980px)' );
+  }, '(max-width: 980px)' )
+  .on( () => {
+    console.info('(max-width: 374px)' );
+  }, '(max-width: 374px)' )
+  .run()
+;

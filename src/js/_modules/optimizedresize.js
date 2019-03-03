@@ -10,86 +10,78 @@ let
 export default class optimizedResize {
   constructor( options ) {
     this.defaultSettings = {
-      name : 'optimizedresize'
+      name  : 'optimizedresize',
+      delay : 66,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.callBacks = {};
     this.isRunning = false;
-    this.thisName = this.settings.name;
-    this.queries = {};
+    this.id = this.settings.name;
   }
 
-  resize() {
-    if (!this.isRunning) {
-      this.isRunning = true;
-      if ( requestAnimationFrame ) {
-        requestAnimationFrame( () => { this.runCallBacks(); } );
-      } else {
-        setTimeout( () => { this.runCallBacks(); }, 66 );
-      }
-    }
-  }
-
-  runCallBacks() {
+  runCallBacksAll() {
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
-        items = this.callBacks[ key ]
+        props = this.callBacks[ key ]
       ;
       let
-        query
+        query = ( props.query )? Modernizr.mq( props.query ): false
       ;
-      if ( items.query ) {
-        query = Modernizr.mq( items.query );
-        if ( items.turn === true ) {
-          if ( items.lastQuery !== query && query === true ) {
-            items.callBack();
-          }
-        } else {
-          if ( query === true ) {
-            items.callBack();
-          }
+      if ( props.query ) {
+        query = Modernizr.mq( props.query );
+        if (
+          query === true && (
+            ( props.turn === true && props.lastQuery !== query ) ||
+            ( props.one === true ) ||
+            ( !props.one && !props.turn )
+          )
+        ) {
+          props.callBack.call( this, props );
         }
-        items.lastQuery = query;
-        if( items.one === true ) {
-          delete this.callBacks[ key ];
+        props.lastQuery = query;
+        if( props.one === true && query === true ) {
+          this.remove( key );
         }
       } else {
-        items.callBack();
+        props.callBack( this, props );
       }
     } );
     this.isRunning = false;
+    return this;
   }
 
-  addCallBack( options ) {
-    if( options ) {
-      this.callBacks[ options.name ] = options;
-    }
-  }
-
-  on( callBack, options ) {
+  add( callBack, options ) {
     const
       defaults = {
-        name     : ( typeof options === 'string' ) ? options : _getId( this.thisName ),
-        query    : '',
-        one      : false,
-        turn     : false,
-        callBack : callBack,
+        name   : _getUniqueName( this.id ),
+        query  : '',
+        one    : false,
+        turn   : false,
       }
+      ,settings = $.extend( {}, defaults, options )
     ;
-    let
-      settings
-    ;
-    if( typeof options === 'string' ) {
-      options = {};
-    }
-    settings = $.extend( {}, defaults, options );
-    this.handle();
-    this.addCallBack( settings );
+    settings.callBack = callBack;
+    this.setUp();
+    this.callBacks[ settings.name ] = settings;
+    return this;
+  }
+
+  remove( name ) {
+    delete this.callBacks[ name ];
+  }
+
+  on( callBack, query, name ) {
+    return this.add( callBack, {
+      name  : name,
+      query : query,
+      one   : false,
+      turn  : false,
+    } );
   }
 
   one( callBack, query, name ) {
-    this.on( callBack, {
-      name  : ( name )? name : _getId( this.thisName ),
+    return this.add( callBack, {
+      name  : name,
       query : query,
       one   : true,
       turn  : false,
@@ -97,24 +89,36 @@ export default class optimizedResize {
   }
 
   turn( callBack, query, name ) {
-    this.on( callBack, {
-      name  : ( name )? name : _getId( this.thisName ),
+    return this.add( callBack, {
+      name  : name,
       query : query,
       one   : false,
       turn  : true,
     } );
   }
 
-  handle() {
+  setUp() {
     if ( !Object.keys( this.callBacks ).length ) {
-      $( window ).on( 'resize.' + this.thisName, () => {
-        this.resize();
+      $( window ).on( 'resize.' + this.id, () => {
+        this.run();
       } );
     }
   }
 
+  run() {
+    if ( !this.isRunning ) {
+      this.isRunning = true;
+      if ( requestAnimationFrame ) {
+        requestAnimationFrame( () => { this.runCallBacksAll(); } );
+      } else {
+        setTimeout( () => { this.runCallBacksAll(); }, this.settintgs.delay );
+      }
+    }
+    return this;
+  }
+
 }
 
-function _getId( base ) {
+function _getUniqueName( base ) {
   return base + new Date().getTime()+ counter++;
 }

@@ -44,92 +44,74 @@ var optimizedResize = function () {
     _classCallCheck(this, optimizedResize);
 
     this.defaultSettings = {
-      name: 'optimizedresize'
+      name: 'optimizedresize',
+      delay: 66
     };
     this.settings = _jquery2.default.extend({}, this.defaultSettings, options);
     this.callBacks = {};
     this.isRunning = false;
-    this.thisName = this.settings.name;
-    this.queries = {};
+    this.id = this.settings.name;
   }
 
   _createClass(optimizedResize, [{
-    key: 'resize',
-    value: function resize() {
+    key: 'runCallBacksAll',
+    value: function runCallBacksAll() {
       var _this = this;
 
-      if (!this.isRunning) {
-        this.isRunning = true;
-        if (requestAnimationFrame) {
-          requestAnimationFrame(function () {
-            _this.runCallBacks();
-          });
-        } else {
-          setTimeout(function () {
-            _this.runCallBacks();
-          }, 66);
-        }
-      }
-    }
-  }, {
-    key: 'runCallBacks',
-    value: function runCallBacks() {
-      var _this2 = this;
-
       Object.keys(this.callBacks).forEach(function (key) {
-        var items = _this2.callBacks[key];
-        var query = void 0;
-        if (items.query) {
-          query = Modernizr.mq(items.query);
-          if (items.turn === true) {
-            if (items.lastQuery !== query && query === true) {
-              items.callBack();
-            }
-          } else {
-            if (query === true) {
-              items.callBack();
-            }
+        var props = _this.callBacks[key];
+        var query = props.query ? Modernizr.mq(props.query) : false;
+        if (props.query) {
+          query = Modernizr.mq(props.query);
+          if (query === true && (props.turn === true && props.lastQuery !== query || props.one === true || !props.one && !props.turn)) {
+            props.callBack.call(_this, props);
           }
-          items.lastQuery = query;
-          if (items.one === true) {
-            delete _this2.callBacks[key];
+          props.lastQuery = query;
+          if (props.one === true && query === true) {
+            _this.remove(key);
           }
         } else {
-          items.callBack();
+          props.callBack(_this, props);
         }
       });
       this.isRunning = false;
+      return this;
     }
   }, {
-    key: 'addCallBack',
-    value: function addCallBack(options) {
-      if (options) {
-        this.callBacks[options.name] = options;
-      }
+    key: 'add',
+    value: function add(callBack, options) {
+      var defaults = {
+        name: _getUniqueName(this.id),
+        query: '',
+        one: false,
+        turn: false
+      },
+          settings = _jquery2.default.extend({}, defaults, options);
+      settings.callBack = callBack;
+      this.setUp();
+      this.callBacks[settings.name] = settings;
+      return this;
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name) {
+      delete this.callBacks[name];
     }
   }, {
     key: 'on',
-    value: function on(callBack, options) {
-      var defaults = {
-        name: typeof options === 'string' ? options : _getId(this.thisName),
-        query: '',
+    value: function on(callBack, query, name) {
+      return this.add(callBack, {
+        name: name,
+        query: query,
         one: false,
-        turn: false,
-        callBack: callBack
-      };
-      var settings = void 0;
-      if (typeof options === 'string') {
-        options = {};
-      }
-      settings = _jquery2.default.extend({}, defaults, options);
-      this.handle();
-      this.addCallBack(settings);
+        turn: false
+      });
     }
   }, {
     key: 'one',
     value: function one(callBack, query, name) {
-      this.on(callBack, {
-        name: name ? name : _getId(this.thisName),
+      return this.add(callBack, {
+        name: name,
         query: query,
         one: true,
         turn: false
@@ -138,23 +120,42 @@ var optimizedResize = function () {
   }, {
     key: 'turn',
     value: function turn(callBack, query, name) {
-      this.on(callBack, {
-        name: name ? name : _getId(this.thisName),
+      return this.add(callBack, {
+        name: name,
         query: query,
         one: false,
         turn: true
       });
     }
   }, {
-    key: 'handle',
-    value: function handle() {
-      var _this3 = this;
+    key: 'setUp',
+    value: function setUp() {
+      var _this2 = this;
 
       if (!Object.keys(this.callBacks).length) {
-        (0, _jquery2.default)(window).on('resize.' + this.thisName, function () {
-          _this3.resize();
+        (0, _jquery2.default)(window).on('resize.' + this.id, function () {
+          _this2.run();
         });
       }
+    }
+  }, {
+    key: 'run',
+    value: function run() {
+      var _this3 = this;
+
+      if (!this.isRunning) {
+        this.isRunning = true;
+        if (requestAnimationFrame) {
+          requestAnimationFrame(function () {
+            _this3.runCallBacksAll();
+          });
+        } else {
+          setTimeout(function () {
+            _this3.runCallBacksAll();
+          }, this.settintgs.delay);
+        }
+      }
+      return this;
     }
   }]);
 
@@ -164,7 +165,7 @@ var optimizedResize = function () {
 exports.default = optimizedResize;
 
 
-function _getId(base) {
+function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
@@ -10459,10 +10460,13 @@ var optResize = new _optimizedresize2.default();
 
 optResize.one(function () {
   console.info('one');
-}, '(min-width: 980px)');
-optResize.turn(function () {
-  console.info('turn');
-}, '(min-width: 980px)');
+}, '(min-width: 980px)').turn(function () {
+  console.info('(min-width: 979px)');
+}, '(min-width: 979px)').turn(function () {
+  console.info('(max-width: 980px)');
+}, '(max-width: 980px)').on(function () {
+  console.info('(max-width: 374px)');
+}, '(max-width: 374px)').run();
 
 },{"./_modules/foo.js":1,"./_modules/optimizedresize.js":2}]},{},[5])
 
