@@ -7,7 +7,7 @@ let
   counter = 0
 ;
 /* globals Modernizr */
-export default class optimizedResize {
+export default class OptimizedResize {
   constructor( options ) {
     this.defaultSettings = {
       name  : 'optimizedresize',
