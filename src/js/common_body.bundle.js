@@ -1,15 +1,20 @@
 'use strict';
 
 import OptimizedResize from './_modules/optimizedresize.js';
+import Adaptivehover from './_modules/adaptivehover.js';
 import foo from './_modules/foo.js';
+import $ from './_vendor/jquery-3.2.1.js';
 
-const
-  optResize = new OptimizedResize()
-;
+const mdls = {};
+
+mdls.resize = new OptimizedResize();
+mdls.hover = new Adaptivehover( {
+  target : '.hoverTarget'
+} );
 
 foo('body');
 
-optResize
+mdls.resize
   .one( () => {
     console.info('one');
   }, '(min-width: 980px)' )
@@ -23,4 +28,15 @@ optResize
     console.info('(max-width: 374px)' );
   }, '(max-width: 374px)' )
   .run()
+;
+
+mdls.hover
+  .on(
+    ( e, instance ) =>  {
+      $( instance.target ).addClass('js-hover');
+    }
+    ,( e, instance ) => {
+      $( instance.target ).removeClass('js-hover');
+    }
+  )
 ;

@@ -5,6 +5,165 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = require('../_vendor/jquery-3.2.1.js');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+require('../_vendor/modernizr.js');
+var $root = (0, _jquery2.default)('html');
+/* globals Modernizr */
+
+var AdaptiveHover = function () {
+  function AdaptiveHover(options) {
+    _classCallCheck(this, AdaptiveHover);
+
+    this.defaultSettings = {
+      name: 'adaptiveHover',
+      target: '',
+      timeout: 400,
+      range: 10
+    };
+    this.settings = _jquery2.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.target = null;
+    this.enterEventName = '';
+    this.leaveEeventName = '';
+    this.callBackForEnter = null;
+    this.callBackForLeave = null;
+    this.pageX = null;
+    this.pageY = null;
+    this.timeoutId = null;
+    this.status = '';
+  }
+
+  _createClass(AdaptiveHover, [{
+    key: 'on',
+    value: function on(callBackForEnter, callBackForLeave) {
+      var _this = this;
+
+      var settings = this.settings,
+          eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click';
+
+      this.enterEventName = 'touchstart.' + this.id + ' mouseenter.' + this.id;
+      this.leaveEventName = 'touchend.' + this.id + ' mouseleave.' + this.id;
+      this.callBackForEnter = callBackForEnter;
+      this.callBackForLeave = callBackForLeave;
+      this.target = document.querySelectorAll(settings.target)[0];
+
+      $root.on(this.enterEventName, settings.target, function (e) {
+        _this.handleForEnter(e);
+      });
+      $root.on(eventNameForClick + '.' + this.id, function (e) {
+        var isNotRelative = !_isRelative(_this.target, e.target);
+        if (isNotRelative && _this.status === 'enter') {
+          _this.clear();
+          $root.off(_this.leaveEventName, settings.target);
+          _this.leave(e, _this.callBackForLeave);
+          $root.on(_this.enterEventName, settings.target, function (e) {
+            _this.handleForEnter(e);
+          });
+        }
+      });
+      return this;
+    }
+  }, {
+    key: 'off',
+    value: function off() {
+      var settings = this.settings;
+      this.clear();
+      $root.off(this.enterEventName, settings.target);
+      $root.off(this.leaveEventName, settings.target);
+      return this;
+    }
+  }, {
+    key: 'handleForEnter',
+    value: function handleForEnter(e) {
+      var _this2 = this;
+
+      var eventObj = _getEventObj(e),
+          settings = this.settings;
+      this.pageX = eventObj.pageX;
+      this.pageY = eventObj.pageY;
+      $root.off(this.enterEventName, settings.target);
+      this.enter(e);
+      $root.on(this.leaveEventName, settings.target, function (e) {
+        _this2.handleForLeave(e);
+      });
+    }
+  }, {
+    key: 'handleForLeave',
+    value: function handleForLeave(e) {
+      var _this3 = this;
+
+      var settings = this.settings,
+          range = settings.range,
+          isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
+      if (isOriginPoint) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(function () {
+          _this3.clear();
+        }, settings.timeout);
+      } else {
+        $root.off(this.leaveEventName, settings.target);
+        this.leave(e, this.callBackForLeave);
+        $root.on(this.enterEventName, settings.target, function (e) {
+          _this3.handleForEnter(e, _this3.callBackForEnter);
+        });
+      }
+    }
+  }, {
+    key: 'enter',
+    value: function enter(e) {
+      this.status = 'enter';
+      this.callBackForEnter.call(this, e, this);
+    }
+  }, {
+    key: 'leave',
+    value: function leave(e) {
+      this.status = 'leave';
+      this.callBackForLeave.call(this, e, this);
+    }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+      this.pageX = null;
+      this.pageY = null;
+    }
+  }]);
+
+  return AdaptiveHover;
+}();
+
+exports.default = AdaptiveHover;
+
+
+function _isOriginPoint(eventObj, pageX, pageY, range) {
+  return eventObj.pageX > pageX - range && eventObj.pageX < pageX + range && eventObj.pageY > pageY - range && eventObj.pageY < pageY + range;
+}
+
+function _isRelative(ancestor, elem) {
+  return (0, _jquery2.default)(ancestor).is(elem) && (0, _jquery2.default)(elem).closest(ancestor).length === 1;
+}
+
+function _getEventObj(e) {
+  return e.changedTouches ? e.changedTouches[0] : e;
+}
+
+},{"../_vendor/jquery-3.2.1.js":4,"../_vendor/modernizr.js":5}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 exports.default = function (selector) {
   'use strict';
 
@@ -17,7 +176,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../_vendor/jquery-3.2.1.js":3}],2:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":4}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -39,9 +198,9 @@ require('../_vendor/modernizr.js');
 var counter = 0;
 /* globals Modernizr */
 
-var optimizedResize = function () {
-  function optimizedResize(options) {
-    _classCallCheck(this, optimizedResize);
+var OptimizedResize = function () {
+  function OptimizedResize(options) {
+    _classCallCheck(this, OptimizedResize);
 
     this.defaultSettings = {
       name: 'optimizedresize',
@@ -53,7 +212,7 @@ var optimizedResize = function () {
     this.id = this.settings.name;
   }
 
-  _createClass(optimizedResize, [{
+  _createClass(OptimizedResize, [{
     key: 'runCallBacksAll',
     value: function runCallBacksAll() {
       var _this = this;
@@ -159,17 +318,17 @@ var optimizedResize = function () {
     }
   }]);
 
-  return optimizedResize;
+  return OptimizedResize;
 }();
 
-exports.default = optimizedResize;
+exports.default = OptimizedResize;
 
 
 function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-},{"../_vendor/jquery-3.2.1.js":3,"../_vendor/modernizr.js":4}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":4,"../_vendor/modernizr.js":5}],4:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -9999,14 +10158,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	return jQuery;
 });
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*!
  * modernizr v3.6.0
- * Build https://modernizr.com/download?-mq-setclasses-dontmin
+ * Build https://modernizr.com/download?-touchevents-mq-setclasses-dontmin
  *
  * Copyright (c)
  *  Faruk Ates
@@ -10421,6 +10580,156 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
   ModernizrProto.mq = mq;
 
+  /**
+   * List of property values to set for css tests. See ticket #21
+   * http://git.io/vUGl4
+   *
+   * @memberof Modernizr
+   * @name Modernizr._prefixes
+   * @optionName Modernizr._prefixes
+   * @optionProp prefixes
+   * @access public
+   * @example
+   *
+   * Modernizr._prefixes is the internal list of prefixes that we test against
+   * inside of things like [prefixed](#modernizr-prefixed) and [prefixedCSS](#-code-modernizr-prefixedcss). It is simply
+   * an array of kebab-case vendor prefixes you can use within your code.
+   *
+   * Some common use cases include
+   *
+   * Generating all possible prefixed version of a CSS property
+   * ```js
+   * var rule = Modernizr._prefixes.join('transform: rotate(20deg); ');
+   *
+   * rule === 'transform: rotate(20deg); webkit-transform: rotate(20deg); moz-transform: rotate(20deg); o-transform: rotate(20deg); ms-transform: rotate(20deg);'
+   * ```
+   *
+   * Generating all possible prefixed version of a CSS value
+   * ```js
+   * rule = 'display:' +  Modernizr._prefixes.join('flex; display:') + 'flex';
+   *
+   * rule === 'display:flex; display:-webkit-flex; display:-moz-flex; display:-o-flex; display:-ms-flex; display:flex'
+   * ```
+   */
+
+  // we use ['',''] rather than an empty array in order to allow a pattern of .`join()`ing prefixes to test
+  // values in feature detects to continue to work
+  var prefixes = ModernizrProto._config.usePrefixes ? ' -webkit- -moz- -o- -ms- '.split(' ') : ['', ''];
+
+  // expose these for the plugin API. Look in the source for how to join() them against your input
+  ModernizrProto._prefixes = prefixes;
+
+  /**
+   * testStyles injects an element with style element and some CSS rules
+   *
+   * @memberof Modernizr
+   * @name Modernizr.testStyles
+   * @optionName Modernizr.testStyles()
+   * @optionProp testStyles
+   * @access public
+   * @function testStyles
+   * @param {string} rule - String representing a css rule
+   * @param {function} callback - A function that is used to test the injected element
+   * @param {number} [nodes] - An integer representing the number of additional nodes you want injected
+   * @param {string[]} [testnames] - An array of strings that are used as ids for the additional nodes
+   * @returns {boolean}
+   * @example
+   *
+   * `Modernizr.testStyles` takes a CSS rule and injects it onto the current page
+   * along with (possibly multiple) DOM elements. This lets you check for features
+   * that can not be detected by simply checking the [IDL](https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Interface_development_guide/IDL_interface_rules).
+   *
+   * ```js
+   * Modernizr.testStyles('#modernizr { width: 9px; color: papayawhip; }', function(elem, rule) {
+   *   // elem is the first DOM node in the page (by default #modernizr)
+   *   // rule is the first argument you supplied - the CSS rule in string form
+   *
+   *   addTest('widthworks', elem.style.width === '9px')
+   * });
+   * ```
+   *
+   * If your test requires multiple nodes, you can include a third argument
+   * indicating how many additional div elements to include on the page. The
+   * additional nodes are injected as children of the `elem` that is returned as
+   * the first argument to the callback.
+   *
+   * ```js
+   * Modernizr.testStyles('#modernizr {width: 1px}; #modernizr2 {width: 2px}', function(elem) {
+   *   document.getElementById('modernizr').style.width === '1px'; // true
+   *   document.getElementById('modernizr2').style.width === '2px'; // true
+   *   elem.firstChild === document.getElementById('modernizr2'); // true
+   * }, 1);
+   * ```
+   *
+   * By default, all of the additional elements have an ID of `modernizr[n]`, where
+   * `n` is its index (e.g. the first additional, second overall is `#modernizr2`,
+   * the second additional is `#modernizr3`, etc.).
+   * If you want to have more meaningful IDs for your function, you can provide
+   * them as the fourth argument, as an array of strings
+   *
+   * ```js
+   * Modernizr.testStyles('#foo {width: 10px}; #bar {height: 20px}', function(elem) {
+   *   elem.firstChild === document.getElementById('foo'); // true
+   *   elem.lastChild === document.getElementById('bar'); // true
+   * }, 2, ['foo', 'bar']);
+   * ```
+   *
+   */
+
+  var testStyles = ModernizrProto.testStyles = injectElementWithStyles;
+
+  /*!
+  {
+    "name": "Touch Events",
+    "property": "touchevents",
+    "caniuse" : "touch",
+    "tags": ["media", "attribute"],
+    "notes": [{
+      "name": "Touch Events spec",
+      "href": "https://www.w3.org/TR/2013/WD-touch-events-20130124/"
+    }],
+    "warnings": [
+      "Indicates if the browser supports the Touch Events spec, and does not necessarily reflect a touchscreen device"
+    ],
+    "knownBugs": [
+      "False-positive on some configurations of Nokia N900",
+      "False-positive on some BlackBerry 6.0 builds – https://github.com/Modernizr/Modernizr/issues/372#issuecomment-3112695"
+    ]
+  }
+  !*/
+  /* DOC
+  Indicates if the browser supports the W3C Touch Events API.
+  
+  This *does not* necessarily reflect a touchscreen device:
+  
+  * Older touchscreen devices only emulate mouse events
+  * Modern IE touch devices implement the Pointer Events API instead: use `Modernizr.pointerevents` to detect support for that
+  * Some browsers & OS setups may enable touch APIs when no touchscreen is connected
+  * Future browsers may implement other event models for touch interactions
+  
+  See this article: [You Can't Detect A Touchscreen](http://www.stucox.com/blog/you-cant-detect-a-touchscreen/).
+  
+  It's recommended to bind both mouse and touch/pointer events simultaneously – see [this HTML5 Rocks tutorial](http://www.html5rocks.com/en/mobile/touchandmouse/).
+  
+  This test will also return `true` for Firefox 4 Multitouch support.
+  */
+
+  // Chrome (desktop) used to lie about its support on this, but that has since been rectified: http://crbug.com/36415
+  Modernizr.addTest('touchevents', function () {
+    var bool;
+    if ('ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch) {
+      bool = true;
+    } else {
+      // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+      // https://git.io/vznFH
+      var query = ['@media (', prefixes.join('touch-enabled),('), 'heartz', ')', '{#modernizr{top:9px;position:absolute}}'].join('');
+      testStyles(query, function (node) {
+        bool = node.offsetTop === 9;
+      });
+    }
+    return bool;
+  });
+
   // Run each test
   testRunner();
 
@@ -10441,24 +10750,37 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   ;
 })(window, document);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var _optimizedresize = require('./_modules/optimizedresize.js');
 
 var _optimizedresize2 = _interopRequireDefault(_optimizedresize);
 
+var _adaptivehover = require('./_modules/adaptivehover.js');
+
+var _adaptivehover2 = _interopRequireDefault(_adaptivehover);
+
 var _foo = require('./_modules/foo.js');
 
 var _foo2 = _interopRequireDefault(_foo);
 
+var _jquery = require('./_vendor/jquery-3.2.1.js');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var optResize = new _optimizedresize2.default();
+var mdls = {};
+
+mdls.resize = new _optimizedresize2.default();
+mdls.hover = new _adaptivehover2.default({
+  target: '.hoverTarget'
+});
 
 (0, _foo2.default)('body');
 
-optResize.one(function () {
+mdls.resize.one(function () {
   console.info('one');
 }, '(min-width: 980px)').turn(function () {
   console.info('(min-width: 980px)');
@@ -10468,6 +10790,12 @@ optResize.one(function () {
   console.info('(max-width: 374px)');
 }, '(max-width: 374px)').run();
 
-},{"./_modules/foo.js":1,"./_modules/optimizedresize.js":2}]},{},[5])
+mdls.hover.on(function (e, instance) {
+  (0, _jquery2.default)(instance.target).addClass('js-hover');
+}, function (e, instance) {
+  (0, _jquery2.default)(instance.target).removeClass('js-hover');
+});
+
+},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_vendor/jquery-3.2.1.js":4}]},{},[6])
 
 //# sourceMappingURL=common_body.js.map
