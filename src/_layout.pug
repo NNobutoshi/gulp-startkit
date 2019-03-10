@@ -45,16 +45,21 @@ html(lang=siteData.lang)
     div.page#page
       block pageHead
         |#{"\n"}
-        header.pgHead#pgHead
-          div.pgHead-core
-            div.siteId.pgHead-siteId
-              a.siteId-link
-        ///.pgHead#pgHead 
-      main.pgBody
+        header.page_head#pageHead
+          div.page_core
+            div.siteId.page_siteId
+              a.siteId_link site
+            div.siteGlobalNav
+              nav.siteGlobalNav_nav
+                ul.siteGlobalNav_list
+                  li.siteGlobalNav_item
+                    a.siteGlobalNav_anchor nav1
+        ///#pageHead
+      main.page_body
         block pageBody
           p foo
-      ///.pgBody 
+      ///.page_body
       block pageFoot
-        footer.pgFoot#pgFoot
+        footer.page_foot#pageFoot
     ///.page#page 
     script(src=siteData.jsCommonDir + "/common_body.js")

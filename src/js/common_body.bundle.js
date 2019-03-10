@@ -2,6 +2,7 @@
 
 import OptimizedResize from './_modules/optimizedresize.js';
 import Adaptivehover from './_modules/adaptivehover.js';
+import ScrollManager from './_modules/scrollmanager.js';
 import foo from './_modules/foo.js';
 import $ from './_vendor/jquery-3.2.1.js';
 
@@ -11,6 +12,7 @@ mdls.resize = new OptimizedResize();
 mdls.hover = new Adaptivehover( {
   target : '.hoverTarget'
 } );
+mdls.scroll = new ScrollManager();
 
 foo('body');
 
@@ -40,3 +42,25 @@ mdls.hover
     }
   )
 ;
+( function() {
+  const
+    $pointElement = $('.siteGlobalNav')
+    ,$wrapper = $('body')
+    ,className = 'js-siteGlobalNavIsFixed'
+  ;
+  mdls.scroll
+    .on( ( prop, scTop ) => {
+      const
+        point = $pointElement.offset().top
+      ;
+      if ( scTop >= point && prop.flag === false ) {
+        $wrapper.addClass( className );
+        prop.flag = true;
+      } else if ( scTop < point && prop.flag === true ) {
+        $wrapper.removeClass( className );
+        prop.flag = false;
+      }
+      return true;
+    } )
+  ;
+} )();

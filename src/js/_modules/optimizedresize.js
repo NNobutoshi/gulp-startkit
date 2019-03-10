@@ -16,6 +16,7 @@ export default class OptimizedResize {
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.callBacks = {};
     this.isRunning = false;
+    this.eventName = `resize.${this.id}`;
     this.id = this.settings.name;
   }
 
@@ -52,13 +53,13 @@ export default class OptimizedResize {
 
   add( callBack, options ) {
     const
-      defaults = {
+      defaultSettings = {
         name   : _getUniqueName( this.id ),
         query  : '',
         one    : false,
         turn   : false,
       }
-      ,settings = $.extend( {}, defaults, options )
+      ,settings = $.extend( {}, defaultSettings, options )
     ;
     settings.callBack = callBack;
     this.setUp();
@@ -99,7 +100,7 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callBacks ).length ) {
-      $( window ).on( 'resize.' + this.id, () => {
+      $( window ).on( this.eventName, () => {
         this.run();
       } );
     }

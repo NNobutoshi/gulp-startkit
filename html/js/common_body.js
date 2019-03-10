@@ -157,7 +157,7 @@ function _getEventObj(e) {
   return e.changedTouches ? e.changedTouches[0] : e;
 }
 
-},{"../_vendor/jquery-3.2.1.js":4,"../_vendor/modernizr.js":5}],2:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":5,"../_vendor/modernizr.js":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -176,7 +176,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../_vendor/jquery-3.2.1.js":4}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":5}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -209,6 +209,7 @@ var OptimizedResize = function () {
     this.settings = _jquery2.default.extend({}, this.defaultSettings, options);
     this.callBacks = {};
     this.isRunning = false;
+    this.eventName = 'resize.' + this.id;
     this.id = this.settings.name;
   }
 
@@ -239,13 +240,13 @@ var OptimizedResize = function () {
   }, {
     key: 'add',
     value: function add(callBack, options) {
-      var defaults = {
+      var defaultSettings = {
         name: _getUniqueName(this.id),
         query: '',
         one: false,
         turn: false
       },
-          settings = _jquery2.default.extend({}, defaults, options);
+          settings = _jquery2.default.extend({}, defaultSettings, options);
       settings.callBack = callBack;
       this.setUp();
       this.callBacks[settings.name] = settings;
@@ -292,7 +293,7 @@ var OptimizedResize = function () {
       var _this2 = this;
 
       if (!Object.keys(this.callBacks).length) {
-        (0, _jquery2.default)(window).on('resize.' + this.id, function () {
+        (0, _jquery2.default)(window).on(this.eventName, function () {
           _this2.run();
         });
       }
@@ -328,7 +329,138 @@ function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-},{"../_vendor/jquery-3.2.1.js":4,"../_vendor/modernizr.js":5}],4:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":5,"../_vendor/modernizr.js":6}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = require('../_vendor/jquery-3.2.1.js');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var $root = (0, _jquery2.default)(window);
+
+var counter = 0;
+
+var ScrollManager = function () {
+  function ScrollManager(options) {
+    _classCallCheck(this, ScrollManager);
+
+    this.defaultSettings = {
+      name: 'scrollManager',
+      offset: 0,
+      delay: 66
+    };
+    this.settings = _jquery2.default.extend({}, this.defaultSettings, options);
+    this.callBacks = {};
+    this.isRunning = false;
+    this.id = this.settings.name;
+    this.eventName = 'scroll.' + this.id;
+  }
+
+  _createClass(ScrollManager, [{
+    key: 'runCallBacksAll',
+    value: function runCallBacksAll() {
+      var _this = this;
+
+      var scTop = $root.scrollTop(),
+          offset = 0,
+          scBottom = scTop + window.innerHeight;
+      if (typeof this.offset === 'number') {
+        offset = this.offset;
+      } else if (typeof this.offset === 'string') {
+        offset = _getTotalHeight(document.querySelectorAll(this.offset));
+      }
+      scTop = scTop + offset;
+      Object.keys(this.callBacks).forEach(function (key) {
+        var props = _this.callBacks[key];
+        return props.callBack.call(_this, props, scTop, scBottom);
+      });
+      this.isRunning = false;
+      return this;
+    }
+  }, {
+    key: 'add',
+    value: function add(callBack, options) {
+      var defaultSttings = {
+        name: _getUniqueName(this.id),
+        flag: false
+      },
+          settings = _jquery2.default.extend({}, defaultSttings, options);
+      settings.callBack = callBack;
+      this.setUp();
+      this.callBacks[settings.name] = settings;
+      return this;
+    }
+  }, {
+    key: 'remove',
+    value: function remove(name) {
+      delete this.callBacks[name];
+    }
+  }, {
+    key: 'on',
+    value: function on(callBack, options) {
+      return this.add(callBack, options);
+    }
+  }, {
+    key: 'setUp',
+    value: function setUp() {
+      var _this2 = this;
+
+      if (!this.callBacks.length) {
+        $root.on(this.eventName, function () {
+          _this2.run();
+        });
+      }
+    }
+  }, {
+    key: 'run',
+    value: function run() {
+      var _this3 = this;
+
+      if (!this.isRunning) {
+        this.isRunning = true;
+        if (requestAnimationFrame) {
+          requestAnimationFrame(function () {
+            _this3.runCallBacksAll();
+          });
+        } else {
+          setTimeout(function () {
+            _this3.runCallBacksAll();
+          }, this.settintgs.delay);
+        }
+      }
+      return this;
+    }
+  }]);
+
+  return ScrollManager;
+}();
+
+exports.default = ScrollManager;
+
+
+function _getTotalHeight(elem) {
+  var total = 0;
+  Array.prototype.forEach.call(elem, function (self) {
+    total = total + (0, _jquery2.default)(self).outerHeight(true);
+  });
+  return total;
+}
+
+function _getUniqueName(base) {
+  return base + new Date().getTime() + counter++;
+}
+
+},{"../_vendor/jquery-3.2.1.js":5}],5:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10158,7 +10290,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	return jQuery;
 });
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10750,7 +10882,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   ;
 })(window, document);
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var _optimizedresize = require('./_modules/optimizedresize.js');
@@ -10760,6 +10892,10 @@ var _optimizedresize2 = _interopRequireDefault(_optimizedresize);
 var _adaptivehover = require('./_modules/adaptivehover.js');
 
 var _adaptivehover2 = _interopRequireDefault(_adaptivehover);
+
+var _scrollmanager = require('./_modules/scrollmanager.js');
+
+var _scrollmanager2 = _interopRequireDefault(_scrollmanager);
 
 var _foo = require('./_modules/foo.js');
 
@@ -10777,6 +10913,7 @@ mdls.resize = new _optimizedresize2.default();
 mdls.hover = new _adaptivehover2.default({
   target: '.hoverTarget'
 });
+mdls.scroll = new _scrollmanager2.default();
 
 (0, _foo2.default)('body');
 
@@ -10795,7 +10932,23 @@ mdls.hover.on(function (e, instance) {
 }, function (e, instance) {
   (0, _jquery2.default)(instance.target).removeClass('js-hover');
 });
+(function () {
+  var $pointElement = (0, _jquery2.default)('.siteGlobalNav'),
+      $wrapper = (0, _jquery2.default)('body'),
+      className = 'js-siteGlobalNavIsFixed';
+  mdls.scroll.on(function (prop, scTop) {
+    var point = $pointElement.offset().top;
+    if (scTop >= point && prop.flag === false) {
+      $wrapper.addClass(className);
+      prop.flag = true;
+    } else if (scTop < point && prop.flag === true) {
+      $wrapper.removeClass(className);
+      prop.flag = false;
+    }
+    return true;
+  });
+})();
 
-},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_vendor/jquery-3.2.1.js":4}]},{},[6])
+},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_modules/scrollmanager.js":4,"./_vendor/jquery-3.2.1.js":5}]},{},[7])
 
 //# sourceMappingURL=common_body.js.map

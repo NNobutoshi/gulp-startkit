@@ -4,7 +4,10 @@
 'variables'
 ,'mixins'
 ,'icons'
+,'_vendor/normalize'
 ,'mixins_sprite';
+
+
 
 .siteGlobalNav-01 {
   .links {
@@ -17,11 +20,35 @@
   }
 }
 
-.pHead-01 {
-  &::before {
-    @include sprite($sheet-home);
-    content: '';
-    display: inline-block;
+
+.page {
+  @at-root {
+
+    .page_body {
+      height: 2000px;
+    }
+
+    .page_siteId {
+      padding: 20px;
+    }
+  }
+}
+
+.siteGlobalNav {
+  height: 50px;
+  @at-root {
+    .siteGlobalNav_nav {
+      height: inherit;
+      border: solid 1px #f00;
+      box-sizing: border-box;
+      background-color: #fff;
+      .js-siteGlobalNavIsFixed & {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+    }
   }
 }
 
