@@ -157,7 +157,7 @@ function _getEventObj(e) {
   return e.changedTouches ? e.changedTouches[0] : e;
 }
 
-},{"../_vendor/jquery-3.2.1.js":5,"../_vendor/modernizr.js":6}],2:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":6,"../_vendor/modernizr.js":7}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -176,7 +176,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../_vendor/jquery-3.2.1.js":5}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":6}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -329,7 +329,7 @@ function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-},{"../_vendor/jquery-3.2.1.js":5,"../_vendor/modernizr.js":6}],4:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":6,"../_vendor/modernizr.js":7}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -460,7 +460,120 @@ function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-},{"../_vendor/jquery-3.2.1.js":5}],5:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":6}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = require('../_vendor/jquery-3.2.1.js');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Toggle = function () {
+  function Toggle(options) {
+    _classCallCheck(this, Toggle);
+
+    this.defaultSettings = {
+      name: 'transitiontoggle',
+      trigger: '',
+      target: '',
+      toAddClass: null,
+      eventRoot: 'body'
+    };
+    this.settings = _jquery2.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.trigger = this.settings.trigger;
+    this.target = this.settings.target;
+    this.eventRoot = this.settings.eventRoot;
+    this.elemTrigger = null;
+    this.elemTarget = null;
+    this.elemToClass = null;
+    this.eventName = 'click.' + this.id;
+    this.callBackForOpen = null;
+    this.callBackForClose = null;
+    this.isOpen = false;
+  }
+
+  _createClass(Toggle, [{
+    key: 'on',
+    value: function on(callBackForOpen, callBackForClose, callBackForEnd) {
+      var _this = this;
+
+      var settings = this.settings,
+          $root = (0, _jquery2.default)(this.eventRoot);
+      this.elemToAddClass = document.querySelectorAll(settings.toAddClass);
+      this.elemTrigger = document.querySelectorAll(this.trigger);
+      this.elemTarget = document.querySelectorAll(this.target);
+      this.callBackForOpen = callBackForOpen;
+      this.callBackForClose = callBackForClose;
+      $root.one(this.eventName, this.trigger, function (e) {
+        _this.handleForOpen(e);
+      });
+      $root.on('transitionend.' + this.id, this.target, function (e) {
+        if (_this.isOpen === true) {
+          $root.one(_this.eventName, _this.trigger, function (e) {
+            _this.handleForClose(e);
+          });
+        } else {
+          $root.one(_this.eventName, _this.trigger, function (e) {
+            _this.handleForOpen(e);
+          });
+        }
+        if (typeof callBackForEnd === 'function') {
+          callBackForEnd.call(_this, e, _this, _this.isOpen);
+        }
+      });
+      return this;
+    }
+  }, {
+    key: 'off',
+    value: function off() {
+      this.elemToAddClass = null;
+      this.elemTrigger = null;
+      this.elemTarget = null;
+      this.callBackForOpen = null;
+      this.callBackForClose = null;
+      (0, _jquery2.default)(this.eventRoot).off('transitionend.' + this.id, this.target);
+      return this;
+    }
+  }, {
+    key: 'handleForOpen',
+    value: function handleForOpen(e) {
+      this.open(e);
+    }
+  }, {
+    key: 'handleForClose',
+    value: function handleForClose(e) {
+      this.close(e);
+    }
+  }, {
+    key: 'open',
+    value: function open(e) {
+      this.isOpen = true;
+      this.callBackForOpen.call(this, e, this);
+    }
+  }, {
+    key: 'close',
+    value: function close(e) {
+      this.isOpen = false;
+      this.callBackForClose.call(this, e, this);
+    }
+  }]);
+
+  return Toggle;
+}();
+
+exports.default = Toggle;
+
+},{"../_vendor/jquery-3.2.1.js":6}],6:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10290,7 +10403,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	return jQuery;
 });
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10882,7 +10995,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   ;
 })(window, document);
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var _optimizedresize = require('./_modules/optimizedresize.js');
@@ -10897,6 +11010,10 @@ var _scrollmanager = require('./_modules/scrollmanager.js');
 
 var _scrollmanager2 = _interopRequireDefault(_scrollmanager);
 
+var _transitiontoggle = require('./_modules/transitiontoggle.js');
+
+var _transitiontoggle2 = _interopRequireDefault(_transitiontoggle);
+
 var _foo = require('./_modules/foo.js');
 
 var _foo2 = _interopRequireDefault(_foo);
@@ -10910,10 +11027,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var mdls = {};
 
 mdls.resize = new _optimizedresize2.default();
-mdls.hover = new _adaptivehover2.default({
-  target: '.hoverTarget'
-});
-mdls.scroll = new _scrollmanager2.default();
 
 (0, _foo2.default)('body');
 
@@ -10927,11 +11040,18 @@ mdls.resize.one(function () {
   console.info('(max-width: 374px)');
 }, '(max-width: 374px)').run();
 
+mdls.hover = new _adaptivehover2.default({
+  target: '.hoverTarget'
+});
+
 mdls.hover.on(function (e, instance) {
   (0, _jquery2.default)(instance.target).addClass('js-hover');
 }, function (e, instance) {
   (0, _jquery2.default)(instance.target).removeClass('js-hover');
 });
+
+mdls.scroll = new _scrollmanager2.default();
+
 (function () {
   var $pointElement = (0, _jquery2.default)('.siteGlobalNav'),
       $wrapper = (0, _jquery2.default)('body'),
@@ -10949,6 +11069,40 @@ mdls.hover.on(function (e, instance) {
   });
 })();
 
-},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_modules/scrollmanager.js":4,"./_vendor/jquery-3.2.1.js":5}]},{},[7])
+mdls.toggle = new _transitiontoggle2.default({
+  trigger: '.toggleTarget_btn',
+  target: '.toggleTarget_inner',
+  toAddClass: '#page'
+});
+
+mdls.toggle.on(function (e, instance) {
+  console.info('open');
+  var $target = (0, _jquery2.default)(instance.elemTarget),
+      $parent = (0, _jquery2.default)(instance.elemToAddClass),
+      height = $target.find('.toggleTarget_list').outerHeight(true);
+  $target.css({
+    'height': height + 'px'
+  });
+  $parent.addClass('js-toggleTargetIsOpening');
+}, function (e, instance) {
+  console.info('close');
+  var $target = (0, _jquery2.default)(instance.elemTarget),
+      $parent = (0, _jquery2.default)(instance.elemToAddClass);
+  $target.css({
+    'height': ''
+  });
+  setTimeout(function () {
+    $parent.removeClass('js-toggleTargetIsOpening');
+  }, 100);
+}, function (e, instance) {
+  var $parent = (0, _jquery2.default)(instance.elemToAddClass);
+  if (instance.isOpen === true) {
+    $parent.addClass('js-toggleTargetIsOpen');
+  } else {
+    $parent.removeClass('js-toggleTargetIsOpen');
+  }
+});
+
+},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_modules/scrollmanager.js":4,"./_modules/transitiontoggle.js":5,"./_vendor/jquery-3.2.1.js":6}]},{},[8])
 
 //# sourceMappingURL=common_body.js.map

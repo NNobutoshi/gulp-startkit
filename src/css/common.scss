@@ -61,3 +61,30 @@
     height: 40px;
   }
 }
+
+.toggleTarget {
+  @at-root {
+    .toggleTarget_btn {
+      display: block;
+      padding: 10px;
+      border: solid 1px #f00;
+      cursor: pointer;
+    }
+    .toggleTarget_inner {
+      background-color: rgba(0, 0, 255, .2);
+      .js & {
+        transition-property: all;
+        transition-duration: .25s;
+        transition-timing-function: ease-in-out;
+        overflow: hidden;
+        height: 0;
+      }
+      .js-toggleTargetIsOpening & {
+        opacity: 1;
+      }
+      .js-toggleTargetIsOpen & {
+        background-color: rgba(0, 255, 255, .2);
+      }
+    }
+  }
+}

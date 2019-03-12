@@ -134,4 +134,14 @@ template { display: none; }
 
 .hoverTarget.js-hover { height: 40px; }
 
+.toggleTarget_btn { display: block; padding: 10px; border: solid 1px #f00; cursor: pointer; }
+
+.toggleTarget_inner { background-color: rgba(0, 0, 255, 0.2); }
+
+.js .toggleTarget_inner { -webkit-transition-property: all; transition-property: all; -webkit-transition-duration: .25s; transition-duration: .25s; -webkit-transition-timing-function: ease-in-out; transition-timing-function: ease-in-out; overflow: hidden; height: 0; }
+
+.js-toggleTargetIsOpening .toggleTarget_inner { opacity: 1; }
+
+.js-toggleTargetIsOpen .toggleTarget_inner { background-color: rgba(0, 255, 255, 0.2); }
+
 /*# sourceMappingURL=common.css.map */

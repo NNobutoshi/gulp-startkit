@@ -3,16 +3,13 @@
 import OptimizedResize from './_modules/optimizedresize.js';
 import Adaptivehover from './_modules/adaptivehover.js';
 import ScrollManager from './_modules/scrollmanager.js';
+import Toggle from './_modules/transitiontoggle.js';
 import foo from './_modules/foo.js';
 import $ from './_vendor/jquery-3.2.1.js';
 
 const mdls = {};
 
 mdls.resize = new OptimizedResize();
-mdls.hover = new Adaptivehover( {
-  target : '.hoverTarget'
-} );
-mdls.scroll = new ScrollManager();
 
 foo('body');
 
@@ -32,6 +29,10 @@ mdls.resize
   .run()
 ;
 
+mdls.hover = new Adaptivehover( {
+  target : '.hoverTarget'
+} );
+
 mdls.hover
   .on(
     ( e, instance ) =>  {
@@ -42,6 +43,9 @@ mdls.hover
     }
   )
 ;
+
+mdls.scroll = new ScrollManager();
+
 ( function() {
   const
     $pointElement = $('.siteGlobalNav')
@@ -63,4 +67,52 @@ mdls.hover
       return true;
     } )
   ;
-} )();
+} )()
+;
+
+mdls.toggle = new Toggle( {
+  trigger : '.toggleTarget_btn',
+  target : '.toggleTarget_inner',
+  toAddClass : '#page',
+} );
+
+mdls.toggle
+  .on(
+    ( e, instance ) => {
+      console.info('open');
+      const
+        $target = $( instance.elemTarget )
+        ,$parent = $( instance.elemToAddClass )
+        ,height = $target.find( '.toggleTarget_list').outerHeight( true )
+      ;
+      $target.css( {
+        'height' : height + 'px'
+      } );
+      $parent.addClass( 'js-toggleTargetIsOpening' );
+    }
+    ,( e, instance ) => {
+      console.info('close');
+      const
+        $target = $( instance.elemTarget )
+        ,$parent = $( instance.elemToAddClass )
+      ;
+      $target.css( {
+        'height' : ''
+      } );
+      setTimeout( () => {
+        $parent.removeClass( 'js-toggleTargetIsOpening' );
+      },100 );
+    }
+    ,( e, instance ) => {
+      const
+        $parent = $( instance.elemToAddClass )
+      ;
+      if( instance.isOpen === true ) {
+        $parent.addClass( 'js-toggleTargetIsOpen' );
+      } else {
+        $parent.removeClass( 'js-toggleTargetIsOpen' );
+      }
+    }
+  )
+;
+
