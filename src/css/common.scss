@@ -73,11 +73,12 @@
     .toggleTarget_inner {
       background-color: rgba(0, 0, 255, .2);
       .js & {
-        transition-property: all;
+        transition-property: height, opacity, background-color;
         transition-duration: .25s;
         transition-timing-function: ease-in-out;
         overflow: hidden;
         height: 0;
+        opacity: 0;
       }
       .js-toggleTargetIsOpening & {
         opacity: 1;

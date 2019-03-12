@@ -509,6 +509,7 @@ var Toggle = function () {
 
       var settings = this.settings,
           $root = (0, _jquery2.default)(this.eventRoot);
+      var isOpen = false;
       this.elemToAddClass = document.querySelectorAll(settings.toAddClass);
       this.elemTrigger = document.querySelectorAll(this.trigger);
       this.elemTarget = document.querySelectorAll(this.target);
@@ -518,17 +519,20 @@ var Toggle = function () {
         _this.handleForOpen(e);
       });
       $root.on('transitionend.' + this.id, this.target, function (e) {
-        if (_this.isOpen === true) {
-          $root.one(_this.eventName, _this.trigger, function (e) {
-            _this.handleForClose(e);
-          });
-        } else {
-          $root.one(_this.eventName, _this.trigger, function (e) {
-            _this.handleForOpen(e);
-          });
-        }
-        if (typeof callBackForEnd === 'function') {
-          callBackForEnd.call(_this, e, _this, _this.isOpen);
+        if (isOpen !== _this.isOpen) {
+          if (_this.isOpen === true) {
+            $root.one(_this.eventName, _this.trigger, function (e) {
+              _this.handleForClose(e);
+            });
+          } else if (_this.isOpen === false) {
+            $root.one(_this.eventName, _this.trigger, function (e) {
+              _this.handleForOpen(e);
+            });
+          }
+          if (typeof callBackForEnd === 'function') {
+            callBackForEnd.call(_this, e, _this);
+          }
+          isOpen = _this.isOpen;
         }
       });
       return this;

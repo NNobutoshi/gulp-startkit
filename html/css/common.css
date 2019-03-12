@@ -138,7 +138,7 @@ template { display: none; }
 
 .toggleTarget_inner { background-color: rgba(0, 0, 255, 0.2); }
 
-.js .toggleTarget_inner { -webkit-transition-property: all; transition-property: all; -webkit-transition-duration: .25s; transition-duration: .25s; -webkit-transition-timing-function: ease-in-out; transition-timing-function: ease-in-out; overflow: hidden; height: 0; }
+.js .toggleTarget_inner { -webkit-transition-property: height, opacity, background-color; transition-property: height, opacity, background-color; -webkit-transition-duration: .25s; transition-duration: .25s; -webkit-transition-timing-function: ease-in-out; transition-timing-function: ease-in-out; overflow: hidden; height: 0; opacity: 0; }
 
 .js-toggleTargetIsOpening .toggleTarget_inner { opacity: 1; }
 

@@ -31,6 +31,9 @@ export default class Toggle {
       settings = this.settings
       ,$root = $( this.eventRoot )
     ;
+    let
+      isOpen = false
+    ;
     this.elemToAddClass = document.querySelectorAll( settings.toAddClass );
     this.elemTrigger = document.querySelectorAll( this.trigger );
     this.elemTarget = document.querySelectorAll( this.target );
@@ -40,17 +43,20 @@ export default class Toggle {
       this.handleForOpen( e );
     } );
     $root.on( `transitionend.${this.id}`, this.target, ( e ) => {
-      if ( this.isOpen === true ) {
-        $root.one( this.eventName, this.trigger, ( e ) => {
-          this.handleForClose( e );
-        } );
-      } else {
-        $root.one( this.eventName, this.trigger, ( e ) => {
-          this.handleForOpen( e );
-        } );
-      }
-      if( typeof callBackForEnd === 'function' ) {
-        callBackForEnd.call( this, e, this, this.isOpen );
+      if ( isOpen !== this.isOpen ) {
+        if ( this.isOpen === true ) {
+          $root.one( this.eventName, this.trigger, ( e ) => {
+            this.handleForClose( e );
+          } );
+        } else if( this.isOpen === false ){
+          $root.one( this.eventName, this.trigger, ( e ) => {
+            this.handleForOpen( e );
+          } );
+        }
+        if( typeof callBackForEnd === 'function' ) {
+          callBackForEnd.call( this, e, this );
+        }
+        isOpen = this.isOpen;
       }
     } )
     ;
