@@ -47,7 +47,7 @@ const
       debug: true
     }
     ,del : {
-      dist : [ dist + '/**/*.map']
+      dist : [ dist + '/**/*.map' ]
     }
     ,eSLint : {
       useEslintrc: true
@@ -217,7 +217,8 @@ gulp.task( 'html:pug', () => {
     .pipe( gulp.dest( dist ) )
   ;
   return stream;
-} );
+} )
+;
 
 gulp.task( 'html:_pug', () => {
   const
@@ -232,7 +233,14 @@ gulp.task( 'html:_pug', () => {
     .pipe( gulp.dest( dist ) )
   ;
   return stream;
-} );
+} )
+;
+
+gulp.task( 'clean', () => {
+  return del( options.del.dist );
+} )
+;
+
 gulp.task( 'js:bundle', [ 'clean' ], () => {
   const
     self           = tasks[ 'js:bundle' ]
@@ -300,7 +308,7 @@ gulp.task( 'sprite', () => {
 ;
 
 gulp.task( 'js:eslint', () => {
-  var
+  const
     self = tasks[ 'js:eslint' ]
   ;
   return gulp
@@ -310,11 +318,6 @@ gulp.task( 'js:eslint', () => {
     .pipe( eSLint.format() )
     .pipe( eSLint.failAfterError() )
   ;
-} )
-;
-
-gulp.task( 'clean', () => {
-  return del( options.del.dist );
 } )
 ;
 
@@ -393,12 +396,10 @@ function _callWatchTasks() {
     .keys( tasks )
     .forEach( function( key ) {
       var watch = tasks[ key ].watch;
-      if( watch ) {
-        if ( watch === true ) {
-          gulp.watch( tasks[ key ].src, [ key ] );
-        } else if ( Array.isArray( watch ) ) {
-          gulp.watch( watch, [ key ] );
-        }
+      if ( Array.isArray( watch ) ) {
+        gulp.watch( watch, [ key ] );
+      } else if( watch === true ) {
+        gulp.watch( tasks[ key ].src, [ key ] );
       }
     } )
   ;
@@ -408,9 +409,7 @@ function _filterDefaultTasks() {
   return Object
     .keys( tasks )
     .filter( function( key ) {
-      if ( tasks[ key ].default && tasks[ key ].default === true ) {
-        return key;
-      }
+      return tasks[ key ].default === true;
     } )
   ;
 }
