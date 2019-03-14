@@ -11,11 +11,6 @@
   "repository": {
     "type": "git"
   },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
-  },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
@@ -28,6 +23,7 @@
     "gulp-buffer": "*",
     "gulp-changed": "*",
     "gulp-concat": "*",
+    "gulp-duration": "*",
     "gulp-eslint": "*",
     "gulp-iconfont": "*",
     "gulp-iconfont-css": "*",
@@ -42,7 +38,10 @@
     "gulp.spritesmith": "*",
     "js-beautify": "*",
     "merge-stream": "*",
-    "pug": "*"
+    "pug": "*",
+    "vinyl-buffer": "*",
+    "vinyl-source-stream": "*",
+    "watchify": "*"
   },
   "optionalDependencies": {
     "browser-sync": "*"

@@ -1,7 +1,7 @@
 const
-  gulp        = require('gulp')
-  ,buffer      = require('gulp-buffer')
+  gulp         = require('gulp')
   ,changed     = require('gulp-changed')
+  ,duration    = require('gulp-duration')
   ,eSLint      = require('gulp-eslint')
   ,iconfont    = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
@@ -16,12 +16,16 @@ const
   ,uglify      = require('gulp-uglify')
 
   ,autoprefixer = require('autoprefixer')
+  ,babelify     = require('babelify')
+  ,beautifyHtml = require('js-beautify').html
   ,browserify   = require('browserify')
+  ,buffer       = require('vinyl-buffer')
   ,cssMqpacker  = require('css-mqpacker')
   ,del          = require('del')
-  ,beautifyHtml = require('js-beautify').html
   ,mergeStream  = require('merge-stream')
   ,pug          = require('pug')
+  ,source       = require('vinyl-source-stream')
+  ,watchify     = require('watchify')
 
   ,dist            = 'html'
   ,src             = 'src'
@@ -30,127 +34,130 @@ const
   ,needsUglify     = false
   ,options         = {
     autoprefixer : {
-      browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
-    }
-    ,assistPretty : {
-      assistAElement    : true
-      ,commentPosition  : 'inside'
-      ,commentOnOneLine : true
-      ,emptyLine        : true
-      ,indent           : true
-    }
-    ,beautifyHtml : {
-      indent_size  : 2
-      ,indent_char : ' '
-    }
-    ,browserify : {
-      debug: true
-    }
-    ,del : {
-      dist : [ dist + '/**/*.map' ]
-    }
-    ,eSLint : {
-      useEslintrc: true
-    }
-    ,iconfont : {
-      fontName        : 'icons'
-      ,prependUnicode : true
-      ,formats        : [ 'ttf', 'eot', 'woff' ]
-      ,timestamp      : Math.round( Date.now() / 1000 )
-      ,normalize      : true
-    }
-    ,iconfontCss : {
-      fontName    : 'icons'
-      ,path       : src + '/_templates/_icons.scss'
-      ,targetPath : '../css/_icons.scss'
-      ,fontPath   : '../fonts/icons/'
-    }
-    ,plumber : {
-      errorHandler: notify.onError('Error: <%= error.message %>')
-    }
-    ,pug : {
-      pretty : true
-      ,basedir: src
-    }
-    ,sass : {
-      outputStyle  : 'compact' // nested, compact, compressed, expanded
-      ,linefeed    : 'lf' // 'crlf', 'lf'
-      ,indentType  : 'space' // 'space', 'tab'
-      ,indentWidth : 2
-    }
-    ,sprite : {
-      cssName      : '_mixins_sprite.scss'
-      ,imgName     : 'common_sprite.png'
-      ,imgPath     : '../img/common_sprite.png'
-      ,cssFormat   : 'scss'
-      ,padding     : 10
-      ,cssTemplate : src + '/_templates/scss.template.handlebars'
-      ,cssVarMap   : function ( sprite ) {
+      browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ],
+    },
+    assistPretty : {
+      assistAElement   : true,
+      commentPosition  : 'inside',
+      commentOnOneLine : true,
+      emptyLine        : true,
+      indent           : true,
+    },
+    beautifyHtml : {
+      indent_size : 2,
+      indent_char : ' ',
+    },
+    browserify : {
+      cache        : {},
+      packageCache : {},
+      plugin       : [ watchify ],
+      transform    : [ babelify ],
+    },
+    del : {
+      dist : [ dist + '/**/*.map' ],
+    },
+    eSLint : {
+      useEslintrc: true,
+    },
+    iconfont : {
+      fontName       : 'icons',
+      prependUnicode : true,
+      formats        : [ 'ttf', 'eot', 'woff' ],
+      timestamp      : Math.round( Date.now() / 1000 ),
+      normalize      : true,
+    },
+    iconfontCss : {
+      fontName   : 'icons',
+      path       : src + '/_templates/_icons.scss',
+      targetPath : '../css/_icons.scss',
+      fontPath   : '../fonts/icons/',
+    },
+    plumber : {
+      errorHandler : notify.onError('Error: <%= error.message %>'),
+    },
+    pug : {
+      pretty  : true,
+      basedir : src,
+    },
+    sass : {
+      outputStyle : 'compact', // nested, compact, compressed, expanded
+      linefeed    : 'lf', // 'crlf', 'lf'
+      indentType  : 'space', // 'space', 'tab'
+      indentWidth : 2,
+    },
+    sprite : {
+      cssName      : '_mixins_sprite.scss',
+      imgName     : 'common_sprite.png',
+      imgPath     : '../img/common_sprite.png',
+      cssFormat   : 'scss',
+      padding     : 10,
+      cssTemplate : src + '/_templates/scss.template.handlebars',
+      cssVarMap   : function ( sprite ) {
         sprite.name = 'sheet-' + sprite.name;
-      }
-    }
-    ,uglify : {
+      },
+    },
+    uglify : {
       output : {
-        comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i
-      }
-    }
+        comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i,
+      },
+    },
   }
   ,tasks = {
     'css:sass' : {
-      src      : [ src + '/**/*.scss' ]
-      ,watch   : true
-      ,default : true
-      // ,needsCssMqpack: false
-      // ,needsSourcemap: false
-    }
-    ,'iconfont' : {
-      src      : [ src + '/fonts/*.svg' ]
-      ,watch   : true
-      ,default : false
-    }
-    ,'js:bundle' : {
-      src      : [ src + '/**/*bundle.js' ]
-      ,watch   : [ src + '/**/*.js' ]
-      ,default : true
-      // ,needsUglify: false
-      // ,needsSourcemap: false
-    }
-    ,'js:eslint' : {
-      src      : [
+      src     : [ src + '/**/*.scss' ],
+      watch   : true,
+      default : true,
+      // needsCssMqpack: false,
+      // needsSourcemap: false,
+    },
+    'iconfont' : {
+      src     : [ src + '/fonts/*.svg' ],
+      watch   : true,
+      default : false,
+    },
+    'js:bundle' : {
+      src     : [ src + '/**/*bundle.js' ],
+      watch   : false,
+      default : true,
+      // needsUglify: false,
+      // needsSourcemap: false,
+    },
+    'js:eslint' : {
+      src : [
         ''   + '*.js'
         ,''  + src + '/**/*.js'
         ,'!' + src + '/**/_vendor/*.js'
-      ]
-      ,watch   : true
-      ,default : true
-      // ,needsUglify: false
-      // ,needsSourcemap: false
-    }
-    ,'html:pug' : {
+      ],
+      watch   : true,
+      default : true,
+      // needsUglify: false,
+      // needsSourcemap: false,
+    },
+    'html:pug' : {
       src : [
-        ''   + src + '/**/*.pug'
-        ,'!' + src + '/**/_*.pug'
-        ,'!' + src + '/**/_*/**/*.pug'
-      ]
-      ,watch   : true
-      ,default : true
-    }
-    ,'html:_pug' : {
+        ''   + src + '/**/*.pug',
+        '!' + src + '/**/_*.pug',
+        '!' + src + '/**/_*/**/*.pug',
+      ],
+      watch   : true,
+      default : true,
+    },
+    'html:_pug' : {
       src : [
-        ''   + src + '/**/*.pug'
-        ,'!' + src + '/**/_*.pug'
-      ]
-      ,watch   : [ src + '/**/_*.pug' ]
-      ,default : true
-    }
-    ,'sprite'  : {
-      src      : [ src + '/img/_sprite/*.png' ]
-      ,watch   : true
-      ,default : true
-    }
-    ,'watch' : {
-      default : true
-    }
+        ''   + src + '/**/*.pug',
+        '!' + src + '/**/_*.pug',
+      ],
+      watch   : [ src + '/**/_*.pug' ],
+      default : true,
+    },
+    'sprite'  : {
+      src     : [ src + '/img/_sprite/*.png' ],
+      watch   : true,
+      default : true,
+    },
+    'watch' : {
+      default : true,
+    },
   }
 ;
 
@@ -250,32 +257,41 @@ gulp.task( 'js:bundle', gulp.series( 'clean', () => {
   let
     stream
   ;
+  options.browserify.debug = flagSourcemap;
   stream = gulp
     .src( self.src )
     .pipe( tap( function( file ) {
-      file.contents = browserify( file.path, options.browserify )
-        .bundle()
-        .on( 'error', function( error ) {
-          options.plumber.errorHandler( error );
-          stream.emit('end');
-        } )
+      const
+        br = browserify( file.path, options.browserify )
       ;
-      file.path = file.path.replace( /\.bundle\.js$/, '.js' );
+      function _bundle() {
+        return br
+          .bundle()
+          .on( 'error', function( error ) {
+            options.plumber.errorHandler( error );
+            stream.emit('end');
+          } )
+          .pipe( source( file.relative.replace( /\.bundle\.js$/, '.js') ) )
+          .pipe( duration( 'bundled "' + file.path + '"' ) )
+          .pipe( buffer() )
+          .pipe( gulpIf(
+            flagSourcemap
+            ,sourcemap.init( { loadMaps: true } )
+          ) )
+          .pipe( gulpIf(
+            flagUglify
+            ,uglify( options.uglify )
+          ) )
+          .pipe( gulpIf(
+            flagSourcemap
+            ,sourcemap.write( './' )
+          ) )
+          .pipe( gulp.dest( dist ) )
+        ;
+      }
+      br.on( 'update', _bundle );
+      return _bundle();
     } ) )
-    .pipe( buffer() )
-    .pipe( gulpIf(
-      flagSourcemap
-      ,sourcemap.init( { loadMaps: true } )
-    ) )
-    .pipe( gulpIf(
-      flagUglify
-      ,uglify( options.uglify )
-    ) )
-    .pipe( gulpIf(
-      flagSourcemap
-      ,sourcemap.write( './' )
-    ) )
-    .pipe( gulp.dest( dist ) )
   ;
   return stream;
 } ) )
