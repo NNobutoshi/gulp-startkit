@@ -94,39 +94,13 @@ Vagrant.configure("2") do |config|
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
     ln -s /home/vagrant/www/package.json /home/vagrant
     ln -s /home/vagrant/www/package-lock.json /home/vagrant
+    ln -s /home/vagrant/www/npm-shrinkwrap.json /home/vagrant
     systemctl enable httpd.service
     systemctl restart httpd.service
     curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
     sudo yum install -y nodejs-10.7.0
     cd /home/vagrant
-    npm install -g gulp@3
-    npm install --save-dev autoprefixer
-    npm install --save-dev babel-core
-    npm install --save-dev babel-preset-env
-    npm install --save-dev babelify@8
-    npm install --save-dev browserify
-    npm install --save-dev css-mqpacker
-    npm install --save-dev del
-    npm install --save-dev gulp@3
-    npm install --save-dev gulp-buffer
-    npm install --save-dev gulp-concat
-    npm install --save-dev gulp-changed
-    npm install --save-dev gulp-eslint
-    sudo npm install --save-dev gulp-iconfont
-    npm install --save-dev gulp-iconfont-css
-    npm install --save-dev gulp-if
-    npm install --save-dev gulp-notify
-    npm install --save-dev gulp-plumber
-    npm install --save-dev gulp-postcss
-    npm install --save-dev gulp-sass
-    npm install --save-dev gulp-sourcemaps
-    npm install --save-dev gulp-tap
-    npm install --save-dev gulp-uglify
-    npm install --save-dev gulp.spritesmith
-    npm install --save-dev js-beautify
-    npm install --save-dev merge-stream
-    npm install --save-dev pug
-    npm install --save-optional browser-sync
+    npm install -g gulp
     sudo npm install
   SHELL
 end

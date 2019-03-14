@@ -241,7 +241,7 @@ gulp.task( 'clean', () => {
 } )
 ;
 
-gulp.task( 'js:bundle', [ 'clean' ], () => {
+gulp.task( 'js:bundle', gulp.series( 'clean', () => {
   const
     self           = tasks[ 'js:bundle' ]
     ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: needsUglify
@@ -278,7 +278,7 @@ gulp.task( 'js:bundle', [ 'clean' ], () => {
     .pipe( gulp.dest( dist ) )
   ;
   return stream;
-} )
+} ) )
 ;
 
 gulp.task( 'sprite', () => {
@@ -397,19 +397,19 @@ function _callWatchTasks() {
     .forEach( function( key ) {
       var watch = tasks[ key ].watch;
       if ( Array.isArray( watch ) ) {
-        gulp.watch( watch, [ key ] );
+        gulp.watch( watch, gulp.series( key ) );
       } else if( watch === true ) {
-        gulp.watch( tasks[ key ].src, [ key ] );
+        gulp.watch( tasks[ key ].src, gulp.series( key ) );
       }
     } )
   ;
 }
 
 function _filterDefaultTasks() {
-  return Object
+  return gulp.parallel( Object
     .keys( tasks )
     .filter( function( key ) {
       return tasks[ key ].default === true;
-    } )
+    } ) )
   ;
 }
