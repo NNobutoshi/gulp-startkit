@@ -14,8 +14,10 @@ const
   ,sprite      = require('gulp.spritesmith')
   ,tap         = require('gulp-tap')
   ,uglify      = require('gulp-uglify')
+;
 
-  ,autoprefixer = require('autoprefixer')
+const
+  autoprefixer  = require('autoprefixer')
   ,babelify     = require('babelify')
   ,beautifyHtml = require('js-beautify').html
   ,browserify   = require('browserify')
@@ -26,13 +28,18 @@ const
   ,pug          = require('pug')
   ,source       = require('vinyl-source-stream')
   ,watchify     = require('watchify')
+;
 
-  ,dist            = 'html'
+const
+  dist            = '../html'
   ,src             = 'src'
   ,needsSourcemap  = true
   ,needsCssMqpack  = true
   ,needsUglify     = false
-  ,options         = {
+;
+
+const
+  options         = {
     autoprefixer : {
       browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ],
     },
@@ -54,7 +61,8 @@ const
       transform    : [ babelify ],
     },
     del : {
-      dist : [ dist + '/**/*.map' ],
+      dist  : [ dist + '/**/*.map' ],
+      force : true,
     },
     eSLint : {
       useEslintrc: true,
@@ -102,7 +110,10 @@ const
       },
     },
   }
-  ,tasks = {
+;
+
+const
+  tasks = {
     'css:sass' : {
       src     : [ src + '/**/*.scss' ],
       watch   : true,
@@ -244,7 +255,7 @@ gulp.task( 'html:_pug', () => {
 ;
 
 gulp.task( 'clean', () => {
-  return del( options.del.dist );
+  return del( options.del.dist, options.del );
 } )
 ;
 

@@ -4,7 +4,7 @@
   "description": "project example",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp",
+    "gulp": "gulp --gulpfile gulpkit.js",
     "lr": "node livereload.js"
   },
   "author": "",

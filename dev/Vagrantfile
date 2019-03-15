@@ -57,8 +57,8 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./html", "/var/www/html"
-  config.vm.synced_folder ".", "/home/vagrant/www"
+  config.vm.synced_folder "../html", "/var/www/html"
+  config.vm.synced_folder ".", "/home/vagrant/www/dev"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -92,9 +92,9 @@ Vagrant.configure("2") do |config|
     sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%#EnableMMAP off%EnableMMAP off%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
-    ln -s /home/vagrant/www/package.json /home/vagrant
-    ln -s /home/vagrant/www/package-lock.json /home/vagrant
-    ln -s /home/vagrant/www/npm-shrinkwrap.json /home/vagrant
+    ln -s /home/vagrant/www/dev/package.json /home/vagrant
+    ln -s /home/vagrant/www/dev/package-lock.json /home/vagrant
+    ln -s /home/vagrant/www/dev/npm-shrinkwrap.json /home/vagrant
     systemctl enable httpd.service
     systemctl restart httpd.service
     curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
