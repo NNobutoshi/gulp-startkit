@@ -1,8 +1,8 @@
-/node_modules
+node_modules
 *.map
-/livereload.js
-/.npm-version
-/.node-version
-/.vagrant
-/package-lock.json
-/config.yml
+/dev/livereload.js
+/dev/.npm-version
+/dev/.node-version
+/dev/.vagrant
+/dev/package-lock.json
+/dev/config.yml
