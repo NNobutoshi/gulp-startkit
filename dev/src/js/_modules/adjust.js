@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = function( className, d ) {
   const
     htmlElement = d.getElementsByTagName('html')[0]

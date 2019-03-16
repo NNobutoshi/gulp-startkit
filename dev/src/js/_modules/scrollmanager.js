@@ -1,10 +1,4 @@
-'use strict';
-
 import $ from '../_vendor/jquery-3.2.1.js';
-
-const
-  $root = $( window )
-;
 
 let
   counter = 0
@@ -17,17 +11,19 @@ export default class ScrollManager {
       name   : 'scrollManager',
       offset : 0,
       delay  : 66,
+      eventRoot : window
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
-    this.callBacks = {};
-    this.isRunning = false;
     this.id = this.settings.name;
+    this.callBacks = {};
     this.eventName = `scroll.${this.id}`;
+    this.eventRoot = this.seggings.eventRoot;
+    this.isRunning = false;
   }
 
   runCallBacksAll() {
     let
-      scTop = $root.scrollTop()
+      scTop = $( this.eventRoot ).scrollTop()
       ,offset = 0
       ,scBottom = scTop + window.innerHeight
     ;
@@ -71,7 +67,7 @@ export default class ScrollManager {
 
   setUp() {
     if ( !this.callBacks.length ) {
-      $root.on( this.eventName, () => {
+      $( this.eventRoot ).on( this.eventName, () => {
         this.run();
       } );
     }

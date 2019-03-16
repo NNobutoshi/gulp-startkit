@@ -1,22 +1,21 @@
-'use strict';
-
 import $ from '../_vendor/jquery-3.2.1.js';
-require('../_vendor/modernizr.js');
-const
-  $root = $('html')
-;
+import '../_vendor/modernizr.js';
+
 /* globals Modernizr */
 export default class AdaptiveHover {
+
   constructor( options ) {
     this.defaultSettings = {
       name : 'adaptiveHover',
       target : '',
       timeout : 400,
       range : 10,
+      eventRoot : document.querySelectorAll('body')[ 0 ]
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.target = null;
+    this.eventRoot = this.settings.eventRoot;
     this.enterEventName = '';
     this.leaveEeventName = '';
     this.callBackForEnter = null;
@@ -30,6 +29,7 @@ export default class AdaptiveHover {
   on( callBackForEnter, callBackForLeave ) {
     const
       settings = this.settings
+      ,$root = $( this.eventRoot )
       ,eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click'
     ;
     
@@ -61,6 +61,7 @@ export default class AdaptiveHover {
   off() {
     const
       settings = this.settings
+      ,$root = $( this.eventRoot )
     ;
     this.clear();
     $root.off( this.enterEventName, settings.target );
@@ -70,8 +71,9 @@ export default class AdaptiveHover {
 
   handleForEnter( e ) {
     const 
-      eventObj = _getEventObj( e )
-      ,settings = this.settings
+      settings = this.settings
+      ,$root = $( this.eventRoot )
+      ,eventObj = _getEventObj( e )
     ;
     this.pageX = eventObj.pageX;
     this.pageY = eventObj.pageY;
@@ -85,6 +87,7 @@ export default class AdaptiveHover {
   handleForLeave( e ) {
     const
       settings = this.settings
+      ,$root = $( this.eventRoot )
       ,range = settings.range
       ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, range )
     ;

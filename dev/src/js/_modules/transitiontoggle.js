@@ -1,5 +1,3 @@
-'use strict';
-
 import $ from '../_vendor/jquery-3.2.1.js';
 
 export default class Toggle {
@@ -10,7 +8,7 @@ export default class Toggle {
       trigger : '',
       target : '',
       toAddClass : null,
-      eventRoot : 'body'
+      eventRoot : document.querySelectorAll('body')[ 0 ]
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;

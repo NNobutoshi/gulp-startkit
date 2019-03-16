@@ -1,23 +1,22 @@
-'use strict';
-
 import $ from '../_vendor/jquery-3.2.1.js';
-require('../_vendor/modernizr.js');
+import '../_vendor/modernizr.js';
 
 let
   counter = 0
 ;
 /* globals Modernizr */
 export default class OptimizedResize {
+
   constructor( options ) {
     this.defaultSettings = {
       name  : 'optimizedresize',
       delay : 66,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
+    this.id = this.settings.name;
+    this.eventName = `resize.${this.id}`;
     this.callBacks = {};
     this.isRunning = false;
-    this.eventName = `resize.${this.id}`;
-    this.id = this.settings.name;
   }
 
   runCallBacksAll() {

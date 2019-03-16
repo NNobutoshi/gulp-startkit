@@ -39,6 +39,7 @@
     "js-beautify": "*",
     "merge-stream": "*",
     "pug": "*",
+    "require-dir": "^1.2.0",
     "vinyl-buffer": "*",
     "vinyl-source-stream": "*",
     "watchify": "*"
