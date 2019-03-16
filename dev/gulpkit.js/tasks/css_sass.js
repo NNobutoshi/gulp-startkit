@@ -1,29 +1,40 @@
 const
-  gulp       = require('gulp')
+  gulp = require('gulp')
+;
+
+const
+  gulpIf     = require('gulp-if')
   ,notify    = require('gulp-notify')
-  ,postcss   = require('gulp-postcss')
   ,plumber   = require('gulp-plumber')
+  ,postcss   = require('gulp-postcss')
   ,sass      = require('gulp-sass')
-  ,gulpIf    = require('gulp-if')
   ,sourcemap = require('gulp-sourcemaps')
+;
 
-  ,autoprefixer = require('autoprefixer')
-  ,cssMqpacker  = require('css-mqpacker')
+const
+  autoprefixer = require('autoprefixer')
+  ,cssMqpacker = require('css-mqpacker')
+;
 
-  ,settings     = require('../config.js').settings
-  ,config       = require('../config.js').config
+const
+  config    = require('../config.js').config
+  ,settings = require('../config.js').settings
+;
+
+const
+  browsers = [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
   ,options = {
-    autoprefixer : {
-      browsers : [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ],
-      plumber : {
-        errorHandler : notify.onError('Error: <%= error.message %>'),
-      },
-      sass : {
-        outputStyle : 'compact', // nested, compact, compressed, expanded
-        linefeed    : 'lf', // 'crlf', 'lf'
-        indentType  : 'space', // 'space', 'tab'
-        indentWidth : 2,
-      },
+    plumber : {
+      errorHandler : notify.onError('Error: <%= error.message %>'),
+    },
+    sass : {
+      outputStyle : 'compact', // nested, compact, compressed, expanded
+      linefeed    : 'lf', // 'crlf', 'lf'
+      indentType  : 'space', // 'space', 'tab'
+      indentWidth : 2,
+    },
+    postcss : {
+      plugins : [ autoprefixer( browsers ) ]
     },
   }
 ;
@@ -31,13 +42,12 @@ const
 
 gulp.task( 'css_sass', () => {
   const
-    plugins        = [ autoprefixer( options.autoprefixer ) ]
-    ,self          = config[ 'css_sass' ]
-    ,flagCssMqpack = ( typeof self.needsCssMqpack === 'boolean' )? self.needsCssMqpack: settings.needsCssMqpack
-    ,flagSourcemap = ( typeof self.needsSourcemap === 'boolean' )? self.needsSourcemap: settings.needsSourcemap
+    self           = config[ 'css_sass' ]
+    ,flagCssMqpack = ( typeof self.cssMqpack === 'boolean' )? self.cssMqpack: true
+    ,flagSourcemap = ( typeof self.sourcemap === 'boolean' )? self.sourcemap: settings.sourcemap
   ;
   if ( flagCssMqpack ) {
-    plugins.push( cssMqpacker() );
+    options.postcss.plugins.push( cssMqpacker() );
   }
   return gulp
     .src(
@@ -49,7 +59,7 @@ gulp.task( 'css_sass', () => {
       ,sourcemap.init( { loadMaps: true } )
     ) )
     .pipe( sass( options.sass ) )
-    .pipe( postcss( plugins ) )
+    .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf(
       flagSourcemap
       ,sourcemap.write( './' )

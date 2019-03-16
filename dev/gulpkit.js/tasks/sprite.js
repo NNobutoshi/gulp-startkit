@@ -1,20 +1,29 @@
 const
   gulp     = require('gulp')
-  
-  ,plumber     = require('gulp-plumber')
-  ,mergeStream = require('merge-stream')
-  ,notify      = require('gulp-notify')
-  ,sprite      = require('gulp.spritesmith')
-  
-  ,config   = require('../config.js').config
-  ,settings = require('../config.js').settings
+;
 
-  ,options = {
+const  
+  notify   = require('gulp-notify')
+  ,plumber = require('gulp-plumber')
+  ,sprite  = require('gulp.spritesmith')
+;
+
+const
+  mergeStream = require('merge-stream')
+;
+
+const
+  config    = require('../config.js').config
+  ,settings = require('../config.js').settings
+;
+
+const
+  options = {
     plumber : {
       errorHandler : notify.onError('Error: <%= error.message %>'),
     },
     sprite : {
-      cssName      : '_mixins_sprite.scss',
+      cssName     : '_mixins_sprite.scss',
       imgName     : 'common_sprite.png',
       imgPath     : '../img/common_sprite.png',
       cssFormat   : 'scss',

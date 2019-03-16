@@ -1,14 +1,25 @@
 const
-  gulp       = require('gulp')
-  ,changed   = require('gulp-changed')
-  ,tap       = require('gulp-tap')
-  ,notify    = require('gulp-notify')
-  ,beautifyHtml = require('js-beautify').html
-  ,pug          = require('pug')
-  
+  gulp = require('gulp')
+;
+
+const
+  changed = require('gulp-changed')
+  ,notify = require('gulp-notify')
+  ,tap    = require('gulp-tap')
+;
+
+const
+  beautifyHtml = require('js-beautify').html
+  ,pug         = require('pug')
+;
+
+const  
+  config    = require('../config.js').config
   ,settings = require('../config.js').settings
-  ,config   = require('../config.js').config
-  ,options = {
+;
+
+const
+  options = {
     assistPretty : {
       assistAElement   : true,
       commentPosition  : 'inside',

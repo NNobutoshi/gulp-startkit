@@ -1,9 +1,8 @@
-const
-  gulp = require('gulp')
+const gulp = require('gulp');
 
-  ,config     = require('./config.js').config
-  ,requireDir = require('require-dir')
-;
+const requireDir = require('require-dir');
+
+const config = require('./config.js').config;
 
 requireDir('./tasks');
 

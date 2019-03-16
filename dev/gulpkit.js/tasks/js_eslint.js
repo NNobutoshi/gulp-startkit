@@ -1,13 +1,19 @@
 const
-  gulp        = require('gulp')
-  
-  ,eSLint   = require('gulp-eslint')
-  ,notify   = require('gulp-notify')
-  ,plumber  = require('gulp-plumber')
-  
-  ,config   = require('../config.js').config
+  gulp = require('gulp')
+;
 
-  ,options  = {
+const  
+  eSLint   = require('gulp-eslint')
+  ,notify  = require('gulp-notify')
+  ,plumber = require('gulp-plumber')
+;
+
+const 
+  config = require('../config.js').config
+;
+
+const
+  options = {
     plumber : {
       errorHandler : notify.onError('Error: <%= error.message %>'),
     },

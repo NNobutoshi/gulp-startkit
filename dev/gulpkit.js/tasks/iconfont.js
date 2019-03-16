@@ -1,11 +1,19 @@
 const
-  gulp         = require('gulp')
-  ,iconfont    = require('gulp-iconfont')
+  gulp = require('gulp')
+;
+
+const
+  iconfont     = require('gulp-iconfont')
   ,iconfontCss = require('gulp-iconfont-css')
-  
+;
+
+const
+  config    = require('../config.js').config
   ,settings = require('../config.js').settings
-  ,config   = require('../config.js').config
-  ,options = {
+;
+
+const
+  options = {
     iconfont : {
       fontName       : 'icons',
       prependUnicode : true,

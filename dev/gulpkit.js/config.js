@@ -1,10 +1,8 @@
 const
   settings = {
-    dist           : '../html',
-    src            : 'src',
-    needsSourcemap : true,
-    needsCssMqpack : true,
-    needsUglify    : false,
+    dist      : '../html',
+    src       : 'src',
+    sourcemap : true,
   }
 ;
 
@@ -14,8 +12,8 @@ const
       src     : [ settings.src + '/**/*.scss' ],
       watch   : true,
       default : true,
-      // needsCssMqpack: false,
-      // needsSourcemap: false,
+      // cssMqpack: false,
+      // sourcemap: false,
     },
     'iconfont' : {
       src     : [ settings.src + '/fonts/*.svg' ],
@@ -26,8 +24,8 @@ const
       src     : [ settings.src + '/**/*bundle.js' ],
       watch   : false,
       default : true,
-      // needsUglify: false,
-      // needsSourcemap: false,
+      // uglify: false,
+      // sourcemap: false,
     },
     'js_eslint' : {
       src : [
@@ -37,8 +35,6 @@ const
       ],
       watch   : true,
       default : true,
-      // needsUglify: false,
-      // needsSourcemap: false,
     },
     'html_pug' : {
       src : [
@@ -67,6 +63,7 @@ const
     },
   }
 ;
+
 module.exports = {
   settings: settings,
   config: config,

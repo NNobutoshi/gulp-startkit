@@ -1,22 +1,31 @@
 const
   gulp        = require('gulp')
-  
-  ,babelify   = require('babelify')
+;
+
+const
+  duration   = require('gulp-duration')
+  ,gulpIf    = require('gulp-if')
+  ,notify    = require('gulp-notify')
+  ,sourcemap = require('gulp-sourcemaps')
+  ,tap       = require('gulp-tap')
+  ,uglify    = require('gulp-uglify')
+;
+
+const  
+  babelify    = require('babelify')
   ,browserify = require('browserify')
   ,buffer     = require('vinyl-buffer')
-  ,duration   = require('gulp-duration')
-  ,gulpIf     = require('gulp-if')
-  ,notify     = require('gulp-notify')
   ,source     = require('vinyl-source-stream')
-  ,sourcemap  = require('gulp-sourcemaps')
-  ,tap        = require('gulp-tap')
-  ,uglify     = require('gulp-uglify')
   ,watchify   = require('watchify')
-  
-  ,config   = require('../config.js').config
-  ,settings = require('../config.js').settings
+;
 
-  ,options = {
+const
+  config    = require('../config.js').config
+  ,settings = require('../config.js').settings
+;
+
+const
+  options = {
     errorHandler : notify.onError('Error: <%= error.message %>'),
     browserify : {
       cache        : {},
@@ -35,8 +44,8 @@ const
 gulp.task( 'js_bundle', gulp.series( 'clean', () => {
   const
     self           = config[ 'js_bundle' ]
-    ,flagUglify    = ( typeof self.needsUglify ==='boolean' )? self.needsUglify: settings.needsUglify
-    ,flagSourcemap = ( typeof self.needsSourcemap ==='boolean' )? self.needsSourcemap: settings.needsSourcemap
+    ,flagUglify    = ( typeof self.uglify    ==='boolean' )? self.uglify:    true
+    ,flagSourcemap = ( typeof self.sourcemap ==='boolean' )? self.sourcemap: settings.sourcemap
   ;
   let
     stream

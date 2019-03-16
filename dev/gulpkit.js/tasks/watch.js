@@ -1,7 +1,9 @@
 const
-  gulp     = require('gulp')
+  gulp = require('gulp')
+;
 
-  ,config  = require('../config.js').config
+const
+  config = require('../config.js').config
 ;
 
 gulp.task( 'watch', _callWatchTasks );
