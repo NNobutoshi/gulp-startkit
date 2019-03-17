@@ -45,6 +45,9 @@ gulp.task( 'html_pug_children', () => {
     .src( config.src )
     .pipe( tap( _pugRender ) )
     .pipe( gulp.dest( settings.dist ) )
+    .pipe( tap( ( file ) => {
+      console.info( 'file = ' + file. path );
+    } ) )
   ;
   return stream;
 } )
