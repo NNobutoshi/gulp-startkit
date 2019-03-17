@@ -4,7 +4,6 @@ const
 
 const
   changed = require('gulp-changed')
-  ,notify = require('gulp-notify')
   ,tap    = require('gulp-tap')
 ;
 
@@ -14,40 +13,20 @@ const
 ;
 
 const  
-  config    = require('../config.js').config
+  config    = require('../config.js').config.html_pug
   ,settings = require('../config.js').settings
 ;
 
 const
-  options = {
-    assistPretty : {
-      assistAElement   : true,
-      commentPosition  : 'inside',
-      commentOnOneLine : true,
-      emptyLine        : true,
-      indent           : true,
-    },
-    beautifyHtml : {
-      indent_size : 2,
-      indent_char : ' ',
-    },
-    errorHandler : notify.onError('Error: <%= error.message %>'),
-    pug : {
-      pretty  : true,
-      basedir : settings.src,
-    },
-  }
+  options = config.options
 ;
 
 gulp.task( 'html_pug', () => {
-  const
-    self = config[ 'html_pug' ]
-  ;
   let
     stream
   ;
   stream = gulp
-    .src( self.src )
+    .src( config.src )
     .pipe( changed( settings.dist, {
       extension: '.html'
     } ) )
@@ -58,15 +37,12 @@ gulp.task( 'html_pug', () => {
 } )
 ;
 
-gulp.task( 'html_pug_chidlen', () => {
-  const
-    self = config[ 'html_pug_chidlen' ]
-  ;
+gulp.task( 'html_pug_children', () => {
   let
     stream
   ;
   stream = gulp
-    .src( self.src )
+    .src( config.src )
     .pipe( tap( _pugRender ) )
     .pipe( gulp.dest( settings.dist ) )
   ;

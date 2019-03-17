@@ -5,54 +5,33 @@ const
 const
   duration   = require('gulp-duration')
   ,gulpIf    = require('gulp-if')
-  ,notify    = require('gulp-notify')
   ,sourcemap = require('gulp-sourcemaps')
   ,tap       = require('gulp-tap')
   ,uglify    = require('gulp-uglify')
 ;
 
 const  
-  babelify    = require('babelify')
-  ,browserify = require('browserify')
+  browserify  = require('browserify')
   ,buffer     = require('vinyl-buffer')
   ,source     = require('vinyl-source-stream')
-  ,watchify   = require('watchify')
 ;
 
 const
-  config    = require('../config.js').config
+  config    = require('../config.js').config.js_bundle
   ,settings = require('../config.js').settings
 ;
 
 const
-  options = {
-    errorHandler : notify.onError('Error: <%= error.message %>'),
-    browserify : {
-      cache        : {},
-      packageCache : {},
-      plugin       : [ watchify ],
-      transform    : [ babelify ],
-    },
-    uglify : {
-      output : {
-        comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i,
-      },
-    },
-  }
+  options = config.options
 ;
 
 gulp.task( 'js_bundle', gulp.series( 'clean', () => {
-  const
-    self           = config[ 'js_bundle' ]
-    ,flagUglify    = ( typeof self.uglify    ==='boolean' )? self.uglify:    true
-    ,flagSourcemap = ( typeof self.sourcemap ==='boolean' )? self.sourcemap: settings.sourcemap
-  ;
   let
     stream
   ;
-  options.browserify.debug = flagSourcemap;
+  options.browserify.debug = config.sourcemap;
   stream = gulp
-    .src( self.src )
+    .src( config.src )
     .pipe( tap( function( file ) {
       const
         br = browserify( file.path, options.browserify )
@@ -68,15 +47,15 @@ gulp.task( 'js_bundle', gulp.series( 'clean', () => {
           .pipe( duration( 'bundled "' + file.path + '"' ) )
           .pipe( buffer() )
           .pipe( gulpIf(
-            flagSourcemap
+            config.sourcemap
             ,sourcemap.init( { loadMaps: true } )
           ) )
           .pipe( gulpIf(
-            flagUglify
+            config.uglify
             ,uglify( options.uglify )
           ) )
           .pipe( gulpIf(
-            flagSourcemap
+            config.sourcemap
             ,sourcemap.write( './' )
           ) )
           .pipe( gulp.dest( settings.dist ) )

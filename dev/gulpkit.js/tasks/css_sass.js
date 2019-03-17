@@ -4,7 +4,6 @@ const
 
 const
   gulpIf     = require('gulp-if')
-  ,notify    = require('gulp-notify')
   ,plumber   = require('gulp-plumber')
   ,postcss   = require('gulp-postcss')
   ,sass      = require('gulp-sass')
@@ -12,56 +11,35 @@ const
 ;
 
 const
-  autoprefixer = require('autoprefixer')
-  ,cssMqpacker = require('css-mqpacker')
+  cssMqpacker = require('css-mqpacker')
 ;
 
 const
-  config    = require('../config.js').config
+  config    = require('../config.js').config.css_sass
   ,settings = require('../config.js').settings
 ;
 
 const
-  browsers = [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ]
-  ,options = {
-    plumber : {
-      errorHandler : notify.onError('Error: <%= error.message %>'),
-    },
-    sass : {
-      outputStyle : 'compact', // nested, compact, compressed, expanded
-      linefeed    : 'lf', // 'crlf', 'lf'
-      indentType  : 'space', // 'space', 'tab'
-      indentWidth : 2,
-    },
-    postcss : {
-      plugins : [ autoprefixer( browsers ) ]
-    },
-  }
+  options = config.options
 ;
 
-
 gulp.task( 'css_sass', () => {
-  const
-    self           = config[ 'css_sass' ]
-    ,flagCssMqpack = ( typeof self.cssMqpack === 'boolean' )? self.cssMqpack: true
-    ,flagSourcemap = ( typeof self.sourcemap === 'boolean' )? self.sourcemap: settings.sourcemap
-  ;
-  if ( flagCssMqpack ) {
+  if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
   return gulp
     .src(
-      self.src
+      config.src
     )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpIf(
-      flagSourcemap
+      config.sourcemap
       ,sourcemap.init( { loadMaps: true } )
     ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf(
-      flagSourcemap
+      config.sourcemap
       ,sourcemap.write( './' )
     ) )
     .pipe( gulp.dest( settings.dist ) )

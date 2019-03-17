@@ -2,15 +2,9 @@ const gulp = require('gulp');
 
 const del = require('del');
 
-const settings = require('../config.js').settings;
+const config = require('../config.js').config.clean;
 
-const options = {
-  del : {
-    dist  : [ settings.dist + '/**/*.map' ],
-    force : true,
-  },
-}
-;
+const options = config.options;
 
 gulp.task( 'clean', () => {
   return del( options.del.dist, options.del );

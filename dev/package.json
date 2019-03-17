@@ -4,7 +4,8 @@
   "description": "project example",
   "main": "index.js",
   "scripts": {
-    "gulp": "gulp --gulpfile gulpkit.js",
+    "dev": "cross-env NODE_ENV=development gulp --gulpfile gulpkit.js",
+    "prod": "cross-env NODE_ENV=production gulp --gulpfile gulpkit.js",
     "lr": "node livereload.js"
   },
   "author": "",
@@ -17,6 +18,7 @@
     "autoprefixer": "*",
     "babelify": "*",
     "browserify": "*",
+    "cross-env": "*",
     "css-mqpacker": "*",
     "del": "*",
     "gulp": "*",
@@ -37,9 +39,10 @@
     "gulp-uglify": "*",
     "gulp.spritesmith": "*",
     "js-beautify": "*",
+    "lodash": "*",
     "merge-stream": "*",
     "pug": "*",
-    "require-dir": "^1.2.0",
+    "require-dir": "*",
     "vinyl-buffer": "*",
     "vinyl-source-stream": "*",
     "watchify": "*"

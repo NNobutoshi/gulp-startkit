@@ -3,8 +3,7 @@ const
 ;
 
 const  
-  notify   = require('gulp-notify')
-  ,plumber = require('gulp-plumber')
+  plumber = require('gulp-plumber')
   ,sprite  = require('gulp.spritesmith')
 ;
 
@@ -13,40 +12,22 @@ const
 ;
 
 const
-  config    = require('../config.js').config
+  config    = require('../config.js').config.sprite
   ,settings = require('../config.js').settings
 ;
 
 const
-  options = {
-    plumber : {
-      errorHandler : notify.onError('Error: <%= error.message %>'),
-    },
-    sprite : {
-      cssName     : '_mixins_sprite.scss',
-      imgName     : 'common_sprite.png',
-      imgPath     : '../img/common_sprite.png',
-      cssFormat   : 'scss',
-      padding     : 10,
-      cssTemplate : settings.src + '/_templates/scss.template.handlebars',
-      cssVarMap   : function ( sprite ) {
-        sprite.name = 'sheet-' + sprite.name;
-      },
-    },
-  }
+  options = config.options
 ;
 
 gulp.task( 'sprite', () => {
-  const
-    self = config.sprite
-  ;
   let
     spriteData
     ,imgStream
     ,cSSStream
   ;
   spriteData = gulp
-    .src( self.src )
+    .src( config.src )
     .pipe( plumber() )
     .pipe( sprite( options.sprite ) )
   ;

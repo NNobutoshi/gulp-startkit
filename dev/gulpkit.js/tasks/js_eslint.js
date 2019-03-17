@@ -4,31 +4,20 @@ const
 
 const  
   eSLint   = require('gulp-eslint')
-  ,notify  = require('gulp-notify')
   ,plumber = require('gulp-plumber')
 ;
 
 const 
-  config = require('../config.js').config
+  config = require('../config.js').config.js_eslint
 ;
 
 const
-  options = {
-    plumber : {
-      errorHandler : notify.onError('Error: <%= error.message %>'),
-    },
-    eSLint : {
-      useEslintrc: true,
-    },
-  }
+  options = config.options
 ;
 
 gulp.task( 'js_eslint', () => {
-  const
-    self = config[ 'js_eslint' ]
-  ;
   return gulp
-    .src( self.src )
+    .src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( eSLint( options.eSLint ) )
     .pipe( eSLint.format() )
