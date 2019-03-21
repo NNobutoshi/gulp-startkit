@@ -7,18 +7,18 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = _default;
 
 function _default(className, d) {
-  var htmlElement = d.getElementsByTagName('html')[0],
-      classNames = htmlElement.className.split(' ');
-  classNames.push(className);
-  htmlElement.className = classNames.join(' ');
+  var htmlElement = d.querySelectorAll('html')[0];
+  htmlElement.classList.add(className);
 }
 
 },{}],2:[function(require,module,exports){
 'use strict';
 
-var adjust = require('./_modules/adjust.js');
+var _adjust = _interopRequireDefault(require("./_modules/adjust.js"));
 
-adjust('js', document);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _adjust.default)('js', document);
 
 },{"./_modules/adjust.js":1}]},{},[2])
 

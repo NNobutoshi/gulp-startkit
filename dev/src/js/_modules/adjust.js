@@ -1,8 +1,6 @@
 export default function( className, d ) {
   const
-    htmlElement = d.getElementsByTagName('html')[0]
-    ,classNames  = htmlElement.className.split(' ')
+    htmlElement = d.querySelectorAll('html')[0]
   ;
-  classNames.push( className );
-  htmlElement.className = classNames.join(' ');
+  htmlElement.classList.add( className );
 }
