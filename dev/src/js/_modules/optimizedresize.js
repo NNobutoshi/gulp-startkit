@@ -1,3 +1,8 @@
+/*!
+ * optimizedresize.js
+ * Inspired by https://developer.mozilla.org
+ */
+
 import $ from '../_vendor/jquery-3.2.1.js';
 import '../_vendor/modernizr.js';
 

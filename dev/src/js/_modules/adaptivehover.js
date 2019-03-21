@@ -1,3 +1,9 @@
+/*!
+ * adaptivehover.js
+ * Copyright 2019 https://github.com/NNobutoshi/
+ * Licensed under MIT (http://opensource.org/licenses/MIT)
+ */
+
 import $ from '../_vendor/jquery-3.2.1.js';
 import '../_vendor/modernizr.js';
 
