@@ -32,7 +32,7 @@ export default class AdaptiveHover {
       ,$root = $( this.eventRoot )
       ,eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click'
     ;
-    
+
     this.enterEventName = `touchstart.${this.id} mouseenter.${this.id}`;
     this.leaveEventName = `touchend.${this.id} mouseleave.${this.id}`;
     this.callBackForEnter = callBackForEnter;
@@ -43,7 +43,7 @@ export default class AdaptiveHover {
       this.handleForEnter( e );
     } );
     $root.on( `${eventNameForClick}.${this.id}`, ( e ) => {
-      const 
+      const
         isNotRelative = !_isRelative( this.target, e.target )
       ;
       if( isNotRelative && this.status === 'enter' ) {
@@ -70,7 +70,7 @@ export default class AdaptiveHover {
   }
 
   handleForEnter( e ) {
-    const 
+    const
       settings = this.settings
       ,$root = $( this.eventRoot )
       ,eventObj = _getEventObj( e )

@@ -5,7 +5,6 @@ const
   ,autoprefixer = require('autoprefixer')
   ,babelify     = require('babelify')
   ,notify       = require('gulp-notify')
-  ,watchify     = require('watchify')
 ;
 
 const
@@ -80,8 +79,10 @@ const
         browserify : {
           cache        : {},
           packageCache : {},
-          plugin       : [ watchify ],
           transform    : [ babelify ],
+        },
+        watchify : {
+          poll: true,
         },
         uglify : {
           output : {
@@ -165,6 +166,11 @@ const
     },
     'watch' : {
       default : true,
+      options : {
+        watch : {
+          usePolling : true
+        }
+      }
     },
   }
 ;
@@ -207,7 +213,7 @@ const
 
 if ( process.env.NODE_ENV === 'production' ) {
   config = merge( {}, config_dev, config_prod );
-} else if ( process.env.NODE_ENV === 'development' ) {
+} else if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ) {
   config = config_dev;
 }
 

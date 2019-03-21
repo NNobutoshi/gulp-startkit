@@ -12,7 +12,7 @@ const
   ,pug         = require('pug')
 ;
 
-const  
+const
   config    = require('../config.js').config.html_pug
   ,settings = require('../config.js').settings
 ;
@@ -45,9 +45,6 @@ gulp.task( 'html_pug_children', () => {
     .src( config.src )
     .pipe( tap( _pugRender ) )
     .pipe( gulp.dest( settings.dist ) )
-    .pipe( tap( ( file ) => {
-      console.info( 'file = ' + file. path );
-    } ) )
   ;
   return stream;
 } )
@@ -72,7 +69,7 @@ function _pugRender( file, t ) {
     contents = contents.replace( ugliyAElementRegEx, function( all, indent, element, linefeed ) {
       element = element
         .replace( '><a ', '>' + linefeed + '<a ' )
-        .replace( '</a>', '</a>' + linefeed )        
+        .replace( '</a>', '</a>' + linefeed )
       ;
       return beautifyHtml( element, options.beautifyHtml ).replace( /^/mg, indent );
     } );

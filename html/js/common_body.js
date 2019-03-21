@@ -382,7 +382,7 @@ function () {
     this.id = this.settings.name;
     this.callBacks = {};
     this.eventName = "scroll.".concat(this.id);
-    this.eventRoot = this.seggings.eventRoot;
+    this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
   }
 

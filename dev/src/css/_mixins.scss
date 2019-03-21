@@ -1,17 +1,16 @@
-@charset "UTF-8";
-
+@charset 'utf-8';
 // font size
-@mixin fs($size: 12, $base : 14) {
-  font-size : ($size / $base) * 1rem;
+@mixin fs($size: 12, $base: 14) {
+  font-size: ($size / $base) * 1rem;
 }
 
 // line-height
-@mixin lh($size : 14, $height : 18) {
-  line-height : ($height / $size);
+@mixin lh($size: 14, $height: 18) {
+  line-height: ($height / $size);
 }
 
 // メディアクエリ
-@mixin mq($width: $screen_s, $range: max){
+@mixin mq($width: $screen-s, $range: max) {
   @if $range == max {
     @media (max-width: $width) {
       @content;
@@ -25,39 +24,39 @@
 
 // link style
 @mixin anc(
-   $link    : $a-default
-  ,$visited : $a-visited
-  ,$hover   : $a-hover
-  ,$active  : $a-active
-  // ,$focus   : $a-focus
-  ,$deco-l  : none
-  ,$deco-v  : none
-  ,$deco-h  : underline
-  ,$deco-a  : underline
-  // ,$deco-f  : underline
+  $link:     $a-default,
+  $visited:  $a-visited,
+  $hover:    $a-hover,
+  $active:   $a-active,
+  // $focus: $a-focus,
+  $deco-l:   none,
+  $deco-v:   none,
+  $deco-h:   underline,
+  $deco-a:   underline
+  // $deco-f: underline
 ) {
   &:link {
-    color : $link;
-    text-decoration : $deco-l;
+    color: $link;
+    text-decoration: $deco-l;
   }
   &:visited {
-    color : $visited;
-    text-decoration : $deco-v;
+    color: $visited;
+    text-decoration: $deco-v;
   }
   &:hover {
-    color : $hover;
-    text-decoration : $deco-h;
+    color: $hover;
+    text-decoration: $deco-h;
   }
   &:visited:hover {
-    color : $hover;
-    text-decoration : $deco-h;
+    color: $hover;
+    text-decoration: $deco-h;
   }
   &:active {
-    color : $active;
-    text-decoration : $deco-a;
+    color: $active;
+    text-decoration: $deco-a;
   }
   &:focus {
-    color : $link;
-    text-decoration : $deco-l;
+    color: $link;
+    text-decoration: $deco-l;
   }
 }

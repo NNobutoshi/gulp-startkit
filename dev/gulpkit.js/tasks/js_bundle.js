@@ -10,10 +10,11 @@ const
   ,uglify    = require('gulp-uglify')
 ;
 
-const  
+const
   browserify  = require('browserify')
   ,buffer     = require('vinyl-buffer')
   ,source     = require('vinyl-source-stream')
+  ,watchify   = require('watchify')
 ;
 
 const
@@ -34,7 +35,7 @@ gulp.task( 'js_bundle', gulp.series( 'clean', () => {
     .src( config.src )
     .pipe( tap( function( file ) {
       const
-        br = browserify( file.path, options.browserify )
+        br = watchify( browserify( file.path, options.browserify ), options.watchify )
       ;
       function _bundle() {
         return br
