@@ -26,13 +26,20 @@
   <body>
     <div class="page" id="page">
 
-      <header class="pgHead" id="pgHead">
-        <div class="pgHead-core">
-          <div class="siteId pgHead-siteId"><a class="siteId-link"></a></div>
+      <header class="page_head" id="pageHead">
+        <div class="page_core">
+          <div class="siteId page_siteId"><a class="siteId_link">site</a></div>
+          <div class="siteGlobalNav">
+            <nav class="siteGlobalNav_nav">
+              <ul class="siteGlobalNav_list">
+                <li class="siteGlobalNav_item"><a class="siteGlobalNav_anchor">nav1</a></li>
+              </ul>
+            </nav>
+          </div>
         </div>
-      <!--/.pgHead#pgHead --></header>
+      <!--/#pageHead--></header>
 
-      <main class="pgBody">
+      <main class="page_body">
         <p>bar</p>
         <a class="foo">
           <div class="foo">foo</div>
@@ -54,10 +61,20 @@
           </li>
         </ul>
         <div class="hoverTarget"><a href="#page"><span>aa</span></a></div>
-      <!--/.pgBody --></main>
+        <div class="toggleTarget"><span class="toggleTarget_btn">o</span>
+          <div class="toggleTarget_inner">
+            <ul class="toggleTarget_list">
+              <li class="toggleTarget_item">1</li>
+              <li class="toggleTarget_item">2</li>
+              <li class="toggleTarget_item">3</li>
+              <li class="toggleTarget_item">4</li>
+            </ul>
+          </div>
+        </div>
+      <!--/.page_body--></main>
 
-      <footer class="pgFoot" id="pgFoot"></footer>
-    <!--/.page#page --></div>
+      <footer class="page_foot" id="pageFoot"></footer>
+    <!--/.page#page--></div>
 
     <script src="/js/common_body.js"></script>
   </body>

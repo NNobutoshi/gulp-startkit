@@ -1,0 +1,55 @@
+{
+  "name": "project-example",
+  "version": "0.0.0",
+  "description": "project example",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development gulp --gulpfile gulpkit.js",
+    "prod": "cross-env NODE_ENV=production gulp --gulpfile gulpkit.js",
+    "gulp": "gulp  --gulpfile gulpkit.js",
+    "lr": "node livereload.js"
+  },
+  "author": "",
+  "repository": {
+    "type": "git"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "autoprefixer": "*",
+    "babelify": "*",
+    "browserify": "*",
+    "cross-env": "*",
+    "css-mqpacker": "*",
+    "del": "*",
+    "gulp": "*",
+    "gulp-buffer": "*",
+    "gulp-changed": "*",
+    "gulp-concat": "*",
+    "gulp-duration": "*",
+    "gulp-eslint": "*",
+    "gulp-iconfont": "*",
+    "gulp-iconfont-css": "*",
+    "gulp-if": "*",
+    "gulp-notify": "*",
+    "gulp-plumber": "*",
+    "gulp-postcss": "*",
+    "gulp-sass": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-tap": "*",
+    "gulp-uglify": "*",
+    "gulp.spritesmith": "*",
+    "js-beautify": "*",
+    "lodash": "*",
+    "merge-stream": "*",
+    "pug": "*",
+    "require-dir": "*",
+    "vinyl-buffer": "*",
+    "vinyl-source-stream": "*",
+    "watchify": "*"
+  },
+  "optionalDependencies": {
+    "browser-sync": "*"
+  },
+  "dependencies": {}
+}
