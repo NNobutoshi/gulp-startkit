@@ -19,14 +19,6 @@ let config;
 
 const
   config_dev = {
-    'clean' : {
-      options : {
-        del : {
-          dist  : [ settings.dist + '/**/*.map' ],
-          force : true,
-        },
-      },
-    },
     'css_sass' : {
       src       : [ settings.src + '/**/*.scss' ],
       watch     : true,
@@ -34,17 +26,23 @@ const
       cssMqpack : true,
       sourcemap : true,
       options   : {
+        del : {
+          dist : [ settings.dist + '/**/*.css.map' ],
+          options : {
+            force : true,
+          },
+        },
         plumber : {
           errorHandler : notify.onError('Error: <%= error.message %>'),
+        },
+        postcss : {
+          plugins : [ autoprefixer( [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ] ) ]
         },
         sass : {
           outputStyle : 'compact', // nested, compact, compressed, expanded
           linefeed    : 'lf', // 'crlf', 'lf'
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
-        },
-        postcss : {
-          plugins : [ autoprefixer( [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ] ) ]
         },
       },
     },
@@ -75,7 +73,15 @@ const
       uglify    : false,
       sourcemap : true,
       options   : {
-        errorHandler : notify.onError('Error: <%= error.message %>'),
+        del : {
+          dist : [ settings.dist + '/**/*.js.map' ],
+          options : {
+            force : true,
+          },
+        },
+        plumber : {
+          errorHandler : notify.onError('Error: <%= error.message %>'),
+        },
         browserify : {
           cache        : {},
           packageCache : {},
@@ -94,6 +100,7 @@ const
     'js_eslint' : {
       src : [
         ''  + '*.js',
+        ''  + 'gulpkit.js/**/*.js',
         ''  + settings.src + '/**/*.js',
         '!' + settings.src + '/**/_vendor/*.js',
       ],
@@ -135,7 +142,7 @@ const
         },
       },
     },
-    'html_pug_children' : {
+    'html_pug_partial' : {
       src : [
         ''  + settings.src + '/**/*.pug',
         '!' + settings.src + '/**/_*.pug',
@@ -180,6 +187,11 @@ const
     'css_sass' : {
       watch     : false,
       sourcemap : false,
+      options : {
+        sass : {
+          outputStyle : 'compressed',
+        },
+      }
     },
     'iconfont' : {
       watch : false,
@@ -187,11 +199,6 @@ const
     'js_bundle' : {
       uglify    : true,
       sourcemap : false,
-      options   : {
-        browserify : {
-          plugin : [],
-        },
-      },
     },
     'js_eslint' : {
       watch : false,

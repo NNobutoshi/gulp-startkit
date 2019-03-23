@@ -1,23 +1,14 @@
 const
   gulp     = require('gulp')
-;
-
-const  
-  plumber = require('gulp-plumber')
+  ,plumber = require('gulp-plumber')
   ,sprite  = require('gulp.spritesmith')
-;
 
-const
-  mergeStream = require('merge-stream')
-;
+  ,mergeStream = require('merge-stream')
 
-const
-  config    = require('../config.js').config.sprite
+  ,config   = require('../config.js').config.sprite
   ,settings = require('../config.js').settings
-;
 
-const
-  options = config.options
+  ,options = config.options
 ;
 
 gulp.task( 'sprite', () => {

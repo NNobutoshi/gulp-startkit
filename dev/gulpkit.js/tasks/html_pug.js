@@ -1,35 +1,24 @@
 const
   gulp = require('gulp')
-;
+  ,tap = require('gulp-tap')
 
-const
-  changed = require('gulp-changed')
-  ,tap    = require('gulp-tap')
-;
+  ,beautifyHtml = require('js-beautify').html
+  ,pug          = require('pug')
 
-const
-  beautifyHtml = require('js-beautify').html
-  ,pug         = require('pug')
-;
+  ,taskName = 'html_pug'
 
-const
-  config    = require('../config.js').config.html_pug
+  ,config   = require('../config.js').config[ taskName ]
   ,settings = require('../config.js').settings
+
+  ,options = config.options
 ;
 
-const
-  options = config.options
-;
-
-gulp.task( 'html_pug', () => {
+gulp.task( taskName, () => {
   let
     stream
   ;
   stream = gulp
-    .src( config.src )
-    .pipe( changed( settings.dist, {
-      extension: '.html'
-    } ) )
+    .src( config.src, { since: gulp.lastRun( taskName ) } )
     .pipe( tap( _pugRender ) )
     .pipe( gulp.dest( settings.dist ) )
   ;
@@ -37,7 +26,7 @@ gulp.task( 'html_pug', () => {
 } )
 ;
 
-gulp.task( 'html_pug_children', () => {
+gulp.task( `${taskName}_partial`, () => {
   let
     stream
   ;
