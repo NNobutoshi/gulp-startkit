@@ -13,11 +13,14 @@ const
   ,options = config.options
 ;
 
-gulp.task( taskName, () => {
+gulp.task( taskName, ( done ) => {
   let
     srcOptions = {}
   ;
-  if ( config.tmspFile && fs.existsSync( config.tmspFile ) ) {
+  if ( config.tmspFile ) {
+    if ( !fs.existsSync( config.tmspFile ) ) {
+      return done();
+    }
     srcOptions.since = Number( fs.readFileSync( config.tmspFile, 'utf-8' ) );
   }
   return gulp
@@ -30,13 +33,6 @@ gulp.task( taskName, () => {
       gulp.src( config.fontsCopyFrom )
         .pipe( gulp.dest( config.fontsCopyTo ) )
       ;
-      if ( config.tmspFile ) {
-        fs.writeFileSync( config.tmspFile, new Date().getTime(), 'utf-8', function( error ) {
-          if ( error ) {
-            options.plumber.errorHandler( error );
-          }
-        } );
-      }
     } )
   ;
 } )

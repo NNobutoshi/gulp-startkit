@@ -28,12 +28,12 @@ const settings_prod = {
 }
 ;
 
+
 if ( NODE_ENV === 'production' ) {
   settings = merge( {}, settings_dev, settings_prod );
 } else if ( !NODE_ENV || NODE_ENV === 'development' ) {
   settings = settings_dev;
 }
-
 
 const
   config_dev = {
@@ -68,7 +68,7 @@ const
       src           : [ settings.src + '/fonts/*.svg' ],
       watch         : true,
       default       : true,
-      tmspFile      : './gulpkit.js/tasks/.iconfonttimestamp',
+      tmspFile      : './gulpkit.js/tasks/.timestamp',
       fontsDist     : settings.src + '/fonts',
       fontsCopyFrom : settings.src + '/fonts/*',
       fontsCopyTo   : settings.dist + '/fonts/icons',
@@ -199,11 +199,13 @@ const
       },
     },
     'watch' : {
-      default : true,
+      default      : true,
+      errorHandler : notify.onError('Error: <%= error.message %>'),
+      tmspFile     : './gulpkit.js/tasks/.timestamp',
       options : {
         watch : {
           usePolling : true
-        }
+        },
       }
     },
   }
