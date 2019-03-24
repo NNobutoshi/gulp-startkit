@@ -30,7 +30,7 @@ gulp.task( taskName, ( done ) => {
     .pipe( iconfont( options.iconfont ) )
     .pipe( gulp.dest( config.fontsDist ) )
     .on( 'finish', function() {
-      gulp.src( config.fontsCopyFrom )
+      gulp.src( config.fontsCopyFrom, srcOptions )
         .pipe( gulp.dest( config.fontsCopyTo ) )
       ;
     } )
