@@ -13,12 +13,19 @@
   "repository": {
     "type": "git"
   },
+  "browserify": {
+    "transform": [ "browserify-shim" ]
+  },
+  "browserify-shim": {
+    "modernizr": "global:Modernizr"
+  },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
     "autoprefixer": "*",
     "babelify": "*",
     "browserify": "*",
+    "browserify-shim": "*",
     "cross-env": "*",
     "css-mqpacker": "*",
     "del": "*",

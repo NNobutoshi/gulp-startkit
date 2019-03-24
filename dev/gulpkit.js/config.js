@@ -22,7 +22,7 @@ const settings_dev = {
 ;
 
 const settings_prod = {
-  dist      : '../html',
+  dist      : '../dist',
   src       : 'src',
   sourcemap : true,
 }
