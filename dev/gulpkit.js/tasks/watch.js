@@ -1,16 +1,16 @@
 const
   gulp = require('gulp')
+
+  ,fs = require('fs')
+
+  ,taskName = 'watch'
+
+  ,config = require('../config.js').config
+
+  ,options = config[ taskName ].options
 ;
 
-const
-  config = require('../config.js').config
-;
-
-const
-  options = config.watch.options
-;
-
-gulp.task( 'watch', _callWatchTasks );
+gulp.task( taskName, gulp.series( _callWatchTasks, _timeStamp ) );
 
 function _callWatchTasks( done ) {
   Object
@@ -24,5 +24,14 @@ function _callWatchTasks( done ) {
       }
     } )
   ;
+  done();
+}
+
+function _timeStamp( done ) {
+  fs.writeFileSync( config[ taskName ].tmspFile, new Date().getTime(), 'utf-8', function( error ) {
+    if ( error ) {
+      config.watch.errorHandler( error );
+    }
+  } );
   done();
 }

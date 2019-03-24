@@ -5,7 +5,7 @@
  */
 
 import $ from '../_vendor/jquery-3.2.1.js';
-import '../_vendor/modernizr.js';
+import 'modernizr';
 
 /* globals Modernizr */
 export default class AdaptiveHover {

@@ -3,7 +3,7 @@ const
   bs            = require('browser-sync').create()
   ,type         = 'normal' // 'normal' or 'proxy'
   ,proxy        = 'localhost:8000'
-  ,documentRoot = './html'
+  ,documentRoot = '../html'
   ,options      = {
     watch   : true,
     port    : 9000,

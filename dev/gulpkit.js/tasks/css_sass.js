@@ -1,36 +1,28 @@
 const
-  gulp = require('gulp')
-;
-
-const
-  gulpIf     = require('gulp-if')
+  gulp       = require('gulp')
+  ,gulpIf    = require('gulp-if')
   ,plumber   = require('gulp-plumber')
   ,postcss   = require('gulp-postcss')
   ,sass      = require('gulp-sass')
   ,sourcemap = require('gulp-sourcemaps')
-;
 
-const
-  cssMqpacker = require('css-mqpacker')
-;
+  ,cssMqpacker = require('css-mqpacker')
+  ,del         = require('del')
 
-const
-  config    = require('../config.js').config.css_sass
+  ,taskName = 'css_sass'
+
+  ,config   = require('../config.js').config[ taskName ]
   ,settings = require('../config.js').settings
+
+  ,options = config.options
 ;
 
-const
-  options = config.options
-;
-
-gulp.task( 'css_sass', () => {
+gulp.task( taskName, gulp.series( _css_clean, () => {
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
   return gulp
-    .src(
-      config.src
-    )
+    .src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpIf(
       config.sourcemap
@@ -44,5 +36,13 @@ gulp.task( 'css_sass', () => {
     ) )
     .pipe( gulp.dest( settings.dist ) )
   ;
-} )
+} ) )
 ;
+
+function _css_clean( done ) {
+  if ( !config.sourcemap ) {
+    return del( options.del.dist, options.del.options );
+  } else {
+    done();
+  }
+}

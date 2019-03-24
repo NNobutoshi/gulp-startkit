@@ -1,32 +1,42 @@
 /* globals process */
 
 const
-  merge         = require('lodash/mergeWith')
-  ,autoprefixer = require('autoprefixer')
-  ,babelify     = require('babelify')
-  ,notify       = require('gulp-notify')
+  autoprefixer = require('autoprefixer')
+  ,babelify    = require('babelify')
+  ,merge       = require('lodash/mergeWith')
+  ,notify      = require('gulp-notify')
 ;
 
-const
-  settings = {
-    dist      : '../html',
-    src       : 'src',
-    sourcemap : true,
-  }
+const NODE_ENV = process.env.NODE_ENV;
+
+let
+  config
+  ,settings
 ;
 
-let config;
+const settings_dev = {
+  dist      : '../html',
+  src       : 'src',
+  sourcemap : true,
+}
+;
+
+const settings_prod = {
+  dist      : '../dist',
+  src       : 'src',
+  sourcemap : true,
+}
+;
+
+
+if ( NODE_ENV === 'production' ) {
+  settings = merge( {}, settings_dev, settings_prod );
+} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
+  settings = settings_dev;
+}
 
 const
   config_dev = {
-    'clean' : {
-      options : {
-        del : {
-          dist  : [ settings.dist + '/**/*.map' ],
-          force : true,
-        },
-      },
-    },
     'css_sass' : {
       src       : [ settings.src + '/**/*.scss' ],
       watch     : true,
@@ -34,8 +44,17 @@ const
       cssMqpack : true,
       sourcemap : true,
       options   : {
+        del : {
+          dist : [ settings.dist + '/**/*.css.map' ],
+          options : {
+            force : true,
+          },
+        },
         plumber : {
           errorHandler : notify.onError('Error: <%= error.message %>'),
+        },
+        postcss : {
+          plugins : [ autoprefixer( [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ] ) ]
         },
         sass : {
           outputStyle : 'compact', // nested, compact, compressed, expanded
@@ -43,15 +62,16 @@ const
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
         },
-        postcss : {
-          plugins : [ autoprefixer( [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ] ) ]
-        },
       },
     },
     'iconfont' : {
-      src     : [ settings.src + '/fonts/*.svg' ],
-      watch   : true,
-      default : false,
+      src           : [ settings.src + '/fonts/*.svg' ],
+      watch         : true,
+      default       : true,
+      tmspFile      : './gulpkit.js/tasks/.timestamp',
+      fontsDist     : settings.src + '/fonts',
+      fontsCopyFrom : settings.src + '/fonts/*',
+      fontsCopyTo   : settings.dist + '/fonts/icons',
       options : {
         iconfont : {
           fontName       : 'icons',
@@ -66,6 +86,9 @@ const
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/icons/',
         },
+        plumber : {
+          errorHandler : notify.onError('Error: <%= error.message %>'),
+        },
       },
     },
     'js_bundle' : {
@@ -75,7 +98,15 @@ const
       uglify    : false,
       sourcemap : true,
       options   : {
-        errorHandler : notify.onError('Error: <%= error.message %>'),
+        del : {
+          dist : [ settings.dist + '/**/*.js.map' ],
+          options : {
+            force : true,
+          },
+        },
+        plumber : {
+          errorHandler : notify.onError('Error: <%= error.message %>'),
+        },
         browserify : {
           cache        : {},
           packageCache : {},
@@ -94,6 +125,7 @@ const
     'js_eslint' : {
       src : [
         ''  + '*.js',
+        ''  + 'gulpkit.js/**/*.js',
         ''  + settings.src + '/**/*.js',
         '!' + settings.src + '/**/_vendor/*.js',
       ],
@@ -135,7 +167,7 @@ const
         },
       },
     },
-    'html_pug_children' : {
+    'html_pug_partial' : {
       src : [
         ''  + settings.src + '/**/*.pug',
         '!' + settings.src + '/**/_*.pug',
@@ -144,9 +176,11 @@ const
       default : true,
     },
     'sprite' : {
-      src     : [ settings.src + '/img/_sprite/*.png' ],
-      watch   : true,
-      default : true,
+      src      : [ settings.src + '/img/_sprite/*.png' ],
+      watch    : true,
+      default  : true,
+      imgDist  : settings.dist + '/img',
+      scssDist : settings.src + '/css',
       options : {
         plumber : {
           errorHandler : notify.onError('Error: <%= error.message %>'),
@@ -165,11 +199,13 @@ const
       },
     },
     'watch' : {
-      default : true,
+      default      : true,
+      errorHandler : notify.onError('Error: <%= error.message %>'),
+      tmspFile     : './gulpkit.js/tasks/.timestamp',
       options : {
         watch : {
           usePolling : true
-        }
+        },
       }
     },
   }
@@ -180,18 +216,19 @@ const
     'css_sass' : {
       watch     : false,
       sourcemap : false,
+      options : {
+        sass : {
+          outputStyle : 'compressed',
+        },
+      }
     },
     'iconfont' : {
-      watch : false,
+      watch    : false,
+      tmspFile : '',
     },
     'js_bundle' : {
       uglify    : true,
       sourcemap : false,
-      options   : {
-        browserify : {
-          plugin : [],
-        },
-      },
     },
     'js_eslint' : {
       watch : false,
@@ -211,9 +248,9 @@ const
   }
 ;
 
-if ( process.env.NODE_ENV === 'production' ) {
+if ( NODE_ENV === 'production' ) {
   config = merge( {}, config_dev, config_prod );
-} else if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ) {
+} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
   config = config_dev;
 }
 

@@ -4,7 +4,7 @@
  */
 
 import $ from '../_vendor/jquery-3.2.1.js';
-import '../_vendor/modernizr.js';
+import 'modernizr';
 
 let
   counter = 0

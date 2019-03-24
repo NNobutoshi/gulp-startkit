@@ -1,23 +1,13 @@
 const
   gulp     = require('gulp')
-;
-
-const  
-  plumber = require('gulp-plumber')
+  ,plumber = require('gulp-plumber')
   ,sprite  = require('gulp.spritesmith')
-;
 
-const
-  mergeStream = require('merge-stream')
-;
+  ,mergeStream = require('merge-stream')
 
-const
-  config    = require('../config.js').config.sprite
-  ,settings = require('../config.js').settings
-;
+  ,config   = require('../config.js').config.sprite
 
-const
-  options = config.options
+  ,options = config.options
 ;
 
 gulp.task( 'sprite', () => {
@@ -33,11 +23,11 @@ gulp.task( 'sprite', () => {
   ;
   imgStream = spriteData
     .img
-    .pipe( gulp.dest( settings.dist + '/img' ) )
+    .pipe( gulp.dest( config.imgDist ) )
   ;
   cSSStream = spriteData
     .css
-    .pipe( gulp.dest( settings.src + '/css') )
+    .pipe( gulp.dest( config.scssDist ) )
   ;
   return mergeStream( imgStream, cSSStream );
 } )

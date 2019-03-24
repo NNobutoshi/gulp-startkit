@@ -1,32 +1,27 @@
 const
-  gulp        = require('gulp')
-;
-
-const
-  duration   = require('gulp-duration')
+  gulp       = require('gulp')
+  ,duration  = require('gulp-duration')
   ,gulpIf    = require('gulp-if')
+  ,plumber   = require('gulp-plumber')
   ,sourcemap = require('gulp-sourcemaps')
   ,tap       = require('gulp-tap')
   ,uglify    = require('gulp-uglify')
-;
 
-const
-  browserify  = require('browserify')
+  ,browserify = require('browserify')
+  ,del        = require('del')
   ,buffer     = require('vinyl-buffer')
   ,source     = require('vinyl-source-stream')
   ,watchify   = require('watchify')
-;
 
-const
-  config    = require('../config.js').config.js_bundle
+  ,taskName = 'js_bundle'
+
+  ,config   = require('../config.js').config[ taskName ]
   ,settings = require('../config.js').settings
+
+  ,options = config.options
 ;
 
-const
-  options = config.options
-;
-
-gulp.task( 'js_bundle', gulp.series( 'clean', () => {
+gulp.task( taskName, gulp.series( _js_clean, () => {
   let
     stream
   ;
@@ -40,12 +35,9 @@ gulp.task( 'js_bundle', gulp.series( 'clean', () => {
       function _bundle() {
         return br
           .bundle()
-          .on( 'error', function( error ) {
-            options.errorHandler( error );
-            stream.emit('end');
-          } )
+          .pipe( plumber( options.plumber ) )
           .pipe( source( file.relative.replace( /\.bundle\.js$/, '.js') ) )
-          .pipe( duration( 'bundled "' + file.path + '"' ) )
+          .pipe( duration( `built "${file.path}"` ) )
           .pipe( buffer() )
           .pipe( gulpIf(
             config.sourcemap
@@ -69,3 +61,11 @@ gulp.task( 'js_bundle', gulp.series( 'clean', () => {
   return stream;
 } ) )
 ;
+
+function _js_clean( done ) {
+  if ( !config.sourcemap ) {
+    return del( options.del.dist, options.del.options );
+  } else {
+    done();
+  }
+}
