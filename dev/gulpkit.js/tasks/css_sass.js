@@ -14,7 +14,8 @@ const
   ,config   = require('../config.js').config[ taskName ]
   ,settings = require('../config.js').settings
 
-  ,options = config.options;
+  ,options = config.options
+;
 
 gulp.task( taskName, gulp.series( _css_clean, () => {
   if ( config.cssMqpack ) {

@@ -8,13 +8,12 @@ const
 
 requireDir('./tasks');
 
-gulp.task( 'default', _filterDefaultTasks() );
+gulp.task( 'default', gulp.series( Object
+  .keys( config )
+  .filter( function( key ) {
+    return config[ key ].default === true;
+  } ) )
+)
+;
 
-function _filterDefaultTasks() {
-  return gulp.series( Object
-    .keys( config )
-    .filter( function( key ) {
-      return config[ key ].default === true;
-    } ) )
-  ;
-}
+

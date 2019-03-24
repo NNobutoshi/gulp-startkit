@@ -12,10 +12,8 @@ const
   ,buffer     = require('vinyl-buffer')
   ,source     = require('vinyl-source-stream')
   ,watchify   = require('watchify')
-;
 
-const
-  taskName = 'js_bundle'
+  ,taskName = 'js_bundle'
 
   ,config   = require('../config.js').config[ taskName ]
   ,settings = require('../config.js').settings

@@ -1,21 +1,39 @@
 /* globals process */
 
 const
-  merge         = require('lodash/mergeWith')
-  ,autoprefixer = require('autoprefixer')
-  ,babelify     = require('babelify')
-  ,notify       = require('gulp-notify')
+  autoprefixer = require('autoprefixer')
+  ,babelify    = require('babelify')
+  ,merge       = require('lodash/mergeWith')
+  ,notify      = require('gulp-notify')
 ;
 
-const
-  settings = {
-    dist      : '../html',
-    src       : 'src',
-    sourcemap : true,
-  }
+const NODE_ENV = process.env.NODE_ENV;
+
+let
+  config
+  ,settings
 ;
 
-let config;
+const settings_dev = {
+  dist      : '../html',
+  src       : 'src',
+  sourcemap : true,
+}
+;
+
+const settings_prod = {
+  dist      : '../html',
+  src       : 'src',
+  sourcemap : true,
+}
+;
+
+if ( NODE_ENV === 'production' ) {
+  settings = merge( {}, settings_dev, settings_prod );
+} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
+  settings = settings_dev;
+}
+
 
 const
   config_dev = {
@@ -47,9 +65,13 @@ const
       },
     },
     'iconfont' : {
-      src     : [ settings.src + '/fonts/*.svg' ],
-      watch   : true,
-      default : false,
+      src           : [ settings.src + '/fonts/*.svg' ],
+      watch         : true,
+      default       : true,
+      tmspFile      : './gulpkit.js/tasks/.iconfonttimestamp',
+      fontsDist     : settings.src + '/fonts',
+      fontsCopyFrom : settings.src + '/fonts/*',
+      fontsCopyTo   : settings.dist + '/fonts/icons',
       options : {
         iconfont : {
           fontName       : 'icons',
@@ -63,6 +85,9 @@ const
           path       : settings.src + '/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/icons/',
+        },
+        plumber : {
+          errorHandler : notify.onError('Error: <%= error.message %>'),
         },
       },
     },
@@ -151,9 +176,11 @@ const
       default : true,
     },
     'sprite' : {
-      src     : [ settings.src + '/img/_sprite/*.png' ],
-      watch   : true,
-      default : true,
+      src      : [ settings.src + '/img/_sprite/*.png' ],
+      watch    : true,
+      default  : true,
+      imgDist  : settings.dist + '/img',
+      scssDist : settings.src + '/css',
       options : {
         plumber : {
           errorHandler : notify.onError('Error: <%= error.message %>'),
@@ -194,7 +221,8 @@ const
       }
     },
     'iconfont' : {
-      watch : false,
+      watch    : false,
+      tmspFile : '',
     },
     'js_bundle' : {
       uglify    : true,
@@ -218,9 +246,9 @@ const
   }
 ;
 
-if ( process.env.NODE_ENV === 'production' ) {
+if ( NODE_ENV === 'production' ) {
   config = merge( {}, config_dev, config_prod );
-} else if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ) {
+} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
   config = config_dev;
 }
 

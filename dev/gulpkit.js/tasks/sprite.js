@@ -6,7 +6,6 @@ const
   ,mergeStream = require('merge-stream')
 
   ,config   = require('../config.js').config.sprite
-  ,settings = require('../config.js').settings
 
   ,options = config.options
 ;
@@ -24,11 +23,11 @@ gulp.task( 'sprite', () => {
   ;
   imgStream = spriteData
     .img
-    .pipe( gulp.dest( settings.dist + '/img' ) )
+    .pipe( gulp.dest( config.imgDist ) )
   ;
   cSSStream = spriteData
     .css
-    .pipe( gulp.dest( settings.src + '/css') )
+    .pipe( gulp.dest( config.scssDist ) )
   ;
   return mergeStream( imgStream, cSSStream );
 } )
