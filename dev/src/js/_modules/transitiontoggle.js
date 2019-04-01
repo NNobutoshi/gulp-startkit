@@ -4,7 +4,7 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from '../_vendor/jquery-3.2.1.js';
+import $ from 'jquery';
 
 export default class Toggle {
 
@@ -43,20 +43,16 @@ export default class Toggle {
     this.elemTarget = document.querySelectorAll( this.target );
     this.callBackForOpen = callBackForOpen;
     this.callBackForClose = callBackForClose;
-    $root.one( this.eventName, this.trigger, ( e ) => {
-      this.handleForOpen( e );
-    } );
+    $root.on( this.eventName, this.trigger, ( e ) => {
+      if ( this.isOpen === true ) {
+        this.handleForClose( e );
+      } else {
+        this.handleForOpen( e );
+      }
+    } )
+    ;
     $root.on( `transitionend.${this.id}`, this.target, ( e ) => {
       if ( isOpen !== this.isOpen ) {
-        if ( this.isOpen === true ) {
-          $root.one( this.eventName, this.trigger, ( e ) => {
-            this.handleForClose( e );
-          } );
-        } else if( this.isOpen === false ){
-          $root.one( this.eventName, this.trigger, ( e ) => {
-            this.handleForOpen( e );
-          } );
-        }
         if( typeof callBackForEnd === 'function' ) {
           callBackForEnd.call( this, e, this );
         }

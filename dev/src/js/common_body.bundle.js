@@ -5,8 +5,9 @@ import Adaptivehover from './_modules/adaptivehover.js';
 import ScrollManager from './_modules/scrollmanager.js';
 import Toggle from './_modules/transitiontoggle.js';
 import foo from './_modules/foo.js';
-import $ from './_vendor/jquery-3.2.1.js';
+import jQuery from './_vendor/jquery-3.2.1.js';
 
+const $ = window.jQuery = jQuery;
 const mdls = {};
 
 mdls.resize = new OptimizedResize();
@@ -65,6 +66,9 @@ mdls.scroll = new ScrollManager();
         prop.flag = false;
       }
       return true;
+    } )
+    .inview( '.bar',( prop, scTop ) => {
+
     } )
   ;
 } )()

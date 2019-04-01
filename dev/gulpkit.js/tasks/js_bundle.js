@@ -2,7 +2,6 @@ const
   gulp       = require('gulp')
   ,duration  = require('gulp-duration')
   ,gulpIf    = require('gulp-if')
-  ,plumber   = require('gulp-plumber')
   ,sourcemap = require('gulp-sourcemaps')
   ,tap       = require('gulp-tap')
   ,uglify    = require('gulp-uglify')
@@ -35,7 +34,9 @@ gulp.task( taskName, gulp.series( _js_clean, () => {
       function _bundle() {
         return br
           .bundle()
-          .pipe( plumber( options.plumber ) )
+          .on( 'error', ( error ) => {
+            options.errorHandler( error );
+          } )
           .pipe( source( file.relative.replace( /\.bundle\.js$/, '.js') ) )
           .pipe( duration( `built "${file.path}"` ) )
           .pipe( buffer() )

@@ -3,7 +3,7 @@
  * Inspired by https://developer.mozilla.org
  */
 
-import $ from '../_vendor/jquery-3.2.1.js';
+import $ from 'jquery';
 import 'modernizr';
 
 let

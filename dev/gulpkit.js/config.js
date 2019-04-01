@@ -104,9 +104,7 @@ const
             force : true,
           },
         },
-        plumber : {
-          errorHandler : notify.onError('Error: <%= error.message %>'),
-        },
+        errorHandler : notify.onError('Error: <%= error.message %>'),
         browserify : {
           cache        : {},
           packageCache : {},

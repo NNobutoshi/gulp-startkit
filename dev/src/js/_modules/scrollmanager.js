@@ -4,7 +4,7 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from '../_vendor/jquery-3.2.1.js';
+import $ from 'jquery';
 
 let
   counter = 0
@@ -77,6 +77,7 @@ export default class ScrollManager {
         this.run();
       } );
     }
+    return this;
   }
 
   run() {

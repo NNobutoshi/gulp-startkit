@@ -17,6 +17,7 @@
     "transform": [ "browserify-shim" ]
   },
   "browserify-shim": {
+    "jquery": "global:jQuery",
     "modernizr": "global:Modernizr"
   },
   "devDependencies": {

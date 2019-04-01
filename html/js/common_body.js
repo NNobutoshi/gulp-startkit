@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _jquery = _interopRequireDefault(require("../_vendor/jquery-3.2.1.js"));
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 (typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
 
@@ -171,7 +171,8 @@ function _getEventObj(e) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../_vendor/jquery-3.2.1.js":6}],2:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -179,7 +180,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = _default;
 
-var _jquery = _interopRequireDefault(require("../_vendor/jquery-3.2.1.js"));
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -187,7 +188,9 @@ function _default(selector) {
   console.info((0, _jquery.default)(selector).length);
 }
 
-},{"../_vendor/jquery-3.2.1.js":6}],3:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],3:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -196,7 +199,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _jquery = _interopRequireDefault(require("../_vendor/jquery-3.2.1.js"));
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 (typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
 
@@ -352,7 +355,8 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../_vendor/jquery-3.2.1.js":6}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -360,7 +364,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _jquery = _interopRequireDefault(require("../_vendor/jquery-3.2.1.js"));
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -449,6 +453,8 @@ function () {
           _this2.run();
         });
       }
+
+      return this;
     }
   }, {
     key: "run",
@@ -490,7 +496,10 @@ function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-},{"../_vendor/jquery-3.2.1.js":6}],5:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],5:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -498,7 +507,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _jquery = _interopRequireDefault(require("../_vendor/jquery-3.2.1.js"));
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -548,21 +557,15 @@ function () {
       this.elemTarget = document.querySelectorAll(this.target);
       this.callBackForOpen = callBackForOpen;
       this.callBackForClose = callBackForClose;
-      $root.one(this.eventName, this.trigger, function (e) {
-        _this.handleForOpen(e);
+      $root.on(this.eventName, this.trigger, function (e) {
+        if (_this.isOpen === true) {
+          _this.handleForClose(e);
+        } else {
+          _this.handleForOpen(e);
+        }
       });
       $root.on("transitionend.".concat(this.id), this.target, function (e) {
         if (isOpen !== _this.isOpen) {
-          if (_this.isOpen === true) {
-            $root.one(_this.eventName, _this.trigger, function (e) {
-              _this.handleForClose(e);
-            });
-          } else if (_this.isOpen === false) {
-            $root.one(_this.eventName, _this.trigger, function (e) {
-              _this.handleForOpen(e);
-            });
-          }
-
           if (typeof callBackForEnd === 'function') {
             callBackForEnd.call(_this, e, _this);
           }
@@ -612,7 +615,9 @@ function () {
 
 exports.default = Toggle;
 
-},{"../_vendor/jquery-3.2.1.js":6}],6:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],6:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9649,6 +9654,7 @@ var _jquery = _interopRequireDefault(require("./_vendor/jquery-3.2.1.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var $ = window.jQuery = _jquery.default;
 var mdls = {};
 mdls.resize = new _optimizedresize.default();
 (0, _foo.default)('body');
@@ -9665,15 +9671,15 @@ mdls.hover = new _adaptivehover.default({
   target: '.hoverTarget'
 });
 mdls.hover.on(function (e, instance) {
-  (0, _jquery.default)(instance.target).addClass('js-hover');
+  $(instance.target).addClass('js-hover');
 }, function (e, instance) {
-  (0, _jquery.default)(instance.target).removeClass('js-hover');
+  $(instance.target).removeClass('js-hover');
 });
 mdls.scroll = new _scrollmanager.default();
 
 (function () {
-  var $pointElement = (0, _jquery.default)('.siteGlobalNav'),
-      $wrapper = (0, _jquery.default)('body'),
+  var $pointElement = $('.siteGlobalNav'),
+      $wrapper = $('body'),
       className = 'js-siteGlobalNavIsFixed';
   mdls.scroll.on(function (prop, scTop) {
     var point = $pointElement.offset().top;
@@ -9687,7 +9693,7 @@ mdls.scroll = new _scrollmanager.default();
     }
 
     return true;
-  });
+  }).inview('.bar', function (prop, scTop) {});
 })();
 
 mdls.toggle = new _transitiontoggle.default({
@@ -9697,8 +9703,8 @@ mdls.toggle = new _transitiontoggle.default({
 });
 mdls.toggle.on(function (e, instance) {
   console.info('open');
-  var $target = (0, _jquery.default)(instance.elemTarget),
-      $parent = (0, _jquery.default)(instance.elemToAddClass),
+  var $target = $(instance.elemTarget),
+      $parent = $(instance.elemToAddClass),
       height = $target.find('.toggleTarget_list').outerHeight(true);
   $target.css({
     'height': height + 'px'
@@ -9706,8 +9712,8 @@ mdls.toggle.on(function (e, instance) {
   $parent.addClass('js-toggleTargetIsOpening');
 }, function (e, instance) {
   console.info('close');
-  var $target = (0, _jquery.default)(instance.elemTarget),
-      $parent = (0, _jquery.default)(instance.elemToAddClass);
+  var $target = $(instance.elemTarget),
+      $parent = $(instance.elemToAddClass);
   $target.css({
     'height': ''
   });
@@ -9715,7 +9721,7 @@ mdls.toggle.on(function (e, instance) {
     $parent.removeClass('js-toggleTargetIsOpening');
   }, 100);
 }, function (e, instance) {
-  var $parent = (0, _jquery.default)(instance.elemToAddClass);
+  var $parent = $(instance.elemToAddClass);
 
   if (instance.isOpen === true) {
     $parent.addClass('js-toggleTargetIsOpen');

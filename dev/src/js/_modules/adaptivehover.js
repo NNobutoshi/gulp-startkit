@@ -4,7 +4,7 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from '../_vendor/jquery-3.2.1.js';
+import $ from 'jquery';
 import 'modernizr';
 
 /* globals Modernizr */
