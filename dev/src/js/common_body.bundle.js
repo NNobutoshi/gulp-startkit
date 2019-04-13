@@ -5,6 +5,7 @@ import OptimizedResize from './_modules/optimizedresize.js';
 import Adaptivehover from './_modules/adaptivehover.js';
 import ScrollManager from './_modules/scrollmanager.js';
 import Toggle from './_modules/transitiontoggle.js';
+import Rescroll from './_modules/rescroll.js';
 import foo from './_modules/foo.js';
 
 const $ = window.jQuery;
@@ -45,7 +46,7 @@ mdls.hover
   )
 ;
 
-mdls.scroll = new ScrollManager( { offsetTop : '.siteGlobalNav_nav' });
+mdls.scroll = new ScrollManager();
 
 ( function() {
   const
@@ -61,9 +62,11 @@ mdls.scroll = new ScrollManager( { offsetTop : '.siteGlobalNav_nav' });
       if ( instance.scTop >= point && props.flag === false ) {
         $wrapper.addClass( className );
         props.flag = true;
+        instance.offsetTop = '.siteGlobalNav_nav';
       } else if ( instance.scTop < point && props.flag === true ) {
         $wrapper.removeClass( className );
         props.flag = false;
+        instance.offsetTop = 0;
       }
       return true;
     } )
@@ -123,3 +126,9 @@ mdls.toggle
     }
   )
 ;
+
+mdls.rescroll = new Rescroll( {
+  offsetTop : '.siteGlobalNav'
+} );
+
+mdls.rescroll.on();

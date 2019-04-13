@@ -195,7 +195,7 @@ function _default(selector) {
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":7}],4:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":8}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -379,6 +379,127 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var $w = (0, _jquery.default)(window);
+
+var Rescroll =
+/*#__PURE__*/
+function () {
+  function Rescroll(options) {
+    _classCallCheck(this, Rescroll);
+
+    this.defaultSettings = {
+      name: 'rescroll',
+      offsetTop: 0,
+      delay: 300
+    };
+    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.offsetTop = this.settings.offsetTop;
+    this.id = this.settings.name;
+    this.timeoutId = null;
+    this.flag = true;
+    this.hash = '';
+  }
+
+  _createClass(Rescroll, [{
+    key: "on",
+    value: function on() {
+      var _this = this;
+
+      $w.on(this.eventName, function () {
+        _this.run();
+      });
+    }
+  }, {
+    key: "run",
+    value: function run() {
+      var settings = this.settings,
+          hash = window.location.hash,
+          that = this;
+      var start = null;
+      clearTimeout(this.timeoutId);
+
+      if (!hash) {
+        return this;
+      }
+
+      this.hash = '#' + hash.replace(/^#/, '');
+      $w.scrollTop($w.scrollTop());
+      this.timeoutId = requestAnimationFrame(_timer);
+
+      function _timer(timestamp) {
+        var progress;
+
+        if (!start) {
+          start = timestamp;
+        }
+
+        progress = timestamp - start;
+
+        if (progress < settings.delay) {
+          that.timeoutId = requestAnimationFrame(_timer);
+        } else {
+          that.scroll();
+        }
+      }
+    }
+  }, {
+    key: "scroll",
+    value: function scroll() {
+      var $target = (0, _jquery.default)(this.hash);
+      var offsetTop;
+
+      if (!$target.length) {
+        return this;
+      }
+
+      cancelAnimationFrame(this.timeoutId);
+
+      if (typeof this.offsetTop === 'number') {
+        offsetTop = this.offsetTop;
+      } else if (typeof this.offsetTop === 'string') {
+        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      }
+
+      console.info(offsetTop);
+      $w.scrollTop($target.offset().top - offsetTop);
+    }
+  }]);
+
+  return Rescroll;
+}();
+
+exports.default = Rescroll;
+
+function _getTotalHeight(elem) {
+  var total = 0;
+  Array.prototype.forEach.call(elem, function (self) {
+    total = total + (0, _jquery.default)(self).outerHeight(true);
+  });
+  return total;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],6:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var counter = 0;
 
 var ScrollManager =
@@ -430,8 +551,8 @@ function () {
       }
 
       this.isScrollDown = scTop > this.lastSctop;
-      this.scTop = scTop + offsetTop;
-      this.scBottom = scBottom - offsetBottom;
+      this.scTop = scTop;
+      this.scBottom = scBottom;
       Object.keys(this.callBacks).forEach(function (key) {
         var props = _this.callBacks[key];
         var target = props.inviewTarget,
@@ -444,7 +565,7 @@ function () {
           targetOffsetTop = rect.top + scTop;
           targetOffsetBottom = rect.bottom + scTop;
 
-          if (targetOffsetTop < _this.scBottom && targetOffsetBottom > _this.scTop) {
+          if (targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop) {
             props.inview = true;
           } else {
             props.inview = false;
@@ -545,7 +666,7 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -664,7 +785,7 @@ exports.default = Toggle;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9684,7 +9805,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   return jQuery;
 });
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 require("./_modules/jqueryhub.js");
@@ -9696,6 +9817,8 @@ var _adaptivehover = _interopRequireDefault(require("./_modules/adaptivehover.js
 var _scrollmanager = _interopRequireDefault(require("./_modules/scrollmanager.js"));
 
 var _transitiontoggle = _interopRequireDefault(require("./_modules/transitiontoggle.js"));
+
+var _rescroll = _interopRequireDefault(require("./_modules/rescroll.js"));
 
 var _foo = _interopRequireDefault(require("./_modules/foo.js"));
 
@@ -9722,9 +9845,7 @@ mdls.hover.on(function (e, instance) {
 }, function (e, instance) {
   $(instance.target).removeClass('js-hover');
 });
-mdls.scroll = new _scrollmanager.default({
-  offsetTop: '.siteGlobalNav_nav'
-});
+mdls.scroll = new _scrollmanager.default();
 
 (function () {
   var $pointElement = $('.siteGlobalNav'),
@@ -9736,9 +9857,11 @@ mdls.scroll = new _scrollmanager.default({
     if (instance.scTop >= point && props.flag === false) {
       $wrapper.addClass(className);
       props.flag = true;
+      instance.offsetTop = '.siteGlobalNav_nav';
     } else if (instance.scTop < point && props.flag === true) {
       $wrapper.removeClass(className);
       props.flag = false;
+      instance.offsetTop = 0;
     }
 
     return true;
@@ -9784,7 +9907,11 @@ mdls.toggle.on(function (e, instance) {
     $parent.removeClass('js-toggleTargetIsOpen');
   }
 });
+mdls.rescroll = new _rescroll.default({
+  offsetTop: '.siteGlobalNav'
+});
+mdls.rescroll.on();
 
-},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/jqueryhub.js":3,"./_modules/optimizedresize.js":4,"./_modules/scrollmanager.js":5,"./_modules/transitiontoggle.js":6}]},{},[8])
+},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/jqueryhub.js":3,"./_modules/optimizedresize.js":4,"./_modules/rescroll.js":5,"./_modules/scrollmanager.js":6,"./_modules/transitiontoggle.js":7}]},{},[9])
 
 //# sourceMappingURL=common_body.js.map

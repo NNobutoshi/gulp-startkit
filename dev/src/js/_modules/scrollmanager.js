@@ -56,8 +56,8 @@ export default class ScrollManager {
     }
 
     this.isScrollDown = scTop > this.lastSctop;
-    this.scTop = scTop + offsetTop;
-    this.scBottom = scBottom - offsetBottom;
+    this.scTop = scTop;
+    this.scBottom = scBottom;
 
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
@@ -73,7 +73,7 @@ export default class ScrollManager {
         rect = target.getBoundingClientRect();
         targetOffsetTop = rect.top + scTop;
         targetOffsetBottom = rect.bottom + scTop;
-        if ( targetOffsetTop < this.scBottom && targetOffsetBottom > this.scTop ) {
+        if ( targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop ) {
           props.inview = true;
         } else {
           props.inview = false;
