@@ -191,6 +191,11 @@ function _default(selector) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],3:[function(require,module,exports){
+"use strict";
+
+window.jQuery = require('../_vendor/jquery-3.2.1.js');
+
+},{"../_vendor/jquery-3.2.1.js":7}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -355,7 +360,7 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -384,16 +389,22 @@ function () {
 
     this.defaultSettings = {
       name: 'scrollManager',
-      offset: 0,
+      offsetTop: 0,
+      offsetBottom: 0,
       delay: 66,
       eventRoot: window
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
+    this.offsetTop = this.settings.offsetTop;
+    this.offsetBottom = this.settings.offsetBottom;
     this.callBacks = {};
     this.eventName = "scroll.".concat(this.id);
     this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
+    this.lastSctop = 0;
+    this.lastScBottom = 0;
+    this.isScrollDown = null;
   }
 
   _createClass(ScrollManager, [{
@@ -402,21 +413,49 @@ function () {
       var _this = this;
 
       var scTop = (0, _jquery.default)(this.eventRoot).scrollTop(),
-          offset = 0,
           scBottom = scTop + window.innerHeight;
+      var offsetTop = 0,
+          offsetBottom = 0;
 
-      if (typeof this.offset === 'number') {
-        offset = this.offset;
-      } else if (typeof this.offset === 'string') {
-        offset = _getTotalHeight(document.querySelectorAll(this.offset));
+      if (typeof this.offsetTop === 'number') {
+        offsetTop = this.offsetTop;
+      } else if (typeof this.offsetTop === 'string') {
+        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
       }
 
-      scTop = scTop + offset;
+      if (typeof this.offsetBottom === 'number') {
+        offsetBottom = this.offsetBottom;
+      } else if (typeof this.offsetBottom === 'string') {
+        offsetBottom = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      }
+
+      this.isScrollDown = scTop > this.lastSctop;
+      this.scTop = scTop + offsetTop;
+      this.scBottom = scBottom - offsetBottom;
       Object.keys(this.callBacks).forEach(function (key) {
         var props = _this.callBacks[key];
-        return props.callBack.call(_this, props, scTop, scBottom);
+        var target = props.inviewTarget,
+            rect,
+            targetOffsetTop,
+            targetOffsetBottom;
+
+        if (target && target !== null) {
+          rect = target.getBoundingClientRect();
+          targetOffsetTop = rect.top + scTop;
+          targetOffsetBottom = rect.bottom + scTop;
+
+          if (targetOffsetTop < _this.scBottom && targetOffsetBottom > _this.scTop) {
+            props.inview = true;
+          } else {
+            props.inview = false;
+          }
+        }
+
+        return props.callBack.call(_this, props, _this);
       });
       this.isRunning = false;
+      this.lastSctop = scTop;
+      this.lastScBottom = scBottom;
       return this;
     }
   }, {
@@ -437,11 +476,19 @@ function () {
     key: "remove",
     value: function remove(name) {
       delete this.callBacks[name];
+      return this;
     }
   }, {
     key: "on",
     value: function on(callBack, options) {
       return this.add(callBack, options);
+    }
+  }, {
+    key: "inview",
+    value: function inview(target, callBack, options) {
+      return this.add(callBack, options || {
+        inviewTarget: target
+      });
     }
   }, {
     key: "setUp",
@@ -498,7 +545,7 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -617,7 +664,7 @@ exports.default = Toggle;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9637,8 +9684,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   return jQuery;
 });
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
+
+require("./_modules/jqueryhub.js");
 
 var _optimizedresize = _interopRequireDefault(require("./_modules/optimizedresize.js"));
 
@@ -9650,11 +9699,9 @@ var _transitiontoggle = _interopRequireDefault(require("./_modules/transitiontog
 
 var _foo = _interopRequireDefault(require("./_modules/foo.js"));
 
-var _jquery = _interopRequireDefault(require("./_vendor/jquery-3.2.1.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var $ = window.jQuery = _jquery.default;
+var $ = window.jQuery;
 var mdls = {};
 mdls.resize = new _optimizedresize.default();
 (0, _foo.default)('body');
@@ -9675,25 +9722,33 @@ mdls.hover.on(function (e, instance) {
 }, function (e, instance) {
   $(instance.target).removeClass('js-hover');
 });
-mdls.scroll = new _scrollmanager.default();
+mdls.scroll = new _scrollmanager.default({
+  offsetTop: '.siteGlobalNav_nav'
+});
 
 (function () {
   var $pointElement = $('.siteGlobalNav'),
       $wrapper = $('body'),
       className = 'js-siteGlobalNavIsFixed';
-  mdls.scroll.on(function (prop, scTop) {
+  mdls.scroll.on(function (props, instance) {
     var point = $pointElement.offset().top;
 
-    if (scTop >= point && prop.flag === false) {
+    if (instance.scTop >= point && props.flag === false) {
       $wrapper.addClass(className);
-      prop.flag = true;
-    } else if (scTop < point && prop.flag === true) {
+      props.flag = true;
+    } else if (instance.scTop < point && props.flag === true) {
       $wrapper.removeClass(className);
-      prop.flag = false;
+      props.flag = false;
     }
 
     return true;
-  }).inview('.bar', function (prop, scTop) {});
+  }).inview(document.querySelectorAll('.inviewTarget')[0], function (props) {
+    if (props.inview === true) {
+      $(props.inviewTarget).addClass('js-isInView');
+    } else {
+      $(props.inviewTarget).removeClass('js-isInView');
+    }
+  });
 })();
 
 mdls.toggle = new _transitiontoggle.default({
@@ -9730,6 +9785,6 @@ mdls.toggle.on(function (e, instance) {
   }
 });
 
-},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/optimizedresize.js":3,"./_modules/scrollmanager.js":4,"./_modules/transitiontoggle.js":5,"./_vendor/jquery-3.2.1.js":6}]},{},[7])
+},{"./_modules/adaptivehover.js":1,"./_modules/foo.js":2,"./_modules/jqueryhub.js":3,"./_modules/optimizedresize.js":4,"./_modules/scrollmanager.js":5,"./_modules/transitiontoggle.js":6}]},{},[8])
 
 //# sourceMappingURL=common_body.js.map

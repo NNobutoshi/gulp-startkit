@@ -14,38 +14,76 @@ export default class ScrollManager {
 
   constructor( options ) {
     this.defaultSettings = {
-      name   : 'scrollManager',
-      offset : 0,
-      delay  : 66,
-      eventRoot : window
+      name         : 'scrollManager',
+      offsetTop    : 0,
+      offsetBottom : 0,
+      delay        : 66,
+      eventRoot    : window
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
+    this.offsetTop = this.settings.offsetTop;
+    this.offsetBottom = this.settings.offsetBottom;
     this.callBacks = {};
     this.eventName = `scroll.${this.id}`;
     this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
+    this.lastSctop = 0;
+    this.lastScBottom = 0;
+    this.isScrollDown = null;
   }
 
   runCallBacksAll() {
-    let
+    const
       scTop = $( this.eventRoot ).scrollTop()
-      ,offset = 0
       ,scBottom = scTop + window.innerHeight
     ;
-    if ( typeof this.offset === 'number' ) {
-      offset = this.offset;
-    } else if ( typeof this.offset === 'string') {
-      offset = _getTotalHeight( document.querySelectorAll( this.offset ) );
+    let
+      offsetTop = 0
+      ,offsetBottom = 0
+    ;
+
+    if ( typeof this.offsetTop === 'number' ) {
+      offsetTop = this.offsetTop;
+    } else if ( typeof this.offsetTop === 'string' ) {
+      offsetTop = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
     }
-    scTop = scTop + offset;
+
+    if ( typeof this.offsetBottom === 'number' ) {
+      offsetBottom = this.offsetBottom;
+    } else if ( typeof this.offsetBottom === 'string' ) {
+      offsetBottom = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
+    }
+
+    this.isScrollDown = scTop > this.lastSctop;
+    this.scTop = scTop + offsetTop;
+    this.scBottom = scBottom - offsetBottom;
+
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
         props = this.callBacks[ key ]
       ;
-      return props.callBack.call( this, props, scTop, scBottom );
+      let
+        target = props.inviewTarget
+        ,rect
+        ,targetOffsetTop
+        ,targetOffsetBottom
+      ;
+      if ( target && target !== null ) {
+        rect = target.getBoundingClientRect();
+        targetOffsetTop = rect.top + scTop;
+        targetOffsetBottom = rect.bottom + scTop;
+        if ( targetOffsetTop < this.scBottom && targetOffsetBottom > this.scTop ) {
+          props.inview = true;
+        } else {
+          props.inview = false;
+        }
+      }
+      return props.callBack.call( this, props, this );
     } );
     this.isRunning = false;
+    this.lastSctop = scTop;
+    this.lastScBottom = scBottom;
     return this;
   }
 
@@ -65,10 +103,15 @@ export default class ScrollManager {
 
   remove( name ) {
     delete this.callBacks[ name ];
+    return this;
   }
 
   on( callBack, options ) {
     return this.add( callBack, options );
+  }
+
+  inview( target, callBack, options ) {
+    return this.add( callBack, options || { inviewTarget : target} );
   }
 
   setUp() {

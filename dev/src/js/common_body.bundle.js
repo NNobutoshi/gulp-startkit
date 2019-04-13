@@ -1,13 +1,13 @@
 'use strict';
 
+import './_modules/jqueryhub.js';
 import OptimizedResize from './_modules/optimizedresize.js';
 import Adaptivehover from './_modules/adaptivehover.js';
 import ScrollManager from './_modules/scrollmanager.js';
 import Toggle from './_modules/transitiontoggle.js';
 import foo from './_modules/foo.js';
-import jQuery from './_vendor/jquery-3.2.1.js';
 
-const $ = window.jQuery = jQuery;
+const $ = window.jQuery;
 const mdls = {};
 
 mdls.resize = new OptimizedResize();
@@ -45,7 +45,7 @@ mdls.hover
   )
 ;
 
-mdls.scroll = new ScrollManager();
+mdls.scroll = new ScrollManager( { offsetTop : '.siteGlobalNav_nav' });
 
 ( function() {
   const
@@ -54,21 +54,25 @@ mdls.scroll = new ScrollManager();
     ,className = 'js-siteGlobalNavIsFixed'
   ;
   mdls.scroll
-    .on( ( prop, scTop ) => {
+    .on( ( props, instance ) => {
       const
         point = $pointElement.offset().top
       ;
-      if ( scTop >= point && prop.flag === false ) {
+      if ( instance.scTop >= point && props.flag === false ) {
         $wrapper.addClass( className );
-        prop.flag = true;
-      } else if ( scTop < point && prop.flag === true ) {
+        props.flag = true;
+      } else if ( instance.scTop < point && props.flag === true ) {
         $wrapper.removeClass( className );
-        prop.flag = false;
+        props.flag = false;
       }
       return true;
     } )
-    .inview( '.bar',( prop, scTop ) => {
-
+    .inview( document.querySelectorAll('.inviewTarget')[0], ( props ) => {
+      if ( props.inview === true ) {
+        $( props.inviewTarget ).addClass('js-isInView');
+      } else {
+        $( props.inviewTarget ).removeClass('js-isInView');
+      }
     } )
   ;
 } )()
