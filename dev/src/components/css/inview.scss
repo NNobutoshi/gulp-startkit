@@ -1,0 +1,18 @@
+@charset 'UTF-8';
+
+@import
+'../../css/variables'
+,'../../css/mixins'
+,'../../css/icons'
+,'../../css/_vendor/normalize'
+,'../../css/mixins_sprite';
+
+
+.pl-inviewTarget {
+  opacity: 0;
+  transition: opacity 1s ease;
+  margin-top: 100vh;
+  &.js-isInView {
+    opacity: 1;
+  }
+}

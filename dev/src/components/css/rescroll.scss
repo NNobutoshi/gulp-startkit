@@ -1,0 +1,35 @@
+@charset 'UTF-8';
+
+@import
+'../../css/variables'
+,'../../css/mixins'
+,'../../css/icons'
+,'../../css/_vendor/normalize'
+,'../../css/mixins_sprite';
+
+
+.pl-localNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  @at-root {
+    .pl-localNav_list {
+      display: flex;
+    }
+    .pl-localNav_item {
+      padding-right: 30px;
+    }
+  }
+}
+
+.pl-section {
+  height: 100vh;
+  &:nth-child(odd) {
+    background-color: #fcc;
+  }
+  &:nth-child(even) {
+    background-color: #c7c7e7;
+  }
+}

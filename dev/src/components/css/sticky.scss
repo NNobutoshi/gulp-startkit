@@ -1,0 +1,27 @@
+@charset 'UTF-8';
+
+@import
+'../../css/variables'
+,'../../css/mixins'
+,'../../css/icons'
+,'../../css/_vendor/normalize'
+,'../../css/mixins_sprite';
+
+
+.pl-nav {
+  height: 50px;
+  @at-root {
+    .pl-nav_nav {
+      height: inherit;
+      border: solid 1px #f00;
+      box-sizing: border-box;
+      background-color: #fff;
+      .js-pl-nav-isFixed & {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/resize.css")
+
+append script_body
+  script(src="/components/js/resize.js")
+
+block pageBody
+
+  div resize

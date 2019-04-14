@@ -1,28 +1,202 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+require("../../js/_modules/jqueryhub.js");
+
+var _adaptivehover = _interopRequireDefault(require("../../js/_modules/adaptivehover.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var $ = window.jQuery,
+    mdls = {};
+mdls.hover = new _adaptivehover.default({
+  target: '.pl-hoverTarget'
+});
+mdls.hover.on(function (e, instance) {
+  $(instance.target).addClass('js-hover');
+}, function (e, instance) {
+  $(instance.target).removeClass('js-hover');
+});
+
+},{"../../js/_modules/adaptivehover.js":2,"../../js/_modules/jqueryhub.js":3}],2:[function(require,module,exports){
 (function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = _default;
+exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
+(typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _default(selector) {
-  console.info((0, _jquery.default)(selector).length);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+/* globals Modernizr */
+var AdaptiveHover =
+/*#__PURE__*/
+function () {
+  function AdaptiveHover(options) {
+    _classCallCheck(this, AdaptiveHover);
+
+    this.defaultSettings = {
+      name: 'adaptiveHover',
+      target: '',
+      timeout: 400,
+      range: 10,
+      eventRoot: document.querySelectorAll('body')[0]
+    };
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.target = null;
+    this.eventRoot = this.settings.eventRoot;
+    this.enterEventName = '';
+    this.leaveEeventName = '';
+    this.callBackForEnter = null;
+    this.callBackForLeave = null;
+    this.pageX = null;
+    this.pageY = null;
+    this.timeoutId = null;
+    this.status = '';
+  }
+
+  _createClass(AdaptiveHover, [{
+    key: "on",
+    value: function on(callBackForEnter, callBackForLeave) {
+      var _this = this;
+
+      var settings = this.settings,
+          $root = (0, _jquery.default)(this.eventRoot),
+          eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click';
+      this.enterEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
+      this.leaveEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
+      this.callBackForEnter = callBackForEnter;
+      this.callBackForLeave = callBackForLeave;
+      this.target = document.querySelectorAll(settings.target)[0];
+      $root.on(this.enterEventName, settings.target, function (e) {
+        _this.handleForEnter(e);
+      });
+      $root.on("".concat(eventNameForClick, ".").concat(this.id), function (e) {
+        var isNotRelative = !_isRelative(_this.target, e.target);
+
+        if (isNotRelative && _this.status === 'enter') {
+          _this.clear();
+
+          $root.off(_this.leaveEventName, settings.target);
+
+          _this.leave(e, _this.callBackForLeave);
+
+          $root.on(_this.enterEventName, settings.target, function (e) {
+            _this.handleForEnter(e);
+          });
+        }
+      });
+      return this;
+    }
+  }, {
+    key: "off",
+    value: function off() {
+      var settings = this.settings,
+          $root = (0, _jquery.default)(this.eventRoot);
+      this.clear();
+      $root.off(this.enterEventName, settings.target);
+      $root.off(this.leaveEventName, settings.target);
+      return this;
+    }
+  }, {
+    key: "handleForEnter",
+    value: function handleForEnter(e) {
+      var _this2 = this;
+
+      var settings = this.settings,
+          $root = (0, _jquery.default)(this.eventRoot),
+          eventObj = _getEventObj(e);
+
+      this.pageX = eventObj.pageX;
+      this.pageY = eventObj.pageY;
+      $root.off(this.enterEventName, settings.target);
+      this.enter(e);
+      $root.on(this.leaveEventName, settings.target, function (e) {
+        _this2.handleForLeave(e);
+      });
+    }
+  }, {
+    key: "handleForLeave",
+    value: function handleForLeave(e) {
+      var _this3 = this;
+
+      var settings = this.settings,
+          $root = (0, _jquery.default)(this.eventRoot),
+          range = settings.range,
+          isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
+
+      if (isOriginPoint) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(function () {
+          _this3.clear();
+        }, settings.timeout);
+      } else {
+        $root.off(this.leaveEventName, settings.target);
+        this.leave(e, this.callBackForLeave);
+        $root.on(this.enterEventName, settings.target, function (e) {
+          _this3.handleForEnter(e, _this3.callBackForEnter);
+        });
+      }
+    }
+  }, {
+    key: "enter",
+    value: function enter(e) {
+      this.status = 'enter';
+      this.callBackForEnter.call(this, e, this);
+    }
+  }, {
+    key: "leave",
+    value: function leave(e) {
+      this.status = 'leave';
+      this.callBackForLeave.call(this, e, this);
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+      this.pageX = null;
+      this.pageY = null;
+    }
+  }]);
+
+  return AdaptiveHover;
+}();
+
+exports.default = AdaptiveHover;
+
+function _isOriginPoint(eventObj, pageX, pageY, range) {
+  return eventObj.pageX > pageX - range && eventObj.pageX < pageX + range && eventObj.pageY > pageY - range && eventObj.pageY < pageY + range;
+}
+
+function _isRelative(ancestor, elem) {
+  return (0, _jquery.default)(ancestor).is(elem) && (0, _jquery.default)(elem).closest(ancestor).length === 1;
+}
+
+function _getEventObj(e) {
+  return e.changedTouches ? e.changedTouches[0] : e;
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":3}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":4}],4:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9042,19 +9216,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   return jQuery;
 });
 
-},{}],4:[function(require,module,exports){
-'use strict';
+},{}]},{},[1])
 
-require("./_modules/jqueryhub.js");
-
-var _foo = _interopRequireDefault(require("./_modules/foo.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var $ = window.jQuery;
-var mdls = {};
-(0, _foo.default)('body');
-
-},{"./_modules/foo.js":1,"./_modules/jqueryhub.js":2}]},{},[4])
-
-//# sourceMappingURL=common_body.js.map
+//# sourceMappingURL=hover.js.map

@@ -1,0 +1,21 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/sticky.css")
+
+append script_body
+  script(src="/components/js/sticky.js")
+
+block pageBody
+
+  div.pl-nav
+    nav.pl-nav_nav
+      ul.pl-nav_list
+        li.pl-nav_item
+          a.pl-nav_anchor nav1

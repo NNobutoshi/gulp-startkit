@@ -1,0 +1,19 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/hover.css")
+
+append script_body
+  script(src="/components/js/hover.js")
+
+block pageBody
+
+  div.pl-hoverTarget
+    a(href="#page")
+      span aa

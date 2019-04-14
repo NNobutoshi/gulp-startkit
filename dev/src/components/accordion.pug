@@ -1,0 +1,23 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/accordion.css")
+
+append script_body
+  script(src="/components/js/accordion.js")
+
+block pageBody
+  div.pl-list
+    span.pl-list_btn accordion
+    div.pl-list_inner
+      ul.pl-list_list
+        li.pl-list_item 1
+        li.pl-list_item 2
+        li.pl-list_item 3
+        li.pl-list_item 4

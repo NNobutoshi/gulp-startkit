@@ -1,0 +1,30 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/rescroll.css")
+
+append script_body
+  script(src="/components/js/rescroll.js")
+
+block pageBody
+  div.pl-localNav
+    ul.pl-localNav_list
+      li.pl-localNav_item
+        a(href="#section-A") section A
+      li.pl-localNav_item
+        a(href="#section-B") section B
+      li.pl-localNav_item
+        a(href="#section-C") section C
+      li.pl-localNav_item
+        a(href="#section-D") section D
+
+  section.pl-section#section-A section A
+  section.pl-section#section-B section B
+  section.pl-section#section-C section C
+  section.pl-section#section-D section D

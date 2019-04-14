@@ -1,0 +1,18 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/inview.css")
+
+append script_body
+  script(src="/components/js/inview.js")
+
+block pageBody
+
+  div.pl-inviewTarget
+    p aaaa

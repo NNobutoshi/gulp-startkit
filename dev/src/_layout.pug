@@ -39,27 +39,23 @@ html(lang=siteData.lang)
     link(rel="apple-touch-icon-precomposed", type="image/png", sizes="114x114", href=appleIcon)
     block style
       link(rel="stylesheet", href=siteData.cssCommonDir + "/common.css")
-    block script head
+    block script_head
       script(src=siteData.jsCommonDir + "/common_head.js")
   body
     div.page#page
       block pageHead
         |#{"\n"}
-        header.page_head#pageHead
+        header.page_head
           div.page_core
             div.siteId.page_siteId
-              a.siteId_link site
-            div.siteGlobalNav
-              nav.siteGlobalNav_nav
-                ul.siteGlobalNav_list
-                  li.siteGlobalNav_item
-                    a.siteGlobalNav_anchor nav1
-        ///#pageHead
+              a.siteId_anchor site
+        ///.page_head
       main.page_body
         block pageBody
           p foo
       ///.page_body
       block pageFoot
-        footer.page_foot#pageFoot
+        footer.page_foot
     ///.page#page
-    script(src=siteData.jsCommonDir + "/common_body.js")
+    block script_body
+      script(src=siteData.jsCommonDir + "/common_body.js")

@@ -1,0 +1,37 @@
+@charset 'UTF-8';
+
+@import
+'../../css/variables'
+,'../../css/mixins'
+,'../../css/icons'
+,'../../css/_vendor/normalize'
+,'../../css/mixins_sprite';
+
+
+.pl-list {
+  @at-root {
+    .pl-list_btn {
+      display: block;
+      padding: 10px;
+      border: solid 1px #f00;
+      cursor: pointer;
+    }
+    .pl-list_inner {
+      background-color: rgba(0, 0, 255, .2);
+      .js & {
+        transition-property: height, opacity, background-color;
+        transition-duration: .25s;
+        transition-timing-function: ease-in-out;
+        overflow: hidden;
+        height: 0;
+        opacity: 0;
+      }
+      .js-pl-list-isOpening & {
+        opacity: 1;
+      }
+      .js-pl-list-isOpen & {
+        background-color: rgba(0, 255, 255, .2);
+      }
+    }
+  }
+}
