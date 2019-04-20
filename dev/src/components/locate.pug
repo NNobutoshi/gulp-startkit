@@ -1,0 +1,47 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = ""
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/components/css/locate.css")
+
+append script_body
+  script(src="/components/js/locate.js")
+
+block pageBody
+  nav.pl-nav
+    ul.pl-nav_list
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/foo/") foo
+        ul.pl-nav_list
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/foo/1/index.html") 1
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/foo/2/") 2
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/foo/3/") 3
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/foo/4/") 4
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/bar/") bar
+        ul.pl-nav_list
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/bar/1/") 1
+          li.pl-nav_item
+            a.pl-nav_anchor(href="/bar/2/") 2
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/baz/") baz
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/qux/") qux
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/quux/") quux
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/corge/") corge
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/grault/") grault
+      li.pl-nav_item
+        a.pl-nav_anchor(href="/garply/") garply

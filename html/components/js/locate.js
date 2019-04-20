@@ -1,28 +1,98 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+require("../../js/_modules/jqueryhub.js");
+
+var _locate = _interopRequireDefault(require("../../js/_modules/locate.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var $ = window.jQuery,
+    mdls = {},
+    TARGETSELECTOR = '.pl-nav_anchor';
+mdls.locate = new _locate.default({
+  target: TARGETSELECTOR
+});
+$(TARGETSELECTOR).on('click', function (e) {
+  window.history.pushState(null, null, e.currentTarget.href);
+  $('.pl-nav_item').removeClass('js-current');
+  $(mdls.locate.run().currentItem).parents('.pl-nav_item').addClass('js-current');
+  e.preventDefault();
+});
+
+},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/locate.js":3}],2:[function(require,module,exports){
+"use strict";
+
+window.jQuery = require('../_vendor/jquery-3.2.1.js');
+
+},{"../_vendor/jquery-3.2.1.js":4}],3:[function(require,module,exports){
 (function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = _default;
+exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _default(selector) {
-  console.info((0, _jquery.default)(selector).length);
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Locate =
+/*#__PURE__*/
+function () {
+  function Locate(options) {
+    _classCallCheck(this, Locate);
+
+    this.defaultSettings = {
+      name: 'locate',
+      target: '',
+      indexRegex: /index\.[^/]+?$/
+    };
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.targetSelector = this.settings.target;
+    this.target = document.querySelectorAll(this.targetSelector);
+    this.currentItem = null;
+  }
+
+  _createClass(Locate, [{
+    key: "run",
+    value: function run() {
+      var _this = this;
+
+      var hostName = window.location.host,
+          wPathname = window.location.pathname.replace(this.settings.indexRegex, '');
+      Array.prototype.forEach.call(this.target, function (self) {
+        var aPathname = self.pathname.replace(_this.settings.indexRegex, ''),
+            aHost = self.host;
+
+        if (hostName !== aHost) {
+          return _this;
+        } else {
+          if (aPathname === wPathname) {
+            _this.currentItem = self;
+          }
+        }
+      });
+      return this;
+    }
+  }]);
+
+  return Locate;
+}();
+
+exports.default = Locate;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],2:[function(require,module,exports){
-"use strict";
-
-window.jQuery = require('../_vendor/jquery-3.2.1.js');
-
-},{"../_vendor/jquery-3.2.1.js":3}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9042,17 +9112,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   return jQuery;
 });
 
-},{}],4:[function(require,module,exports){
-'use strict';
+},{}]},{},[1])
 
-require("./_modules/jqueryhub.js");
-
-var _foo = _interopRequireDefault(require("./_modules/foo.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _foo.default)('body');
-
-},{"./_modules/foo.js":1,"./_modules/jqueryhub.js":2}]},{},[4])
-
-//# sourceMappingURL=common_body.js.map
+//# sourceMappingURL=locate.js.map

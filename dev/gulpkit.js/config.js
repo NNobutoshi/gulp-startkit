@@ -79,12 +79,14 @@ const
           formats        : [ 'ttf', 'eot', 'woff' ],
           timestamp      : Math.round( Date.now() / 1000 ),
           normalize      : true,
+          startUnicode   : 0xF001,
         },
         iconfontCss : {
           fontName   : 'icons',
           path       : settings.src + '/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/icons/',
+          firstGlyph : 0xF001,
         },
         plumber : {
           errorHandler : notify.onError('Error: <%= error.message %>'),
