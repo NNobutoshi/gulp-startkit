@@ -7,7 +7,6 @@ import $ from 'jquery';
 const
   $w = $( window )
 ;
-
 export default class Rescroll {
 
   constructor( options ) {
@@ -65,9 +64,9 @@ export default class Rescroll {
 
   }
 
-  scroll() {
+  scroll( target ) {
     const
-      $target = $( this.hash )
+      $target = ( target )? $( target ): $( this.hash )
     ;
     let
       offsetTop
@@ -81,7 +80,6 @@ export default class Rescroll {
     } else if ( typeof this.offsetTop === 'string' ) {
       offsetTop = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
     }
-    console.info( offsetTop );
     $w.scrollTop( $target.offset().top - offsetTop );
   }
 

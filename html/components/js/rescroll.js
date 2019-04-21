@@ -96,8 +96,8 @@ function () {
     }
   }, {
     key: "scroll",
-    value: function scroll() {
-      var $target = (0, _jquery.default)(this.hash);
+    value: function scroll(target) {
+      var $target = target ? (0, _jquery.default)(target) : (0, _jquery.default)(this.hash);
       var offsetTop;
 
       if (!$target.length) {
@@ -112,7 +112,6 @@ function () {
         offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
       }
 
-      console.info(offsetTop);
       $w.scrollTop($target.offset().top - offsetTop);
     }
   }]);

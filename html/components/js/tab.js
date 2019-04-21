@@ -3,29 +3,36 @@
 
 require("../../js/_modules/jqueryhub.js");
 
-var _locate = _interopRequireDefault(require("../../js/_modules/locate.js"));
+var _tab = _interopRequireDefault(require("../../js/_modules/tab.js"));
+
+var _rescroll = _interopRequireDefault(require("../../js/_modules/rescroll.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var $ = window.jQuery,
-    mdls = {},
-    TARGETSELECTOR = '.pl-nav_anchor';
-mdls.locate = new _locate.default({
-  target: TARGETSELECTOR
+var mdls = {};
+mdls.rescroll = new _rescroll.default({
+  offsetTop: '.pl-head'
 });
-$(TARGETSELECTOR).on('click', function (e) {
-  window.history.pushState(null, null, e.currentTarget.href);
-  $('.pl-nav_item').removeClass('js-current');
-  $(mdls.locate.run().currentItem).parents('.pl-nav_item').addClass('js-current');
-  e.preventDefault();
+mdls.rescroll.on();
+mdls.tab = new _tab.default({
+  wrapper: '.pl-sectionGroup',
+  trigger: '.pl-tabmenu_anchor',
+  target: '.pl-section',
+  onLoad: function onLoad(prop) {
+    setTimeout(function () {
+      mdls.rescroll.scroll(prop.wrapper);
+    }, 1);
+  }
 });
+mdls.tab.on();
 
-},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/locate.js":3}],2:[function(require,module,exports){
+},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/rescroll.js":3,"../../js/_modules/tab.js":4}],2:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":4}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":5}],3:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33,59 +40,294 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Locate =
+var $w = (0, _jquery.default)(window);
+
+var Rescroll =
 /*#__PURE__*/
 function () {
-  function Locate(options) {
-    _classCallCheck(this, Locate);
+  function Rescroll(options) {
+    _classCallCheck(this, Rescroll);
 
     this.defaultSettings = {
-      name: 'locate',
-      target: '',
-      indexRegex: /index\.[^/]+?$/
+      name: 'rescroll',
+      offsetTop: 0,
+      delay: 300
     };
-    this.settings = $.extend({}, this.defaultSettings, options);
+    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
-    this.targetSelector = this.settings.target;
-    this.target = document.querySelectorAll(this.targetSelector);
-    this.currentItem = null;
+    this.timeoutId = null;
+    this.flag = true;
+    this.hash = '';
   }
 
-  _createClass(Locate, [{
-    key: "run",
-    value: function run() {
+  _createClass(Rescroll, [{
+    key: "on",
+    value: function on() {
       var _this = this;
 
-      var hostName = window.location.host,
-          wPathname = window.location.pathname.replace(this.settings.indexRegex, '');
-      Array.prototype.forEach.call(this.target, function (self) {
-        var aPathname = self.pathname.replace(_this.settings.indexRegex, ''),
-            aHost = self.host;
-
-        if (hostName !== aHost) {
-          return _this;
-        } else {
-          if (aPathname === wPathname) {
-            _this.currentItem = self;
-          }
-        }
+      $w.on(this.eventName, function () {
+        _this.run();
       });
-      return this;
+    }
+  }, {
+    key: "run",
+    value: function run() {
+      var settings = this.settings,
+          hash = window.location.hash,
+          that = this;
+      var start = null;
+      clearTimeout(this.timeoutId);
+
+      if (!hash) {
+        return this;
+      }
+
+      this.hash = '#' + hash.replace(/^#/, '');
+      $w.scrollTop($w.scrollTop());
+      this.timeoutId = requestAnimationFrame(_timer);
+
+      function _timer(timestamp) {
+        var progress;
+
+        if (!start) {
+          start = timestamp;
+        }
+
+        progress = timestamp - start;
+
+        if (progress < settings.delay) {
+          that.timeoutId = requestAnimationFrame(_timer);
+        } else {
+          that.scroll();
+        }
+      }
+    }
+  }, {
+    key: "scroll",
+    value: function scroll(target) {
+      var $target = target ? (0, _jquery.default)(target) : (0, _jquery.default)(this.hash);
+      var offsetTop;
+
+      if (!$target.length) {
+        return this;
+      }
+
+      cancelAnimationFrame(this.timeoutId);
+
+      if (typeof this.offsetTop === 'number') {
+        offsetTop = this.offsetTop;
+      } else if (typeof this.offsetTop === 'string') {
+        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      }
+
+      $w.scrollTop($target.offset().top - offsetTop);
     }
   }]);
 
-  return Locate;
+  return Rescroll;
 }();
 
-exports.default = Locate;
+exports.default = Rescroll;
+
+function _getTotalHeight(elem) {
+  var total = 0;
+  Array.prototype.forEach.call(elem, function (self) {
+    total = total + (0, _jquery.default)(self).outerHeight(true);
+  });
+  return total;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],4:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Tab =
+/*#__PURE__*/
+function () {
+  function Tab(options) {
+    _classCallCheck(this, Tab);
+
+    this.defaultSettings = {
+      name: 'tab',
+      trigger: '',
+      target: '',
+      wrapper: '',
+      className: 'js-selected',
+      defaultIndex: 0,
+      onLoad: null
+    };
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.wrapperSelector = this.settings.wrapper;
+    this.triggerSelector = this.settings.trigger;
+    this.targetSelector = this.settings.target;
+    this.triggerElemAll = document.querySelectorAll(this.triggerSelector);
+    this.wrapperElemAll = document.querySelectorAll(this.wrapperSelector);
+    this.selectedTrigger = null;
+    this.selectedWrapper = null;
+    this.selectedTarget = null;
+    this.callBackforLoad = typeof this.settings.onLoad === 'function' ? this.settings.onLoad : null;
+    this.hash = '';
+  }
+
+  _createClass(Tab, [{
+    key: "on",
+    value: function on() {
+      var _this = this;
+
+      var $w = (0, _jquery.default)(window);
+      $w.on("load.".concat(this.id, " hashchange.").concat(this.id), function (e) {
+        _this.hash = _getHash(window.location.hash);
+
+        _this.runAll(e);
+
+        if (_this.callBackforLoad) {
+          _this.callBackforLoad.call(_this, {
+            trigger: _this.selectedTrigger,
+            wrapper: _this.selectedWrapper,
+            target: _this.selectedTarget
+          });
+        }
+      });
+      (0, _jquery.default)(this.triggerElemAll).on("click.".concat(this.id), function (e) {
+        _this.hash = _getHash(e.currentTarget.hash);
+        e.preventDefault();
+        window.history.pushState(null, null, window.location.pathname + _this.hash);
+
+        _this.run(e);
+      });
+    }
+  }, {
+    key: "run",
+    value: function run(e, index) {
+      var indexNumber = typeof index === 'number' ? index : 0,
+          triggerElem = e.currentTarget,
+          wrapperElem = _closest(triggerElem, this.wrapperSelector),
+          triggerElemAll = wrapperElem.querySelectorAll(this.triggerSelector),
+          targetElemAll = wrapperElem.querySelectorAll(this.targetSelector),
+          targetElem = wrapperElem.querySelector(this.hash);
+
+      this.display({
+        elements: triggerElemAll,
+        targetElem: targetElem,
+        key: 'hash',
+        indexNumber: indexNumber
+      });
+      this.display({
+        elements: targetElemAll,
+        targetElem: targetElem,
+        key: 'id',
+        indexNumber: indexNumber
+      });
+    }
+  }, {
+    key: "runAll",
+    value: function runAll(e, index) {
+      var _this2 = this;
+
+      var indexNumber = typeof index === 'number' ? index : 0;
+      Array.prototype.forEach.call(this.wrapperElemAll, function (wrapper) {
+        var targetElemAll = wrapper.querySelectorAll(_this2.targetSelector),
+            triggerElemAll = wrapper.querySelectorAll(_this2.triggerSelector),
+            targetElem = wrapper.querySelector(_this2.hash);
+
+        _this2.display({
+          elements: triggerElemAll,
+          targetElem: targetElem,
+          key: 'hash',
+          indexNumber: indexNumber
+        });
+
+        _this2.display({
+          elements: targetElemAll,
+          targetElem: targetElem,
+          key: 'id',
+          indexNumber: indexNumber
+        });
+      });
+    }
+  }, {
+    key: "display",
+    value: function display(arg) {
+      var _this3 = this;
+
+      var key = arg.key;
+      Array.prototype.forEach.call(arg.elements, function (elem, i) {
+        if (arg.targetElem === null) {
+          if (i === arg.indexNumber) {
+            elem.classList.add(_this3.settings.className);
+          } else {
+            elem.classList.remove(_this3.settings.className);
+          }
+        } else {
+          if (_this3.hash === _getHash(elem[key])) {
+            if (key === 'hash') {
+              _this3.selectedTrigger = elem;
+              _this3.selectedTarget = arg.targetElem;
+              _this3.selectedWrapper = _closest(arg.targetElem, _this3.wrapperSelector);
+            }
+
+            elem.classList.add(_this3.settings.className);
+          } else {
+            elem.classList.remove(_this3.settings.className);
+          }
+        }
+      });
+    }
+  }]);
+
+  return Tab;
+}();
+
+exports.default = Tab;
+
+function _getHash(hash) {
+  return '#' + hash.replace(/^#/, '');
+}
+
+function _closest(elem, wrapper) {
+  // let closest;
+  // for ( closest = elem; closest; closest = closest.parentElement ) {
+  //   if ( closest.matches( wrapper ) ) {
+  //     break;
+  //   }
+  // }
+  // return closest;
+  return (0, _jquery.default)(elem).closest(wrapper).get(0);
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],5:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -9107,4 +9349,4 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 },{}]},{},[1])
 
-//# sourceMappingURL=locate.js.map
+//# sourceMappingURL=tab.js.map

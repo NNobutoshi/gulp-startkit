@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 export default class Locate {
 
   constructor( options ) {

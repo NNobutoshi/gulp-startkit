@@ -1,0 +1,72 @@
+@charset 'UTF-8';
+
+@import
+'../../css/variables'
+,'../../css/mixins'
+,'../../css/icons'
+,'../../css/_vendor/normalize'
+,'../../css/mixins_sprite';
+
+
+.pl-head {
+  width: 100%;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fee;
+}
+.pl-tabmenu {
+  @at-root {
+    .pl-tabmenu_list {
+      display: flex;
+      padding: 0;
+      margin: 0;
+    }
+    .pl-tabmenu_item {
+      flex: 1 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0;
+      margin: 0;
+    }
+    .pl-tabmenu_anchor {
+      display: flex;
+      flex: 1 0 auto;
+      align-items: center;
+      justify-content: center;
+      background-color: #fcc;
+      padding: 10px;
+      text-align: center;
+      &.js-selected {
+        background-color: #f77;
+      }
+    }
+  }
+}
+.pl-sectionGroup {
+  margin-top: 2em;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+.pl-section {
+  box-sizing: border-box;
+  .js & {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  &.js-selected {
+    background-color: #f77;
+    height: auto;
+    opacity: 1;
+  }
+  @at-root {
+    .pl-section_body {
+      min-height: 50vh;
+      padding: 10px;
+    }
+  }
+}
