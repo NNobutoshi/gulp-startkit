@@ -26,12 +26,17 @@ $(TARGETSELECTOR).on('click', function (e) {
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
 },{"../_vendor/jquery-3.2.1.js":4}],3:[function(require,module,exports){
+(function (global){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -50,7 +55,7 @@ function () {
       target: '',
       indexRegex: /index\.[^/]+?$/
     };
-    this.settings = $.extend({}, this.defaultSettings, options);
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.targetSelector = this.settings.target;
     this.target = document.querySelectorAll(this.targetSelector);
@@ -84,6 +89,8 @@ function () {
 }();
 
 exports.default = Locate;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],4:[function(require,module,exports){
 "use strict";
