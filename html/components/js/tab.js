@@ -26,12 +26,39 @@ mdls.tab = new _tab.default({
 });
 mdls.tab.on();
 
-},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/rescroll.js":3,"../../js/_modules/tab.js":4}],2:[function(require,module,exports){
+},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/rescroll.js":5,"../../js/_modules/tab.js":6}],2:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":5}],3:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":7}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = closest;
+
+require("./matches.js");
+
+function closest(elem, wrapper) {
+  for (var closest = elem; closest; closest = closest.parentElement) {
+    if (closest.matches(wrapper)) {
+      break;
+    }
+  }
+
+  return closest;
+}
+
+},{"./matches.js":4}],4:[function(require,module,exports){
+"use strict";
+
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector;
+}
+
+},{}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -151,7 +178,7 @@ function _getTotalHeight(elem) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -161,6 +188,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+require("./polyfills/matches.js");
+
+var _closest = _interopRequireDefault(require("./polyfills/closest.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -196,7 +227,7 @@ function () {
     this.selectedWrapper = null;
     this.selectedTarget = null;
     this.callBackforLoad = typeof this.settings.onLoad === 'function' ? this.settings.onLoad : null;
-    this.hash = '';
+    this.hash = null;
   }
 
   _createClass(Tab, [{
@@ -206,7 +237,7 @@ function () {
 
       var $w = (0, _jquery.default)(window);
       $w.on("load.".concat(this.id, " hashchange.").concat(this.id), function (e) {
-        _this.hash = _getHash(window.location.hash);
+        _this.hash = location.hash || null;
 
         _this.runAll(e);
 
@@ -219,7 +250,8 @@ function () {
         }
       });
       (0, _jquery.default)(this.triggerElemAll).on("click.".concat(this.id), function (e) {
-        _this.hash = _getHash(e.currentTarget.hash);
+        _this.hash = e.currentTarget.hash;
+        console.info(_this.hash);
         e.preventDefault();
         window.history.pushState(null, null, window.location.pathname + _this.hash);
 
@@ -231,11 +263,10 @@ function () {
     value: function run(e, index) {
       var indexNumber = typeof index === 'number' ? index : 0,
           triggerElem = e.currentTarget,
-          wrapperElem = _closest(triggerElem, this.wrapperSelector),
+          wrapperElem = (0, _closest.default)(triggerElem, this.wrapperSelector),
           triggerElemAll = wrapperElem.querySelectorAll(this.triggerSelector),
           targetElemAll = wrapperElem.querySelectorAll(this.targetSelector),
           targetElem = wrapperElem.querySelector(this.hash);
-
       this.display({
         elements: triggerElemAll,
         targetElem: targetElem,
@@ -274,6 +305,7 @@ function () {
           indexNumber: indexNumber
         });
       });
+      return this;
     }
   }, {
     key: "display",
@@ -289,11 +321,11 @@ function () {
             elem.classList.remove(_this3.settings.className);
           }
         } else {
-          if (_this3.hash === _getHash(elem[key])) {
+          if (_this3.hash === (key === 'id' ? '#' + elem[key] : elem[key])) {
             if (key === 'hash') {
               _this3.selectedTrigger = elem;
               _this3.selectedTarget = arg.targetElem;
-              _this3.selectedWrapper = _closest(arg.targetElem, _this3.wrapperSelector);
+              _this3.selectedWrapper = (0, _closest.default)(arg.targetElem, _this3.wrapperSelector);
             }
 
             elem.classList.add(_this3.settings.className);
@@ -302,6 +334,7 @@ function () {
           }
         }
       });
+      return this;
     }
   }]);
 
@@ -310,24 +343,9 @@ function () {
 
 exports.default = Tab;
 
-function _getHash(hash) {
-  return '#' + hash.replace(/^#/, '');
-}
-
-function _closest(elem, wrapper) {
-  // let closest;
-  // for ( closest = elem; closest; closest = closest.parentElement ) {
-  //   if ( closest.matches( wrapper ) ) {
-  //     break;
-  //   }
-  // }
-  // return closest;
-  return (0, _jquery.default)(elem).closest(wrapper).get(0);
-}
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],5:[function(require,module,exports){
+},{"./polyfills/closest.js":3,"./polyfills/matches.js":4}],7:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }

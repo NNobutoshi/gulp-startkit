@@ -1,10 +1,6 @@
-/*!
- * transitiontoggle.js
- * Copyright 2019 https://github.com/NNobutoshi/
- * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-
 import $ from 'jquery';
+import './polyfills/matches.js';
+import closest from './polyfills/closest.js';
 
 export default class Tab {
 
@@ -29,7 +25,7 @@ export default class Tab {
     this.selectedWrapper = null;
     this.selectedTarget  = null;
     this.callBackforLoad = ( typeof this.settings.onLoad === 'function' )? this.settings.onLoad: null;
-    this.hash = '';
+    this.hash = null;
   }
 
   on() {
@@ -37,7 +33,7 @@ export default class Tab {
       $w = $( window )
     ;
     $w.on( `load.${this.id} hashchange.${this.id}`, ( e ) => {
-      this.hash = _getHash( window.location.hash );
+      this.hash = location.hash || null;
       this.runAll( e );
       if ( this.callBackforLoad ) {
         this.callBackforLoad.call( this, {
@@ -48,7 +44,8 @@ export default class Tab {
       }
     } );
     $( this.triggerElemAll ).on( `click.${this.id}`, ( e ) => {
-      this.hash = _getHash( e.currentTarget.hash );
+      this.hash = e.currentTarget.hash;
+      console.info( this.hash );
       e.preventDefault();
       window.history.pushState( null, null, window.location.pathname + this.hash );
       this.run( e );
@@ -59,7 +56,7 @@ export default class Tab {
     const
       indexNumber = ( typeof index === 'number' )? index: 0
       ,triggerElem = e.currentTarget
-      ,wrapperElem = _closest( triggerElem, this.wrapperSelector )
+      ,wrapperElem = closest( triggerElem, this.wrapperSelector )
       ,triggerElemAll = wrapperElem.querySelectorAll( this.triggerSelector )
       ,targetElemAll = wrapperElem.querySelectorAll( this.targetSelector )
       ,targetElem = wrapperElem.querySelector( this.hash )
@@ -101,6 +98,7 @@ export default class Tab {
         indexNumber : indexNumber,
       } );
     } );
+    return this;
   }
 
   display( arg ) {
@@ -115,11 +113,11 @@ export default class Tab {
           elem.classList.remove( this.settings.className );
         }
       } else {
-        if ( this.hash === _getHash( elem[ key ] ) ) {
+        if ( this.hash === ( ( key === 'id' )? '#' + elem[ key ]: elem [ key ] ) ) {
           if ( key === 'hash' ) {
             this.selectedTrigger = elem;
             this.selectedTarget = arg.targetElem;
-            this.selectedWrapper = _closest( arg.targetElem, this.wrapperSelector );
+            this.selectedWrapper = closest( arg.targetElem, this.wrapperSelector );
           }
           elem.classList.add( this.settings.className );
         } else {
@@ -127,21 +125,7 @@ export default class Tab {
         }
       }
     } );
+    return this;
   }
 
-}
-
-function _getHash( hash ) {
-  return '#' + hash.replace( /^#/, '' );
-}
-
-function _closest( elem, wrapper ) {
-  // let closest;
-  // for ( closest = elem; closest; closest = closest.parentElement ) {
-  //   if ( closest.matches( wrapper ) ) {
-  //     break;
-  //   }
-  // }
-  // return closest;
-  return $( elem ).closest( wrapper ).get(0);
 }
