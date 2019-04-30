@@ -1,6 +1,10 @@
-export default function( className, d ) {
+import UaParser from '../_vendor/ua-parser.js';
+const uaParser = new UaParser();
+export default function( className ) {
   const
-    htmlElement = d.querySelectorAll('html')[0]
+    elemHtml = document.querySelector('html')
+    ,browser = uaParser.getBrowser()
   ;
-  htmlElement.classList.add( className );
+  elemHtml.classList.add( className );
+  elemHtml.classList.add( browser.name + browser.major );
 }

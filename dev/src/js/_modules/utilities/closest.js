@@ -1,4 +1,4 @@
-import './matches.js';
+import '../polyfills/matches.js';
 
 export default function closest( elem, wrapper ) {
   for ( var closest = elem; closest; closest = closest.parentElement ) {
@@ -8,3 +8,4 @@ export default function closest( elem, wrapper ) {
   }
   return closest;
 }
+

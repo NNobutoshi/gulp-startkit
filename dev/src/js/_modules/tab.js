@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import './polyfills/matches.js';
-import closest from './polyfills/closest.js';
+import closest from './utilities/closest.js';
 
 export default class Tab {
 
@@ -45,9 +45,8 @@ export default class Tab {
     } );
     $( this.triggerElemAll ).on( `click.${this.id}`, ( e ) => {
       this.hash = e.currentTarget.hash;
-      console.info( this.hash );
       e.preventDefault();
-      window.history.pushState( null, null, window.location.pathname + this.hash );
+      history.pushState( null, null, location.pathname + this.hash );
       this.run( e );
     } );
   }

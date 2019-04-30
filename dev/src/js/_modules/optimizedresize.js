@@ -9,7 +9,6 @@ import 'modernizr';
 let
   counter = 0
 ;
-/* globals Modernizr */
 export default class OptimizedResize {
 
   constructor( options ) {
@@ -30,10 +29,10 @@ export default class OptimizedResize {
         props = this.callBacks[ key ]
       ;
       let
-        query = ( props.query )? Modernizr.mq( props.query ): false
+        query = false
       ;
       if ( props.query ) {
-        query = Modernizr.mq( props.query );
+        query = matchMedia( props.query ).matches;
         if (
           query === true && (
             ( props.turn === true && props.lastQuery !== query ) ||
@@ -50,6 +49,7 @@ export default class OptimizedResize {
       } else {
         props.callBack( this, props );
       }
+
     } );
     this.isRunning = false;
     return this;
@@ -73,6 +73,10 @@ export default class OptimizedResize {
 
   remove( name ) {
     delete this.callBacks[ name ];
+  }
+
+  off( name ) {
+    this.remove( name );
   }
 
   on( callBack, query, name ) {

@@ -3,6 +3,7 @@
  */
 
 import $ from 'jquery';
+import offset from './utilities/offset.js';
 
 const
   $w = $( window )
@@ -33,7 +34,7 @@ export default class Rescroll {
   run() {
     const
       settings = this.settings
-      ,hash = window.location.hash
+      ,hash = location.hash
       ,that = this
     ;
     let
@@ -66,12 +67,12 @@ export default class Rescroll {
 
   scroll( target ) {
     const
-      $target = ( target )? $( target ): $( this.hash )
+      targetElem = ( target )? target: document.querySelector( this.hash )
     ;
     let
       offsetTop
     ;
-    if ( !$target.length ) {
+    if ( targetElem === null ) {
       return this;
     }
     cancelAnimationFrame( this.timeoutId );
@@ -80,7 +81,7 @@ export default class Rescroll {
     } else if ( typeof this.offsetTop === 'string' ) {
       offsetTop = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
     }
-    $w.scrollTop( $target.offset().top - offsetTop );
+    scrollTo( 0, offset( targetElem ).top - offsetTop );
   }
 
 }

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 export default class Locate {
 
   constructor( options ) {
@@ -15,8 +16,8 @@ export default class Locate {
 
   run() {
     const
-      hostName = window.location.host
-      ,wPathname = window.location.pathname.replace( this.settings.indexRegex, '' )
+      hostName = location.host
+      ,wPathname = location.pathname.replace( this.settings.indexRegex, '' )
     ;
     Array.prototype.forEach.call( this.target, ( self ) => {
       const

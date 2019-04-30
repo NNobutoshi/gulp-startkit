@@ -13,12 +13,13 @@ mdls.resize
   }, '(min-width: 980px)' )
   .turn( () => {
     console.info( '(min-width: 980px)' );
-  }, '(min-width: 980px)' )
+  }, '(min-width: 980px)', 'foo' )
   .turn( () => {
     console.info('(max-width: 979px)' );
   }, '(max-width: 979px)' )
   .on( () => {
     console.info('(max-width: 374px)' );
+    mdls.resize.off('foo');
   }, '(max-width: 374px)' )
   .run()
 ;
