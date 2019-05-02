@@ -14,7 +14,9 @@
     "type": "git"
   },
   "browserify": {
-    "transform": [ "browserify-shim" ]
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
     "jquery": "global:jQuery",
@@ -54,7 +56,8 @@
     "require-dir": "*",
     "vinyl-buffer": "*",
     "vinyl-source-stream": "*",
-    "watchify": "*"
+    "watchify": "*",
+    "xls-to-json": "*"
   },
   "optionalDependencies": {
     "browser-sync": "*"

@@ -22,6 +22,8 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
+var _offset = _interopRequireDefault(require("./utilities/offset.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -65,7 +67,7 @@ function () {
     key: "run",
     value: function run() {
       var settings = this.settings,
-          hash = window.location.hash,
+          hash = location.hash,
           that = this;
       var start = null;
       clearTimeout(this.timeoutId);
@@ -97,10 +99,10 @@ function () {
   }, {
     key: "scroll",
     value: function scroll(target) {
-      var $target = target ? (0, _jquery.default)(target) : (0, _jquery.default)(this.hash);
+      var targetElem = target ? target : document.querySelector(this.hash);
       var offsetTop;
 
-      if (!$target.length) {
+      if (targetElem === null) {
         return this;
       }
 
@@ -112,7 +114,7 @@ function () {
         offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
       }
 
-      $w.scrollTop($target.offset().top - offsetTop);
+      scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
     }
   }]);
 
@@ -130,6 +132,24 @@ function _getTotalHeight(elem) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./utilities/offset.js":3}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = offset;
+
+function offset(elem) {
+  var offset = {},
+      rect = elem.getBoundingClientRect(),
+      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
+      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+  offset.top = rect.top + scTop;
+  offset.left = rect.left + scLeft;
+  return offset;
+}
 
 },{}]},{},[1])
 

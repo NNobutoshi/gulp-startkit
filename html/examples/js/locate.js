@@ -14,7 +14,7 @@ mdls.locate = new _locate.default({
   target: TARGETSELECTOR
 });
 $(TARGETSELECTOR).on('click', function (e) {
-  window.history.pushState(null, null, e.currentTarget.href);
+  history.pushState(null, null, e.currentTarget.href);
   $('.pl-nav_item').removeClass('js-current');
   $(mdls.locate.run().currentItem).parents('.pl-nav_item').addClass('js-current');
   e.preventDefault();
@@ -67,8 +67,8 @@ function () {
     value: function run() {
       var _this = this;
 
-      var hostName = window.location.host,
-          wPathname = window.location.pathname.replace(this.settings.indexRegex, '');
+      var hostName = location.host,
+          wPathname = location.pathname.replace(this.settings.indexRegex, '');
       Array.prototype.forEach.call(this.target, function (self) {
         var aPathname = self.pathname.replace(_this.settings.indexRegex, ''),
             aHost = self.host;

@@ -26,39 +26,19 @@ mdls.tab = new _tab.default({
 });
 mdls.tab.on();
 
-},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/rescroll.js":5,"../../js/_modules/tab.js":6}],2:[function(require,module,exports){
+},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/rescroll.js":4,"../../js/_modules/tab.js":5}],2:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":7}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = closest;
-
-require("./matches.js");
-
-function closest(elem, wrapper) {
-  for (var closest = elem; closest; closest = closest.parentElement) {
-    if (closest.matches(wrapper)) {
-      break;
-    }
-  }
-
-  return closest;
-}
-
-},{"./matches.js":4}],4:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":8}],3:[function(require,module,exports){
 "use strict";
 
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.msMatchesSelector;
 }
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -68,6 +48,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+var _offset = _interopRequireDefault(require("./utilities/offset.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -112,7 +94,7 @@ function () {
     key: "run",
     value: function run() {
       var settings = this.settings,
-          hash = window.location.hash,
+          hash = location.hash,
           that = this;
       var start = null;
       clearTimeout(this.timeoutId);
@@ -144,10 +126,10 @@ function () {
   }, {
     key: "scroll",
     value: function scroll(target) {
-      var $target = target ? (0, _jquery.default)(target) : (0, _jquery.default)(this.hash);
+      var targetElem = target ? target : document.querySelector(this.hash);
       var offsetTop;
 
-      if (!$target.length) {
+      if (targetElem === null) {
         return this;
       }
 
@@ -159,7 +141,7 @@ function () {
         offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
       }
 
-      $w.scrollTop($target.offset().top - offsetTop);
+      scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
     }
   }]);
 
@@ -178,7 +160,7 @@ function _getTotalHeight(elem) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],6:[function(require,module,exports){
+},{"./utilities/offset.js":7}],5:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -191,7 +173,7 @@ var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQ
 
 require("./polyfills/matches.js");
 
-var _closest = _interopRequireDefault(require("./polyfills/closest.js"));
+var _closest = _interopRequireDefault(require("./utilities/closest.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -251,9 +233,8 @@ function () {
       });
       (0, _jquery.default)(this.triggerElemAll).on("click.".concat(this.id), function (e) {
         _this.hash = e.currentTarget.hash;
-        console.info(_this.hash);
         e.preventDefault();
-        window.history.pushState(null, null, window.location.pathname + _this.hash);
+        history.pushState(null, null, location.pathname + _this.hash);
 
         _this.run(e);
       });
@@ -345,7 +326,45 @@ exports.default = Tab;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./polyfills/closest.js":3,"./polyfills/matches.js":4}],7:[function(require,module,exports){
+},{"./polyfills/matches.js":3,"./utilities/closest.js":6}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = closest;
+
+require("../polyfills/matches.js");
+
+function closest(elem, wrapper) {
+  for (var closest = elem; closest; closest = closest.parentElement) {
+    if (closest.matches(wrapper)) {
+      break;
+    }
+  }
+
+  return closest;
+}
+
+},{"../polyfills/matches.js":3}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = offset;
+
+function offset(elem) {
+  var offset = {},
+      rect = elem.getBoundingClientRect(),
+      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
+      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+  offset.top = rect.top + scTop;
+  offset.left = rect.left + scLeft;
+  return offset;
+}
+
+},{}],8:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }

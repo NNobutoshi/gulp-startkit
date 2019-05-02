@@ -10,6 +10,7 @@ block config
         ogPrefix     : "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#",
         ogType       : "article",
         ogImg        : "",
+        siteUrl      : "http://localhost",
         url          : "",
         title        : "サイト",
         cssCommonDir : "/css",
@@ -19,9 +20,69 @@ block config
         appleIcon    : "/img/apple-touch-icon-114x114.png",
         foo          : "foo",
       },
-      index : {
-        title    : "トップページ",
-        ogPrefix : "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#",
-        ogType   : "website",
+      //{{
+      "/": {
+        "ogType": "website",
+        "url": "/",
+        "title": "タイトル foo",
+        "description": "ディスクリプション foo",
+        "keywords": "キーワード foo",
+        "template": "./src/_template.pug",
+        "ogPrefix": "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#"
       },
+      "/test/foo/": {
+        "ogType": "",
+        "url": "/test/foo/",
+        "title": "タイトル foo",
+        "description": "ディスクリプション foo",
+        "keywords": "キーワード foo",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      },
+      "/test/foo/qux/": {
+        "ogType": "",
+        "url": "/test/foo/qux/",
+        "title": "タイトル qux",
+        "description": "でぃすくりぷしょん qux",
+        "keywords": "きーわーど qux",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      },
+      "/test/bar/": {
+        "ogType": "",
+        "url": "/test/bar/",
+        "title": "title bar",
+        "description": "でぃすくりぷしょん bar",
+        "keywords": "きー bar",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      },
+      "/test/bar/quux/grault.html": {
+        "ogType": "",
+        "url": "/test/bar/quux/grault.html",
+        "title": "title quux",
+        "description": "ディスクリプション quux",
+        "keywords": "キー quux",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      },
+      "/test/baz/": {
+        "ogType": "",
+        "url": "/test/baz/",
+        "title": "title baz",
+        "description": "description  baz",
+        "keywords": "keywords baz",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      },
+      "/test/baz/corge/": {
+        "ogType": "",
+        "url": "/test/baz/corge/",
+        "title": "タイトル corge",
+        "description": "desc  corge",
+        "keywords": "keyword corge",
+        "template": "./src/_template.pug",
+        "ogPrefix": ""
+      }
+      //}}
     }

@@ -13,10 +13,11 @@ mdls.resize.one(function () {
   console.info('one');
 }, '(min-width: 980px)').turn(function () {
   console.info('(min-width: 980px)');
-}, '(min-width: 980px)').turn(function () {
+}, '(min-width: 980px)', 'foo').turn(function () {
   console.info('(max-width: 979px)');
 }, '(max-width: 979px)').on(function () {
   console.info('(max-width: 374px)');
+  mdls.resize.off('foo');
 }, '(max-width: 374px)').run();
 
 },{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/optimizedresize.js":3}],2:[function(require,module,exports){
@@ -46,7 +47,6 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var counter = 0;
-/* globals Modernizr */
 
 var OptimizedResize =
 /*#__PURE__*/
@@ -72,10 +72,10 @@ function () {
 
       Object.keys(this.callBacks).forEach(function (key) {
         var props = _this.callBacks[key];
-        var query = props.query ? Modernizr.mq(props.query) : false;
+        var query = false;
 
         if (props.query) {
-          query = Modernizr.mq(props.query);
+          query = matchMedia(props.query).matches;
 
           if (query === true && (props.turn === true && props.lastQuery !== query || props.one === true || !props.one && !props.turn)) {
             props.callBack.call(_this, props);
@@ -113,6 +113,11 @@ function () {
     key: "remove",
     value: function remove(name) {
       delete this.callBacks[name];
+    }
+  }, {
+    key: "off",
+    value: function off(name) {
+      this.remove(name);
     }
   }, {
     key: "on",
