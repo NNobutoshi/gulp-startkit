@@ -9,14 +9,15 @@ const
     ,indexName  : 'index.pug'
     ,linefeed   : '\n' // '\r\n'
     ,x2j : {
-      input   : './sitemap.xlsx'
+      input    : './sitemap.xlsx'
       ,output  : './output.json'
       ,sheet   : 'Sheet1'
     }
   }
   ,data = {}
   /* globals process */
-  ,onlyConfig = process.argv[2]
+  ,config = ( process.argv[ 2 ] )? Boolean( process.argv[ 2 ] ): true
+  ,force = ( process.argv[ 3 ] )? Boolean( process.argv[ 3 ] ): false
 ;
 
 _run();
@@ -42,14 +43,15 @@ function _run() {
     ;
     content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed+string+indent}//}}` );
 
-    fs.writeFileSync( settings.configFile, content, charset );
-    if ( onlyConfig ) {
-      return;
+    if ( config ) {
+      console.info( settings.configFile );
+      console.info('==');
+      fs.writeFileSync( settings.configFile, content, charset );
     }
     Object.keys( data ).forEach( ( key ) => {
-      _runRecursively( data[ key ], _writeFile );
+      _runRecursively( data[ key ] );
     } );
-
+    console.info('==');
   } );
 }
 
@@ -58,8 +60,8 @@ function _eachJsonData( item ) {
   data[ item.url ] = item;
 }
 
-function _runRecursively( prop, callback ) {
-  var
+function _runRecursively( prop ) {
+  let
     leaves = []
     ,parent = ''
     ,len = null
@@ -74,8 +76,8 @@ function _runRecursively( prop, callback ) {
     url = url.replace( /\.html?$/, '.pug' );
   }
   url = './src' + url;
-  leaves  = url.split('/');
-  len    = leaves.length;
+  leaves = url.split('/');
+  len = leaves.length;
   leaves.forEach( function ( leaf, index ) {
     if ( parent === '' ) {
       parent = leaf;
@@ -83,19 +85,15 @@ function _runRecursively( prop, callback ) {
       parent  = parent + '/' + leaf;
     }
     if ( index === len -1 ) {
-      callback( url, key, prop.template );
+      if ( !fs.existsSync( parent ) || force ) {
+        console.info( parent );
+        _writeFile( url, key, prop.template );
+      }
     } else {
       if ( !fs.existsSync( parent ) ) {
         fs.mkdirSync( parent );
       }
     }
-    // if( index === len -1 && settings.extension.test( parent ) ) {
-    //   // callback( url, prop.url, prop.template );
-    // } else {
-    //   if ( !fs.existsSync( parent ) ) {
-    //     fs.mkdirSync( parent );
-    //   }
-    // }
   } );
 }
 
@@ -104,6 +102,6 @@ function _writeFile( url, key, template ) {
     content = ''
   ;
   content = fs.readFileSync( template, charset );
-  content = content.replace( '//{page}', '"' + key +'"' );
+  content = content.replace( '//{page}', `"${key}"` );
   fs.writeFileSync( url, content, charset );
 }

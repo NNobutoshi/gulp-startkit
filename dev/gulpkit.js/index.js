@@ -8,10 +8,11 @@ const
 
 requireDir('./tasks');
 
-gulp.task( 'default', gulp.series( Object
-  .keys( config )
-  .filter( function( key ) {
-    return config[ key ].default === true;
-  } ) )
+gulp.task( 'default', gulp.series(
+  Object
+    .keys( config )
+    .filter( function( key ) {
+      return config[ key ].default === true;
+    } ) )
 )
 ;
