@@ -14,81 +14,78 @@ const
       ,sheet   : 'Sheet1'
     }
   }
-  ,data = {}
   /* globals process */
-  ,config = ( process.argv[ 2 ] )? Boolean( process.argv[ 2 ] ): true
-  ,force = ( process.argv[ 3 ] )? Boolean( process.argv[ 3 ] ): false
+  ,force = ( process.argv.includes('-f') )? true: false // 既存の各pug ファイルを刷新するか否か
 ;
 
-_run();
+let
+  jSONData = {}
+;
 
-function _run() {
+( function _run() {
   nodeX2j( settings.x2j, function( err, result ) {
-    if( err ) {
-      console.error( err );
-    } else {
-      result.forEach( _eachJsonData );
-    }
     let
       content = ''
       ,string = ''
       ,indent = ''
     ;
+    if( err ) {
+      console.error( err );
+      return;
+    }
+    jSONData = _reJsonData( result );
     content = fs.readFileSync( settings.configFile, charset );
-    indent = content.match( /[\s\S]+?( +)\/\/{{/ )[1];
-    string = JSON.stringify( data, null, '  ' )
-      .replace( new RegExp('^\\{' + '\\' + settings.linefeed, 'g'), '' )
+    indent = content.match( /[\s\S]+?( +)\/\/{{/ )[ 1];
+    string = JSON
+      .stringify( jSONData, null, '  ' )
+      .replace( new RegExp( '^\\{' + '\\' + settings.linefeed, 'g' ), '' )
       .replace( /\}$/, '' )
       .replace( /^ {2}/mg, indent )
     ;
     content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed+string+indent}//}}` );
-
-    if ( config ) {
-      console.info( settings.configFile );
-      console.info('==');
-      fs.writeFileSync( settings.configFile, content, charset );
-    }
-    Object.keys( data ).forEach( ( key ) => {
-      _runRecursively( data[ key ] );
+    fs.writeFileSync( settings.configFile, content, charset );
+    Object.keys( jSONData ).forEach( ( url ) => {
+      _recursivelyRunDirectories( jSONData[ url ], _writeFile );
     } );
-    console.info('==');
   } );
+} )();
+
+
+function _reJsonData( data ) {
+  const
+    res = {}
+  ;
+  data.forEach( ( item ) => {
+    res[ item.url ] = item;
+  } );
+  return res;
 }
 
-
-function _eachJsonData( item ) {
-  data[ item.url ] = item;
-}
-
-function _runRecursively( prop ) {
+function _recursivelyRunDirectories( prop, callback ) {
   let
     leaves = []
     ,parent = ''
-    ,len = null
     ,url = prop.url
-    ,key = url
+    ,temp = prop.template
+    ,htmlUrl = url
+    ,pugUrl = ''
   ;
-
-  if ( url.match( /\/$/) ) {
-    url = url.replace( /\/$/, '/index.pug');
+  if ( url.match( /\/$/ ) ) {
+    pugUrl = url.replace( /\/$/, '/index.pug');
   }
-  if ( url.match(/\.html?$/) ) {
-    url = url.replace( /\.html?$/, '.pug' );
+  if ( url.match(/\.html?$/ ) ) {
+    pugUrl = url.replace( /\.html?$/, '.pug' );
   }
-  url = './src' + url;
-  leaves = url.split('/');
-  len = leaves.length;
-  leaves.forEach( function ( leaf, index ) {
+  pugUrl = settings.src + pugUrl;
+  leaves = pugUrl.split('/');
+  leaves.forEach( function ( leaf ) {
     if ( parent === '' ) {
       parent = leaf;
     } else {
       parent  = parent + '/' + leaf;
     }
-    if ( index === len -1 ) {
-      if ( !fs.existsSync( parent ) || force ) {
-        console.info( parent );
-        _writeFile( url, key, prop.template );
-      }
+    if ( pugUrl === parent ) {
+      callback( pugUrl, htmlUrl, temp );
     } else {
       if ( !fs.existsSync( parent ) ) {
         fs.mkdirSync( parent );
@@ -97,11 +94,20 @@ function _runRecursively( prop ) {
   } );
 }
 
-function _writeFile( url, key, template ) {
-  let
-    content = ''
-  ;
-  content = fs.readFileSync( template, charset );
-  content = content.replace( '//{page}', `"${key}"` );
-  fs.writeFileSync( url, content, charset );
+function _writeFile( pugUrl, htmlUrl, template ) {
+  if ( !fs.existsSync( pugUrl ) || force ) {
+    fs.readFile( template, charset, ( err, content ) => {
+      if ( err ) {
+        console.error( err );
+        return;
+      }
+      fs.writeFile( pugUrl, content.replace( '//{page}', `"${htmlUrl}"` ), charset, ( err ) => {
+        if ( err ) {
+          console.error( err );
+          return;
+        }
+        console.info( pugUrl );
+      } );
+    } );
+  }
 }
