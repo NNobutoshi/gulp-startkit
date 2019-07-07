@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import './polyfills/matches.js';
 import closest from './utilities/closest.js';
 
 export default class Tab {

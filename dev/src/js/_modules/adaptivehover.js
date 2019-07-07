@@ -6,6 +6,8 @@
 
 import $ from 'jquery';
 import 'modernizr';
+import './polyfills/matches.js';
+import closest from './utilities/closest.js';
 
 /* globals Modernizr */
 export default class AdaptiveHover {
@@ -29,7 +31,7 @@ export default class AdaptiveHover {
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
-    this.status = '';
+    this.status = 'leave';
   }
 
   on( callBackForEnter, callBackForLeave ) {
@@ -48,17 +50,13 @@ export default class AdaptiveHover {
     $root.on( this.enterEventName, settings.target, ( e ) => {
       this.handleForEnter( e );
     } );
+    $root.on( this.leaveEventName, settings.target, ( e ) => {
+      this.handleForLeave( e );
+    } );
     $root.on( `${eventNameForClick}.${this.id}`, ( e ) => {
-      const
-        isNotRelative = !_isRelative( this.target, e.target )
-      ;
-      if( isNotRelative && this.status === 'enter' ) {
+      if( !_isRelative( settings.target, e.target ) && this.status === 'enter' ) {
         this.clear();
-        $root.off( this.leaveEventName, settings.target );
         this.leave( e, this.callBackForLeave );
-        $root.on( this.enterEventName, settings.target, ( e ) => {
-          this.handleForEnter( e );
-        } );
       }
     } );
     return this;
@@ -76,24 +74,12 @@ export default class AdaptiveHover {
   }
 
   handleForEnter( e ) {
-    const
-      settings = this.settings
-      ,$root = $( this.eventRoot )
-      ,eventObj = _getEventObj( e )
-    ;
-    this.pageX = eventObj.pageX;
-    this.pageY = eventObj.pageY;
-    $root.off( this.enterEventName, settings.target );
     this.enter( e );
-    $root.on( this.leaveEventName, settings.target, ( e ) => {
-      this.handleForLeave( e );
-    } );
   }
 
   handleForLeave( e ) {
     const
       settings = this.settings
-      ,$root = $( this.eventRoot )
       ,range = settings.range
       ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, range )
     ;
@@ -103,22 +89,27 @@ export default class AdaptiveHover {
         this.clear();
       }, settings.timeout );
     } else {
-      $root.off( this.leaveEventName, settings.target );
       this.leave( e, this.callBackForLeave );
-      $root.on( this.enterEventName, settings.target, ( e ) => {
-        this.handleForEnter( e, this.callBackForEnter );
-      } );
     }
   }
 
   enter( e ) {
-    this.status = 'enter';
-    this.callBackForEnter.call( this, e, this );
+    const
+      eventObj = _getEventObj( e )
+    ;
+    if ( this.status === 'leave' ) {
+      this.pageX = eventObj.pageX;
+      this.pageY = eventObj.pageY;
+      this.status = 'enter';
+      this.callBackForEnter.call( this, e, this );
+    }
   }
 
   leave( e ) {
-    this.status = 'leave';
-    this.callBackForLeave.call( this, e, this );
+    if ( this.status === 'enter' ) {
+      this.status = 'leave';
+      this.callBackForLeave.call( this, e, this );
+    }
   }
 
   clear() {
@@ -138,7 +129,7 @@ function _isOriginPoint( eventObj, pageX, pageY, range ) {
 }
 
 function _isRelative( ancestor, elem ) {
-  return $( ancestor ).is( elem ) && $( elem ).closest( ancestor ).length === 1;
+  return elem.matches( ancestor ) || closest( elem, ancestor);
 }
 
 function _getEventObj( e ) {
