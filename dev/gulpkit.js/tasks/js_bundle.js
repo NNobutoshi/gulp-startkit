@@ -20,7 +20,7 @@ const
   ,options = config.options
 ;
 
-gulp.task( taskName, gulp.series( _js_clean, () => {
+gulp.task( taskName, gulp.series( _js_clean, ( cb ) => {
   let
     stream
   ;
@@ -56,7 +56,8 @@ gulp.task( taskName, gulp.series( _js_clean, () => {
         ;
       }
       br.on( 'update', _bundle );
-      return _bundle();
+      _bundle();
+      cb();
     } ) )
   ;
   return stream;
