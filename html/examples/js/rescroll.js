@@ -99,8 +99,13 @@ function () {
   }, {
     key: "scroll",
     value: function scroll(target) {
-      var targetElem = target ? target : document.querySelector(this.hash);
-      var offsetTop;
+      var offsetTop, targetElem;
+
+      if (!target && !this.hash) {
+        return this;
+      }
+
+      targetElem = target ? target : document.querySelector(this.hash);
 
       if (targetElem === null) {
         return this;

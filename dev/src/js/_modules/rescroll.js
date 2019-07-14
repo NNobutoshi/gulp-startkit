@@ -66,12 +66,14 @@ export default class Rescroll {
   }
 
   scroll( target ) {
-    const
-      targetElem = ( target )? target: document.querySelector( this.hash )
-    ;
     let
       offsetTop
+      ,targetElem
     ;
+    if ( !target && !this.hash ) {
+      return this;
+    }
+    targetElem = ( target )? target: document.querySelector( this.hash );
     if ( targetElem === null ) {
       return this;
     }

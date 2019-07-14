@@ -31,6 +31,10 @@ var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQ
 
 (typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
 
+require("./polyfills/matches.js");
+
+var _closest = _interopRequireDefault(require("./utilities/closest.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39,7 +43,6 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-/* globals Modernizr */
 var AdaptiveHover =
 /*#__PURE__*/
 function () {
@@ -57,14 +60,14 @@ function () {
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
-    this.enterEventName = '';
-    this.leaveEeventName = '';
+    this.enteringEventName = '';
+    this.leavingEventName = '';
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
-    this.status = '';
+    this.isEntering = false;
   }
 
   _createClass(AdaptiveHover, [{
@@ -73,29 +76,23 @@ function () {
       var _this = this;
 
       var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot),
-          eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click';
-      this.enterEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
-      this.leaveEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
+          $root = (0, _jquery.default)(this.eventRoot);
+      this.enteringEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
+      this.leavingEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
       this.callBackForEnter = callBackForEnter;
       this.callBackForLeave = callBackForLeave;
       this.target = document.querySelectorAll(settings.target)[0];
-      $root.on(this.enterEventName, settings.target, function (e) {
+      $root.on(this.enteringEventName, settings.target, function (e) {
         _this.handleForEnter(e);
       });
-      $root.on("".concat(eventNameForClick, ".").concat(this.id), function (e) {
-        var isNotRelative = !_isRelative(_this.target, e.target);
-
-        if (isNotRelative && _this.status === 'enter') {
+      $root.on(this.leavingEventName, settings.target, function (e) {
+        _this.handleForLeave(e);
+      });
+      $root.on("touchend.".concat(this.id, " click.").concat(this.id), function (e) {
+        if (!_isRelative(settings.target, e.target) && _this.isEntering === true) {
           _this.clear();
 
-          $root.off(_this.leaveEventName, settings.target);
-
           _this.leave(e, _this.callBackForLeave);
-
-          $root.on(_this.enterEventName, settings.target, function (e) {
-            _this.handleForEnter(e);
-          });
         }
       });
       return this;
@@ -106,61 +103,54 @@ function () {
       var settings = this.settings,
           $root = (0, _jquery.default)(this.eventRoot);
       this.clear();
-      $root.off(this.enterEventName, settings.target);
-      $root.off(this.leaveEventName, settings.target);
+      $root.off(this.enteringEventName, settings.target);
+      $root.off(this.leavingEventName, settings.target);
+      $root.off("touchend.".concat(this.id, " click.").concat(this.id));
       return this;
     }
   }, {
     key: "handleForEnter",
     value: function handleForEnter(e) {
-      var _this2 = this;
-
-      var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot),
-          eventObj = _getEventObj(e);
-
-      this.pageX = eventObj.pageX;
-      this.pageY = eventObj.pageY;
-      $root.off(this.enterEventName, settings.target);
       this.enter(e);
-      $root.on(this.leaveEventName, settings.target, function (e) {
-        _this2.handleForLeave(e);
-      });
     }
   }, {
     key: "handleForLeave",
     value: function handleForLeave(e) {
-      var _this3 = this;
-
       var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot),
           range = settings.range,
           isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
 
-      if (isOriginPoint) {
-        clearTimeout(this.timeoutId);
-        this.timeoutId = setTimeout(function () {
-          _this3.clear();
-        }, settings.timeout);
-      } else {
-        $root.off(this.leaveEventName, settings.target);
+      if (!isOriginPoint) {
         this.leave(e, this.callBackForLeave);
-        $root.on(this.enterEventName, settings.target, function (e) {
-          _this3.handleForEnter(e, _this3.callBackForEnter);
-        });
       }
     }
   }, {
     key: "enter",
     value: function enter(e) {
-      this.status = 'enter';
-      this.callBackForEnter.call(this, e, this);
+      var _this2 = this;
+
+      var eventObj = _getEventObj(e),
+          settings = this.settings;
+
+      if (this.isEntering === false) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(function () {
+          return _this2.clear();
+        }, settings.timeout);
+        this.pageX = eventObj.pageX;
+        this.pageY = eventObj.pageY;
+        this.isEntering = true;
+        this.callBackForEnter.call(this, e, this);
+      }
     }
   }, {
     key: "leave",
     value: function leave(e) {
-      this.status = 'leave';
-      this.callBackForLeave.call(this, e, this);
+      if (this.isEntering === true) {
+        clearTimeout(this.timeoutId);
+        this.isEntering = false;
+        this.callBackForLeave.call(this, e, this);
+      }
     }
   }, {
     key: "clear",
@@ -182,7 +172,7 @@ function _isOriginPoint(eventObj, pageX, pageY, range) {
 }
 
 function _isRelative(ancestor, elem) {
-  return (0, _jquery.default)(ancestor).is(elem) && (0, _jquery.default)(elem).closest(ancestor).length === 1;
+  return elem.matches(ancestor) || (0, _closest.default)(elem, ancestor);
 }
 
 function _getEventObj(e) {
@@ -191,12 +181,39 @@ function _getEventObj(e) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],3:[function(require,module,exports){
+},{"./polyfills/matches.js":4,"./utilities/closest.js":5}],3:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
 
-},{"../_vendor/jquery-3.2.1.js":4}],4:[function(require,module,exports){
+},{"../_vendor/jquery-3.2.1.js":6}],4:[function(require,module,exports){
+"use strict";
+
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.msMatchesSelector;
+}
+
+},{}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = closest;
+
+require("../polyfills/matches.js");
+
+function closest(elem, wrapper) {
+  for (var closest = elem; closest; closest = closest.parentElement) {
+    if (closest.matches(wrapper)) {
+      break;
+    }
+  }
+
+  return closest;
+}
+
+},{"../polyfills/matches.js":4}],6:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }

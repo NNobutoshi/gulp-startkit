@@ -35,7 +35,7 @@ window.jQuery = require('../_vendor/jquery-3.2.1.js');
 "use strict";
 
 if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector;
+  Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.msMatchesSelector;
 }
 
 },{}],4:[function(require,module,exports){
@@ -126,8 +126,13 @@ function () {
   }, {
     key: "scroll",
     value: function scroll(target) {
-      var targetElem = target ? target : document.querySelector(this.hash);
-      var offsetTop;
+      var offsetTop, targetElem;
+
+      if (!target && !this.hash) {
+        return this;
+      }
+
+      targetElem = target ? target : document.querySelector(this.hash);
 
       if (targetElem === null) {
         return this;
@@ -170,8 +175,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
-
-require("./polyfills/matches.js");
 
 var _closest = _interopRequireDefault(require("./utilities/closest.js"));
 
@@ -326,7 +329,7 @@ exports.default = Tab;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./polyfills/matches.js":3,"./utilities/closest.js":6}],6:[function(require,module,exports){
+},{"./utilities/closest.js":6}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

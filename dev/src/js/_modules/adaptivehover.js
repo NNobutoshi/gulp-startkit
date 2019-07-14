@@ -9,10 +9,10 @@ import 'modernizr';
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
 
-/* globals Modernizr */
 export default class AdaptiveHover {
 
   constructor( options ) {
+
     this.defaultSettings = {
       name : 'adaptiveHover',
       target : '',
@@ -24,37 +24,36 @@ export default class AdaptiveHover {
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
-    this.enterEventName = '';
-    this.leaveEeventName = '';
+    this.enteringEventName = '';
+    this.leavingEventName = '';
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
-    this.status = 'leave';
+    this.isEntering = false;
   }
 
   on( callBackForEnter, callBackForLeave ) {
     const
       settings = this.settings
       ,$root = $( this.eventRoot )
-      ,eventNameForClick = Modernizr.touchevents ? 'touchend' : 'click'
     ;
 
-    this.enterEventName = `touchstart.${this.id} mouseenter.${this.id}`;
-    this.leaveEventName = `touchend.${this.id} mouseleave.${this.id}`;
+    this.enteringEventName = `touchstart.${this.id} mouseenter.${this.id}`;
+    this.leavingEventName = `touchend.${this.id} mouseleave.${this.id}`;
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
     this.target = document.querySelectorAll( settings.target )[0];
 
-    $root.on( this.enterEventName, settings.target, ( e ) => {
+    $root.on( this.enteringEventName, settings.target, ( e ) => {
       this.handleForEnter( e );
     } );
-    $root.on( this.leaveEventName, settings.target, ( e ) => {
+    $root.on( this.leavingEventName, settings.target, ( e ) => {
       this.handleForLeave( e );
     } );
-    $root.on( `${eventNameForClick}.${this.id}`, ( e ) => {
-      if( !_isRelative( settings.target, e.target ) && this.status === 'enter' ) {
+    $root.on( `touchend.${this.id} click.${this.id}`, ( e ) => {
+      if( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
         this.clear();
         this.leave( e, this.callBackForLeave );
       }
@@ -68,8 +67,9 @@ export default class AdaptiveHover {
       ,$root = $( this.eventRoot )
     ;
     this.clear();
-    $root.off( this.enterEventName, settings.target );
-    $root.off( this.leaveEventName, settings.target );
+    $root.off( this.enteringEventName, settings.target );
+    $root.off( this.leavingEventName, settings.target );
+    $root.off( `touchend.${this.id} click.${this.id}` );
     return this;
   }
 
@@ -83,12 +83,7 @@ export default class AdaptiveHover {
       ,range = settings.range
       ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, range )
     ;
-    if ( isOriginPoint ) {
-      clearTimeout( this.timeoutId );
-      this.timeoutId = setTimeout( () => {
-        this.clear();
-      }, settings.timeout );
-    } else {
+    if ( !isOriginPoint ) {
       this.leave( e, this.callBackForLeave );
     }
   }
@@ -96,18 +91,22 @@ export default class AdaptiveHover {
   enter( e ) {
     const
       eventObj = _getEventObj( e )
+      ,settings = this.settings
     ;
-    if ( this.status === 'leave' ) {
+    if ( this.isEntering === false ) {
+      clearTimeout( this.timeoutId );
+      this.timeoutId = setTimeout( () =>  this.clear(), settings.timeout );
       this.pageX = eventObj.pageX;
       this.pageY = eventObj.pageY;
-      this.status = 'enter';
+      this.isEntering = true;
       this.callBackForEnter.call( this, e, this );
     }
   }
 
   leave( e ) {
-    if ( this.status === 'enter' ) {
-      this.status = 'leave';
+    if ( this.isEntering === true ) {
+      clearTimeout( this.timeoutId );
+      this.isEntering = false;
       this.callBackForLeave.call( this, e, this );
     }
   }
@@ -118,6 +117,7 @@ export default class AdaptiveHover {
     this.pageX = null;
     this.pageY = null;
   }
+
 }
 
 function _isOriginPoint( eventObj, pageX, pageY, range ) {
@@ -133,5 +133,5 @@ function _isRelative( ancestor, elem ) {
 }
 
 function _getEventObj( e ) {
-  return e.changedTouches ? e.changedTouches[0] : e;
+  return e.changedTouches ? e.changedTouches[ 0 ] : e;
 }
