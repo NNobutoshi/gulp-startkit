@@ -16,10 +16,12 @@
   background-color: #fff;
   @at-root {
     .pl-localNav_list {
+      list-style: none;
       display: flex;
+      padding: 0;
     }
     .pl-localNav_item {
-      padding-right: 30px;
+      padding-right: 10px;
     }
   }
 }

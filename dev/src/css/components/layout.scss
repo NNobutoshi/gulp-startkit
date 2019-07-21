@@ -8,6 +8,7 @@
 ,'../mixins_sprite';
 
 .page {
+  overflow: hidden;
   @at-root {
     .page_body {
       height: 2000px;
