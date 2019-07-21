@@ -50,7 +50,7 @@ class OptimizedResize {
   constructor(options) {
     this.defaultSettings = {
       name: 'optimizedresize',
-      delay: 66
+      delay: 16
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;

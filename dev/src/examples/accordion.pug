@@ -1,6 +1,6 @@
 extends /_layout.pug
 
-block vars
+append vars
   -
     page = "/examples/accordion.html"
 
@@ -13,6 +13,7 @@ append script_body
   script(src="/examples/js/accordion.js")
 
 block pageBody
+
   div.pl-list
     span.pl-list_btn accordion
     div.pl-list_inner
