@@ -114,16 +114,30 @@ template { display: none; }
 /** Add the correct display in IE 10. */
 [hidden] { display: none; }
 
-.pl-localNav { position: fixed; top: 0; left: 0; width: 100%; background-color: #fff; }
+.pl-mainVisual { height: 100vh; position: relative; }
 
-.pl-localNav_list { list-style: none; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; padding: 0; }
+.pl-mainVisual::after { content: ''; -webkit-box-sizing: border-top; box-sizing: border-top; position: absolute; z-index: 100; top: 50%; left: 50%; width: 40px; height: 40px; border-top: solid 5px rgba(0, 0, 0, 0.8); border-right: solid 5px rgba(0, 0, 0, 0.8); border-bottom: solid 5px rgba(0, 0, 0, 0.3); border-left: solid 5px rgba(0, 0, 0, 0.3); border-radius: 50%; -webkit-transform: translate3d(-50%, -50%, 0); transform: translate3d(-50%, -50%, 0); -webkit-animation: spin 1s linear 0s infinite; animation: spin 1s linear 0s infinite; }
 
-.pl-localNav_item { padding-right: 10px; }
+.js-mainVisual_video--isDestroyed .pl-mainVisual::after, .js-mainVisual_video--isPlaying .pl-mainVisual::after { display: none; }
 
-.pl-section { height: 100vh; }
+@-webkit-keyframes spin { 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 
-.pl-section:nth-child(odd) { background-color: #fcc; }
+@keyframes spin { 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 
-.pl-section:nth-child(even) { background-color: #c7c7e7; }
+.pl-mainVisual .js-mainVisual_video { position: absolute; top: 50%; left: 50%; width: 100%; height: auto; -webkit-transform: translate3d(-50%, -50%, 0); transform: translate3d(-50%, -50%, 0); }
 
-/*# sourceMappingURL=rescroll.css.map */
+.pl-mainVisual_head { z-index: 1; position: absolute; top: 50%; width: 50vw; min-width: 20em; padding: 10px 25px; background-color: #fff; }
+
+.pl-mainVisual_heading { font-size: 2.5rem; color: #f00; }
+
+.pl-mainVisual_body { position: fixed; z-index: 0; top: 0; left: 0; width: 100%; height: 100vh; }
+
+.js .pl-mainVisual_body { opacity: 0; -webkit-transition: opacity 3s ease-in; transition: opacity 3s ease-in; }
+
+.js-mainVisual_video--isPlaying .pl-mainVisual_body { opacity: 1; }
+
+.pl-section { position: relative; z-index: 1; height: 2000px; background-color: #fff; }
+
+/*# sourceMappingURL=videoground.css.map */

@@ -114,8 +114,10 @@ template { display: none; }
 /** Add the correct display in IE 10. */
 [hidden] { display: none; }
 
-.pl-hoverTarget { width: 100%; height: 20px; -webkit-transition: height .25s ease-in-out; transition: height .25s ease-in-out; background-color: rgba(255, 0, 0, 0.2); }
+.pl-hoverTarget { width: 100%; line-height: 3; -webkit-transition: line-height .25s ease-in-out; transition: line-height .25s ease-in-out; background-color: rgba(255, 0, 0, 0.2); margin-top: 50vh; }
 
-.pl-hoverTarget.js-hover { height: 40px; }
+.pl-hoverTarget a { display: inline-block; padding: 4px; }
+
+.pl-hoverTarget.js-hover { line-height: 5; }
 
 /*# sourceMappingURL=hover.css.map */

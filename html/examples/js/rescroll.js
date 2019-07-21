@@ -5,7 +5,7 @@ var _rescroll = _interopRequireDefault(require("../../js/_modules/rescroll.js"))
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mdls = {};
+const mdls = {};
 mdls.rescroll = new _rescroll.default({
   offsetTop: '.pl-localNav'
 });
@@ -26,26 +26,19 @@ var _offset = _interopRequireDefault(require("./utilities/offset.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/*!
+ * rescroll.js
+ */
+const $w = (0, _jquery.default)(window);
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var $w = (0, _jquery.default)(window);
-
-var Rescroll =
-/*#__PURE__*/
-function () {
-  function Rescroll(options) {
-    _classCallCheck(this, Rescroll);
-
+class Rescroll {
+  constructor(options) {
     this.defaultSettings = {
       name: 'rescroll',
       offsetTop: 0,
       delay: 300
     };
-    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
+    this.eventName = `load.${this.id} hashchange.${this.id}`;
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
@@ -54,78 +47,70 @@ function () {
     this.hash = '';
   }
 
-  _createClass(Rescroll, [{
-    key: "on",
-    value: function on() {
-      var _this = this;
+  on() {
+    $w.on(this.eventName, () => {
+      this.run();
+    });
+  }
 
-      $w.on(this.eventName, function () {
-        _this.run();
-      });
-    }
-  }, {
-    key: "run",
-    value: function run() {
-      var settings = this.settings,
+  run() {
+    const settings = this.settings,
           hash = location.hash,
           that = this;
-      var start = null;
-      clearTimeout(this.timeoutId);
+    let start = null;
+    clearTimeout(this.timeoutId);
 
-      if (!hash) {
-        return this;
+    if (!hash) {
+      return this;
+    }
+
+    this.hash = '#' + hash.replace(/^#/, '');
+    $w.scrollTop($w.scrollTop());
+    this.timeoutId = requestAnimationFrame(_timer);
+
+    function _timer(timestamp) {
+      let progress;
+
+      if (!start) {
+        start = timestamp;
       }
 
-      this.hash = '#' + hash.replace(/^#/, '');
-      $w.scrollTop($w.scrollTop());
-      this.timeoutId = requestAnimationFrame(_timer);
+      progress = timestamp - start;
 
-      function _timer(timestamp) {
-        var progress;
-
-        if (!start) {
-          start = timestamp;
-        }
-
-        progress = timestamp - start;
-
-        if (progress < settings.delay) {
-          that.timeoutId = requestAnimationFrame(_timer);
-        } else {
-          that.scroll();
-        }
+      if (progress < settings.delay) {
+        that.timeoutId = requestAnimationFrame(_timer);
+      } else {
+        that.scroll();
       }
     }
-  }, {
-    key: "scroll",
-    value: function scroll(target) {
-      var targetElem = target ? target : document.querySelector(this.hash);
-      var offsetTop;
+  }
 
-      if (targetElem === null) {
-        return this;
-      }
+  scroll(target) {
+    const targetElem = target ? target : document.querySelector(this.hash);
+    let offsetTop;
 
-      cancelAnimationFrame(this.timeoutId);
-
-      if (typeof this.offsetTop === 'number') {
-        offsetTop = this.offsetTop;
-      } else if (typeof this.offsetTop === 'string') {
-        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
-      }
-
-      scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
+    if (targetElem === null) {
+      return this;
     }
-  }]);
 
-  return Rescroll;
-}();
+    cancelAnimationFrame(this.timeoutId);
+
+    if (typeof this.offsetTop === 'number') {
+      offsetTop = this.offsetTop;
+    } else if (typeof this.offsetTop === 'string') {
+      offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+    }
+
+    scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
+  }
+
+}
 
 exports.default = Rescroll;
 
 function _getTotalHeight(elem) {
-  var total = 0;
-  Array.prototype.forEach.call(elem, function (self) {
+  let total = 0;
+  Array.prototype.forEach.call(elem, self => {
     total = total + (0, _jquery.default)(self).outerHeight(true);
   });
   return total;
@@ -142,10 +127,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = offset;
 
 function offset(elem) {
-  var offset = {},
-      rect = elem.getBoundingClientRect(),
-      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
-      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+  const offset = {},
+        rect = elem.getBoundingClientRect(),
+        scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
+        scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
   offset.top = rect.top + scTop;
   offset.left = rect.left + scLeft;
   return offset;

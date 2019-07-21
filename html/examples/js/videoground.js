@@ -3,33 +3,21 @@
 
 require("../../js/_modules/jqueryhub.js");
 
-var _scrollmanager = _interopRequireDefault(require("../../js/_modules/scrollmanager.js"));
+var _videoground = _interopRequireDefault(require("../../js/_modules/videoground.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const $ = window.jQuery,
-      mdls = {},
-      $pointElement = $('.pl-nav'),
-      $wrapper = $('body'),
-      className = 'js-pl-nav-isFixed';
-mdls.scrollManager = new _scrollmanager.default();
-mdls.scrollManager.on((props, instance) => {
-  const point = $pointElement.offset().top;
-
-  if (instance.scTop >= point && props.flag === false) {
-    $wrapper.addClass(className);
-    props.flag = true;
-    instance.offsetTop = '.pl-nav_nav';
-  } else if (instance.scTop < point && props.flag === true) {
-    $wrapper.removeClass(className);
-    props.flag = false;
-    instance.offsetTop = 0;
-  }
-
-  return true;
+const mdls = {};
+mdls.videoground = new _videoground.default({
+  src: '/examples/media/mainvisual.mp4',
+  targetClassName: 'js-mainVisual_video',
+  selectorVideoFrame: '.pl-mainVisual_body',
+  classNamePlaying: 'js-mainVisual_video--isPlaying',
+  classNameDestroyed: 'js-mainVisual_video--isDestroyed'
 });
+mdls.videoground.run();
 
-},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/scrollmanager.js":3}],2:[function(require,module,exports){
+},{"../../js/_modules/jqueryhub.js":2,"../../js/_modules/videoground.js":3}],2:[function(require,module,exports){
 "use strict";
 
 window.jQuery = require('../_vendor/jquery-3.2.1.js');
@@ -47,153 +35,161 @@ var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQ
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*!
- * scrollmanager.js
- * Copyright 2019 https://github.com/NNobutoshi/
- * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-let counter = 0;
-
-class ScrollManager {
+class VideoGround {
   constructor(options) {
     this.defaultSettings = {
-      name: 'scrollManager',
-      offsetTop: 0,
-      offsetBottom: 0,
-      delay: 66,
-      eventRoot: window
+      name: 'videoGround',
+      src: '',
+      selectorVideoFrame: '',
+      waitTime: 10000,
+      aspectRatio: 720 / 1280,
+      actualHeightRatio: 1 / 1,
+      targetClassName: 'js--video',
+      classNamePlaying: 'js--isPlaying',
+      classNameDestroyed: 'js--isDestroyed',
+      onDestroy: null,
+      onPlay: null,
+      onBefore: null
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.elemVideo = null;
+    this.elemVideoFrame = null;
     this.id = this.settings.name;
-    this.offsetTop = this.settings.offsetTop;
-    this.offsetBottom = this.settings.offsetBottom;
-    this.callBacks = {};
-    this.eventName = `scroll.${this.id}`;
-    this.eventRoot = this.settings.eventRoot;
-    this.isRunning = false;
-    this.lastSctop = 0;
-    this.lastScBottom = 0;
-    this.isScrollDown = null;
-  }
-
-  runCallBacksAll() {
-    const scTop = (0, _jquery.default)(this.eventRoot).scrollTop(),
-          scBottom = scTop + window.innerHeight;
-    let offsetTop = 0,
-        offsetBottom = 0;
-
-    if (typeof this.offsetTop === 'number') {
-      offsetTop = this.offsetTop;
-    } else if (typeof this.offsetTop === 'string') {
-      offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
-    }
-
-    if (typeof this.offsetBottom === 'number') {
-      offsetBottom = this.offsetBottom;
-    } else if (typeof this.offsetBottom === 'string') {
-      offsetBottom = _getTotalHeight(document.querySelectorAll(this.offsetTop));
-    }
-
-    this.isScrollDown = scTop > this.lastSctop;
-    this.scTop = scTop;
-    this.scBottom = scBottom;
-    Object.keys(this.callBacks).forEach(key => {
-      const props = this.callBacks[key];
-      let target = props.inviewTarget,
-          rect,
-          targetOffsetTop,
-          targetOffsetBottom;
-
-      if (target && target !== null) {
-        rect = target.getBoundingClientRect();
-        targetOffsetTop = rect.top + scTop;
-        targetOffsetBottom = rect.bottom + scTop;
-
-        if (targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop) {
-          props.inview = true;
-        } else {
-          props.inview = false;
-        }
-      }
-
-      return props.callBack.call(this, props, this);
-    });
-    this.isRunning = false;
-    this.lastSctop = scTop;
-    this.lastScBottom = scBottom;
-    return this;
-  }
-
-  add(callBack, options) {
-    const defaultSttings = {
-      name: _getUniqueName(this.id),
-      flag: false
-    },
-          settings = _jquery.default.extend({}, defaultSttings, options);
-
-    settings.callBack = callBack;
-    this.setUp();
-    this.callBacks[settings.name] = settings;
-    return this;
-  }
-
-  remove(name) {
-    delete this.callBacks[name];
-    return this;
-  }
-
-  on(callBack, options) {
-    return this.add(callBack, options);
-  }
-
-  inview(target, callBack, options) {
-    return this.add(callBack, options || {
-      inviewTarget: target
-    });
-  }
-
-  setUp() {
-    if (!this.callBacks.length) {
-      (0, _jquery.default)(this.eventRoot).on(this.eventName, () => {
-        this.run();
-      });
-    }
-
-    return this;
+    this.isPlaying = false;
+    this.destroyTimerId = null;
+    this.resizeRafId = null;
   }
 
   run() {
-    if (!this.isRunning) {
-      this.isRunning = true;
+    const settings = this.settings,
+          elemVideo = this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']),
+          elemVideoFrame = this.elemVideoFrame = document.querySelector(settings.selectorVideoFrame);
 
-      if (requestAnimationFrame) {
-        requestAnimationFrame(() => {
-          this.runCallBacksAll();
-        });
-      } else {
-        setTimeout(() => {
-          this.runCallBacksAll();
-        }, this.settintgs.delay);
-      }
-    }
+    if (elemVideoFrame === null) return this;
+    this.autoDestroy();
+    this.on();
+
+    _eventCall(settings.onBefore);
+
+    (async () => {
+      if ((await this.testPlay()) === false) return this.destroy();
+      elemVideo.src = settings.src;
+      elemVideo.classList.add(settings.targetClassName);
+      elemVideoFrame.appendChild(elemVideo);
+      elemVideo.load();
+    })();
 
     return this;
   }
 
+  testPlay() {
+    return new Promise(resolve => {
+      const retries = 3,
+            testVideo = _createVideo(['muted', 'playsinline']);
+
+      let timeoutId = null,
+          currentTry = 0;
+      testVideo.play();
+
+      (function _try() {
+        currentTry = currentTry + 1;
+        clearTimeout(timeoutId);
+        timeoutId = null;
+
+        if (testVideo.paused === false || currentTry > retries) {
+          resolve(!testVideo.paused);
+          return;
+        }
+
+        timeoutId = setTimeout(() => {
+          _try();
+        }, 160);
+      })();
+    });
+  }
+
+  on() {
+    const settings = this.settings,
+          elemVideo = this.elemVideo,
+          elemBody = document.querySelector('body');
+    (0, _jquery.default)(elemVideo).on(`play.${this.id}`, () => {
+      clearTimeout(this.destroyTimerId);
+      this.destroyTimerId = null;
+      this.isPlaying = true;
+      elemBody.classList.add(settings.classNamePlaying);
+
+      _eventCall(settings.onPlay);
+    });
+    (0, _jquery.default)(elemVideo).on(`canplay.${this.id}`, () => {
+      elemVideo.play();
+    });
+    (0, _jquery.default)(window).on(`resize.${this.id} orientationchange.${this.id}`, () => {
+      this.resize();
+    }).trigger(`resize.${this.id}`);
+    return this;
+  }
+
+  destroy() {
+    const settings = this.settings,
+          elemBody = document.querySelector('body');
+    clearTimeout(this.destroyTimerId);
+    elemBody.classList.remove(settings.classNamePlaying);
+    elemBody.classList.add(settings.classNameDestroyed);
+
+    if (this.elemVideoFrame.querySelector(settings.targetClassName) !== null) {
+      this.elemVideoFrame.removeChild(this.elemVideo);
+    }
+
+    _eventCall(this.settings.onDestroy);
+
+    return this;
+  }
+
+  autoDestroy() {
+    this.destroyTimerId = setTimeout(() => {
+      clearTimeout(this.destroyTimerId);
+      this.destroyTimerId = null;
+      this.destroy();
+    }, this.settings.waitTime);
+  }
+
+  resize() {
+    const settings = this.settings;
+    cancelAnimationFrame(this.resizeRafId);
+    this.resizeRafId = requestAnimationFrame(() => {
+      const frameWidth = this.elemVideoFrame.offsetWidth,
+            frameHeight = this.elemVideoFrame.offsetHeight,
+            frameAspectRatio = frameHeight / frameWidth;
+
+      if (frameAspectRatio > settings.aspectRatio) {
+        this.elemVideo.style.width = 'auto';
+        this.elemVideo.style.height = frameHeight * settings.actualHeightRatio + 'px';
+      } else {
+        this.elemVideo.style.width = 100 + '%';
+        this.elemVideo.style.height = 'auto';
+      }
+    });
+  }
+
 }
 
-exports.default = ScrollManager;
+exports.default = VideoGround;
 
-function _getTotalHeight(elem) {
-  let total = 0;
-  Array.prototype.forEach.call(elem, self => {
-    total = total + (0, _jquery.default)(self).outerHeight(true);
-  });
-  return total;
+function _eventCall(f) {
+  if (typeof f === 'function') {
+    f.call(this);
+  }
 }
 
-function _getUniqueName(base) {
-  return base + new Date().getTime() + counter++;
+function _createVideo(props) {
+  const elemVideo = document.createElement('video');
+
+  for (let i = 0, len = props.length; i < len; i++) {
+    elemVideo.setAttribute(props[i], '');
+    elemVideo[props[i]] = true;
+  }
+
+  return elemVideo;
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -9213,4 +9209,4 @@ function _getUniqueName(base) {
 
 },{}]},{},[1])
 
-//# sourceMappingURL=sticky.js.map
+//# sourceMappingURL=videoground.js.map

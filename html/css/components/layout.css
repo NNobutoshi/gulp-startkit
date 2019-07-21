@@ -114,6 +114,8 @@ template { display: none; }
 /** Add the correct display in IE 10. */
 [hidden] { display: none; }
 
+.page { overflow: hidden; }
+
 .page_body { height: 2000px; }
 
 .page_siteId { padding: 20px; }
