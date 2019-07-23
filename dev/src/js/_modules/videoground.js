@@ -1,4 +1,8 @@
 import $ from 'jquery';
+
+import 'core-js/modules/es.promise';
+import 'regenerator-runtime/runtime';
+
 export default class VideoGround {
 
   constructor( options ) {

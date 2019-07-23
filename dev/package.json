@@ -22,6 +22,12 @@
     "jquery": "global:jQuery",
     "modernizr": "global:Modernizr"
   },
+  "browserslist": [
+    "last 2 versions",
+    "ie >= 10",
+    "ios 7",
+    "android 4"
+  ],
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
@@ -62,5 +68,7 @@
   "optionalDependencies": {
     "browser-sync": "*"
   },
-  "dependencies": {}
+  "dependencies": {
+    "core-js": "*"
+  }
 }

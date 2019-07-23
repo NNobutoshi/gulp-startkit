@@ -1,11 +1,10 @@
 'use strict';
 
-import '../../js/_modules/jqueryhub.js';
+import $ from 'jquery';
 import Adaptivehover from '../../js/_modules/adaptivehover.js';
 
 const
-  $ = window.jQuery
-  ,mdls = {}
+  mdls = {}
 ;
 
 mdls.hover = new Adaptivehover( {

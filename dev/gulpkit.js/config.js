@@ -54,7 +54,7 @@ const
           errorHandler : notify.onError('Error: <%= error.message %>'),
         },
         postcss : {
-          plugins : [ autoprefixer( [ 'last 2 version', 'ie 9', 'ios 7', 'android 4' ] ) ]
+          plugins : [ autoprefixer() ]
         },
         sass : {
           outputStyle : 'compact', // nested, compact, compressed, expanded

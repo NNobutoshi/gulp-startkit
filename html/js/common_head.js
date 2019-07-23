@@ -10,17 +10,19 @@ var _uaParser = _interopRequireDefault(require("../_vendor/ua-parser.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const uaParser = new _uaParser.default();
+var uaParser = new _uaParser.default();
 
 function _default(className) {
-  const elemHtml = document.querySelector('html'),
-        browser = uaParser.getBrowser();
+  var elemHtml = document.querySelector('html'),
+      browser = uaParser.getBrowser();
   elemHtml.classList.add(className);
   elemHtml.classList.add(browser.name + browser.major);
 }
 
 },{"../_vendor/ua-parser.js":3}],2:[function(require,module,exports){
 "use strict";
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /*!
  * modernizr v3.6.0
@@ -71,7 +73,7 @@ function _default(className) {
     // Queue of tests
     _q: [],
     // Stub these for people who are listening
-    on: function (test, cb) {
+    on: function on(test, cb) {
       // I don't really think people should do this, but we can
       // safe guard it a bit.
       // -- NOTE:: this gets WAY overridden in src/addTest for actual async tests.
@@ -83,14 +85,14 @@ function _default(className) {
         cb(self[test]);
       }, 0);
     },
-    addTest: function (name, fn, options) {
+    addTest: function addTest(name, fn, options) {
       tests.push({
         name: name,
         fn: fn,
         options: options
       });
     },
-    addAsyncTest: function (fn) {
+    addAsyncTest: function addAsyncTest(fn) {
       tests.push({
         name: null,
         fn: fn
@@ -98,7 +100,7 @@ function _default(className) {
     }
   }; // Fake some of Object.create so we can force non test results to be non "own" properties.
 
-  var Modernizr = function () {};
+  var Modernizr = function Modernizr() {};
 
   Modernizr.prototype = ModernizrProto; // Leak modernizr globally when you `require` it rather than force it here.
   // Overwrite name so constructor name is nicer :D
@@ -116,7 +118,7 @@ function _default(className) {
    */
 
   function is(obj, type) {
-    return typeof obj === type;
+    return _typeof(obj) === type;
   }
 
   ;
@@ -598,6 +600,8 @@ function _default(className) {
 },{}],3:[function(require,module,exports){
 "use strict";
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 /*!
  * UAParser.js v0.7.19
  * Lightweight JavaScript-based User-Agent string parser
@@ -636,7 +640,7 @@ function _default(className) {
   //////////
 
   var util = {
-    extend: function (regexes, extensions) {
+    extend: function extend(regexes, extensions) {
       var margedRegexes = {};
 
       for (var i in regexes) {
@@ -649,20 +653,20 @@ function _default(className) {
 
       return margedRegexes;
     },
-    has: function (str1, str2) {
+    has: function has(str1, str2) {
       if (typeof str1 === "string") {
         return str2.toLowerCase().indexOf(str1.toLowerCase()) !== -1;
       } else {
         return false;
       }
     },
-    lowerize: function (str) {
+    lowerize: function lowerize(str) {
       return str.toLowerCase();
     },
-    major: function (version) {
-      return typeof version === STR_TYPE ? version.replace(/[^\d\.]/g, '').split(".")[0] : undefined;
+    major: function major(version) {
+      return _typeof(version) === STR_TYPE ? version.replace(/[^\d\.]/g, '').split(".")[0] : undefined;
     },
-    trim: function (str) {
+    trim: function trim(str) {
       return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
     }
   }; ///////////////
@@ -670,7 +674,7 @@ function _default(className) {
   //////////////
 
   var mapper = {
-    rgx: function (ua, arrays) {
+    rgx: function rgx(ua, arrays) {
       //var result = {},
       var i = 0,
           j,
@@ -702,9 +706,9 @@ function _default(className) {
               match = matches[++k];
               q = props[p]; // check if given property is actually array
 
-              if (typeof q === OBJ_TYPE && q.length > 0) {
+              if (_typeof(q) === OBJ_TYPE && q.length > 0) {
                 if (q.length == 2) {
-                  if (typeof q[1] == FUNC_TYPE) {
+                  if (_typeof(q[1]) == FUNC_TYPE) {
                     // assign modified match
                     this[q[0]] = q[1].call(this, match);
                   } else {
@@ -713,7 +717,7 @@ function _default(className) {
                   }
                 } else if (q.length == 3) {
                   // check whether function or regex
-                  if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                  if (_typeof(q[1]) === FUNC_TYPE && !(q[1].exec && q[1].test)) {
                     // call function (usually string mapper)
                     this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined;
                   } else {
@@ -735,21 +739,21 @@ function _default(className) {
       //return this;
 
     },
-    str: function (str, map) {
+    str: function str(_str, map) {
       for (var i in map) {
         // check if array
-        if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
+        if (_typeof(map[i]) === OBJ_TYPE && map[i].length > 0) {
           for (var j = 0; j < map[i].length; j++) {
-            if (util.has(map[i][j], str)) {
+            if (util.has(map[i][j], _str)) {
               return i === UNKNOWN ? undefined : i;
             }
           }
-        } else if (util.has(map[i], str)) {
+        } else if (util.has(map[i], _str)) {
           return i === UNKNOWN ? undefined : i;
         }
       }
 
-      return str;
+      return _str;
     }
   }; ///////////////
   // String map
@@ -1161,8 +1165,8 @@ function _default(className) {
   var OS = Browser;
   */
 
-  var UAParser = function (uastring, extensions) {
-    if (typeof uastring === 'object') {
+  var UAParser = function UAParser(uastring, extensions) {
+    if (_typeof(uastring) === 'object') {
       extensions = uastring;
       uastring = undefined;
     }
@@ -1287,9 +1291,9 @@ function _default(className) {
   //////////
   // check js environment
 
-  if (typeof exports !== UNDEF_TYPE) {
+  if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) !== UNDEF_TYPE) {
     // nodejs env
-    if (typeof module !== UNDEF_TYPE && module.exports) {
+    if ((typeof module === "undefined" ? "undefined" : _typeof(module)) !== UNDEF_TYPE && module.exports) {
       exports = module.exports = UAParser;
     } // TODO: test!!!!!!!!
 
@@ -1326,7 +1330,7 @@ function _default(className) {
     exports.UAParser = UAParser;
   } else {
     // requirejs env (optional)
-    if (typeof define === FUNC_TYPE && define.amd) {
+    if ((typeof define === "undefined" ? "undefined" : _typeof(define)) === FUNC_TYPE && define.amd) {
       define(function () {
         return UAParser;
       });
@@ -1343,7 +1347,7 @@ function _default(className) {
 
   var $ = window && (window.jQuery || window.Zepto);
 
-  if (typeof $ !== UNDEF_TYPE && !$.ua) {
+  if (_typeof($) !== UNDEF_TYPE && !$.ua) {
     var parser = new UAParser();
     $.ua = parser.getResult();
 
@@ -1360,7 +1364,7 @@ function _default(className) {
       }
     };
   }
-})(typeof window === 'object' ? window : void 0);
+})((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window : void 0);
 
 },{}],4:[function(require,module,exports){
 'use strict';

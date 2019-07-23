@@ -1,11 +1,10 @@
 'use strict';
 
-import '../../js/_modules/jqueryhub.js';
+import $ from 'jquery';
 import ScrollManager from '../../js/_modules/scrollmanager.js';
 
 const
-  $ = window.jQuery
-  ,mdls = {}
+  mdls = {}
   ,$pointElement = $('.pl-nav')
   ,$wrapper = $('body')
   ,className = 'js-pl-nav-isFixed'

@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/_modules/jqueryhub.js';
 import VideoGround from '../../js/_modules/videoground.js';
 
 const

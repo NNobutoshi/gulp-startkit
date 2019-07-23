@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/_modules/jqueryhub.js';
 import OptimizedResize from '../../js/_modules/optimizedresize.js';
 
 const
