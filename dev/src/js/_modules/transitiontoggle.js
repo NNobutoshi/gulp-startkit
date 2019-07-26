@@ -14,16 +14,16 @@ export default class Toggle {
       trigger : '',
       target : '',
       toAddClass : null,
-      eventRoot : document.querySelectorAll('body')[ 0 ]
+      eventRoot : document.querySelector('body'),
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.trigger = this.settings.trigger;
     this.target = this.settings.target;
     this.eventRoot = this.settings.eventRoot;
+    this.elemToAddClass = document.querySelector( this.settings.toAddClass );
     this.elemTrigger = null;
     this.elemTarget = null;
-    this.elemToClass = null;
     this.eventName = `click.${this.id}`;
     this.callBackForOpen = null;
     this.callBackForClose = null;
@@ -32,15 +32,14 @@ export default class Toggle {
 
   on( callBackForOpen, callBackForClose, callBackForEnd ) {
     const
-      settings = this.settings
-      ,$root = $( this.eventRoot )
+      $root = $( this.eventRoot )
     ;
     let
       isOpen = false
     ;
-    this.elemToAddClass = document.querySelectorAll( settings.toAddClass );
-    this.elemTrigger = document.querySelectorAll( this.trigger );
-    this.elemTarget = document.querySelectorAll( this.target );
+    if ( this.elemToAddClass === null ) return this;
+    this.elemTrigger = this.elemToAddClass.querySelector( this.trigger );
+    this.elemTarget = this.elemToAddClass.querySelector( this.target );
     this.callBackForOpen = callBackForOpen;
     this.callBackForClose = callBackForClose;
     $root.on( this.eventName, this.trigger, ( e ) => {

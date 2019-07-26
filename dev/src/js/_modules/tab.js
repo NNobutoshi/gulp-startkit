@@ -23,18 +23,20 @@ export default class Tab {
     this.selectedTrigger = null;
     this.selectedWrapper = null;
     this.selectedTarget  = null;
-    this.callBackforLoad = ( typeof this.settings.onLoad === 'function' )? this.settings.onLoad: null;
+    this.callBackforLoad = this.settings.onLoad;
     this.hash = null;
+    this.windowEventName = `load.${this.id} hashchange.${this.id}`;
+    this.anchorEventName = `click.${this.id}`;
   }
 
   on() {
     const
       $w = $( window )
     ;
-    $w.on( `load.${this.id} hashchange.${this.id}`, ( e ) => {
+    $w.on( this.windowEventName, ( e ) => {
       this.hash = location.hash || null;
       this.runAll( e );
-      if ( this.callBackforLoad ) {
+      if ( typeof this.callBackforLoad === 'function' ) {
         this.callBackforLoad.call( this, {
           trigger : this.selectedTrigger,
           wrapper : this.selectedWrapper,
@@ -42,7 +44,7 @@ export default class Tab {
         } );
       }
     } );
-    $( this.triggerElemAll ).on( `click.${this.id}`, ( e ) => {
+    $( this.triggerElemAll ).on( this.anchorEventName, ( e ) => {
       this.hash = e.currentTarget.hash;
       e.preventDefault();
       history.pushState( null, null, location.pathname + this.hash );

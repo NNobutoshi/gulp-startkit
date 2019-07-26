@@ -62,14 +62,15 @@ function () {
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
-    this.enteringEventName = '';
-    this.leavingEventName = '';
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
+    this.enteringEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
+    this.leavingEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
+    this.extraEventName = "touchend.".concat(this.id, " click.").concat(this.id);
   }
 
   _createClass(AdaptiveHover, [{
@@ -79,8 +80,6 @@ function () {
 
       var settings = this.settings,
           $root = (0, _jquery.default)(this.eventRoot);
-      this.enteringEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
-      this.leavingEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
       this.callBackForEnter = callBackForEnter;
       this.callBackForLeave = callBackForLeave;
       this.target = document.querySelectorAll(settings.target)[0];
@@ -90,7 +89,7 @@ function () {
       $root.on(this.leavingEventName, settings.target, function (e) {
         _this.handleForLeave(e);
       });
-      $root.on("touchend.".concat(this.id, " click.").concat(this.id), function (e) {
+      $root.on(this.extraEventName, function (e) {
         if (!_isRelative(settings.target, e.target) && _this.isEntering === true) {
           _this.clear();
 
@@ -102,12 +101,9 @@ function () {
   }, {
     key: "off",
     value: function off() {
-      var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot);
+      var $root = (0, _jquery.default)(this.eventRoot);
       this.clear();
-      $root.off(this.enteringEventName, settings.target);
-      $root.off(this.leavingEventName, settings.target);
-      $root.off("touchend.".concat(this.id, " click.").concat(this.id));
+      $root.off(".".concat(this.id));
       return this;
     }
   }, {

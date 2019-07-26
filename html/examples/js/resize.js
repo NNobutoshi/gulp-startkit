@@ -29,8 +29,6 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
-(typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -53,9 +51,9 @@ function () {
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.eventName = "resize.".concat(this.id);
     this.callBacks = {};
     this.isRunning = false;
+    this.eventName = "resize.".concat(this.id);
   }
 
   _createClass(OptimizedResize, [{

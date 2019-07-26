@@ -16,13 +16,12 @@ export default class Rescroll {
       offsetTop: 0,
       delay: 300,
     };
-    this.eventName = `load.${this.id} hashchange.${this.id}`;
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;
-    this.flag = true;
     this.hash = '';
+    this.eventName = `load.${this.id} hashchange.${this.id}`;
   }
 
   on() {
@@ -40,13 +39,15 @@ export default class Rescroll {
     let
       start = null
     ;
-    clearTimeout( this.timeoutId );
+    cancelAnimationFrame( this.timeoutId );
     if ( !hash ) {
       return this;
     }
     this.hash = '#' + hash.replace( /^#/, '' );
     $w.scrollTop( $w.scrollTop() );
-    this.timeoutId = requestAnimationFrame( _timer );
+    this.timeoutId = requestAnimationFrame( () => {
+      _timer();
+    } );
 
     function _timer( timestamp ) {
       let
@@ -57,7 +58,9 @@ export default class Rescroll {
       }
       progress = timestamp - start;
       if ( progress < settings.delay ) {
-        that.timeoutId = requestAnimationFrame( _timer );
+        that.timeoutId = requestAnimationFrame( () => {
+          _timer();
+        } );
       } else {
         that.scroll();
       }

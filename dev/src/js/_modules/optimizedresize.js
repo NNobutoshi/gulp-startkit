@@ -4,7 +4,6 @@
  */
 
 import $ from 'jquery';
-import 'modernizr';
 
 let
   counter = 0
@@ -18,9 +17,9 @@ export default class OptimizedResize {
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.eventName = `resize.${this.id}`;
     this.callBacks = {};
     this.isRunning = false;
+    this.eventName = `resize.${this.id}`;
   }
 
   runCallBacksAll() {

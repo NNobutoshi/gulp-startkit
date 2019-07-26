@@ -4,14 +4,13 @@
 '../variables'
 ,'../mixins'
 ,'../icons'
-,'../_vendor/normalize'
 ,'../mixins_sprite';
 
 .page {
   overflow: hidden;
   @at-root {
     .page_body {
-      height: 2000px;
+      min-height: 2000px;
     }
     .page_siteId {
       padding: 20px;

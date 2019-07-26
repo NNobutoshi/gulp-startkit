@@ -45,13 +45,12 @@ function () {
       offsetTop: 0,
       delay: 300
     };
-    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;
-    this.flag = true;
     this.hash = '';
+    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
   }
 
   _createClass(Rescroll, [{
@@ -70,7 +69,7 @@ function () {
           hash = location.hash,
           that = this;
       var start = null;
-      clearTimeout(this.timeoutId);
+      cancelAnimationFrame(this.timeoutId);
 
       if (!hash) {
         return this;
@@ -78,7 +77,9 @@ function () {
 
       this.hash = '#' + hash.replace(/^#/, '');
       $w.scrollTop($w.scrollTop());
-      this.timeoutId = requestAnimationFrame(_timer);
+      this.timeoutId = requestAnimationFrame(function () {
+        _timer();
+      });
 
       function _timer(timestamp) {
         var progress;
@@ -90,7 +91,9 @@ function () {
         progress = timestamp - start;
 
         if (progress < settings.delay) {
-          that.timeoutId = requestAnimationFrame(_timer);
+          that.timeoutId = requestAnimationFrame(function () {
+            _timer();
+          });
         } else {
           that.scroll();
         }

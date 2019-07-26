@@ -75,16 +75,16 @@ function () {
       trigger: '',
       target: '',
       toAddClass: null,
-      eventRoot: document.querySelectorAll('body')[0]
+      eventRoot: document.querySelector('body')
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.trigger = this.settings.trigger;
     this.target = this.settings.target;
     this.eventRoot = this.settings.eventRoot;
+    this.elemToAddClass = document.querySelector(this.settings.toAddClass);
     this.elemTrigger = null;
     this.elemTarget = null;
-    this.elemToClass = null;
     this.eventName = "click.".concat(this.id);
     this.callBackForOpen = null;
     this.callBackForClose = null;
@@ -96,12 +96,11 @@ function () {
     value: function on(callBackForOpen, callBackForClose, callBackForEnd) {
       var _this = this;
 
-      var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot);
+      var $root = (0, _jquery.default)(this.eventRoot);
       var isOpen = false;
-      this.elemToAddClass = document.querySelectorAll(settings.toAddClass);
-      this.elemTrigger = document.querySelectorAll(this.trigger);
-      this.elemTarget = document.querySelectorAll(this.target);
+      if (this.elemToAddClass === null) return this;
+      this.elemTrigger = this.elemToAddClass.querySelector(this.trigger);
+      this.elemTarget = this.elemToAddClass.querySelector(this.target);
       this.callBackForOpen = callBackForOpen;
       this.callBackForClose = callBackForClose;
       $root.on(this.eventName, this.trigger, function (e) {

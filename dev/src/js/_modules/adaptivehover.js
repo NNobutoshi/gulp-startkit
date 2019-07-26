@@ -24,14 +24,15 @@ export default class AdaptiveHover {
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
-    this.enteringEventName = '';
-    this.leavingEventName = '';
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
+    this.enteringEventName = `touchstart.${this.id} mouseenter.${this.id}`;
+    this.leavingEventName = `touchend.${this.id} mouseleave.${this.id}`;
+    this.extraEventName = `touchend.${this.id} click.${this.id}`;
   }
 
   on( callBackForEnter, callBackForLeave ) {
@@ -39,20 +40,16 @@ export default class AdaptiveHover {
       settings = this.settings
       ,$root = $( this.eventRoot )
     ;
-
-    this.enteringEventName = `touchstart.${this.id} mouseenter.${this.id}`;
-    this.leavingEventName = `touchend.${this.id} mouseleave.${this.id}`;
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
     this.target = document.querySelectorAll( settings.target )[0];
-
     $root.on( this.enteringEventName, settings.target, ( e ) => {
       this.handleForEnter( e );
     } );
     $root.on( this.leavingEventName, settings.target, ( e ) => {
       this.handleForLeave( e );
     } );
-    $root.on( `touchend.${this.id} click.${this.id}`, ( e ) => {
+    $root.on( this.extraEventName, ( e ) => {
       if( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
         this.clear();
         this.leave( e, this.callBackForLeave );
@@ -63,13 +60,10 @@ export default class AdaptiveHover {
 
   off() {
     const
-      settings = this.settings
-      ,$root = $( this.eventRoot )
+      $root = $( this.eventRoot )
     ;
     this.clear();
-    $root.off( this.enteringEventName, settings.target );
-    $root.off( this.leavingEventName, settings.target );
-    $root.off( `touchend.${this.id} click.${this.id}` );
+    $root.off( `.${this.id}` );
     return this;
   }
 

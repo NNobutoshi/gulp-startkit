@@ -65,13 +65,12 @@ function () {
       offsetTop: 0,
       delay: 300
     };
-    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;
-    this.flag = true;
     this.hash = '';
+    this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
   }
 
   _createClass(Rescroll, [{
@@ -90,7 +89,7 @@ function () {
           hash = location.hash,
           that = this;
       var start = null;
-      clearTimeout(this.timeoutId);
+      cancelAnimationFrame(this.timeoutId);
 
       if (!hash) {
         return this;
@@ -98,7 +97,9 @@ function () {
 
       this.hash = '#' + hash.replace(/^#/, '');
       $w.scrollTop($w.scrollTop());
-      this.timeoutId = requestAnimationFrame(_timer);
+      this.timeoutId = requestAnimationFrame(function () {
+        _timer();
+      });
 
       function _timer(timestamp) {
         var progress;
@@ -110,7 +111,9 @@ function () {
         progress = timestamp - start;
 
         if (progress < settings.delay) {
-          that.timeoutId = requestAnimationFrame(_timer);
+          that.timeoutId = requestAnimationFrame(function () {
+            _timer();
+          });
         } else {
           that.scroll();
         }
@@ -204,8 +207,10 @@ function () {
     this.selectedTrigger = null;
     this.selectedWrapper = null;
     this.selectedTarget = null;
-    this.callBackforLoad = typeof this.settings.onLoad === 'function' ? this.settings.onLoad : null;
+    this.callBackforLoad = this.settings.onLoad;
     this.hash = null;
+    this.windowEventName = "load.".concat(this.id, " hashchange.").concat(this.id);
+    this.anchorEventName = "click.".concat(this.id);
   }
 
   _createClass(Tab, [{
@@ -214,12 +219,12 @@ function () {
       var _this = this;
 
       var $w = (0, _jquery.default)(window);
-      $w.on("load.".concat(this.id, " hashchange.").concat(this.id), function (e) {
+      $w.on(this.windowEventName, function (e) {
         _this.hash = location.hash || null;
 
         _this.runAll(e);
 
-        if (_this.callBackforLoad) {
+        if (typeof _this.callBackforLoad === 'function') {
           _this.callBackforLoad.call(_this, {
             trigger: _this.selectedTrigger,
             wrapper: _this.selectedWrapper,
@@ -227,7 +232,7 @@ function () {
           });
         }
       });
-      (0, _jquery.default)(this.triggerElemAll).on("click.".concat(this.id), function (e) {
+      (0, _jquery.default)(this.triggerElemAll).on(this.anchorEventName, function (e) {
         _this.hash = e.currentTarget.hash;
         e.preventDefault();
         history.pushState(null, null, location.pathname + _this.hash);
