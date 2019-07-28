@@ -6,19 +6,19 @@ const
   mdls = {}
 ;
 mdls.resize = new OptimizedResize();
+mdls.counter = 0;
 mdls.resize
-  .one( () => {
-    console.info('one');
+  .one( ( inst ) => {
+    document.querySelector( '.pl-test_one' ).textContent = inst.query;
   }, '(min-width: 980px)' )
-  .turn( () => {
-    console.info( '(min-width: 980px)' );
+  .turn( ( inst ) => {
+    document.querySelector( '.pl-test_turn' ).textContent = inst.query;
   }, '(min-width: 980px)', 'foo' )
-  .turn( () => {
-    console.info('(max-width: 979px)' );
+  .turn( ( inst ) => {
+    document.querySelector( '.pl-test_turn' ).textContent = inst.query;
   }, '(max-width: 979px)' )
-  .on( () => {
-    console.info('(max-width: 374px)' );
-    mdls.resize.off('foo');
+  .on( ( inst ) => {
+    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${mdls.counter++}`;
   }, '(max-width: 374px)' )
   .run()
 ;

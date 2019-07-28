@@ -10,18 +10,16 @@ export default class Toggle {
 
   constructor( options ) {
     this.defaultSettings = {
-      name : 'transitiontoggle',
-      trigger : '',
-      target : '',
-      toAddClass : null,
-      eventRoot : document.querySelector('body'),
+      name              : 'transitiontoggle',
+      selectorTrigger   : '',
+      selectorTarget    : '',
+      selectorIndicator : null,
+      selectorEventRoot : 'body',
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.trigger = this.settings.trigger;
-    this.target = this.settings.target;
-    this.eventRoot = this.settings.eventRoot;
-    this.elemToAddClass = document.querySelector( this.settings.toAddClass );
+    this.eventRoot = this.settings.selectorEventRoot;
+    this.elemIndicator = document.querySelector( this.settings.selectorIndicator );
     this.elemTrigger = null;
     this.elemTarget = null;
     this.eventName = `click.${this.id}`;
@@ -32,17 +30,20 @@ export default class Toggle {
 
   on( callBackForOpen, callBackForClose, callBackForEnd ) {
     const
-      $root = $( this.eventRoot )
+      settings = this.settings
+      ,$root = $( this.eventRoot )
     ;
     let
       isOpen = false
     ;
-    if ( this.elemToAddClass === null ) return this;
-    this.elemTrigger = this.elemToAddClass.querySelector( this.trigger );
-    this.elemTarget = this.elemToAddClass.querySelector( this.target );
+    if ( this.elemIndicator === null ) {
+      return this;
+    }
+    this.elemTrigger = this.elemIndicator.querySelector( settings.selectorTrigger );
+    this.elemTarget = this.elemIndicator.querySelector( settings.selectorTarget );
     this.callBackForOpen = callBackForOpen;
     this.callBackForClose = callBackForClose;
-    $root.on( this.eventName, this.trigger, ( e ) => {
+    $root.on( this.eventName, settings.selectorTrigger, ( e ) => {
       if ( this.isOpen === true ) {
         this.handleForClose( e );
       } else {
@@ -52,7 +53,7 @@ export default class Toggle {
     ;
     $root.on( `transitionend.${this.id}`, this.target, ( e ) => {
       if ( isOpen !== this.isOpen ) {
-        if( typeof callBackForEnd === 'function' ) {
+        if ( typeof callBackForEnd === 'function' ) {
           callBackForEnd.call( this, e, this );
         }
         isOpen = this.isOpen;
@@ -63,12 +64,12 @@ export default class Toggle {
   }
 
   off() {
-    this.elemToAddClass = null;
+    this.elemIndicator = null;
     this.elemTrigger = null;
     this.elemTarget = null;
     this.callBackForOpen = null;
     this.callBackForClose = null;
-    $( this.eventRoot ).off( `transitionend.${this.id}`, this.target );
+    $( this.eventRoot ).off( `.${this.id}`, this.target );
     return this;
   }
 

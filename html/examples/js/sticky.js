@@ -13,17 +13,17 @@ var mdls = {},
     $wrapper = (0, _jquery.default)('body'),
     className = 'js-pl-nav-isFixed';
 mdls.scrollManager = new _scrollmanager.default();
-mdls.scrollManager.on(function (props, instance) {
+mdls.scrollManager.on(function (props, inst) {
   var point = $pointElement.offset().top;
 
-  if (instance.scTop >= point && props.flag === false) {
+  if (inst.scTop >= point && props.flag === false) {
     $wrapper.addClass(className);
     props.flag = true;
-    instance.offsetTop = '.pl-nav_nav';
-  } else if (instance.scTop < point && props.flag === true) {
+    inst.offsetTop = '.pl-nav_nav';
+  } else if (inst.scTop < point && props.flag === true) {
     $wrapper.removeClass(className);
     props.flag = false;
-    instance.offsetTop = 0;
+    inst.offsetTop = 0;
   }
 
   return true;
@@ -62,7 +62,7 @@ function () {
       name: 'scrollManager',
       offsetTop: 0,
       offsetBottom: 0,
-      delay: 66,
+      delay: 16,
       eventRoot: window
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);

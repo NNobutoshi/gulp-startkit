@@ -42,7 +42,7 @@ export default class OptimizedResize {
           props.callBack.call( this, props );
         }
         props.lastQuery = query;
-        if( props.one === true && query === true ) {
+        if ( props.one === true && query === true ) {
           this.remove( key );
         }
       } else {
@@ -117,9 +117,13 @@ export default class OptimizedResize {
     if ( !this.isRunning ) {
       this.isRunning = true;
       if ( requestAnimationFrame ) {
-        requestAnimationFrame( () => { this.runCallBacksAll(); } );
+        requestAnimationFrame( () => {
+          this.runCallBacksAll();
+        } );
       } else {
-        setTimeout( () => { this.runCallBacksAll(); }, this.settintgs.delay );
+        setTimeout( () => {
+          this.runCallBacksAll();
+        }, this.settintgs.delay );
       }
     }
     return this;
@@ -128,5 +132,5 @@ export default class OptimizedResize {
 }
 
 function _getUniqueName( base ) {
-  return base + new Date().getTime()+ counter++;
+  return base + new Date().getTime() + counter++;
 }

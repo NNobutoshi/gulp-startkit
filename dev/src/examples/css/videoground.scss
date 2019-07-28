@@ -6,7 +6,16 @@
 ,'../../css/icons'
 ,'../../css/mixins_sprite';
 
-
+.page {
+  @at-root {
+    .page_head {
+      position: fixed;
+      z-index: 10;
+      background-color: #fff;
+      width: 100%;
+    }
+  }
+}
 .pl-mainVisual {
   height: 100vh;
   position: relative;
@@ -39,14 +48,6 @@
       transform: rotate(360deg);
     }
   }
-  .js-mainVisual_video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: auto;
-    transform: translate3d(-50%, -50%, 0);
-  }
   @at-root {
     .pl-mainVisual_head {
       z-index: 1;
@@ -56,10 +57,7 @@
       min-width: 20em;
       padding: 10px 25px;
       background-color: #fff;
-    }
-    .pl-mainVisual_heading {
-      @include fs(40, 16);
-      color: #f00;
+      transform: translateY(-50%);
     }
     .pl-mainVisual_body {
       position: fixed;
@@ -67,7 +65,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100vh;
+      height: inherit;
       .js & {
         opacity: 0;
         transition: opacity 3s ease-in;
@@ -75,6 +73,20 @@
       .js-mainVisual_video--isPlaying & {
         opacity: 1;
       }
+    }
+    .js-mainVisual_video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      transform: translate3d(-50%, -50%, 0);
+    }
+    .pl-mainVisual_heading {
+      @include fs(40, 16);
+      @include lh(16, 16);
+      margin: 0;
+      color: #f00;
     }
   }
 }

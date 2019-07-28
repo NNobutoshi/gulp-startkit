@@ -25,10 +25,10 @@
         height: 0;
         opacity: 0;
       }
-      .js-pl-list-isOpening & {
+      .js-list--isOpening & {
         opacity: 1;
       }
-      .js-pl-list-isOpen & {
+      .js-list--isOpen & {
         background-color: rgba(0, 255, 255, .2);
       }
     }

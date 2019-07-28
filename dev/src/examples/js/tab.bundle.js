@@ -8,7 +8,7 @@ const
 ;
 
 mdls.rescroll = new Rescroll( {
-  offsetTop: '.pl-head'
+  offsetTop : '.pl-head'
 } );
 mdls.rescroll.on();
 

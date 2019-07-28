@@ -12,11 +12,11 @@ mdls.hover = new Adaptivehover( {
 } );
 mdls.hover
   .on(
-    ( e, instance ) =>  {
-      $( instance.target ).addClass('js-hover');
+    ( e, inst ) =>  {
+      $( inst.target ).addClass( 'js-hover' );
     }
-    ,( e, instance ) => {
-      $( instance.target ).removeClass('js-hover');
+    ,( e, inst ) => {
+      $( inst.target ).removeClass( 'js-hover' );
     }
   )
 ;

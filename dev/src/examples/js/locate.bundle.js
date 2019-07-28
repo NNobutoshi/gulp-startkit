@@ -14,10 +14,7 @@ mdls.locate = new Locate( {
 
 $( TARGETSELECTOR ).on( 'click', ( e ) => {
   history.pushState( null ,null, e.currentTarget.href );
-  $( '.pl-nav_item' ).removeClass('js-current');
-  $( mdls.locate.run().currentItem ).parents('.pl-nav_item').addClass('js-current');
+  $( '.pl-nav_item' ).removeClass( 'js-current' );
+  $( mdls.locate.run().currentItem ).parents( '.pl-nav_item' ).addClass( 'js-current' );
   e.preventDefault();
 } );
-
-
-

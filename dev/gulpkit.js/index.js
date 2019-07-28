@@ -1,12 +1,12 @@
 const
-  gulp = require('gulp')
+  gulp = require( 'gulp' )
 
-  ,requireDir = require('require-dir')
+  ,requireDir = require( 'require-dir' )
 
-  ,config = require('./config.js').config
+  ,config = require( './config.js' ).config
 ;
 
-requireDir('./tasks');
+requireDir( './tasks' );
 
 gulp.task( 'default', gulp.series(
   Object

@@ -14,11 +14,11 @@ export default class AdaptiveHover {
   constructor( options ) {
 
     this.defaultSettings = {
-      name : 'adaptiveHover',
-      target : '',
-      timeout : 400,
-      range : 10,
-      eventRoot : document.querySelectorAll('body')[ 0 ]
+      name      : 'adaptiveHover',
+      target    : '',
+      timeout   : 400,
+      range     : 10,
+      eventRoot : document.querySelectorAll( 'body' )[ 0 ],
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
@@ -42,7 +42,7 @@ export default class AdaptiveHover {
     ;
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
-    this.target = document.querySelectorAll( settings.target )[0];
+    this.target = document.querySelectorAll( settings.target )[ 0 ];
     $root.on( this.enteringEventName, settings.target, ( e ) => {
       this.handleForEnter( e );
     } );
@@ -50,7 +50,7 @@ export default class AdaptiveHover {
       this.handleForLeave( e );
     } );
     $root.on( this.extraEventName, ( e ) => {
-      if( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
+      if ( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
         this.clear();
         this.leave( e, this.callBackForLeave );
       }
@@ -123,7 +123,7 @@ function _isOriginPoint( eventObj, pageX, pageY, range ) {
 }
 
 function _isRelative( ancestor, elem ) {
-  return elem.matches( ancestor ) || closest( elem, ancestor);
+  return elem.matches( ancestor ) || closest( elem, ancestor );
 }
 
 function _getEventObj( e ) {

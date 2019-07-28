@@ -1,18 +1,18 @@
 const
-  gulp       = require('gulp')
-  ,gulpIf    = require('gulp-if')
-  ,plumber   = require('gulp-plumber')
-  ,postcss   = require('gulp-postcss')
-  ,sass      = require('gulp-sass')
-  ,sourcemap = require('gulp-sourcemaps')
+  gulp       = require( 'gulp' )
+  ,gulpIf    = require( 'gulp-if' )
+  ,plumber   = require( 'gulp-plumber' )
+  ,postcss   = require( 'gulp-postcss' )
+  ,sass      = require( 'gulp-sass' )
+  ,sourcemap = require( 'gulp-sourcemaps' )
 
-  ,cssMqpacker = require('css-mqpacker')
-  ,del         = require('del')
+  ,cssMqpacker = require( 'css-mqpacker' )
+  ,del         = require( 'del' )
 
   ,taskName = 'css_sass'
 
-  ,config   = require('../config.js').config[ taskName ]
-  ,settings = require('../config.js').settings
+  ,config   = require( '../config.js' ).config[ taskName ]
+  ,settings = require( '../config.js' ).settings
 
   ,options = config.options
 ;

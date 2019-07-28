@@ -1,10 +1,8 @@
-/* globals process */
-
 const
-  autoprefixer = require('autoprefixer')
-  ,babelify    = require('babelify')
-  ,merge       = require('lodash/mergeWith')
-  ,notify      = require('gulp-notify')
+  autoprefixer = require( 'autoprefixer' )
+  ,babelify    = require( 'babelify' )
+  ,merge       = require( 'lodash/mergeWith' )
+  ,notify      = require( 'gulp-notify' )
 ;
 
 const NODE_ENV = process.env.NODE_ENV;
@@ -51,7 +49,7 @@ const
           },
         },
         plumber : {
-          errorHandler : notify.onError('Error: <%= error.message %>'),
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         postcss : {
           plugins : [ autoprefixer() ]
@@ -89,7 +87,7 @@ const
           firstGlyph : 0xF001,
         },
         plumber : {
-          errorHandler : notify.onError('Error: <%= error.message %>'),
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
       },
     },
@@ -106,7 +104,7 @@ const
             force : true,
           },
         },
-        errorHandler : notify.onError('Error: <%= error.message %>'),
+        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         browserify : {
           cache        : {},
           packageCache : {},
@@ -133,7 +131,7 @@ const
       default : true,
       options : {
         plumber : {
-          errorHandler : notify.onError('Error: <%= error.message %>'),
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         eSLint : {
           useEslintrc: true,
@@ -160,7 +158,7 @@ const
           indent_size : 2,
           indent_char : ' ',
         },
-        errorHandler : notify.onError('Error: <%= error.message %>'),
+        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         pug : {
           pretty  : true,
           basedir : settings.src,
@@ -183,7 +181,7 @@ const
       scssDist : settings.src + '/css',
       options : {
         plumber : {
-          errorHandler : notify.onError('Error: <%= error.message %>'),
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         sprite : {
           cssName     : '_mixins_sprite.scss',
@@ -192,7 +190,7 @@ const
           cssFormat   : 'scss',
           padding     : 10,
           cssTemplate : settings.src + '/_templates/scss.template.handlebars',
-          cssVarMap   : function ( sprite ) {
+          cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
         },
@@ -200,7 +198,7 @@ const
     },
     'watch' : {
       default      : true,
-      errorHandler : notify.onError('Error: <%= error.message %>'),
+      errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       tmspFile     : './gulpkit.js/tasks/.timestamp',
       options : {
         watch : {

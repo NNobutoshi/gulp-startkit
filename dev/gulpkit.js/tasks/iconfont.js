@@ -1,14 +1,14 @@
 const
-  gulp         = require('gulp')
-  ,iconfont    = require('gulp-iconfont')
-  ,iconfontCss = require('gulp-iconfont-css')
-  ,plumber     = require('gulp-plumber')
+  gulp         = require( 'gulp' )
+  ,iconfont    = require( 'gulp-iconfont' )
+  ,iconfontCss = require( 'gulp-iconfont-css' )
+  ,plumber     = require( 'gulp-plumber' )
 
-  ,fs = require('fs')
+  ,fs = require( 'fs' )
 
   ,taskName = 'iconfont'
 
-  ,config   = require('../config.js').config[ taskName ]
+  ,config   = require( '../config.js' ).config[ taskName ]
 
   ,options = config.options
 ;

@@ -1,11 +1,11 @@
 const
-  gulp     = require('gulp')
-  ,eSLint  = require('gulp-eslint')
-  ,plumber = require('gulp-plumber')
+  gulp     = require( 'gulp' )
+  ,eSLint  = require( 'gulp-eslint' )
+  ,plumber = require( 'gulp-plumber' )
 
   ,taskName = 'js_eslint'
 
-  ,config = require('../config.js').config[ taskName ]
+  ,config = require( '../config.js' ).config[ taskName ]
 
   ,options = config.options
 ;

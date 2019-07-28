@@ -2230,21 +2230,410 @@ $({ target: PROMISE, stat: true, forced: INCORRECT_ITERATION }, {
 },{}],69:[function(require,module,exports){
 'use strict';
 
+var _scrollmanager = _interopRequireDefault(require("../../js/_modules/scrollmanager.js"));
+
+var _optimizedresize = _interopRequireDefault(require("../../js/_modules/optimizedresize.js"));
+
 var _videoground = _interopRequireDefault(require("../../js/_modules/videoground.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mdls = {};
-mdls.videoground = new _videoground.default({
-  src: '/examples/media/mainvisual.mp4',
-  targetClassName: 'js-mainVisual_video',
-  selectorVideoFrame: '.pl-mainVisual_body',
-  classNamePlaying: 'js-mainVisual_video--isPlaying',
-  classNameDestroyed: 'js-mainVisual_video--isDestroyed'
-});
+var mdls = {
+  scrollManager: new _scrollmanager.default(),
+  optimizedresize: new _optimizedresize.default(),
+  videoground: new _videoground.default({
+    src: '/examples/media/mainvisual.mp4',
+    targetClassName: 'js-mainVisual_video',
+    selectorVideoFrame: '.pl-mainVisual_body',
+    classNamePlaying: 'js-mainVisual_video--isPlaying',
+    classNameDestroyed: 'js-mainVisual_video--isDestroyed',
+    aspectRatio: 1080 / 2048,
+    onLoad: function onLoad() {
+      _assist();
+    }
+  })
+};
 mdls.videoground.run();
 
-},{"../../js/_modules/videoground.js":70}],70:[function(require,module,exports){
+function _assist() {
+  var elemOffsetItem = document.querySelector('.page_head'),
+      elemVideoWrapper = document.querySelector('.pl-mainVisual'),
+      elemVideoFrame = elemVideoWrapper.querySelector('.pl-mainVisual_body');
+  var height = 0,
+      parentHeight = 0;
+  mdls.scrollManager.on(function () {
+    _run();
+  });
+  mdls.optimizedresize.on(function () {
+    _run();
+  });
+
+  _run();
+
+  function _run() {
+    height = elemOffsetItem.offsetHeight;
+    parentHeight = window.innerHeight - height;
+    elemVideoWrapper.style.marginTop = height + 'px';
+    elemVideoFrame.style.marginTop = height + 'px';
+    elemVideoWrapper.style.height = parentHeight + 'px';
+    elemVideoFrame.style.height = parentHeight + 'px';
+    mdls.videoground.resize();
+  }
+}
+
+},{"../../js/_modules/optimizedresize.js":70,"../../js/_modules/scrollmanager.js":71,"../../js/_modules/videoground.js":72}],70:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var counter = 0;
+
+var OptimizedResize =
+/*#__PURE__*/
+function () {
+  function OptimizedResize(options) {
+    _classCallCheck(this, OptimizedResize);
+
+    this.defaultSettings = {
+      name: 'optimizedresize',
+      delay: 16
+    };
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.callBacks = {};
+    this.isRunning = false;
+    this.eventName = "resize.".concat(this.id);
+  }
+
+  _createClass(OptimizedResize, [{
+    key: "runCallBacksAll",
+    value: function runCallBacksAll() {
+      var _this = this;
+
+      Object.keys(this.callBacks).forEach(function (key) {
+        var props = _this.callBacks[key];
+        var query = false;
+
+        if (props.query) {
+          query = matchMedia(props.query).matches;
+
+          if (query === true && (props.turn === true && props.lastQuery !== query || props.one === true || !props.one && !props.turn)) {
+            props.callBack.call(_this, props);
+          }
+
+          props.lastQuery = query;
+
+          if (props.one === true && query === true) {
+            _this.remove(key);
+          }
+        } else {
+          props.callBack(_this, props);
+        }
+      });
+      this.isRunning = false;
+      return this;
+    }
+  }, {
+    key: "add",
+    value: function add(callBack, options) {
+      var defaultSettings = {
+        name: _getUniqueName(this.id),
+        query: '',
+        one: false,
+        turn: false
+      },
+          settings = _jquery.default.extend({}, defaultSettings, options);
+
+      settings.callBack = callBack;
+      this.setUp();
+      this.callBacks[settings.name] = settings;
+      return this;
+    }
+  }, {
+    key: "remove",
+    value: function remove(name) {
+      delete this.callBacks[name];
+    }
+  }, {
+    key: "off",
+    value: function off(name) {
+      this.remove(name);
+    }
+  }, {
+    key: "on",
+    value: function on(callBack, query, name) {
+      return this.add(callBack, {
+        name: name,
+        query: query,
+        one: false,
+        turn: false
+      });
+    }
+  }, {
+    key: "one",
+    value: function one(callBack, query, name) {
+      return this.add(callBack, {
+        name: name,
+        query: query,
+        one: true,
+        turn: false
+      });
+    }
+  }, {
+    key: "turn",
+    value: function turn(callBack, query, name) {
+      return this.add(callBack, {
+        name: name,
+        query: query,
+        one: false,
+        turn: true
+      });
+    }
+  }, {
+    key: "setUp",
+    value: function setUp() {
+      var _this2 = this;
+
+      if (!Object.keys(this.callBacks).length) {
+        (0, _jquery.default)(window).on(this.eventName, function () {
+          _this2.run();
+        });
+      }
+    }
+  }, {
+    key: "run",
+    value: function run() {
+      var _this3 = this;
+
+      if (!this.isRunning) {
+        this.isRunning = true;
+
+        if (requestAnimationFrame) {
+          requestAnimationFrame(function () {
+            _this3.runCallBacksAll();
+          });
+        } else {
+          setTimeout(function () {
+            _this3.runCallBacksAll();
+          }, this.settintgs.delay);
+        }
+      }
+
+      return this;
+    }
+  }]);
+
+  return OptimizedResize;
+}();
+
+exports.default = OptimizedResize;
+
+function _getUniqueName(base) {
+  return base + new Date().getTime() + counter++;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],71:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var counter = 0;
+
+var ScrollManager =
+/*#__PURE__*/
+function () {
+  function ScrollManager(options) {
+    _classCallCheck(this, ScrollManager);
+
+    this.defaultSettings = {
+      name: 'scrollManager',
+      offsetTop: 0,
+      offsetBottom: 0,
+      delay: 16,
+      eventRoot: window
+    };
+    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.id = this.settings.name;
+    this.offsetTop = this.settings.offsetTop;
+    this.offsetBottom = this.settings.offsetBottom;
+    this.callBacks = {};
+    this.eventName = "scroll.".concat(this.id);
+    this.eventRoot = this.settings.eventRoot;
+    this.isRunning = false;
+    this.lastSctop = 0;
+    this.lastScBottom = 0;
+    this.isScrollDown = null;
+  }
+
+  _createClass(ScrollManager, [{
+    key: "runCallBacksAll",
+    value: function runCallBacksAll() {
+      var _this = this;
+
+      var scTop = (0, _jquery.default)(this.eventRoot).scrollTop(),
+          scBottom = scTop + window.innerHeight;
+      var offsetTop = 0,
+          offsetBottom = 0;
+
+      if (typeof this.offsetTop === 'number') {
+        offsetTop = this.offsetTop;
+      } else if (typeof this.offsetTop === 'string') {
+        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      }
+
+      if (typeof this.offsetBottom === 'number') {
+        offsetBottom = this.offsetBottom;
+      } else if (typeof this.offsetBottom === 'string') {
+        offsetBottom = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      }
+
+      this.isScrollDown = scTop > this.lastSctop;
+      this.scTop = scTop;
+      this.scBottom = scBottom;
+      Object.keys(this.callBacks).forEach(function (key) {
+        var props = _this.callBacks[key];
+        var target = props.inviewTarget,
+            rect,
+            targetOffsetTop,
+            targetOffsetBottom;
+
+        if (target && target !== null) {
+          rect = target.getBoundingClientRect();
+          targetOffsetTop = rect.top + scTop;
+          targetOffsetBottom = rect.bottom + scTop;
+
+          if (targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop) {
+            props.inview = true;
+          } else {
+            props.inview = false;
+          }
+        }
+
+        return props.callBack.call(_this, props, _this);
+      });
+      this.isRunning = false;
+      this.lastSctop = scTop;
+      this.lastScBottom = scBottom;
+      return this;
+    }
+  }, {
+    key: "add",
+    value: function add(callBack, options) {
+      var defaultSttings = {
+        name: _getUniqueName(this.id),
+        flag: false
+      },
+          settings = _jquery.default.extend({}, defaultSttings, options);
+
+      settings.callBack = callBack;
+      this.setUp();
+      this.callBacks[settings.name] = settings;
+      return this;
+    }
+  }, {
+    key: "remove",
+    value: function remove(name) {
+      delete this.callBacks[name];
+      return this;
+    }
+  }, {
+    key: "on",
+    value: function on(callBack, options) {
+      return this.add(callBack, options);
+    }
+  }, {
+    key: "inview",
+    value: function inview(target, callBack, options) {
+      return this.add(callBack, options || {
+        inviewTarget: target
+      });
+    }
+  }, {
+    key: "setUp",
+    value: function setUp() {
+      var _this2 = this;
+
+      if (!this.callBacks.length) {
+        (0, _jquery.default)(this.eventRoot).on(this.eventName, function () {
+          _this2.run();
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "run",
+    value: function run() {
+      var _this3 = this;
+
+      if (!this.isRunning) {
+        this.isRunning = true;
+
+        if (requestAnimationFrame) {
+          requestAnimationFrame(function () {
+            _this3.runCallBacksAll();
+          });
+        } else {
+          setTimeout(function () {
+            _this3.runCallBacksAll();
+          }, this.settintgs.delay);
+        }
+      }
+
+      return this;
+    }
+  }]);
+
+  return ScrollManager;
+}();
+
+exports.default = ScrollManager;
+
+function _getTotalHeight(elem) {
+  var total = 0;
+  Array.prototype.forEach.call(elem, function (self) {
+    total = total + (0, _jquery.default)(self).outerHeight(true);
+  });
+  return total;
+}
+
+function _getUniqueName(base) {
+  return base + new Date().getTime() + counter++;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],72:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2281,6 +2670,7 @@ function () {
       name: 'videoGround',
       src: '',
       selectorVideoFrame: '',
+      selectorParent: '',
       waitTime: 10000,
       aspectRatio: 720 / 1280,
       actualHeightRatio: 1 / 1,
@@ -2289,7 +2679,8 @@ function () {
       classNameDestroyed: 'js--isDestroyed',
       onDestroy: null,
       onPlay: null,
-      onBefore: null
+      onBefore: null,
+      onLoad: null
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.elemVideo = null;
@@ -2297,7 +2688,9 @@ function () {
     this.id = this.settings.name;
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.resizeRafId = null;
+    this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']);
+    this.elemVideoFrame = document.querySelector(this.settings.selectorVideoFrame);
+    this.elemParent = this.settings.selectorParent && this.elemVideoFrame !== null ? document.querySelector(this.settings.selectorParent) : this.elemVideoFrame.parentNode;
   }
 
   _createClass(VideoGround, [{
@@ -2306,14 +2699,19 @@ function () {
       var _this = this;
 
       var settings = this.settings,
-          elemVideo = this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']),
-          elemVideoFrame = this.elemVideoFrame = document.querySelector(settings.selectorVideoFrame);
+          elemVideo = this.elemVideo,
+          elemVideoFrame = this.elemVideoFrame;
 
-      if (elemVideoFrame === null) return this;
+      if (elemVideoFrame === null) {
+        return this;
+      }
+
       this.autoDestroy();
       this.on();
 
       _eventCall(settings.onBefore);
+      /* eslint space-before-function-paren: 0 */
+
 
       _asyncToGenerator(
       /*#__PURE__*/
@@ -2394,12 +2792,11 @@ function () {
 
         _eventCall(settings.onPlay);
       });
-      (0, _jquery.default)(elemVideo).on("canplay.".concat(this.id), function () {
+      (0, _jquery.default)(elemVideo).one("canplay.".concat(this.id), function () {
         elemVideo.play();
+
+        _eventCall(settings.onLoad);
       });
-      (0, _jquery.default)(window).on("resize.".concat(this.id, " orientationchange.").concat(this.id), function () {
-        _this2.resize();
-      }).trigger("resize.".concat(this.id));
       return this;
     }
   }, {
@@ -2434,23 +2831,18 @@ function () {
   }, {
     key: "resize",
     value: function resize() {
-      var _this4 = this;
+      var settings = this.settings,
+          frameWidth = this.elemParent.offsetWidth,
+          frameHeight = this.elemParent.offsetHeight,
+          frameAspectRatio = frameHeight / frameWidth;
 
-      var settings = this.settings;
-      cancelAnimationFrame(this.resizeRafId);
-      this.resizeRafId = requestAnimationFrame(function () {
-        var frameWidth = _this4.elemVideoFrame.offsetWidth,
-            frameHeight = _this4.elemVideoFrame.offsetHeight,
-            frameAspectRatio = frameHeight / frameWidth;
-
-        if (frameAspectRatio > settings.aspectRatio) {
-          _this4.elemVideo.style.width = 'auto';
-          _this4.elemVideo.style.height = frameHeight * settings.actualHeightRatio + 'px';
-        } else {
-          _this4.elemVideo.style.width = 100 + '%';
-          _this4.elemVideo.style.height = 'auto';
-        }
-      });
+      if (frameAspectRatio > settings.aspectRatio) {
+        this.elemVideo.style.width = 'auto';
+        this.elemVideo.style.height = frameHeight * settings.actualHeightRatio + 'px';
+      } else {
+        this.elemVideo.style.width = 100 + '%';
+        this.elemVideo.style.height = 'auto';
+      }
     }
   }]);
 

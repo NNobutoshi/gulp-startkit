@@ -38,7 +38,7 @@
     "cross-env": "*",
     "css-mqpacker": "*",
     "del": "*",
-    "eslint-config-jquery": "^2.0.0",
+    "eslint-config-jquery": "*",
     "gulp": "*",
     "gulp-buffer": "*",
     "gulp-changed": "*",

@@ -219,10 +219,10 @@ function () {
       var _this = this;
 
       var $w = (0, _jquery.default)(window);
-      $w.on(this.windowEventName, function (e) {
+      $w.on(this.windowEventName, function () {
         _this.hash = location.hash || null;
 
-        _this.runAll(e);
+        _this.runAll();
 
         if (typeof _this.callBackforLoad === 'function') {
           _this.callBackforLoad.call(_this, {
@@ -264,7 +264,7 @@ function () {
     }
   }, {
     key: "runAll",
-    value: function runAll(e, index) {
+    value: function runAll(index) {
       var _this2 = this;
 
       var indexNumber = typeof index === 'number' ? index : 0;

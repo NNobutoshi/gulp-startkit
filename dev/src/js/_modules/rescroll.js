@@ -12,9 +12,9 @@ export default class Rescroll {
 
   constructor( options ) {
     this.defaultSettings = {
-      name : 'rescroll',
-      offsetTop: 0,
-      delay: 300,
+      name      : 'rescroll',
+      offsetTop : 0,
+      delay     : 300,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.offsetTop = this.settings.offsetTop;
@@ -76,7 +76,7 @@ export default class Rescroll {
     if ( !target && !this.hash ) {
       return this;
     }
-    targetElem = ( target )? target: document.querySelector( this.hash );
+    targetElem = ( target ) ? target : document.querySelector( this.hash );
     if ( targetElem === null ) {
       return this;
     }

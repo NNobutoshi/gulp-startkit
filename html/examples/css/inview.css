@@ -5,8 +5,8 @@
 
 .icon-arrow1_r:before { content: ""; }
 
-.pl-inviewTarget { opacity: 0; -webkit-transition: opacity 1s ease; transition: opacity 1s ease; margin-top: 100vh; }
+.pl-inviewTarget { opacity: 0; -webkit-transform: translateX(-10%); transform: translateX(-10%); -webkit-transition: opacity 3s ease, -webkit-transform .5s ease; transition: opacity 3s ease, -webkit-transform .5s ease; transition: opacity 3s ease, transform .5s ease; transition: opacity 3s ease, transform .5s ease, -webkit-transform .5s ease; margin-top: 100vh; }
 
-.pl-inviewTarget.js-isInView { opacity: 1; }
+.pl-inviewTarget.js-isInView { opacity: 1; -webkit-transform: translateX(0); transform: translateX(0); }
 
 /*# sourceMappingURL=inview.css.map */

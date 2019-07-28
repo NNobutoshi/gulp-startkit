@@ -1,21 +1,20 @@
 const
-  nodeX2j   = require('xls-to-json')
-  ,fs       = require('fs')
-  ,charset  = 'utf-8'
+  nodeX2j = require( 'xls-to-json' )
+  ,fs = require( 'fs' )
+  ,charset = 'utf-8'
   ,settings = {
     src         : './src'
     ,extension  : /\.pug?$/
     ,configFile : './src/_config.pug'
     ,indexName  : 'index.pug'
     ,linefeed   : '\n' // '\r\n'
-    ,x2j : {
-      input    : './sitemap.xlsx'
-      ,output  : './output.json'
-      ,sheet   : 'Sheet1'
+    ,x2j        : {
+      input   : './sitemap.xlsx'
+      ,output : './output.json'
+      ,sheet  : 'Sheet1'
     }
   }
-  /* globals process */
-  ,force = ( process.argv.includes('-f') )? true: false // 既存の各pug ファイルを刷新するか否か
+  ,force = ( process.argv.includes( '-f' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
 let
@@ -29,20 +28,20 @@ let
       ,string = ''
       ,indent = ''
     ;
-    if( err ) {
+    if ( err ) {
       console.error( err );
       return;
     }
     jSONData = _reJsonData( result );
     content = fs.readFileSync( settings.configFile, charset );
-    indent = content.match( /[\s\S]+?( +)\/\/{{/ )[ 1];
+    indent = content.match( /[\s\S]+?( +)\/\/{{/ )[ 1 ];
     string = JSON
       .stringify( jSONData, null, '  ' )
       .replace( new RegExp( '^\\{' + '\\' + settings.linefeed, 'g' ), '' )
       .replace( /\}$/, '' )
       .replace( /^ {2}/mg, indent )
     ;
-    content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed+string+indent}//}}` );
+    content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed + string + indent}//}}` );
     fs.writeFileSync( settings.configFile, content, charset );
     Object.keys( jSONData ).forEach( ( url ) => {
       _recursivelyRunDirectories( jSONData[ url ], _writeFile );
@@ -71,14 +70,14 @@ function _recursivelyRunDirectories( prop, callback ) {
     ,pugUrl = ''
   ;
   if ( url.match( /\/$/ ) ) {
-    pugUrl = url.replace( /\/$/, '/index.pug');
+    pugUrl = url.replace( /\/$/, '/index.pug' );
   }
-  if ( url.match(/\.html?$/ ) ) {
+  if ( url.match( /\.html?$/ ) ) {
     pugUrl = url.replace( /\.html?$/, '.pug' );
   }
   pugUrl = settings.src + pugUrl;
-  leaves = pugUrl.split('/');
-  leaves.forEach( function ( leaf ) {
+  leaves = pugUrl.split( '/' );
+  leaves.forEach( function( leaf ) {
     if ( parent === '' ) {
       parent = leaf;
     } else {

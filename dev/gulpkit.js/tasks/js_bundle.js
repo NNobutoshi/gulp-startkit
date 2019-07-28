@@ -1,21 +1,21 @@
 const
-  gulp       = require('gulp')
-  ,duration  = require('gulp-duration')
-  ,gulpIf    = require('gulp-if')
-  ,sourcemap = require('gulp-sourcemaps')
-  ,tap       = require('gulp-tap')
-  ,uglify    = require('gulp-uglify')
+  gulp       = require( 'gulp' )
+  ,duration  = require( 'gulp-duration' )
+  ,gulpIf    = require( 'gulp-if' )
+  ,sourcemap = require( 'gulp-sourcemaps' )
+  ,tap       = require( 'gulp-tap' )
+  ,uglify    = require( 'gulp-uglify' )
 
-  ,browserify = require('browserify')
-  ,del        = require('del')
-  ,buffer     = require('vinyl-buffer')
-  ,source     = require('vinyl-source-stream')
-  ,watchify   = require('watchify')
+  ,browserify = require( 'browserify' )
+  ,del        = require( 'del' )
+  ,buffer     = require( 'vinyl-buffer' )
+  ,source     = require( 'vinyl-source-stream' )
+  ,watchify   = require( 'watchify' )
 
   ,taskName = 'js_bundle'
 
-  ,config   = require('../config.js').config[ taskName ]
-  ,settings = require('../config.js').settings
+  ,config   = require( '../config.js' ).config[ taskName ]
+  ,settings = require( '../config.js' ).settings
 
   ,options = config.options
 ;
@@ -37,7 +37,7 @@ gulp.task( taskName, gulp.series( _js_clean, ( cb ) => {
           .on( 'error', ( error ) => {
             options.errorHandler( error );
           } )
-          .pipe( source( file.relative.replace( /\.bundle\.js$/, '.js') ) )
+          .pipe( source( file.relative.replace( /\.bundle\.js$/, '.js' ) ) )
           .pipe( duration( `built "${file.path}"` ) )
           .pipe( buffer() )
           .pipe( gulpIf(

@@ -1,11 +1,11 @@
 const
-  gulp     = require('gulp')
-  ,plumber = require('gulp-plumber')
-  ,sprite  = require('gulp.spritesmith')
+  gulp     = require( 'gulp' )
+  ,plumber = require( 'gulp-plumber' )
+  ,sprite  = require( 'gulp.spritesmith' )
 
-  ,mergeStream = require('merge-stream')
+  ,mergeStream = require( 'merge-stream' )
 
-  ,config   = require('../config.js').config.sprite
+  ,config   = require( '../config.js' ).config.sprite
 
   ,options = config.options
 ;

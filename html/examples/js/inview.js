@@ -51,7 +51,7 @@ function () {
       name: 'scrollManager',
       offsetTop: 0,
       offsetBottom: 0,
-      delay: 66,
+      delay: 16,
       eventRoot: window
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);

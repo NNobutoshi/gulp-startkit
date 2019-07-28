@@ -10,36 +10,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mdls = {};
 mdls.toggle = new _transitiontoggle.default({
-  trigger: '.pl-list_btn',
-  target: '.pl-list_inner',
-  toAddClass: '#page'
+  selectorTrigger: '.pl-list_btn',
+  selectorTarget: '.pl-list_inner',
+  selectorIndicator: '.pl-list'
 });
-mdls.toggle.on(function (e, instance) {
-  console.info('open');
-  var $target = (0, _jquery.default)(instance.elemTarget),
-      $parent = (0, _jquery.default)(instance.elemToAddClass),
-      height = $target.find('.pl-list_list').outerHeight(true);
+mdls.toggle.on(function (e, inst) {
+  var $target = (0, _jquery.default)(inst.elemTarget);
   $target.css({
-    'height': height + 'px'
+    'height': $target.find('.pl-list_list').outerHeight(true) + 'px'
   });
-  $parent.addClass('js-pl-list-isOpening');
-}, function (e, instance) {
-  console.info('close');
-  var $target = (0, _jquery.default)(instance.elemTarget),
-      $parent = (0, _jquery.default)(instance.elemToAddClass);
-  $target.css({
+  (0, _jquery.default)(inst.elemIndicator).addClass('js-list--isOpening');
+}, function (e, inst) {
+  (0, _jquery.default)(inst.elemTarget).css({
     'height': ''
   });
   setTimeout(function () {
-    $parent.removeClass('js-pl-list-isOpening');
+    (0, _jquery.default)(inst.elemIndicator).removeClass('js-list--isOpening');
   }, 100);
-}, function (e, instance) {
-  var $parent = (0, _jquery.default)(instance.elemToAddClass);
+}, function (e, inst) {
+  var $parent = (0, _jquery.default)(inst.elemIndicator);
 
-  if (instance.isOpen === true) {
-    $parent.addClass('js-pl-list-isOpen');
+  if (inst.isOpen === true) {
+    $parent.addClass('js-list--isOpen');
   } else {
-    $parent.removeClass('js-pl-list-isOpen');
+    $parent.removeClass('js-list--isOpen');
   }
 });
 
@@ -72,17 +66,15 @@ function () {
 
     this.defaultSettings = {
       name: 'transitiontoggle',
-      trigger: '',
-      target: '',
-      toAddClass: null,
-      eventRoot: document.querySelector('body')
+      selectorTrigger: '',
+      selectorTarget: '',
+      selectorIndicator: null,
+      selectorEventRoot: 'body'
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.trigger = this.settings.trigger;
-    this.target = this.settings.target;
-    this.eventRoot = this.settings.eventRoot;
-    this.elemToAddClass = document.querySelector(this.settings.toAddClass);
+    this.eventRoot = this.settings.selectorEventRoot;
+    this.elemIndicator = document.querySelector(this.settings.selectorIndicator);
     this.elemTrigger = null;
     this.elemTarget = null;
     this.eventName = "click.".concat(this.id);
@@ -96,14 +88,19 @@ function () {
     value: function on(callBackForOpen, callBackForClose, callBackForEnd) {
       var _this = this;
 
-      var $root = (0, _jquery.default)(this.eventRoot);
+      var settings = this.settings,
+          $root = (0, _jquery.default)(this.eventRoot);
       var isOpen = false;
-      if (this.elemToAddClass === null) return this;
-      this.elemTrigger = this.elemToAddClass.querySelector(this.trigger);
-      this.elemTarget = this.elemToAddClass.querySelector(this.target);
+
+      if (this.elemIndicator === null) {
+        return this;
+      }
+
+      this.elemTrigger = this.elemIndicator.querySelector(settings.selectorTrigger);
+      this.elemTarget = this.elemIndicator.querySelector(settings.selectorTarget);
       this.callBackForOpen = callBackForOpen;
       this.callBackForClose = callBackForClose;
-      $root.on(this.eventName, this.trigger, function (e) {
+      $root.on(this.eventName, settings.selectorTrigger, function (e) {
         if (_this.isOpen === true) {
           _this.handleForClose(e);
         } else {
@@ -124,12 +121,12 @@ function () {
   }, {
     key: "off",
     value: function off() {
-      this.elemToAddClass = null;
+      this.elemIndicator = null;
       this.elemTrigger = null;
       this.elemTarget = null;
       this.callBackForOpen = null;
       this.callBackForClose = null;
-      (0, _jquery.default)(this.eventRoot).off("transitionend.".concat(this.id), this.target);
+      (0, _jquery.default)(this.eventRoot).off(".".concat(this.id), this.target);
       return this;
     }
   }, {

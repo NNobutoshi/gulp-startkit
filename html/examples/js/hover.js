@@ -12,10 +12,10 @@ var mdls = {};
 mdls.hover = new _adaptivehover.default({
   target: '.pl-hoverTarget'
 });
-mdls.hover.on(function (e, instance) {
-  (0, _jquery.default)(instance.target).addClass('js-hover');
-}, function (e, instance) {
-  (0, _jquery.default)(instance.target).removeClass('js-hover');
+mdls.hover.on(function (e, inst) {
+  (0, _jquery.default)(inst.target).addClass('js-hover');
+}, function (e, inst) {
+  (0, _jquery.default)(inst.target).removeClass('js-hover');
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

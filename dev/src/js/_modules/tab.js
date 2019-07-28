@@ -5,13 +5,13 @@ export default class Tab {
 
   constructor( options ) {
     this.defaultSettings = {
-      name    : 'tab',
-      trigger : '',
-      target  : '',
-      wrapper : '',
-      className : 'js-selected',
+      name         : 'tab',
+      trigger      : '',
+      target       : '',
+      wrapper      : '',
+      className    : 'js-selected',
       defaultIndex : 0,
-      onLoad : null,
+      onLoad       : null,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
@@ -33,9 +33,9 @@ export default class Tab {
     const
       $w = $( window )
     ;
-    $w.on( this.windowEventName, ( e ) => {
+    $w.on( this.windowEventName, () => {
       this.hash = location.hash || null;
-      this.runAll( e );
+      this.runAll();
       if ( typeof this.callBackforLoad === 'function' ) {
         this.callBackforLoad.call( this, {
           trigger : this.selectedTrigger,
@@ -52,9 +52,9 @@ export default class Tab {
     } );
   }
 
-  run ( e, index ) {
+  run( e, index ) {
     const
-      indexNumber = ( typeof index === 'number' )? index: 0
+      indexNumber = ( typeof index === 'number' ) ? index : 0
       ,triggerElem = e.currentTarget
       ,wrapperElem = closest( triggerElem, this.wrapperSelector )
       ,triggerElemAll = wrapperElem.querySelectorAll( this.triggerSelector )
@@ -75,9 +75,9 @@ export default class Tab {
     } );
   }
 
-  runAll( e, index ) {
+  runAll( index ) {
     const
-      indexNumber = ( typeof index === 'number' )? index: 0
+      indexNumber = ( typeof index === 'number' ) ? index : 0
     ;
     Array.prototype.forEach.call( this.wrapperElemAll, ( wrapper ) => {
       const
@@ -113,7 +113,7 @@ export default class Tab {
           elem.classList.remove( this.settings.className );
         }
       } else {
-        if ( this.hash === ( ( key === 'id' )? '#' + elem[ key ]: elem [ key ] ) ) {
+        if ( this.hash === ( ( key === 'id' ) ? '#' + elem[ key ] : elem [ key ] ) ) {
           if ( key === 'hash' ) {
             this.selectedTrigger = elem;
             this.selectedTarget = arg.targetElem;

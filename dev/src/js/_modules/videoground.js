@@ -7,18 +7,20 @@ export default class VideoGround {
 
   constructor( options ) {
     this.defaultSettings = {
-      name: 'videoGround',
-      src: '',
-      selectorVideoFrame: '',
-      waitTime : 10000,
-      aspectRatio: 720 / 1280,
-      actualHeightRatio: 1 / 1,
-      targetClassName: 'js--video',
-      classNamePlaying: 'js--isPlaying',
-      classNameDestroyed: 'js--isDestroyed',
-      onDestroy: null,
-      onPlay: null,
-      onBefore: null
+      name               : 'videoGround',
+      src                : '',
+      selectorVideoFrame : '',
+      selectorParent     : '',
+      waitTime           : 10000,
+      aspectRatio        : 720 / 1280,
+      actualHeightRatio  : 1 / 1,
+      targetClassName    : 'js--video',
+      classNamePlaying   : 'js--isPlaying',
+      classNameDestroyed : 'js--isDestroyed',
+      onDestroy          : null,
+      onPlay             : null,
+      onBefore           : null,
+      onLoad             : null,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.elemVideo = null;
@@ -26,25 +28,35 @@ export default class VideoGround {
     this.id = this.settings.name;
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.resizeRafId = null;
+    this.elemVideo = _createVideo( [ 'muted', 'playsinline', 'loop' ] );
+    this.elemVideoFrame = document.querySelector( this.settings.selectorVideoFrame );
+    this.elemParent = ( this.settings.selectorParent && this.elemVideoFrame !== null ) ?
+      document.querySelector( this.settings.selectorParent ) :
+      this.elemVideoFrame.parentNode
+    ;
   }
 
   run() {
     const
       settings = this.settings
-      ,elemVideo = this.elemVideo = _createVideo( [ 'muted', 'playsinline', 'loop' ] )
-      ,elemVideoFrame = this.elemVideoFrame = document.querySelector( settings.selectorVideoFrame )
+      ,elemVideo = this.elemVideo
+      ,elemVideoFrame = this.elemVideoFrame
     ;
 
-    if ( elemVideoFrame === null ) return this;
+    if ( elemVideoFrame === null ) {
+      return this;
+    }
 
     this.autoDestroy();
     this.on();
 
     _eventCall( settings.onBefore );
 
+    /* eslint space-before-function-paren: 0 */
     ( async () => {
-      if ( await this.testPlay() === false ) return this.destroy();
+      if ( await this.testPlay() === false ) {
+        return this.destroy();
+      }
       elemVideo.src = settings.src;
       elemVideo.classList.add( settings.targetClassName );
       elemVideoFrame.appendChild( elemVideo );
@@ -83,8 +95,9 @@ export default class VideoGround {
     const
       settings = this.settings
       ,elemVideo = this.elemVideo
-      ,elemBody = document.querySelector('body')
+      ,elemBody = document.querySelector( 'body' )
     ;
+
     $( elemVideo ).on( `play.${this.id}`, () => {
       clearTimeout( this.destroyTimerId );
       this.destroyTimerId = null;
@@ -92,22 +105,19 @@ export default class VideoGround {
       elemBody.classList.add( settings.classNamePlaying );
       _eventCall( settings.onPlay );
     } );
-    $( elemVideo ).on( `canplay.${this.id}`, () => {
+
+    $( elemVideo ).one( `canplay.${this.id}`, () => {
       elemVideo.play();
+      _eventCall( settings.onLoad );
     } );
-    $( window )
-      .on( `resize.${this.id} orientationchange.${this.id}`, () => {
-        this.resize();
-      } )
-      .trigger( `resize.${this.id}` )
-    ;
+
     return this;
   }
 
   destroy() {
     const
       settings = this.settings
-      ,elemBody = document.querySelector('body')
+      ,elemBody = document.querySelector( 'body' )
     ;
     clearTimeout( this.destroyTimerId );
     elemBody.classList.remove( settings.classNamePlaying );
@@ -130,22 +140,17 @@ export default class VideoGround {
   resize() {
     const
       settings = this.settings
+      ,frameWidth = this.elemParent.offsetWidth
+      ,frameHeight = this.elemParent.offsetHeight
+      ,frameAspectRatio = frameHeight / frameWidth
     ;
-    cancelAnimationFrame( this.resizeRafId );
-    this.resizeRafId = requestAnimationFrame( () => {
-      const
-        frameWidth = this.elemVideoFrame.offsetWidth
-        ,frameHeight = this.elemVideoFrame.offsetHeight
-        ,frameAspectRatio = frameHeight / frameWidth
-      ;
-      if ( frameAspectRatio > settings.aspectRatio ) {
-        this.elemVideo.style.width = 'auto';
-        this.elemVideo.style.height = frameHeight * settings.actualHeightRatio + 'px';
-      } else {
-        this.elemVideo.style.width = 100 + '%';
-        this.elemVideo.style.height = 'auto';
-      }
-    } );
+    if ( frameAspectRatio > settings.aspectRatio ) {
+      this.elemVideo.style.width = 'auto';
+      this.elemVideo.style.height = frameHeight * settings.actualHeightRatio + 'px';
+    } else {
+      this.elemVideo.style.width = 100 + '%';
+      this.elemVideo.style.height = 'auto';
+    }
   }
 
 }
@@ -157,9 +162,9 @@ function _eventCall( f ) {
 }
 
 function _createVideo( props ) {
-  const elemVideo = document.createElement('video');
-  for ( let i = 0, len = props.length; i < len; i ++ ) {
-    elemVideo.setAttribute( props[i], '' );
+  const elemVideo = document.createElement( 'video' );
+  for ( let i = 0, len = props.length; i < len; i++ ) {
+    elemVideo.setAttribute( props[ i ], '' );
     elemVideo[ props[ i ] ] = true;
   }
   return elemVideo;

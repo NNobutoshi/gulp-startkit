@@ -1,17 +1,17 @@
 
 const
-  bs            = require('browser-sync').create()
+  bs            = require( 'browser-sync' ).create()
   ,type         = 'normal' // 'normal' or 'proxy'
   ,proxy        = 'localhost:8000'
   ,documentRoot = '../html'
   ,options      = {
-    watch   : true,
-    port    : 9000,
-    browser : 'Chrome',
+    watch          : true,
+    port           : 9000,
+    browser        : 'Chrome',
     reloadDelay    : 500,
     reloadDebounce : 500,
     reloadThrottle : 2000,
-    files   : [
+    files          : [
       documentRoot  + '/**/*.html',
       documentRoot  + '/**/*.css',
       documentRoot  + '/**/*.jpg',
@@ -22,7 +22,7 @@ const
   }
 ;
 
-if ( type === 'normal') {
+if ( type === 'normal' ) {
   options.server = {
     baseDir : documentRoot,
   };

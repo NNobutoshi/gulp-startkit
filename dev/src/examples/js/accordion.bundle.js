@@ -8,47 +8,37 @@ const
 ;
 
 mdls.toggle = new Toggle( {
-  trigger : '.pl-list_btn',
-  target : '.pl-list_inner',
-  toAddClass : '#page',
+  selectorTrigger   : '.pl-list_btn',
+  selectorTarget    : '.pl-list_inner',
+  selectorIndicator : '.pl-list',
 } );
 
-mdls.toggle
-  .on(
-    ( e, instance ) => {
-      console.info('open');
-      const
-        $target = $( instance.elemTarget )
-        ,$parent = $( instance.elemToAddClass )
-        ,height = $target.find( '.pl-list_list').outerHeight( true )
-      ;
-      $target.css( {
-        'height' : height + 'px'
-      } );
-      $parent.addClass( 'js-pl-list-isOpening' );
+mdls.toggle.on(
+  ( e, inst ) => {
+    const
+      $target = $( inst.elemTarget )
+    ;
+    $target.css( {
+      'height' : $target.find( '.pl-list_list' ).outerHeight( true ) + 'px'
+    } );
+    $( inst.elemIndicator ).addClass( 'js-list--isOpening' );
+  }
+  ,( e, inst ) => {
+    $( inst.elemTarget ).css( {
+      'height' : ''
+    } );
+    setTimeout( () => {
+      $( inst.elemIndicator ).removeClass( 'js-list--isOpening' );
+    },100 );
+  }
+  ,( e, inst ) => {
+    const
+      $parent = $( inst.elemIndicator )
+    ;
+    if ( inst.isOpen === true ) {
+      $parent.addClass( 'js-list--isOpen' );
+    } else {
+      $parent.removeClass( 'js-list--isOpen' );
     }
-    ,( e, instance ) => {
-      console.info('close');
-      const
-        $target = $( instance.elemTarget )
-        ,$parent = $( instance.elemToAddClass )
-      ;
-      $target.css( {
-        'height' : ''
-      } );
-      setTimeout( () => {
-        $parent.removeClass( 'js-pl-list-isOpening' );
-      },100 );
-    }
-    ,( e, instance ) => {
-      const
-        $parent = $( instance.elemToAddClass )
-      ;
-      if( instance.isOpen === true ) {
-        $parent.addClass( 'js-pl-list-isOpen' );
-      } else {
-        $parent.removeClass( 'js-pl-list-isOpen' );
-      }
-    }
-  )
+  } )
 ;

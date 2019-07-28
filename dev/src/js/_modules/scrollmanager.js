@@ -17,8 +17,8 @@ export default class ScrollManager {
       name         : 'scrollManager',
       offsetTop    : 0,
       offsetBottom : 0,
-      delay        : 66,
-      eventRoot    : window
+      delay        : 16,
+      eventRoot    : window,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
@@ -111,7 +111,7 @@ export default class ScrollManager {
   }
 
   inview( target, callBack, options ) {
-    return this.add( callBack, options || { inviewTarget : target} );
+    return this.add( callBack, options || { inviewTarget : target } );
   }
 
   setUp() {
@@ -127,9 +127,13 @@ export default class ScrollManager {
     if ( !this.isRunning ) {
       this.isRunning = true;
       if ( requestAnimationFrame ) {
-        requestAnimationFrame( () => { this.runCallBacksAll(); } );
+        requestAnimationFrame( () => {
+          this.runCallBacksAll();
+        } );
       } else {
-        setTimeout( () => { this.runCallBacksAll(); }, this.settintgs.delay );
+        setTimeout( () => {
+          this.runCallBacksAll();
+        }, this.settintgs.delay );
       }
     }
     return this;
@@ -148,5 +152,5 @@ function _getTotalHeight( elem ) {
 }
 
 function _getUniqueName( base ) {
-  return base + new Date().getTime()+ counter++;
+  return base + new Date().getTime() + counter++;
 }

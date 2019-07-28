@@ -9,11 +9,11 @@ const
 
 mdls.scroll = new ScrollManager();
 mdls.scroll
-  .inview( document.querySelectorAll('.pl-inviewTarget')[0], ( props ) => {
+  .inview( document.querySelectorAll( '.pl-inviewTarget' )[ 0 ], ( props ) => {
     if ( props.inview === true ) {
-      $( props.inviewTarget ).addClass('js-isInView');
+      $( props.inviewTarget ).addClass( 'js-isInView' );
     } else {
-      $( props.inviewTarget ).removeClass('js-isInView');
+      $( props.inviewTarget ).removeClass( 'js-isInView' );
     }
   } )
   .run()

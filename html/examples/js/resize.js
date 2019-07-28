@@ -7,15 +7,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mdls = {};
 mdls.resize = new _optimizedresize.default();
-mdls.resize.one(function () {
-  console.info('one');
-}, '(min-width: 980px)').turn(function () {
-  console.info('(min-width: 980px)');
-}, '(min-width: 980px)', 'foo').turn(function () {
-  console.info('(max-width: 979px)');
-}, '(max-width: 979px)').on(function () {
-  console.info('(max-width: 374px)');
-  mdls.resize.off('foo');
+mdls.counter = 0;
+mdls.resize.one(function (inst) {
+  document.querySelector('.pl-test_one').textContent = inst.query;
+}, '(min-width: 980px)').turn(function (inst) {
+  document.querySelector('.pl-test_turn').textContent = inst.query;
+}, '(min-width: 980px)', 'foo').turn(function (inst) {
+  document.querySelector('.pl-test_turn').textContent = inst.query;
+}, '(max-width: 979px)').on(function (inst) {
+  document.querySelector('.pl-test_on').textContent = "".concat(inst.query, " == ").concat(mdls.counter++);
 }, '(max-width: 374px)').run();
 
 },{"../../js/_modules/optimizedresize.js":2}],2:[function(require,module,exports){

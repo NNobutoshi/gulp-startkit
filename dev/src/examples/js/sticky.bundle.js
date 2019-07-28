@@ -5,25 +5,25 @@ import ScrollManager from '../../js/_modules/scrollmanager.js';
 
 const
   mdls = {}
-  ,$pointElement = $('.pl-nav')
-  ,$wrapper = $('body')
+  ,$pointElement = $( '.pl-nav' )
+  ,$wrapper = $( 'body' )
   ,className = 'js-pl-nav-isFixed'
 ;
 
 mdls.scrollManager = new ScrollManager();
 mdls.scrollManager
-  .on( ( props, instance ) => {
+  .on( ( props, inst ) => {
     const
       point = $pointElement.offset().top
     ;
-    if ( instance.scTop >= point && props.flag === false ) {
+    if ( inst.scTop >= point && props.flag === false ) {
       $wrapper.addClass( className );
       props.flag = true;
-      instance.offsetTop = '.pl-nav_nav';
-    } else if ( instance.scTop < point && props.flag === true ) {
+      inst.offsetTop = '.pl-nav_nav';
+    } else if ( inst.scTop < point && props.flag === true ) {
       $wrapper.removeClass( className );
       props.flag = false;
-      instance.offsetTop = 0;
+      inst.offsetTop = 0;
     }
     return true;
   } )

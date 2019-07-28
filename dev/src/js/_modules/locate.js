@@ -3,8 +3,8 @@ export default class Locate {
 
   constructor( options ) {
     this.defaultSettings = {
-      name : 'locate',
-      target : '',
+      name       : 'locate',
+      target     : '',
       indexRegex : /index\.[^/]+?$/,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
