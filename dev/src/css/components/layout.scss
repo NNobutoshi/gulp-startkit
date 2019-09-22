@@ -1,10 +1,11 @@
-@charset 'UTF-8';
+@charset "UTF-8";
 
 @import
-'../variables'
-,'../mixins'
-,'../icons'
-,'../mixins_sprite';
+  "../variables"
+  ,"../mixins"
+  ,"../icons"
+  ,"../mixins_sprite"
+;
 
 .page {
   overflow: hidden;

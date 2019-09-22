@@ -1,11 +1,12 @@
-@charset 'UTF-8';
+@charset "UTF-8";
 
 @import
-'variables'
-,'mixins'
-,'icons'
-,'_vendor/normalize'
-,'mixins_sprite';
+  "variables"
+  ,"mixins"
+  ,"icons"
+  ,"_vendor/normalize"
+  ,"mixins_sprite"
+;
 
-@import 'components/layout';
-@import 'components/nav';
+@import "components/layout";
+@import "components/nav";

@@ -12,18 +12,20 @@ let
   ,settings
 ;
 
-const settings_dev = {
-  dist      : '../html',
-  src       : 'src',
-  sourcemap : true,
-}
+const
+  settings_dev = {
+    dist      : '../html',
+    src       : 'src',
+    sourcemap : true,
+  }
 ;
 
-const settings_prod = {
-  dist      : '../dist',
-  src       : 'src',
-  sourcemap : true,
-}
+const
+  settings_prod = {
+    dist      : '../dist',
+    src       : 'src',
+    sourcemap : true,
+  }
 ;
 
 
@@ -61,6 +63,26 @@ const
           indentWidth : 2,
         },
       },
+    },
+    'css_lint': {
+      src       : [
+        settings.src + '/**/*.scss',
+        '!' + settings.src + '/**/_vendor/*.scss',
+        '!' + settings.src + '/**/_templates/*.scss',
+      ],
+      watch     : true,
+      default   : true,
+      options   : {
+        plumber : {
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+        },
+        stylelint: {
+          fix: false,
+          failAfterError: true,
+          reporters: [ { formatter: 'string', console: true } ],
+          debug: true,
+        }
+      }
     },
     'iconfont' : {
       src           : [ settings.src + '/fonts/*.svg' ],
@@ -120,7 +142,7 @@ const
         },
       },
     },
-    'js_eslint' : {
+    'js_lint' : {
       src : [
         ''  + '*.js',
         ''  + 'gulpkit.js/**/*.js',
@@ -133,7 +155,7 @@ const
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
-        eSLint : {
+        eslint : {
           useEslintrc: true,
         },
       },
@@ -228,7 +250,10 @@ const
       uglify    : true,
       sourcemap : false,
     },
-    'js_eslint' : {
+    'css_lint' : {
+      watch: false,
+    },
+    'js_lint' : {
       watch : false,
     },
     'html_pug' : {
