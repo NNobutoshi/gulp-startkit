@@ -3,6 +3,7 @@ const
   ,babelify    = require( 'babelify' )
   ,merge       = require( 'lodash/mergeWith' )
   ,notify      = require( 'gulp-notify' )
+
 ;
 
 const NODE_ENV = process.env.NODE_ENV;
@@ -64,7 +65,7 @@ const
         },
       },
     },
-    'css_lint': {
+    'css_lint' : {
       src       : [
         settings.src + '/**/*.scss',
         '!' + settings.src + '/**/_vendor/*.scss',
@@ -112,6 +113,30 @@ const
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
       },
+    },
+    'img_min' : {
+      src : [
+        settings.src + '/**/*.{png,jpg,svg}'
+      ],
+      watch : true,
+      default : true,
+      options : {
+        plumber : {
+          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+        },
+        imageminMozjpeg : {
+          quality: 90
+        },
+        imageminPngquant : {
+          quality: [ 0.8, 0.9 ],
+        },
+        svgo : {
+          plugins: [
+            { removeViewBox: false },
+            { cleanupIDs: true },
+          ],
+        },
+      }
     },
     'js_bundle' : {
       src       : [ settings.src + '/**/*bundle.js' ],
@@ -245,6 +270,9 @@ const
     'iconfont' : {
       watch    : false,
       tmspFile : '',
+    },
+    'img_min' : {
+      watch : false,
     },
     'js_bundle' : {
       uglify    : true,

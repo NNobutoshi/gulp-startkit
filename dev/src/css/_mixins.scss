@@ -1,25 +1,35 @@
 @charset 'utf-8';
+
 // font size
-@mixin fs($size: 12, $base: 14) {
-  font-size: ($size / $base) * 1rem;
+@mixin fs( $size: 12, $base: 16 ) {
+  font-size: ( $size / $base ) * 1rem;
 }
 
 // line-height
-@mixin lh($size: 14, $height: 18) {
-  line-height: ($height / $size);
+@mixin lh( $size: 14, $height: 18 ) {
+  line-height: ( $height / $size );
 }
 
 // メディアクエリ
-@mixin mq($width: $screen-s, $range: max) {
-  @if $range == max {
-    @media (max-width: $width) {
-      @content;
+@mixin mq( $queries... ) {
+  @each $item in $queries {
+    @if ( index( $queries, $item ) % 2 == 1 ) {
+      @debug $item;
     }
-  } @else {
-    @media (min-width: $width + 1px) {
-      @content;
+    @else {
+
     }
   }
+  @content;
+  // @if $range == max {
+  //   @media ( max-width: $width - 1px ) {
+  //     @content;
+  //   }
+  // } @else {
+  //   @media ( min-width: $width ) {
+  //     @content;
+  //   }
+  // }
 }
 
 // link style
@@ -60,3 +70,7 @@
     text-decoration: $deco-l;
   }
 }
+
+// @mixin columns() {
+
+// }

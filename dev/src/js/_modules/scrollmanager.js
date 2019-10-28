@@ -35,8 +35,8 @@ export default class ScrollManager {
 
   runCallBacksAll() {
     const
-      scTop = $( this.eventRoot ).scrollTop()
-      ,scBottom = scTop + window.innerHeight
+      vwTop = this.eventRoot.pageYOffset
+      ,vwBottom = vwTop + window.innerHeight
     ;
     let
       offsetTop = 0
@@ -55,9 +55,9 @@ export default class ScrollManager {
       offsetBottom = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
     }
 
-    this.isScrollDown = scTop > this.lastSctop;
-    this.scTop = scTop;
-    this.scBottom = scBottom;
+    this.isScrollDown = vwTop > this.lastSctop;
+    this.scTop = vwTop;
+    this.scBottom = vwBottom;
 
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
@@ -71,9 +71,9 @@ export default class ScrollManager {
       ;
       if ( target && target !== null ) {
         rect = target.getBoundingClientRect();
-        targetOffsetTop = rect.top + scTop;
-        targetOffsetBottom = rect.bottom + scTop;
-        if ( targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop ) {
+        targetOffsetTop = rect.top + vwTop;
+        targetOffsetBottom = rect.bottom + vwTop;
+        if ( targetOffsetTop < vwBottom - offsetBottom && targetOffsetBottom > vwTop + offsetTop ) {
           props.inview = true;
         } else {
           props.inview = false;

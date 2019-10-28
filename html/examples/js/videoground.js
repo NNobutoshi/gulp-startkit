@@ -2500,8 +2500,8 @@ function () {
     value: function runCallBacksAll() {
       var _this = this;
 
-      var scTop = (0, _jquery.default)(this.eventRoot).scrollTop(),
-          scBottom = scTop + window.innerHeight;
+      var vwTop = this.eventRoot.pageYOffset,
+          vwBottom = vwTop + window.innerHeight;
       var offsetTop = 0,
           offsetBottom = 0;
 
@@ -2517,9 +2517,9 @@ function () {
         offsetBottom = _getTotalHeight(document.querySelectorAll(this.offsetTop));
       }
 
-      this.isScrollDown = scTop > this.lastSctop;
-      this.scTop = scTop;
-      this.scBottom = scBottom;
+      this.isScrollDown = vwTop > this.lastSctop;
+      this.scTop = vwTop;
+      this.scBottom = vwBottom;
       Object.keys(this.callBacks).forEach(function (key) {
         var props = _this.callBacks[key];
         var target = props.inviewTarget,
@@ -2529,10 +2529,10 @@ function () {
 
         if (target && target !== null) {
           rect = target.getBoundingClientRect();
-          targetOffsetTop = rect.top + scTop;
-          targetOffsetBottom = rect.bottom + scTop;
+          targetOffsetTop = rect.top + vwTop;
+          targetOffsetBottom = rect.bottom + vwTop;
 
-          if (targetOffsetTop < scBottom - offsetBottom && targetOffsetBottom > scTop + offsetTop) {
+          if (targetOffsetTop < vwBottom - offsetBottom && targetOffsetBottom > vwTop + offsetTop) {
             props.inview = true;
           } else {
             props.inview = false;

@@ -10,3 +10,9 @@
 
 @import "components/layout";
 @import "components/nav";
+
+div {
+  @include mq( md, min, lg, max ) {
+    @include fs( 14, 16 );
+  }
+}

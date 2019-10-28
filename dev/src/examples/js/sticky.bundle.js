@@ -7,7 +7,7 @@ const
   mdls = {}
   ,$pointElement = $( '.pl-nav' )
   ,$wrapper = $( 'body' )
-  ,className = 'js-pl-nav-isFixed'
+  ,className = 'js-pl-nav--isFixed'
 ;
 
 mdls.scrollManager = new ScrollManager();
