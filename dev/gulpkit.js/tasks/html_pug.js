@@ -42,7 +42,7 @@ gulp.task( `${taskName}_partial`, () => {
 function _pugRender( file, t ) {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
-    ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/?[.#].+?)-->/mg
+    ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
     ,errorHandler = options.errorHandler
   ;
   let
