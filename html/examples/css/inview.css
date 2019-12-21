@@ -7,8 +7,12 @@
 
 /* stylelint-disable */
 /* stylelint-anable */
-.pl-inviewTarget { opacity: 0; -webkit-transform: translateX(-10%); transform: translateX(-10%); -webkit-transition: opacity 3s ease, -webkit-transform .5s ease; transition: opacity 3s ease, -webkit-transform .5s ease; transition: opacity 3s ease, transform .5s ease; transition: opacity 3s ease, transform .5s ease, -webkit-transform .5s ease; margin-top: 100vh; }
+.pl-inviewTarget { margin-top: 100vh; margin-bottom: 100vh; height: 100vh; background-color: #ddd; }
 
-.pl-inviewTarget.js-isInView { opacity: 1; -webkit-transform: translateX(0); transform: translateX(0); }
+.pl-inviewTarget_inner { height: inherit; }
+
+.js .pl-inviewTarget_inner { position: fixed; top: 0; left: 0; width: 100%; opacity: 0; background: rgba(255, 0, 0, 0.8); -webkit-transform: translate3d(0, -100%, 0); transform: translate3d(0, -100%, 0); }
+
+.js .js-isInView .pl-inviewTarget_inner { -webkit-transition-property: opacity, -webkit-transform; transition-property: opacity, -webkit-transform; transition-property: opacity, transform; transition-property: opacity, transform, -webkit-transform; -webkit-transition-duration: .25s; transition-duration: .25s; -webkit-transition-timing-function: ease-in; transition-timing-function: ease-in; opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
 
 /*# sourceMappingURL=inview.css.map */

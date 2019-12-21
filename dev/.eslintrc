@@ -47,6 +47,12 @@
     "camelcase": [
       "off"
     ],
+    "lines-around-comment": [
+      "error",
+      {
+        "beforeLineComment": false
+      }
+    ],
   },
   "parserOptions": {
     "ecmaVersion": 2017,

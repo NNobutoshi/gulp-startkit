@@ -4,6 +4,7 @@
 
 import $ from 'jquery';
 import offset from './utilities/offset.js';
+import '../_vendor/rAf.js';
 
 const
   $w = $( window )
@@ -14,7 +15,7 @@ export default class Rescroll {
     this.defaultSettings = {
       name      : 'rescroll',
       offsetTop : 0,
-      delay     : 300,
+      delay     : 32,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.offsetTop = this.settings.offsetTop;
@@ -22,11 +23,25 @@ export default class Rescroll {
     this.timeoutId = null;
     this.hash = '';
     this.eventName = `load.${this.id} hashchange.${this.id}`;
+    this.isWorking = false;
+    this.locked = false;
   }
 
   on() {
-    $w.on( this.eventName, () => {
+    $w.on( `scroll.${this.id}`, () => {
       this.run();
+    } );
+    $w.on( `hashchange.${this.id}`, () => {
+      this.isWorking = false;
+    } );
+    $( 'body' ).on( `click.${this.id}`, 'a', ( e ) => {
+      const
+        a = e.currentTarget
+        ,l = location
+      ;
+      if ( a.hash === l.hash && a.host === l.host && a.pathname === l.pathname ) {
+        this.isWorking = false;
+      }
     } );
   }
 
@@ -37,40 +52,30 @@ export default class Rescroll {
       ,that = this
     ;
     let
-      start = null
+      startTime = null
     ;
-    cancelAnimationFrame( this.timeoutId );
-    if ( !hash ) {
+    if ( !hash || this.isWorking === true || this.locked === true ) {
       return this;
     }
-    this.hash = '#' + hash.replace( /^#/, '' );
-    $w.scrollTop( $w.scrollTop() );
-    this.timeoutId = requestAnimationFrame( () => {
-      _timer();
-    } );
-
-    function _timer( timestamp ) {
-      let
-        progress
-      ;
-      if ( !start ) {
-        start = timestamp;
-      }
-      progress = timestamp - start;
-      if ( progress < settings.delay ) {
-        that.timeoutId = requestAnimationFrame( () => {
-          _timer();
-        } );
-      } else {
-        that.scroll();
-      }
-    }
-
+    this.hash = hash.replace( /^#(.*)/, '#$1' );
+    ( function _try() {
+      requestAnimationFrame( ( timeStamp ) => {
+        that.isWorking = true;
+        startTime = ( startTime === null ) ? timeStamp : startTime;
+        if ( timeStamp - startTime < settings.delay ) {
+          _try();
+        } else {
+          window.scrollTo( 0, window.pageYoffset );
+          that.scroll();
+        }
+      } );
+    } )();
+    return this;
   }
 
   scroll( target ) {
     let
-      offsetTop
+      offsetTop = 0
       ,targetElem
     ;
     if ( !target && !this.hash ) {
@@ -85,18 +90,27 @@ export default class Rescroll {
       offsetTop = this.offsetTop;
     } else if ( typeof this.offsetTop === 'string' ) {
       offsetTop = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
+    } else if ( typeof this.offsetTop === 'function' ) {
+      offsetTop = this.offsetTop.call( this, targetElem );
     }
-    scrollTo( 0, offset( targetElem ).top - offsetTop );
+    window.scrollTo( 0, offset( targetElem ).top - offsetTop );
   }
 
+  lock() {
+    this.locked = true;
+  }
+
+  unlock() {
+    this.locked = false;
+  }
 }
 
-function _getTotalHeight( elem ) {
+function _getTotalHeight( elems ) {
   let
-    total = 0
+    botoms = []
   ;
-  Array.prototype.forEach.call( elem, ( self ) => {
-    total = total + $( self ).outerHeight( true );
+  Array.prototype.forEach.call( elems, ( self ) => {
+    botoms.push( self.getBoundingClientRect.bottom );
   } );
-  return total;
+  return Math.max.apply( null, botoms );
 }

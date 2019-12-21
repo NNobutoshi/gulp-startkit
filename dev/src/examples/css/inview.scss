@@ -7,14 +7,30 @@
   ,"../../css/mixins_sprite"
 ;
 
-
 .pl-inviewTarget {
-  opacity: 0;
-  transform: translateX(-10%);
-  transition: opacity 3s ease, transform .5s ease;
   margin-top: 100vh;
-  &.js-isInView {
-    opacity: 1;
-    transform: translateX(0);
+  margin-bottom: 100vh;
+  height: 100vh;
+  background-color: #ddd;
+  @at-root {
+    .pl-inviewTarget_inner {
+      height: inherit;
+      .js & {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        background: rgba( #f00, .8 );
+        transform: translate3d( 0, -100%, 0 );
+      }
+      .js .js-isInView & {
+        transition-property: opacity, transform;
+        transition-duration: .25s;
+        transition-timing-function: ease-in;
+        opacity: 1;
+        transform: translate3d( 0, 0 , 0 );
+      }
+    }
   }
 }

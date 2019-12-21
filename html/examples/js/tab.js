@@ -44,6 +44,8 @@ var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQ
 
 var _offset = _interopRequireDefault(require("./utilities/offset.js"));
 
+require("../_vendor/rAf.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -63,7 +65,7 @@ function () {
     this.defaultSettings = {
       name: 'rescroll',
       offsetTop: 0,
-      delay: 300
+      delay: 32
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
@@ -71,6 +73,8 @@ function () {
     this.timeoutId = null;
     this.hash = '';
     this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
+    this.isWorking = false;
+    this.locked = false;
   }
 
   _createClass(Rescroll, [{
@@ -78,8 +82,19 @@ function () {
     value: function on() {
       var _this = this;
 
-      $w.on(this.eventName, function () {
+      $w.on("scroll.".concat(this.id), function () {
         _this.run();
+      });
+      $w.on("hashchange.".concat(this.id), function () {
+        _this.isWorking = false;
+      });
+      (0, _jquery.default)('body').on("click.".concat(this.id), 'a', function (e) {
+        var a = e.currentTarget,
+            l = location;
+
+        if (a.hash === l.hash && a.host === l.host && a.pathname === l.pathname) {
+          _this.isWorking = false;
+        }
       });
     }
   }, {
@@ -88,41 +103,35 @@ function () {
       var settings = this.settings,
           hash = location.hash,
           that = this;
-      var start = null;
-      cancelAnimationFrame(this.timeoutId);
+      var startTime = null;
 
-      if (!hash) {
+      if (!hash || this.isWorking === true || this.locked === true) {
         return this;
       }
 
-      this.hash = '#' + hash.replace(/^#/, '');
-      $w.scrollTop($w.scrollTop());
-      this.timeoutId = requestAnimationFrame(function () {
-        _timer();
-      });
+      this.hash = hash.replace(/^#(.*)/, '#$1');
 
-      function _timer(timestamp) {
-        var progress;
+      (function _try() {
+        requestAnimationFrame(function (timeStamp) {
+          that.isWorking = true;
+          startTime = startTime === null ? timeStamp : startTime;
 
-        if (!start) {
-          start = timestamp;
-        }
+          if (timeStamp - startTime < settings.delay) {
+            _try();
+          } else {
+            window.scrollTo(0, window.pageYoffset);
+            that.scroll();
+          }
+        });
+      })();
 
-        progress = timestamp - start;
-
-        if (progress < settings.delay) {
-          that.timeoutId = requestAnimationFrame(function () {
-            _timer();
-          });
-        } else {
-          that.scroll();
-        }
-      }
+      return this;
     }
   }, {
     key: "scroll",
     value: function scroll(target) {
-      var offsetTop, targetElem;
+      var offsetTop = 0,
+          targetElem;
 
       if (!target && !this.hash) {
         return this;
@@ -140,9 +149,21 @@ function () {
         offsetTop = this.offsetTop;
       } else if (typeof this.offsetTop === 'string') {
         offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+      } else if (typeof this.offsetTop === 'function') {
+        offsetTop = this.offsetTop.call(this, targetElem);
       }
 
-      scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
+      window.scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
+    }
+  }, {
+    key: "lock",
+    value: function lock() {
+      this.locked = true;
+    }
+  }, {
+    key: "unlock",
+    value: function unlock() {
+      this.locked = false;
     }
   }]);
 
@@ -151,17 +172,17 @@ function () {
 
 exports.default = Rescroll;
 
-function _getTotalHeight(elem) {
-  var total = 0;
-  Array.prototype.forEach.call(elem, function (self) {
-    total = total + (0, _jquery.default)(self).outerHeight(true);
+function _getTotalHeight(elems) {
+  var botoms = [];
+  Array.prototype.forEach.call(elems, function (self) {
+    botoms.push(self.getBoundingClientRect.bottom);
   });
-  return total;
+  return Math.max.apply(null, botoms);
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./utilities/offset.js":6}],4:[function(require,module,exports){
+},{"../_vendor/rAf.js":7,"./utilities/offset.js":6}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -364,6 +385,40 @@ function offset(elem) {
   offset.left = rect.left + scLeft;
   return offset;
 }
+
+},{}],7:[function(require,module,exports){
+"use strict";
+
+/*!
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+
+// MIT license
+*/
+(function () {
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback, element) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = window.setTimeout(function () {
+      callback(currTime + timeToCall);
+    }, timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  };
+  if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+    clearTimeout(id);
+  };
+})();
 
 },{}]},{},[1])
 

@@ -2292,6 +2292,8 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
+require("../_vendor/rAf.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2421,16 +2423,9 @@ function () {
 
       if (!this.isRunning) {
         this.isRunning = true;
-
-        if (requestAnimationFrame) {
-          requestAnimationFrame(function () {
-            _this3.runCallBacksAll();
-          });
-        } else {
-          setTimeout(function () {
-            _this3.runCallBacksAll();
-          }, this.settintgs.delay);
-        }
+        requestAnimationFrame(function () {
+          _this3.runCallBacksAll();
+        });
       }
 
       return this;
@@ -2448,7 +2443,7 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],71:[function(require,module,exports){
+},{"../_vendor/rAf.js":73}],71:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2458,6 +2453,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+
+require("../_vendor/rAf.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2479,20 +2476,23 @@ function () {
       name: 'scrollManager',
       offsetTop: 0,
       offsetBottom: 0,
-      delay: 16,
-      eventRoot: window
+      delay: 32,
+      eventRoot: window,
+      throttle: 0
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.offsetTop = this.settings.offsetTop;
-    this.offsetBottom = this.settings.offsetBottom;
+    this.offsetTop = 0;
+    this.offsetBottom = 0;
     this.callBacks = {};
     this.eventName = "scroll.".concat(this.id);
     this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
     this.lastSctop = 0;
     this.lastScBottom = 0;
-    this.isScrollDown = null;
+    this.scrollDown = null;
+    this.scrollUp = null;
+    this.startTime = null;
   }
 
   _createClass(ScrollManager, [{
@@ -2500,64 +2500,59 @@ function () {
     value: function runCallBacksAll() {
       var _this = this;
 
-      var vwTop = this.eventRoot.pageYOffset,
-          vwBottom = vwTop + window.innerHeight;
-      var offsetTop = 0,
-          offsetBottom = 0;
+      var scTop = this.scTop = this.eventRoot.pageYOffset,
+          scBottom = this.scBottom = scTop + window.innerHeight,
+          offsetTop = this.offsetTop = _getTotalHeight(this.settings.offsetTop),
+          offsetBottom = this.offsetBottom = _getTotalHeight(this.settings.offsetBottom),
+          vwTop = this.vwTop = scTop - offsetTop,
+          vwBottom = this.vwBottom = scBottom - this.offsetBottom,
+          vwHeight = this.vwHeight = window.innerHeight - offsetTop - offsetBottom;
 
-      if (typeof this.offsetTop === 'number') {
-        offsetTop = this.offsetTop;
-      } else if (typeof this.offsetTop === 'string') {
-        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
-      }
-
-      if (typeof this.offsetBottom === 'number') {
-        offsetBottom = this.offsetBottom;
-      } else if (typeof this.offsetBottom === 'string') {
-        offsetBottom = _getTotalHeight(document.querySelectorAll(this.offsetTop));
-      }
-
-      this.isScrollDown = vwTop > this.lastSctop;
-      this.scTop = vwTop;
-      this.scBottom = vwBottom;
       Object.keys(this.callBacks).forEach(function (key) {
-        var props = _this.callBacks[key];
-        var target = props.inviewTarget,
-            rect,
-            targetOffsetTop,
-            targetOffsetBottom;
-
-        if (target && target !== null) {
-          rect = target.getBoundingClientRect();
-          targetOffsetTop = rect.top + vwTop;
-          targetOffsetBottom = rect.bottom + vwTop;
-
-          if (targetOffsetTop < vwBottom - offsetBottom && targetOffsetBottom > vwTop + offsetTop) {
-            props.inview = true;
-          } else {
-            props.inview = false;
-          }
-        }
-
-        return props.callBack.call(_this, props, _this);
+        var entry = _this.callBacks[key],
+            targetElem = entry.targetElem,
+            rect = targetElem.getBoundingClientRect(),
+            range = rect.height + vwHeight,
+            scrollFromRectTop = vwBottom - (vwTop + rect.top),
+            ratio = scrollFromRectTop / range;
+        entry.observed = _jquery.default.extend(entry.observed, {
+          name: entry.name,
+          target: entry.targetElem,
+          range: range,
+          scroll: scrollFromRectTop,
+          ratio: ratio
+        });
+        entry.callBack.call(_this, entry.observed, _this);
       });
       this.isRunning = false;
-      this.lastSctop = scTop;
-      this.lastScBottom = scBottom;
+
+      if (this.scTop > this.lastSctop) {
+        this.scrollDown = true;
+        this.scrollUp = false;
+      } else {
+        this.isScrollDown = false;
+        this.scrollUp = true;
+      }
+
+      this.isRunning = false;
+      this.lastSctop = this.scTop;
+      this.lastScBottom = this.scBottom;
       return this;
     }
   }, {
     key: "add",
-    value: function add(callBack, options) {
-      var defaultSttings = {
+    value: function add(targetElem, callBack, options) {
+      var defaultOptions = {
+        targetElem: targetElem,
         name: _getUniqueName(this.id),
-        flag: false
+        flag: false,
+        ovserved: {}
       },
-          settings = _jquery.default.extend({}, defaultSttings, options);
+          entry = _jquery.default.extend({}, defaultOptions, options);
 
-      settings.callBack = callBack;
+      entry.callBack = callBack;
       this.setUp();
-      this.callBacks[settings.name] = settings;
+      this.callBacks[entry.name] = entry;
       return this;
     }
   }, {
@@ -2568,15 +2563,13 @@ function () {
     }
   }, {
     key: "on",
-    value: function on(callBack, options) {
-      return this.add(callBack, options);
+    value: function on(targetElem, callBack, options) {
+      return this.add(targetElem, callBack, options);
     }
   }, {
-    key: "inview",
-    value: function inview(target, callBack, options) {
-      return this.add(callBack, options || {
-        inviewTarget: target
-      });
+    key: "off",
+    value: function off(name) {
+      return this.remove(name);
     }
   }, {
     key: "setUp",
@@ -2585,32 +2578,47 @@ function () {
 
       if (!this.callBacks.length) {
         (0, _jquery.default)(this.eventRoot).on(this.eventName, function () {
-          _this2.run();
+          _this2.handle();
         });
       }
 
       return this;
     }
   }, {
-    key: "run",
-    value: function run() {
+    key: "handle",
+    value: function handle() {
       var _this3 = this;
+
+      var that = this;
 
       if (!this.isRunning) {
         this.isRunning = true;
 
-        if (requestAnimationFrame) {
+        if (typeof this.settings.throttle === 'number' && this.settings.throttle > 0) {
+          _throttle(this.runCallBacksAll);
+        } else {
           requestAnimationFrame(function () {
             _this3.runCallBacksAll();
           });
-        } else {
-          setTimeout(function () {
-            _this3.runCallBacksAll();
-          }, this.settintgs.delay);
         }
       }
 
       return this;
+
+      function _throttle(func) {
+        requestAnimationFrame(function (timeStamp) {
+          if (that.startTime === null) {
+            that.startTime = timeStamp;
+          }
+
+          if (timeStamp - that.startTime > that.settings.throttle) {
+            that.startTime = null;
+            func.call(that);
+          } else {
+            _throttle(func);
+          }
+        });
+      }
     }
   }]);
 
@@ -2619,11 +2627,19 @@ function () {
 
 exports.default = ScrollManager;
 
-function _getTotalHeight(elem) {
-  var total = 0;
-  Array.prototype.forEach.call(elem, function (self) {
-    total = total + (0, _jquery.default)(self).outerHeight(true);
-  });
+function _getTotalHeight(arg) {
+  var elem,
+      total = 0;
+
+  if (typeof arg === 'number') {
+    total = arg;
+  } else if (arg === 'string') {
+    elem = document.querySelectorAll(arg);
+    Array.prototype.forEach.call(elem, function (self) {
+      total = total + (0, _jquery.default)(self).outerHeight(true);
+    });
+  }
+
   return total;
 }
 
@@ -2633,7 +2649,7 @@ function _getUniqueName(base) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],72:[function(require,module,exports){
+},{"../_vendor/rAf.js":73}],72:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -2870,6 +2886,40 @@ function _createVideo(props) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"core-js/modules/es.promise":67,"regenerator-runtime/runtime":68}]},{},[69])
+},{"core-js/modules/es.promise":67,"regenerator-runtime/runtime":68}],73:[function(require,module,exports){
+"use strict";
+
+/*!
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+
+// MIT license
+*/
+(function () {
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback, element) {
+    var currTime = new Date().getTime();
+    var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+    var id = window.setTimeout(function () {
+      callback(currTime + timeToCall);
+    }, timeToCall);
+    lastTime = currTime + timeToCall;
+    return id;
+  };
+  if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+    clearTimeout(id);
+  };
+})();
+
+},{}]},{},[69])
 
 //# sourceMappingURL=videoground.js.map

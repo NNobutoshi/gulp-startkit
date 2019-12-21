@@ -13,7 +13,9 @@
 
 .pl-localNav_item { padding-right: 10px; }
 
-.pl-section { height: 100vh; }
+.pl-section { min-height: 100vh; }
+
+.pl-section img { width: 100%; }
 
 .pl-section:nth-child(odd) { background-color: #fcc; }
 

@@ -5,6 +5,7 @@
  */
 
 import $ from 'jquery';
+import '../_vendor/rAf.js';
 
 let
   counter = 0
@@ -17,87 +18,82 @@ export default class ScrollManager {
       name         : 'scrollManager',
       offsetTop    : 0,
       offsetBottom : 0,
-      delay        : 16,
+      delay        : 32,
       eventRoot    : window,
+      throttle     : 0,
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.offsetTop = this.settings.offsetTop;
-    this.offsetBottom = this.settings.offsetBottom;
+    this.offsetTop = 0;
+    this.offsetBottom = 0;
     this.callBacks = {};
     this.eventName = `scroll.${this.id}`;
     this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
     this.lastSctop = 0;
     this.lastScBottom = 0;
-    this.isScrollDown = null;
+    this.scrollDown = null;
+    this.scrollUp = null;
+    this.startTime = null;
   }
 
   runCallBacksAll() {
     const
-      vwTop = this.eventRoot.pageYOffset
-      ,vwBottom = vwTop + window.innerHeight
+      scTop         = this.scTop        = this.eventRoot.pageYOffset
+      ,scBottom     = this.scBottom     = scTop + window.innerHeight
+      ,offsetTop    = this.offsetTop    = _getTotalHeight( this.settings.offsetTop )
+      ,offsetBottom = this.offsetBottom = _getTotalHeight( this.settings.offsetBottom )
+      ,vwTop        = this.vwTop        = scTop - offsetTop
+      ,vwBottom     = this.vwBottom     = scBottom - this.offsetBottom
+      ,vwHeight     = this.vwHeight     = window.innerHeight - offsetTop - offsetBottom
     ;
-    let
-      offsetTop = 0
-      ,offsetBottom = 0
-    ;
-
-    if ( typeof this.offsetTop === 'number' ) {
-      offsetTop = this.offsetTop;
-    } else if ( typeof this.offsetTop === 'string' ) {
-      offsetTop = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
-    }
-
-    if ( typeof this.offsetBottom === 'number' ) {
-      offsetBottom = this.offsetBottom;
-    } else if ( typeof this.offsetBottom === 'string' ) {
-      offsetBottom = _getTotalHeight( document.querySelectorAll( this.offsetTop ) );
-    }
-
-    this.isScrollDown = vwTop > this.lastSctop;
-    this.scTop = vwTop;
-    this.scBottom = vwBottom;
-
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
-        props = this.callBacks[ key ]
+        entry              = this.callBacks[ key ]
+        ,targetElem        = entry.targetElem
+        ,rect              = targetElem.getBoundingClientRect()
+        ,range             = rect.height + vwHeight
+        ,scrollFromRectTop = vwBottom - ( vwTop + rect.top )
+        ,ratio             = scrollFromRectTop / range
       ;
-      let
-        target = props.inviewTarget
-        ,rect
-        ,targetOffsetTop
-        ,targetOffsetBottom
-      ;
-      if ( target && target !== null ) {
-        rect = target.getBoundingClientRect();
-        targetOffsetTop = rect.top + vwTop;
-        targetOffsetBottom = rect.bottom + vwTop;
-        if ( targetOffsetTop < vwBottom - offsetBottom && targetOffsetBottom > vwTop + offsetTop ) {
-          props.inview = true;
-        } else {
-          props.inview = false;
-        }
-      }
-      return props.callBack.call( this, props, this );
+      entry.observed = $.extend( entry.observed, {
+        name   : entry.name,
+        target : entry.targetElem,
+        range  : range,
+        scroll : scrollFromRectTop,
+        ratio  : ratio,
+      } );
+      entry.callBack.call( this, entry.observed, this );
     } );
+
     this.isRunning = false;
-    this.lastSctop = scTop;
-    this.lastScBottom = scBottom;
+
+    if ( this.scTop > this.lastSctop ) {
+      this.scrollDown = true;
+      this.scrollUp = false;
+    } else {
+      this.isScrollDown = false;
+      this.scrollUp = true;
+    }
+    this.isRunning = false;
+    this.lastSctop = this.scTop;
+    this.lastScBottom = this.scBottom;
     return this;
   }
 
-  add( callBack, options ) {
+  add( targetElem, callBack, options ) {
     const
-      defaultSttings = {
-        name : _getUniqueName( this.id ),
-        flag : false,
+      defaultOptions = {
+        targetElem : targetElem,
+        name       : _getUniqueName( this.id ),
+        flag       : false,
+        ovserved   : {},
       }
-      ,settings = $.extend( {}, defaultSttings, options )
+      ,entry = $.extend( {}, defaultOptions, options )
     ;
-    settings.callBack = callBack;
+    entry.callBack = callBack;
     this.setUp();
-    this.callBacks[ settings.name ] = settings;
+    this.callBacks[ entry.name ] = entry;
     return this;
   }
 
@@ -106,48 +102,69 @@ export default class ScrollManager {
     return this;
   }
 
-  on( callBack, options ) {
-    return this.add( callBack, options );
+  on( targetElem, callBack, options ) {
+    return this.add( targetElem, callBack, options );
   }
 
-  inview( target, callBack, options ) {
-    return this.add( callBack, options || { inviewTarget : target } );
+  off( name ) {
+    return this.remove( name );
   }
 
   setUp() {
     if ( !this.callBacks.length ) {
       $( this.eventRoot ).on( this.eventName, () => {
-        this.run();
+        this.handle();
       } );
     }
     return this;
   }
 
-  run() {
+  handle() {
+    const
+      that = this
+    ;
     if ( !this.isRunning ) {
       this.isRunning = true;
-      if ( requestAnimationFrame ) {
+      if ( typeof this.settings.throttle === 'number' && this.settings.throttle > 0 ) {
+        _throttle( this.runCallBacksAll );
+      } else {
         requestAnimationFrame( () => {
           this.runCallBacksAll();
         } );
-      } else {
-        setTimeout( () => {
-          this.runCallBacksAll();
-        }, this.settintgs.delay );
       }
     }
     return this;
+
+    function _throttle( func ) {
+      requestAnimationFrame( ( timeStamp ) => {
+        if ( that.startTime === null ) {
+          that.startTime = timeStamp;
+        }
+        if ( timeStamp - that.startTime > that.settings.throttle ) {
+          that.startTime = null;
+          func.call( that );
+        } else {
+          _throttle( func );
+        }
+      } );
+    }
   }
 
 }
 
-function _getTotalHeight( elem ) {
+function _getTotalHeight( arg ) {
   let
-    total = 0
+    elem
+    ,total = 0
   ;
-  Array.prototype.forEach.call( elem, ( self ) => {
-    total = total + $( self ).outerHeight( true );
-  } );
+  if ( typeof arg === 'number' ) {
+    total = arg;
+  } else if ( arg === 'string' ) {
+    elem = document.querySelectorAll( arg );
+    Array.prototype.forEach.call( elem, ( self ) => {
+      total = total + $( self ).outerHeight( true );
+    } );
+  }
   return total;
 }
 

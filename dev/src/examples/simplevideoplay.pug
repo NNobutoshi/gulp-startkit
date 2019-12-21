@@ -1,0 +1,19 @@
+extends /_layout.pug
+
+block vars
+  -
+    page = "/examples/simplevideoplay.html"
+
+block pageBody
+
+append style
+  link(rel="stylesheet", href="/examples/css/simplevideoplay.css")
+
+append script_body
+  script(src="/examples/js/simplevideoplay.js")
+
+block pageBody
+  div.pl-section
+    div.pl-videoPlayer_outer
+      div.pl-videoPlayer
+        video(src="media/movie.mp4", playslinle, controls, poster="./img/poster.jpg").pl-videoPlayer_video

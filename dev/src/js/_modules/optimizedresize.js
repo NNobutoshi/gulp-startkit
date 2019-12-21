@@ -4,6 +4,7 @@
  */
 
 import $ from 'jquery';
+import '../_vendor/rAf.js';
 
 let
   counter = 0
@@ -116,15 +117,9 @@ export default class OptimizedResize {
   run() {
     if ( !this.isRunning ) {
       this.isRunning = true;
-      if ( requestAnimationFrame ) {
-        requestAnimationFrame( () => {
-          this.runCallBacksAll();
-        } );
-      } else {
-        setTimeout( () => {
-          this.runCallBacksAll();
-        }, this.settintgs.delay );
-      }
+      requestAnimationFrame( () => {
+        this.runCallBacksAll();
+      } );
     }
     return this;
   }

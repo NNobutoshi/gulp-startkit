@@ -1,0 +1,32 @@
+@charset "UTF-8";
+@font-face { font-family: "icons"; src: url("../fonts/icons/icons.eot"); src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg"); }
+
+.icon-arrow1_r:before { /* stylelint-disable */ font-family: "icons"; /* stylelint-anable */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-style: normal; font-variant: normal; font-weight: normal; text-decoration: none; text-transform: none; }
+
+.icon-arrow1_r:before { content: ""; }
+
+/* stylelint-disable */
+/* stylelint-anable */
+video { width: 100%; }
+
+.page_head { position: fixed; z-index: 10; background-color: #fff; width: 100%; }
+
+.page_body { margin-top: 200px; }
+
+.pl-videoPlayer_outer { position: relative; }
+
+.js-video_cover { position: absolute; background-repeat: no-repeat; background-size: 100% auto; content: ""; width: 100%; top: 0; right: 0; bottom: 0; left: 0; z-index: 2; }
+
+.js-video_cover::before, .js-video_cover::after { content: ""; position: absolute; top: 50%; left: 50%; z-index: 3; display: none; }
+
+.js-video--canPlay .js-video_cover::before, .js-video--canPlay .js-video_cover::after { display: block; }
+
+.js-video_cover::before { width: 100px; height: 100px; border-radius: 50%; border: solid 2px #fff; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); }
+
+.js-video_cover::after { border-style: solid; border-width: 30px; border-color: transparent transparent transparent #fff; -webkit-transform: translate(-50%, -50%) scale(1, 0.5); transform: translate(-50%, -50%) scale(1, 0.5); margin-left: 18px; }
+
+.js-video--isPlaying .js-video_cover, .js-video--isPaused .js-video_cover { display: none; }
+
+.pl-videoPlayer_video { display: block; width: 100%; position: relative; z-index: 1; }
+
+/*# sourceMappingURL=simplevideoplay.css.map */

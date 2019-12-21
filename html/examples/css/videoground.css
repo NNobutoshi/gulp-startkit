@@ -35,4 +35,6 @@
 
 .pl-section { position: relative; z-index: 1; height: 2000px; background-color: #fff; }
 
+.pl-video { display: block; width: 100%; }
+
 /*# sourceMappingURL=videoground.css.map */

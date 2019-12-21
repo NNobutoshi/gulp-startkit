@@ -16,9 +16,6 @@
     @if ( index( $queries, $item ) % 2 == 1 ) {
       @debug $item;
     }
-    @else {
-
-    }
   }
   @content;
   // @if $range == max {
