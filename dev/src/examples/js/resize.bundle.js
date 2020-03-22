@@ -20,5 +20,8 @@ mdls.resize
   .on( ( inst ) => {
     document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${mdls.counter++}`;
   }, '(max-width: 374px)' )
+  .cross( () => {
+    console.info( 'cross' );
+  }, '(max-width: 1000px)' )
   .run()
 ;

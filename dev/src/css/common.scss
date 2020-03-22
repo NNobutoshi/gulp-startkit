@@ -11,8 +11,24 @@
 @import "components/layout";
 @import "components/nav";
 
-div {
-  @include mq( md, min, lg, max ) {
+.and {
+  @include mq( min-width, md, and, max-width, md ) {
     @include fs( 14, 16 );
   }
 }
+
+.caseOne {
+  @include mq( min-width, md ) {
+    margin-top: 10px;
+  }
+  @include mq( max-width, md ) {
+    margin-top: 20px;
+  }
+}
+
+.caseTwo {
+  @include mq( max-height, 100px ) {
+    margin-top: 0;
+  }
+}
+

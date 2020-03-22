@@ -37,7 +37,11 @@ export default class OptimizedResize {
           query === true && (
             ( props.turn === true && props.lastQuery !== query ) ||
             ( props.one === true ) ||
-            ( !props.one && !props.turn )
+            ( !props.one && !props.turn && !props.cross )
+          ) ||
+          (
+            ( query === true && props.lastQuery === false ) ||
+            ( query === false && props.lastQuery === true )
           )
         ) {
           props.callBack.call( this, props );
@@ -47,7 +51,7 @@ export default class OptimizedResize {
           this.remove( key );
         }
       } else {
-        props.callBack( this, props );
+        props.callBack.call( this, props );
       }
 
     } );
@@ -85,6 +89,7 @@ export default class OptimizedResize {
       query : query,
       one   : false,
       turn  : false,
+      cross : false,
     } );
   }
 
@@ -94,6 +99,7 @@ export default class OptimizedResize {
       query : query,
       one   : true,
       turn  : false,
+      cross : false,
     } );
   }
 
@@ -103,6 +109,17 @@ export default class OptimizedResize {
       query : query,
       one   : false,
       turn  : true,
+      cross : false,
+    } );
+  }
+
+  cross( callBack, query, name ) {
+    return this.add( callBack, {
+      name  : name,
+      query : query,
+      one   : false,
+      turn  : false,
+      cross : true,
     } );
   }
 

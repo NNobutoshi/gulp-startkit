@@ -18,6 +18,7 @@ mdls.toggle.on(
     const
       $target = $( inst.elemTarget )
     ;
+    clearTimeout( inst.timeoutId );
     $target.css( {
       'height' : $target.find( '.pl-list_list' ).outerHeight( true ) + 'px'
     } );
@@ -27,7 +28,7 @@ mdls.toggle.on(
     $( inst.elemTarget ).css( {
       'height' : ''
     } );
-    setTimeout( () => {
+    inst.timeoutId = setTimeout( () => {
       $( inst.elemIndicator ).removeClass( 'js-list--isOpening' );
     },100 );
   }
@@ -35,7 +36,8 @@ mdls.toggle.on(
     const
       $parent = $( inst.elemIndicator )
     ;
-    if ( inst.isOpen === true ) {
+    console.info( 'end' );
+    if ( inst.isChanged === true ) {
       $parent.addClass( 'js-list--isOpen' );
     } else {
       $parent.removeClass( 'js-list--isOpen' );

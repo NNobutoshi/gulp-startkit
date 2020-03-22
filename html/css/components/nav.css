@@ -1,9 +1,26 @@
 @charset "UTF-8";
-@font-face { font-family: "icons"; src: url("../fonts/icons/icons.eot"); src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg"); }
+@font-face {
+  font-family: "icons";
+  src: url("../fonts/icons/icons.eot");
+  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+}
 
-.icon-arrow1_r:before { /* stylelint-disable */ font-family: "icons"; /* stylelint-anable */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-style: normal; font-variant: normal; font-weight: normal; text-decoration: none; text-transform: none; }
+.icon-arrow1_r:before {
+  /* stylelint-disable */
+  font-family: "icons";
+  /* stylelint-anable */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+}
 
-.icon-arrow1_r:before { content: ""; }
+.icon-arrow1_r:before {
+  content: "";
+}
 
 /* stylelint-disable */
 /* stylelint-anable */

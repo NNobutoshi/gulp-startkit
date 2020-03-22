@@ -5,33 +5,20 @@ var _scrollmanager = _interopRequireDefault(require("../../js/_modules/scrollman
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const
-//   mdls = {}
-// ;
-// mdls.scrollManager = new ScrollManager( {
-//   throttle : 0
-// } );
-// mdls.scrollManager
-//   .on( document.querySelector( '.pl-inviewTarget' ), ( ovserved ) => {
-//     console.time( 'scroll' );
-//     if ( ovserved.ratio > 0 && ovserved.ratio <= 1 ) {
-//       ovserved.inView = true;
-//       ovserved.target.classList.add( 'js-isInView' );
-//     } else {
-//       ovserved.target.classList.remove( 'js-isInView' );
-//     }
-//     console.timeEnd( 'scroll' );
-//   } )
-// ;
-var options = {
-  root: window.documentBody,
-  rootMargin: '0px',
-  threshold: 0
-};
-var ovserver = new IntersectionObserver(function (what) {
-  console.info(what);
-}, options);
-ovserver.observe(document.querySelector('.pl-inviewTarget'));
+var mdls = {};
+mdls.scrollManager = new _scrollmanager.default({
+  throttle: 0
+});
+mdls.scrollManager.on(function (ovserved) {
+  if (ovserved.ratio > 0 && ovserved.ratio <= 1) {
+    ovserved.inView = true;
+    ovserved.target.classList.add('js-isInView');
+  } else {
+    ovserved.target.classList.remove('js-isInView');
+  }
+}, document.querySelector('.pl-inviewTarget'), {
+  hookPoint: 0
+});
 
 },{"../../js/_modules/scrollmanager.js":2}],2:[function(require,module,exports){
 (function (global){
@@ -44,9 +31,13 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
+var _offset = _interopRequireDefault(require("./utilities/offset.js"));
+
 require("../_vendor/rAf.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _readOnlyError(name) { throw new Error("\"" + name + "\" is read-only"); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -64,14 +55,17 @@ function () {
 
     this.defaultSettings = {
       name: 'scrollManager',
-      offsetTop: 0,
-      offsetBottom: 0,
+      topOffsetsSelector: '',
+      bottomOffsetsSelector: '',
       delay: 32,
       eventRoot: window,
-      throttle: 0
+      throttle: 0,
+      catchPoint: '100%'
     };
     this.settings = _jquery.default.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
+    this.topOffsetsSelector = this.settings.topOffsetsSelector;
+    this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
     this.offsetTop = 0;
     this.offsetBottom = 0;
     this.callBacks = {};
@@ -91,25 +85,26 @@ function () {
       var _this = this;
 
       var scTop = this.scTop = this.eventRoot.pageYOffset,
-          scBottom = this.scBottom = scTop + window.innerHeight,
-          offsetTop = this.offsetTop = _getTotalHeight(this.settings.offsetTop),
-          offsetBottom = this.offsetBottom = _getTotalHeight(this.settings.offsetBottom),
+          offsetTop = this.offsetTop = _getMaxOffset(this.topOffsetsSelector, 'top'),
+          offsetBottom = this.offsetBottom = _getMaxOffset(this.bottomOffsetsSelector, 'bottom'),
           vwTop = this.vwTop = scTop - offsetTop,
-          vwBottom = this.vwBottom = scBottom - this.offsetBottom,
-          vwHeight = this.vwHeight = window.innerHeight - offsetTop - offsetBottom;
+          vwHeight = this.vwHeight = window.innerHeight - offsetTop - offsetBottom,
+          catchPoint = this.catchPoint = _calcPoint(vwHeight, this.settings.catchPoint);
 
       Object.keys(this.callBacks).forEach(function (key) {
         var entry = _this.callBacks[key],
-            targetElem = entry.targetElem,
+            targetElem = entry.targetElem || document.createElement('div'),
             rect = targetElem.getBoundingClientRect(),
-            range = rect.height + vwHeight,
-            scrollFromRectTop = vwBottom - (vwTop + rect.top),
-            ratio = scrollFromRectTop / range;
+            hookPoint = _calcPoint(rect.height, entry.hookPoint),
+            range = catchPoint + (rect.height - hookPoint),
+            scrollFrom = vwTop + catchPoint - (hookPoint + (0, _offset.default)(targetElem).top),
+            ratio = scrollFrom / range;
+
         entry.observed = _jquery.default.extend(entry.observed, {
           name: entry.name,
           target: entry.targetElem,
           range: range,
-          scroll: scrollFromRectTop,
+          scroll: scrollFrom,
           ratio: ratio
         });
         entry.callBack.call(_this, entry.observed, _this);
@@ -131,7 +126,7 @@ function () {
     }
   }, {
     key: "add",
-    value: function add(targetElem, callBack, options) {
+    value: function add(callBack, targetElem, options) {
       var defaultOptions = {
         targetElem: targetElem,
         name: _getUniqueName(this.id),
@@ -153,8 +148,8 @@ function () {
     }
   }, {
     key: "on",
-    value: function on(targetElem, callBack, options) {
-      return this.add(targetElem, callBack, options);
+    value: function on(callBack, targetElem, options) {
+      return this.add(callBack, targetElem, options);
     }
   }, {
     key: "off",
@@ -217,29 +212,84 @@ function () {
 
 exports.default = ScrollManager;
 
-function _getTotalHeight(arg) {
-  var elem,
-      total = 0;
+function _getMaxOffset(selector, pos) {
+  var ret = 0,
+      arry = [];
+  var elements;
 
-  if (typeof arg === 'number') {
-    total = arg;
-  } else if (arg === 'string') {
-    elem = document.querySelectorAll(arg);
-    Array.prototype.forEach.call(elem, function (self) {
-      total = total + (0, _jquery.default)(self).outerHeight(true);
+  if (typeof selector === 'number') {
+    ret = (_readOnlyError("ret"), selector);
+  } else if (selector && typeof selector === 'string') {
+    elements = document.querySelectorAll(selector);
+    Array.prototype.forEach.call(elements, function (self) {
+      var style;
+
+      if (!self) {
+        return;
+      }
+
+      style = window.getComputedStyle(self);
+
+      if (style.position !== 'fixed') {
+        return;
+      }
+
+      if (pos === 'bottom') {
+        arry.push(self.getBoundingClientRect().top);
+      } else {
+        arry.push(self.getBoundingClientRect().bottom);
+      }
     });
   }
 
-  return total;
+  if (ret.length) {
+    ret = (_readOnlyError("ret"), Math.max.apply(null, ret));
+  }
+
+  return ret;
 }
 
 function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
+function _calcPoint(base, val) {
+  var ret = 0;
+
+  if (typeof val === 'string') {
+    if (val.indexOf('%') > -1) {
+      ret = base * parseInt(val, 10) / 100;
+    } else {
+      ret = parseInt(val, 10);
+    }
+  } else if (typeof val === 'number') {
+    ret = val;
+  }
+
+  return ret;
+}
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../_vendor/rAf.js":3}],3:[function(require,module,exports){
+},{"../_vendor/rAf.js":4,"./utilities/offset.js":3}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = offset;
+
+function offset(elem) {
+  var offset = {},
+      rect = elem.getBoundingClientRect(),
+      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
+      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+  offset.top = rect.top + scTop;
+  offset.left = rect.left + scLeft;
+  return offset;
+}
+
+},{}],4:[function(require,module,exports){
 "use strict";
 
 /*!

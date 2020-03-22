@@ -5,6 +5,7 @@
  */
 
 import $ from 'jquery';
+import offset from './utilities/offset.js';
 import '../_vendor/rAf.js';
 
 let
@@ -15,15 +16,18 @@ export default class ScrollManager {
 
   constructor( options ) {
     this.defaultSettings = {
-      name         : 'scrollManager',
-      offsetTop    : 0,
-      offsetBottom : 0,
-      delay        : 32,
-      eventRoot    : window,
-      throttle     : 0,
+      name          : 'scrollManager',
+      topOffsetsSelector    : '',
+      bottomOffsetsSelector : '',
+      delay         : 32,
+      eventRoot     : window,
+      throttle      : 0,
+      catchPoint    : '100%',
     };
     this.settings = $.extend( {}, this.defaultSettings, options );
     this.id = this.settings.name;
+    this.topOffsetsSelector = this.settings.topOffsetsSelector;
+    this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
     this.offsetTop = 0;
     this.offsetBottom = 0;
     this.callBacks = {};
@@ -40,27 +44,27 @@ export default class ScrollManager {
   runCallBacksAll() {
     const
       scTop         = this.scTop        = this.eventRoot.pageYOffset
-      ,scBottom     = this.scBottom     = scTop + window.innerHeight
-      ,offsetTop    = this.offsetTop    = _getTotalHeight( this.settings.offsetTop )
-      ,offsetBottom = this.offsetBottom = _getTotalHeight( this.settings.offsetBottom )
+      ,offsetTop    = this.offsetTop    = _getMaxOffset( this.topOffsetsSelector, 'top' )
+      ,offsetBottom = this.offsetBottom = _getMaxOffset( this.bottomOffsetsSelector, 'bottom' )
       ,vwTop        = this.vwTop        = scTop - offsetTop
-      ,vwBottom     = this.vwBottom     = scBottom - this.offsetBottom
       ,vwHeight     = this.vwHeight     = window.innerHeight - offsetTop - offsetBottom
+      ,catchPoint   = this.catchPoint   = _calcPoint( vwHeight, this.settings.catchPoint )
     ;
     Object.keys( this.callBacks ).forEach( ( key ) => {
       const
-        entry              = this.callBacks[ key ]
-        ,targetElem        = entry.targetElem
-        ,rect              = targetElem.getBoundingClientRect()
-        ,range             = rect.height + vwHeight
-        ,scrollFromRectTop = vwBottom - ( vwTop + rect.top )
-        ,ratio             = scrollFromRectTop / range
+        entry       = this.callBacks[ key ]
+        ,targetElem = entry.targetElem || document.createElement( 'div' )
+        ,rect       = targetElem.getBoundingClientRect()
+        ,hookPoint  = _calcPoint( rect.height, entry.hookPoint )
+        ,range      = catchPoint + ( rect.height - hookPoint )
+        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + offset( targetElem ).top )
+        ,ratio      = scrollFrom / range
       ;
       entry.observed = $.extend( entry.observed, {
         name   : entry.name,
         target : entry.targetElem,
         range  : range,
-        scroll : scrollFromRectTop,
+        scroll : scrollFrom,
         ratio  : ratio,
       } );
       entry.callBack.call( this, entry.observed, this );
@@ -81,7 +85,7 @@ export default class ScrollManager {
     return this;
   }
 
-  add( targetElem, callBack, options ) {
+  add( callBack, targetElem, options ) {
     const
       defaultOptions = {
         targetElem : targetElem,
@@ -102,8 +106,8 @@ export default class ScrollManager {
     return this;
   }
 
-  on( targetElem, callBack, options ) {
-    return this.add( targetElem, callBack, options );
+  on( callBack, targetElem, options ) {
+    return this.add( callBack, targetElem, options );
   }
 
   off( name ) {
@@ -152,22 +156,59 @@ export default class ScrollManager {
 
 }
 
-function _getTotalHeight( arg ) {
-  let
-    elem
-    ,total = 0
+function _getMaxOffset( selector , pos ) {
+  const
+    ret = 0
+    ,arry = []
   ;
-  if ( typeof arg === 'number' ) {
-    total = arg;
-  } else if ( arg === 'string' ) {
-    elem = document.querySelectorAll( arg );
-    Array.prototype.forEach.call( elem, ( self ) => {
-      total = total + $( self ).outerHeight( true );
+  let
+    elements
+  ;
+  if ( typeof selector === 'number' ) {
+    ret = selector;
+  } else if ( selector && typeof selector === 'string' ) {
+    elements = document.querySelectorAll( selector );
+    Array.prototype.forEach.call( elements, ( self ) => {
+      let
+        style
+      ;
+      if ( !self ) {
+        return;
+      }
+      style = window.getComputedStyle( self );
+      if ( style.position !== 'fixed' ) {
+        return;
+      }
+      if ( pos === 'bottom' ) {
+        arry.push( self.getBoundingClientRect().top );
+      } else {
+        arry.push( self.getBoundingClientRect().bottom );
+      }
     } );
   }
-  return total;
+  if ( ret.length ) {
+    ret = Math.max.apply( null, ret );
+  }
+  return ret;
 }
 
 function _getUniqueName( base ) {
   return base + new Date().getTime() + counter++;
+}
+
+
+function _calcPoint( base, val ) {
+  let
+    ret = 0
+  ;
+  if ( typeof val === 'string' ) {
+    if ( val.indexOf( '%' ) > -1 ) {
+      ret = base * parseInt( val, 10 ) / 100;
+    } else {
+      ret = parseInt( val, 10 );
+    }
+  } else if ( typeof val === 'number' ) {
+    ret = val;
+  }
+  return ret;
 }

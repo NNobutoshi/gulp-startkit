@@ -1,5 +1,8 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function (global){
 'use strict';
+
+var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
 
 var _rescroll = _interopRequireDefault(require("../../js/_modules/rescroll.js"));
 
@@ -10,6 +13,13 @@ mdls.rescroll = new _rescroll.default({
   offsetTop: '.pl-localNav'
 });
 mdls.rescroll.on();
+(0, _jquery.default)('.pl-localNav_testLink').on('click', function (e) {
+  e.preventDefault();
+  e.stopPropagation();
+  window.scrollTo(0, 1000);
+});
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{"../../js/_modules/rescroll.js":2}],2:[function(require,module,exports){
 (function (global){
@@ -53,7 +63,7 @@ function () {
     this.timeoutId = null;
     this.hash = '';
     this.eventName = "load.".concat(this.id, " hashchange.").concat(this.id);
-    this.isWorking = false;
+    this.permit = true;
     this.locked = false;
   }
 
@@ -66,15 +76,10 @@ function () {
         _this.run();
       });
       $w.on("hashchange.".concat(this.id), function () {
-        _this.isWorking = false;
+        _this.permit = true;
       });
-      (0, _jquery.default)('body').on("click.".concat(this.id), 'a', function (e) {
-        var a = e.currentTarget,
-            l = location;
-
-        if (a.hash === l.hash && a.host === l.host && a.pathname === l.pathname) {
-          _this.isWorking = false;
-        }
+      (0, _jquery.default)('html').on("click.".concat(this.id), 'a', function () {
+        _this.permit = true;
       });
     }
   }, {
@@ -85,15 +90,15 @@ function () {
           that = this;
       var startTime = null;
 
-      if (!hash || this.isWorking === true || this.locked === true) {
+      if (!hash || this.permit === false || this.locked === true) {
         return this;
       }
 
       this.hash = hash.replace(/^#(.*)/, '#$1');
 
       (function _try() {
+        that.permit = false;
         requestAnimationFrame(function (timeStamp) {
-          that.isWorking = true;
           startTime = startTime === null ? timeStamp : startTime;
 
           if (timeStamp - startTime < settings.delay) {
@@ -155,7 +160,7 @@ exports.default = Rescroll;
 function _getTotalHeight(elems) {
   var botoms = [];
   Array.prototype.forEach.call(elems, function (self) {
-    botoms.push(self.getBoundingClientRect.bottom);
+    botoms.push(self.getBoundingClientRect().bottom);
   });
   return Math.max.apply(null, botoms);
 }

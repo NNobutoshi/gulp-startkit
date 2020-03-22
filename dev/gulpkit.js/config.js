@@ -58,7 +58,7 @@ const
           plugins : [ autoprefixer() ]
         },
         sass : {
-          outputStyle : 'compact', // nested, compact, compressed, expanded
+          outputStyle : 'expanded', // nested, compact, compressed, expanded
           linefeed    : 'lf', // 'crlf', 'lf'
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,

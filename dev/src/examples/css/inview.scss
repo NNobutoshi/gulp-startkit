@@ -10,27 +10,10 @@
 .pl-inviewTarget {
   margin-top: 100vh;
   margin-bottom: 100vh;
-  height: 100vh;
+  height: 80vh;
   background-color: #ddd;
-  @at-root {
-    .pl-inviewTarget_inner {
-      height: inherit;
-      .js & {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        opacity: 0;
-        background: rgba( #f00, .8 );
-        transform: translate3d( 0, -100%, 0 );
-      }
-      .js .js-isInView & {
-        transition-property: opacity, transform;
-        transition-duration: .25s;
-        transition-timing-function: ease-in;
-        opacity: 1;
-        transform: translate3d( 0, 0 , 0 );
-      }
-    }
+  transition: background .25s ease-in;
+  &.js-isInView {
+    background: #f00;
   }
 }

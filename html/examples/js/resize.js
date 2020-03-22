@@ -16,7 +16,9 @@ mdls.resize.one(function (inst) {
   document.querySelector('.pl-test_turn').textContent = inst.query;
 }, '(max-width: 979px)').on(function (inst) {
   document.querySelector('.pl-test_on').textContent = "".concat(inst.query, " == ").concat(mdls.counter++);
-}, '(max-width: 374px)').run();
+}, '(max-width: 374px)').cross(function () {
+  console.info('cross');
+}, '(max-width: 1000px)').run();
 
 },{"../../js/_modules/optimizedresize.js":2}],2:[function(require,module,exports){
 (function (global){
@@ -70,7 +72,7 @@ function () {
         if (props.query) {
           query = matchMedia(props.query).matches;
 
-          if (query === true && (props.turn === true && props.lastQuery !== query || props.one === true || !props.one && !props.turn)) {
+          if (query === true && (props.turn === true && props.lastQuery !== query || props.one === true || !props.one && !props.turn && !props.cross) || query === true && props.lastQuery === false || query === false && props.lastQuery === true) {
             props.callBack.call(_this, props);
           }
 
@@ -80,7 +82,7 @@ function () {
             _this.remove(key);
           }
         } else {
-          props.callBack(_this, props);
+          props.callBack.call(_this, props);
         }
       });
       this.isRunning = false;
@@ -119,7 +121,8 @@ function () {
         name: name,
         query: query,
         one: false,
-        turn: false
+        turn: false,
+        cross: false
       });
     }
   }, {
@@ -129,7 +132,8 @@ function () {
         name: name,
         query: query,
         one: true,
-        turn: false
+        turn: false,
+        cross: false
       });
     }
   }, {
@@ -139,7 +143,19 @@ function () {
         name: name,
         query: query,
         one: false,
-        turn: true
+        turn: true,
+        cross: false
+      });
+    }
+  }, {
+    key: "cross",
+    value: function cross(callBack, query, name) {
+      return this.add(callBack, {
+        name: name,
+        query: query,
+        one: false,
+        turn: false,
+        cross: true
       });
     }
   }, {

@@ -23,7 +23,7 @@ export default class Rescroll {
     this.timeoutId = null;
     this.hash = '';
     this.eventName = `load.${this.id} hashchange.${this.id}`;
-    this.isWorking = false;
+    this.permit = true;
     this.locked = false;
   }
 
@@ -32,16 +32,10 @@ export default class Rescroll {
       this.run();
     } );
     $w.on( `hashchange.${this.id}`, () => {
-      this.isWorking = false;
+      this.permit = true;
     } );
-    $( 'body' ).on( `click.${this.id}`, 'a', ( e ) => {
-      const
-        a = e.currentTarget
-        ,l = location
-      ;
-      if ( a.hash === l.hash && a.host === l.host && a.pathname === l.pathname ) {
-        this.isWorking = false;
-      }
+    $( 'html' ).on( `click.${this.id}`, 'a', () => {
+      this.permit = true;
     } );
   }
 
@@ -54,13 +48,13 @@ export default class Rescroll {
     let
       startTime = null
     ;
-    if ( !hash || this.isWorking === true || this.locked === true ) {
+    if ( !hash || this.permit === false || this.locked === true ) {
       return this;
     }
     this.hash = hash.replace( /^#(.*)/, '#$1' );
     ( function _try() {
+      that.permit = false;
       requestAnimationFrame( ( timeStamp ) => {
-        that.isWorking = true;
         startTime = ( startTime === null ) ? timeStamp : startTime;
         if ( timeStamp - startTime < settings.delay ) {
           _try();
@@ -110,7 +104,7 @@ function _getTotalHeight( elems ) {
     botoms = []
   ;
   Array.prototype.forEach.call( elems, ( self ) => {
-    botoms.push( self.getBoundingClientRect.bottom );
+    botoms.push( self.getBoundingClientRect().bottom );
   } );
   return Math.max.apply( null, botoms );
 }

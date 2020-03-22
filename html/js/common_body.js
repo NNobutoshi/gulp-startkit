@@ -12,7 +12,7 @@ var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQ
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default(selector) {
-  console.info((0, _jquery.default)(selector).length);
+  return (0, _jquery.default)(selector).length;
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

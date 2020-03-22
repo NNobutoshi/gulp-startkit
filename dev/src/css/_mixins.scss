@@ -9,25 +9,40 @@
 @mixin lh( $size: 14, $height: 18 ) {
   line-height: ( $height / $size );
 }
-
 // メディアクエリ
 @mixin mq( $queries... ) {
+  $query: "";
+  $len: length( $queries );
+  $query: "";
+  $width: "";
+  $index: 0;
+  $retString: "";
   @each $item in $queries {
-    @if ( index( $queries, $item ) % 2 == 1 ) {
-      @debug $item;
+    $index: $index + 1;
+    @if ( $index % 3 == 1 ) {
+      $query: $item;
+      $retString: "#{$retString} ( #{$item}: ";
+    }
+    @if ( $index % 3 == 2 ) {
+      $width: map-get( $break-points, $item );
+      @if ( $width == null ) {
+        $width: $item;
+      }
+      @if ( str-index( $query, "max" ) ) {
+        $width: $width - 1px;
+      }
+      $retString: "#{$retString}" + "#{$width} )";
+    }
+    @if ( $index % 3 == 0 ) {
+      $retString: "#{$retString}" + "#{$item}";
     }
   }
-  @content;
-  // @if $range == max {
-  //   @media ( max-width: $width - 1px ) {
-  //     @content;
-  //   }
-  // } @else {
-  //   @media ( min-width: $width ) {
-  //     @content;
-  //   }
-  // }
+  @media #{$retString} {
+    @content;
+  }
 }
+
+
 
 // link style
 @mixin anc(

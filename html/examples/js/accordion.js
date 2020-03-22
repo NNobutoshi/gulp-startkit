@@ -16,6 +16,7 @@ mdls.toggle = new _transitiontoggle.default({
 });
 mdls.toggle.on(function (e, inst) {
   var $target = (0, _jquery.default)(inst.elemTarget);
+  clearTimeout(inst.timeoutId);
   $target.css({
     'height': $target.find('.pl-list_list').outerHeight(true) + 'px'
   });
@@ -24,13 +25,14 @@ mdls.toggle.on(function (e, inst) {
   (0, _jquery.default)(inst.elemTarget).css({
     'height': ''
   });
-  setTimeout(function () {
+  inst.timeoutId = setTimeout(function () {
     (0, _jquery.default)(inst.elemIndicator).removeClass('js-list--isOpening');
   }, 100);
 }, function (e, inst) {
   var $parent = (0, _jquery.default)(inst.elemIndicator);
+  console.info('end');
 
-  if (inst.isOpen === true) {
+  if (inst.isChanged === true) {
     $parent.addClass('js-list--isOpen');
   } else {
     $parent.removeClass('js-list--isOpen');
@@ -78,19 +80,19 @@ function () {
     this.elemTrigger = null;
     this.elemTarget = null;
     this.eventName = "click.".concat(this.id);
-    this.callBackForOpen = null;
-    this.callBackForClose = null;
-    this.isOpen = false;
+    this.callBackForBefore = null;
+    this.callBackForAfter = null;
+    this.isChanged = false;
   }
 
   _createClass(Toggle, [{
     key: "on",
-    value: function on(callBackForOpen, callBackForClose, callBackForEnd) {
+    value: function on(callBackForBefore, callBackForAfter, callBackForEnd) {
       var _this = this;
 
       var settings = this.settings,
           $root = (0, _jquery.default)(this.eventRoot);
-      var isOpen = false;
+      var isChanged = false;
 
       if (this.elemIndicator === null) {
         return this;
@@ -98,22 +100,22 @@ function () {
 
       this.elemTrigger = this.elemIndicator.querySelector(settings.selectorTrigger);
       this.elemTarget = this.elemIndicator.querySelector(settings.selectorTarget);
-      this.callBackForOpen = callBackForOpen;
-      this.callBackForClose = callBackForClose;
+      this.callBackForBefore = callBackForBefore;
+      this.callBackForAfter = callBackForAfter;
       $root.on(this.eventName, settings.selectorTrigger, function (e) {
-        if (_this.isOpen === true) {
-          _this.handleForClose(e);
+        if (_this.isChanged === true) {
+          _this.handleForAfter(e);
         } else {
-          _this.handleForOpen(e);
+          _this.handleForBefore(e);
         }
       });
       $root.on("transitionend.".concat(this.id), this.target, function (e) {
-        if (isOpen !== _this.isOpen) {
+        if (isChanged !== _this.isChanged) {
           if (typeof callBackForEnd === 'function') {
             callBackForEnd.call(_this, e, _this);
           }
 
-          isOpen = _this.isOpen;
+          isChanged = _this.isChanged;
         }
       });
       return this;
@@ -124,32 +126,32 @@ function () {
       this.elemIndicator = null;
       this.elemTrigger = null;
       this.elemTarget = null;
-      this.callBackForOpen = null;
-      this.callBackForClose = null;
+      this.callBackForBefore = null;
+      this.callBackForAfter = null;
       (0, _jquery.default)(this.eventRoot).off(".".concat(this.id), this.target);
       return this;
     }
   }, {
-    key: "handleForOpen",
-    value: function handleForOpen(e) {
+    key: "handleForBefore",
+    value: function handleForBefore(e) {
       this.open(e);
     }
   }, {
-    key: "handleForClose",
-    value: function handleForClose(e) {
+    key: "handleForAfter",
+    value: function handleForAfter(e) {
       this.close(e);
     }
   }, {
     key: "open",
     value: function open(e) {
-      this.isOpen = true;
-      this.callBackForOpen.call(this, e, this);
+      this.isChanged = true;
+      this.callBackForBefore.call(this, e, this);
     }
   }, {
     key: "close",
     value: function close(e) {
-      this.isOpen = false;
-      this.callBackForClose.call(this, e, this);
+      this.isChanged = false;
+      this.callBackForAfter.call(this, e, this);
     }
   }]);
 
