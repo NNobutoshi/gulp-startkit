@@ -2,12 +2,13 @@
  * rescroll.js
  */
 
-import $ from 'jquery';
+// import $ from 'jquery';
 import offset from './utilities/offset.js';
 import '../_vendor/rAf.js';
 
 const
-  $w = $( window )
+  $ = window.jQuery
+  ,$w = $( window )
 ;
 export default class Rescroll {
 

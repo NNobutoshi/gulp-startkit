@@ -1,54 +1,147 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){
-'use strict';
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/rescroll.bundle.js");
+/******/ })
+/************************************************************************/
+/******/ ({
 
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+/***/ "./src/examples/js/rescroll.bundle.js":
+/*!********************************************!*\
+  !*** ./src/examples/js/rescroll.bundle.js ***!
+  \********************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _rescroll = _interopRequireDefault(require("../../js/_modules/rescroll.js"));
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/rescroll.js */ "./src/js/_modules/rescroll.js");
+ // import $ from 'jquery';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mdls = {};
-mdls.rescroll = new _rescroll.default({
+var mdls = {},
+    $ = window.jQuery;
+mdls.rescroll = new _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__["default"]({
   offsetTop: '.pl-localNav'
 });
 mdls.rescroll.on();
-(0, _jquery.default)('.pl-localNav_testLink').on('click', function (e) {
+$('.pl-localNav_testLink').on('click', function (e) {
   e.preventDefault();
   e.stopPropagation();
   window.scrollTo(0, 1000);
 });
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"../../js/_modules/rescroll.js":2}],2:[function(require,module,exports){
-(function (global){
+/***/ "./src/js/_modules/rescroll.js":
+/*!*************************************!*\
+  !*** ./src/js/_modules/rescroll.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
-
-var _offset = _interopRequireDefault(require("./utilities/offset.js"));
-
-require("../_vendor/rAf.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Rescroll; });
+/* harmony import */ var _utilities_offset_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities/offset.js */ "./src/js/_modules/utilities/offset.js");
+/* harmony import */ var _vendor_rAf_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../_vendor/rAf.js */ "./src/js/_vendor/rAf.js");
+/* harmony import */ var _vendor_rAf_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_vendor_rAf_js__WEBPACK_IMPORTED_MODULE_1__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var $w = (0, _jquery.default)(window);
+/*!
+ * rescroll.js
+ */
+// import $ from 'jquery';
 
-var Rescroll =
-/*#__PURE__*/
-function () {
+
+var $ = window.jQuery,
+    $w = $(window);
+
+var Rescroll = /*#__PURE__*/function () {
   function Rescroll(options) {
     _classCallCheck(this, Rescroll);
 
@@ -57,7 +150,7 @@ function () {
       offsetTop: 0,
       delay: 32
     };
-    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.settings = $.extend({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;
@@ -78,7 +171,7 @@ function () {
       $w.on("hashchange.".concat(this.id), function () {
         _this.permit = true;
       });
-      (0, _jquery.default)('html').on("click.".concat(this.id), 'a', function () {
+      $('html').on("click.".concat(this.id), 'a', function () {
         _this.permit = true;
       });
     }
@@ -138,7 +231,7 @@ function () {
         offsetTop = this.offsetTop.call(this, targetElem);
       }
 
-      window.scrollTo(0, (0, _offset.default)(targetElem).top - offsetTop);
+      window.scrollTo(0, Object(_utilities_offset_js__WEBPACK_IMPORTED_MODULE_0__["default"])(targetElem).top - offsetTop);
     }
   }, {
     key: "lock",
@@ -155,7 +248,7 @@ function () {
   return Rescroll;
 }();
 
-exports.default = Rescroll;
+
 
 function _getTotalHeight(elems) {
   var botoms = [];
@@ -165,16 +258,18 @@ function _getTotalHeight(elems) {
   return Math.max.apply(null, botoms);
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"../_vendor/rAf.js":4,"./utilities/offset.js":3}],3:[function(require,module,exports){
+/***/ "./src/js/_modules/utilities/offset.js":
+/*!*********************************************!*\
+  !*** ./src/js/_modules/utilities/offset.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = offset;
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return offset; });
 function offset(elem) {
   var offset = {},
       rect = elem.getBoundingClientRect(),
@@ -185,8 +280,14 @@ function offset(elem) {
   return offset;
 }
 
-},{}],4:[function(require,module,exports){
-"use strict";
+/***/ }),
+
+/***/ "./src/js/_vendor/rAf.js":
+/*!*******************************!*\
+  !*** ./src/js/_vendor/rAf.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
 /*!
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -219,6 +320,7 @@ function offset(elem) {
   };
 })();
 
-},{}]},{},[1])
+/***/ })
 
+/******/ });
 //# sourceMappingURL=rescroll.js.map

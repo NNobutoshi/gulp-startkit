@@ -1,9 +1,10 @@
 'use strict';
-import $ from 'jquery';
+// import $ from 'jquery';
 import Rescroll from '../../js/_modules/rescroll.js';
 
 const
   mdls = {}
+  ,$ = window.jQuery
 ;
 mdls.rescroll = new Rescroll( {
   offsetTop : '.pl-localNav'

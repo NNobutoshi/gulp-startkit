@@ -1,12 +1,106 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-'use strict';
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/resize.bundle.js");
+/******/ })
+/************************************************************************/
+/******/ ({
 
-var _optimizedresize = _interopRequireDefault(require("../../js/_modules/optimizedresize.js"));
+/***/ "./src/examples/js/resize.bundle.js":
+/*!******************************************!*\
+  !*** ./src/examples/js/resize.bundle.js ***!
+  \******************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/optimizedresize.js */ "./src/js/_modules/optimizedresize.js");
+
+
 
 var mdls = {};
-mdls.resize = new _optimizedresize.default();
+mdls.resize = new _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
 mdls.counter = 0;
 mdls.resize.one(function (inst) {
   document.querySelector('.pl-test_one').textContent = inst.query;
@@ -20,32 +114,36 @@ mdls.resize.one(function (inst) {
   console.info('cross');
 }, '(max-width: 1000px)').run();
 
-},{"../../js/_modules/optimizedresize.js":2}],2:[function(require,module,exports){
-(function (global){
+/***/ }),
+
+/***/ "./src/js/_modules/optimizedresize.js":
+/*!********************************************!*\
+  !*** ./src/js/_modules/optimizedresize.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
-
-require("../_vendor/rAf.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return OptimizedResize; });
+/* harmony import */ var _vendor_rAf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../_vendor/rAf.js */ "./src/js/_vendor/rAf.js");
+/* harmony import */ var _vendor_rAf_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_vendor_rAf_js__WEBPACK_IMPORTED_MODULE_0__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/*!
+ * optimizedresize.js
+ * Inspired by https://developer.mozilla.org
+ */
+// import $ from 'jquery';
+
+var $ = window.jQuery;
 var counter = 0;
 
-var OptimizedResize =
-/*#__PURE__*/
-function () {
+var OptimizedResize = /*#__PURE__*/function () {
   function OptimizedResize(options) {
     _classCallCheck(this, OptimizedResize);
 
@@ -53,7 +151,7 @@ function () {
       name: 'optimizedresize',
       delay: 16
     };
-    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.settings = $.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.callBacks = {};
     this.isRunning = false;
@@ -97,8 +195,7 @@ function () {
         one: false,
         turn: false
       },
-          settings = _jquery.default.extend({}, defaultSettings, options);
-
+          settings = $.extend({}, defaultSettings, options);
       settings.callBack = callBack;
       this.setUp();
       this.callBacks[settings.name] = settings;
@@ -164,7 +261,7 @@ function () {
       var _this2 = this;
 
       if (!Object.keys(this.callBacks).length) {
-        (0, _jquery.default)(window).on(this.eventName, function () {
+        $(window).on(this.eventName, function () {
           _this2.run();
         });
       }
@@ -188,16 +285,20 @@ function () {
   return OptimizedResize;
 }();
 
-exports.default = OptimizedResize;
+
 
 function _getUniqueName(base) {
   return base + new Date().getTime() + counter++;
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"../_vendor/rAf.js":3}],3:[function(require,module,exports){
-"use strict";
+/***/ "./src/js/_vendor/rAf.js":
+/*!*******************************!*\
+  !*** ./src/js/_vendor/rAf.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
 /*!
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -230,6 +331,7 @@ function _getUniqueName(base) {
   };
 })();
 
-},{}]},{},[1])
+/***/ })
 
+/******/ });
 //# sourceMappingURL=resize.js.map

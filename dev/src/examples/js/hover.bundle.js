@@ -1,12 +1,12 @@
 'use strict';
 
-import $ from 'jquery';
+// import $ from 'jquery';
 import Adaptivehover from '../../js/_modules/adaptivehover.js';
 
 const
   mdls = {}
+  ,$ = window.jQuery
 ;
-
 mdls.hover = new Adaptivehover( {
   target : '.pl-hoverTarget'
 } );

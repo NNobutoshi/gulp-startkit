@@ -1,6 +1,8 @@
-import $ from 'jquery';
+// import $ from 'jquery';
 import closest from './utilities/closest.js';
-
+const
+  $ = window.jQuery
+;
 export default class Tab {
 
   constructor( options ) {

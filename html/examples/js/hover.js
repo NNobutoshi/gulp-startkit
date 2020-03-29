@@ -1,53 +1,147 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){
-'use strict';
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/hover.bundle.js");
+/******/ })
+/************************************************************************/
+/******/ ({
 
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+/***/ "./src/examples/js/hover.bundle.js":
+/*!*****************************************!*\
+  !*** ./src/examples/js/hover.bundle.js ***!
+  \*****************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _adaptivehover = _interopRequireDefault(require("../../js/_modules/adaptivehover.js"));
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _js_modules_adaptivehover_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/adaptivehover.js */ "./src/js/_modules/adaptivehover.js");
+ // import $ from 'jquery';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mdls = {};
-mdls.hover = new _adaptivehover.default({
+var mdls = {},
+    $ = window.jQuery;
+mdls.hover = new _js_modules_adaptivehover_js__WEBPACK_IMPORTED_MODULE_0__["default"]({
   target: '.pl-hoverTarget'
 });
 mdls.hover.on(function (e, inst) {
-  (0, _jquery.default)(inst.target).addClass('js-hover');
+  $(inst.target).addClass('js-hover');
 }, function (e, inst) {
-  (0, _jquery.default)(inst.target).removeClass('js-hover');
+  $(inst.target).removeClass('js-hover');
 });
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"../../js/_modules/adaptivehover.js":2}],2:[function(require,module,exports){
-(function (global){
+/***/ "./src/js/_modules/adaptivehover.js":
+/*!******************************************!*\
+  !*** ./src/js/_modules/adaptivehover.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
-
-(typeof window !== "undefined" ? window['Modernizr'] : typeof global !== "undefined" ? global['Modernizr'] : null);
-
-require("./polyfills/matches.js");
-
-var _closest = _interopRequireDefault(require("./utilities/closest.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return AdaptiveHover; });
+/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
+/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utilities_closest_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/closest.js */ "./src/js/_modules/utilities/closest.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var AdaptiveHover =
-/*#__PURE__*/
-function () {
+/*!
+ * adaptivehover.js
+ * Copyright 2019 https://github.com/NNobutoshi/
+ * Licensed under MIT (http://opensource.org/licenses/MIT)
+ */
+// import $ from 'jquery';
+
+
+var $ = window.jQuery;
+
+var AdaptiveHover = /*#__PURE__*/function () {
   function AdaptiveHover(options) {
     _classCallCheck(this, AdaptiveHover);
 
@@ -58,7 +152,7 @@ function () {
       range: 10,
       eventRoot: document.querySelectorAll('body')[0]
     };
-    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.settings = $.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
@@ -79,7 +173,7 @@ function () {
       var _this = this;
 
       var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot);
+          $root = $(this.eventRoot);
       this.callBackForEnter = callBackForEnter;
       this.callBackForLeave = callBackForLeave;
       this.target = document.querySelectorAll(settings.target)[0];
@@ -101,7 +195,7 @@ function () {
   }, {
     key: "off",
     value: function off() {
-      var $root = (0, _jquery.default)(this.eventRoot);
+      var $root = $(this.eventRoot);
       this.clear();
       $root.off(".".concat(this.id));
       return this;
@@ -163,38 +257,47 @@ function () {
   return AdaptiveHover;
 }();
 
-exports.default = AdaptiveHover;
+
 
 function _isOriginPoint(eventObj, pageX, pageY, range) {
   return eventObj.pageX > pageX - range && eventObj.pageX < pageX + range && eventObj.pageY > pageY - range && eventObj.pageY < pageY + range;
 }
 
 function _isRelative(ancestor, elem) {
-  return elem.matches(ancestor) || (0, _closest.default)(elem, ancestor);
+  return elem.matches(ancestor) || Object(_utilities_closest_js__WEBPACK_IMPORTED_MODULE_1__["default"])(elem, ancestor);
 }
 
 function _getEventObj(e) {
   return e.changedTouches ? e.changedTouches[0] : e;
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"./polyfills/matches.js":3,"./utilities/closest.js":4}],3:[function(require,module,exports){
-"use strict";
+/***/ "./src/js/_modules/polyfills/matches.js":
+/*!**********************************************!*\
+  !*** ./src/js/_modules/polyfills/matches.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.msMatchesSelector;
 }
 
-},{}],4:[function(require,module,exports){
+/***/ }),
+
+/***/ "./src/js/_modules/utilities/closest.js":
+/*!**********************************************!*\
+  !*** ./src/js/_modules/utilities/closest.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = closest;
-
-require("../polyfills/matches.js");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return closest; });
+/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
+/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function closest(elem, wrapper) {
   for (var closest = elem; closest; closest = closest.parentElement) {
@@ -206,6 +309,7 @@ function closest(elem, wrapper) {
   return closest;
 }
 
-},{"../polyfills/matches.js":3}]},{},[1])
+/***/ })
 
+/******/ });
 //# sourceMappingURL=hover.js.map

@@ -1,35 +1,127 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){
-'use strict';
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/accordion.bundle.js");
+/******/ })
+/************************************************************************/
+/******/ ({
 
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
+/***/ "./src/examples/js/accordion.bundle.js":
+/*!*********************************************!*\
+  !*** ./src/examples/js/accordion.bundle.js ***!
+  \*********************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _transitiontoggle = _interopRequireDefault(require("../../js/_modules/transitiontoggle.js"));
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _js_modules_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/transitiontoggle.js */ "./src/js/_modules/transitiontoggle.js");
+ // import $ from 'jquery';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mdls = {};
-mdls.toggle = new _transitiontoggle.default({
+var mdls = {},
+    $ = window.jQuery;
+mdls.toggle = new _js_modules_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__["default"]({
   selectorTrigger: '.pl-list_btn',
   selectorTarget: '.pl-list_inner',
   selectorIndicator: '.pl-list'
 });
 mdls.toggle.on(function (e, inst) {
-  var $target = (0, _jquery.default)(inst.elemTarget);
+  var $target = $(inst.elemTarget);
   clearTimeout(inst.timeoutId);
   $target.css({
     'height': $target.find('.pl-list_list').outerHeight(true) + 'px'
   });
-  (0, _jquery.default)(inst.elemIndicator).addClass('js-list--isOpening');
+  $(inst.elemIndicator).addClass('js-list--isOpening');
 }, function (e, inst) {
-  (0, _jquery.default)(inst.elemTarget).css({
+  $(inst.elemTarget).css({
     'height': ''
   });
   inst.timeoutId = setTimeout(function () {
-    (0, _jquery.default)(inst.elemIndicator).removeClass('js-list--isOpening');
+    $(inst.elemIndicator).removeClass('js-list--isOpening');
   }, 100);
 }, function (e, inst) {
-  var $parent = (0, _jquery.default)(inst.elemIndicator);
+  var $parent = $(inst.elemIndicator);
   console.info('end');
 
   if (inst.isChanged === true) {
@@ -39,30 +131,33 @@ mdls.toggle.on(function (e, inst) {
   }
 });
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+/***/ }),
 
-},{"../../js/_modules/transitiontoggle.js":2}],2:[function(require,module,exports){
-(function (global){
+/***/ "./src/js/_modules/transitiontoggle.js":
+/*!*********************************************!*\
+  !*** ./src/js/_modules/transitiontoggle.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _jquery = _interopRequireDefault((typeof window !== "undefined" ? window['jQuery'] : typeof global !== "undefined" ? global['jQuery'] : null));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Toggle; });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Toggle =
-/*#__PURE__*/
-function () {
+/*!
+ * transitiontoggle.js
+ * Copyright 2019 https://github.com/NNobutoshi/
+ * Licensed under MIT (http://opensource.org/licenses/MIT)
+ */
+// import $ from 'jquery';
+var $ = window.jQuery;
+
+var Toggle = /*#__PURE__*/function () {
   function Toggle(options) {
     _classCallCheck(this, Toggle);
 
@@ -73,7 +168,7 @@ function () {
       selectorIndicator: null,
       selectorEventRoot: 'body'
     };
-    this.settings = _jquery.default.extend({}, this.defaultSettings, options);
+    this.settings = $.extend({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.eventRoot = this.settings.selectorEventRoot;
     this.elemIndicator = document.querySelector(this.settings.selectorIndicator);
@@ -91,7 +186,7 @@ function () {
       var _this = this;
 
       var settings = this.settings,
-          $root = (0, _jquery.default)(this.eventRoot);
+          $root = $(this.eventRoot);
       var isChanged = false;
 
       if (this.elemIndicator === null) {
@@ -128,7 +223,7 @@ function () {
       this.elemTarget = null;
       this.callBackForBefore = null;
       this.callBackForAfter = null;
-      (0, _jquery.default)(this.eventRoot).off(".".concat(this.id), this.target);
+      $(this.eventRoot).off(".".concat(this.id), this.target);
       return this;
     }
   }, {
@@ -158,10 +253,9 @@ function () {
   return Toggle;
 }();
 
-exports.default = Toggle;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}]},{},[1])
+/***/ })
 
+/******/ });
 //# sourceMappingURL=accordion.js.map

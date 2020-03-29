@@ -4,10 +4,13 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from 'jquery';
-import 'modernizr';
+// import $ from 'jquery';
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
+
+const
+  $ = window.jQuery
+;
 
 export default class AdaptiveHover {
 

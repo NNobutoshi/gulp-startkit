@@ -1,4 +1,7 @@
-import $ from 'jquery';
+// import $ from 'jquery';
+const
+  $ = window.jQuery
+;
 export default class Locate {
 
   constructor( options ) {

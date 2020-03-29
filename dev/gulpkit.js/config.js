@@ -141,7 +141,7 @@ const
     'js_bundle' : {
       src       : [ settings.src + '/**/*bundle.js' ],
       watch     : false,
-      default   : true,
+      default   : false,
       uglify    : false,
       sourcemap : true,
       options   : {
@@ -166,6 +166,34 @@ const
           },
         },
       },
+    },
+    'js_webpack' : {
+      src       : [ settings.src + '/**/*.bundle.js' ],
+      watch     : true,
+      default   : true,
+      uglify    : false,
+      sourcemap : true,
+      options   : {
+        del : {
+          dist : [ settings.dist + '/**/*.js.map' ],
+          options : {
+            force : true,
+          },
+        },
+        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+        uglify : {
+          output : {
+            comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i,
+          },
+        },
+      },
+    },
+    'js_webpack_partial': {
+      watch   : [
+        settings.src + '/**/_*.js',
+        settings.src + '/**/_*/**/*.js',
+      ],
+      default : false,
     },
     'js_lint' : {
       src : [
@@ -213,12 +241,11 @@ const
       },
     },
     'html_pug_partial' : {
-      src : [
-        ''  + settings.src + '/**/*.pug',
-        '!' + settings.src + '/**/_*.pug',
+      watch   : [
+        settings.src + '/**/_*.pug',
+        settings.src + '/**/_*/**/*.pug',
       ],
-      watch   : [ settings.src + '/**/_*.pug' ],
-      default : true,
+      default : false,
     },
     'sprite' : {
       src      : [ settings.src + '/img/_sprite/*.png' ],
@@ -275,6 +302,10 @@ const
       watch : false,
     },
     'js_bundle' : {
+      uglify    : true,
+      sourcemap : false,
+    },
+    'js_webpack' : {
       uglify    : true,
       sourcemap : false,
     },

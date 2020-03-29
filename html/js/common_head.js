@@ -1,28 +1,182 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/common_head.bundle.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./node_modules/webpack/buildin/amd-define.js":
+/*!***************************************!*\
+  !*** (webpack)/buildin/amd-define.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/amd-options.js":
+/*!****************************************!*\
+  !*** (webpack)/buildin/amd-options.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(this, {}))
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/module.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/module.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+
+/***/ "./src/js/_modules/adjust.js":
+/*!***********************************!*\
+  !*** ./src/js/_modules/adjust.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vendor_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../_vendor/ua-parser.js */ "./src/js/_vendor/ua-parser.js");
+/* harmony import */ var _vendor_ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_vendor_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = _default;
-
-var _uaParser = _interopRequireDefault(require("../_vendor/ua-parser.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var uaParser = new _uaParser.default();
-
-function _default(className) {
+var uaParser = new _vendor_ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default.a();
+/* harmony default export */ __webpack_exports__["default"] = (function (className) {
   var elemHtml = document.querySelector('html'),
       browser = uaParser.getBrowser();
   elemHtml.classList.add(className);
   elemHtml.classList.add(browser.name + browser.major);
-}
+});
 
-},{"../_vendor/ua-parser.js":3}],2:[function(require,module,exports){
-"use strict";
+/***/ }),
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/***/ "./src/js/_vendor/modernizr.js":
+/*!*************************************!*\
+  !*** ./src/js/_vendor/modernizr.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /*!
  * modernizr v3.6.0
@@ -597,10 +751,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   ;
 })(window, document);
 
-},{}],3:[function(require,module,exports){
-"use strict";
+/***/ }),
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/***/ "./src/js/_vendor/ua-parser.js":
+/*!*************************************!*\
+  !*** ./src/js/_vendor/ua-parser.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /*!
  * UAParser.js v0.7.19
@@ -1291,9 +1451,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   //////////
   // check js environment
 
-  if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) !== UNDEF_TYPE) {
+  if (( false ? undefined : _typeof(exports)) !== UNDEF_TYPE) {
     // nodejs env
-    if ((typeof module === "undefined" ? "undefined" : _typeof(module)) !== UNDEF_TYPE && module.exports) {
+    if (( false ? undefined : _typeof(module)) !== UNDEF_TYPE && module.exports) {
       exports = module.exports = UAParser;
     } // TODO: test!!!!!!!!
 
@@ -1330,10 +1490,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     exports.UAParser = UAParser;
   } else {
     // requirejs env (optional)
-    if ((typeof define === "undefined" ? "undefined" : _typeof(define)) === FUNC_TYPE && define.amd) {
-      define(function () {
+    if (( false ? undefined : _typeof(__webpack_require__(/*! !webpack amd define */ "./node_modules/webpack/buildin/amd-define.js"))) === FUNC_TYPE && __webpack_require__(/*! !webpack amd options */ "./node_modules/webpack/buildin/amd-options.js")) {
+      !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
         return UAParser;
-      });
+      }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
     } else if (window) {
       // browser env
       window.UAParser = UAParser;
@@ -1364,19 +1525,30 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }
     };
   }
-})((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window : void 0);
+})((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window : this);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/module.js */ "./node_modules/webpack/buildin/module.js")(module)))
 
-},{}],4:[function(require,module,exports){
-'use strict';
+/***/ }),
 
-var _adjust = _interopRequireDefault(require("./_modules/adjust.js"));
+/***/ "./src/js/common_head.bundle.js":
+/*!**************************************!*\
+  !*** ./src/js/common_head.bundle.js ***!
+  \**************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-require("./_vendor/modernizr.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_adjust_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/adjust.js */ "./src/js/_modules/adjust.js");
+/* harmony import */ var _vendor_modernizr_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_vendor/modernizr.js */ "./src/js/_vendor/modernizr.js");
+/* harmony import */ var _vendor_modernizr_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_vendor_modernizr_js__WEBPACK_IMPORTED_MODULE_1__);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _adjust.default)('js');
 
-},{"./_modules/adjust.js":1,"./_vendor/modernizr.js":2}]},{},[4])
 
+Object(_modules_adjust_js__WEBPACK_IMPORTED_MODULE_0__["default"])('js');
+
+/***/ })
+
+/******/ });
 //# sourceMappingURL=common_head.js.map

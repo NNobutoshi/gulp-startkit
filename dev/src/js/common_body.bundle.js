@@ -1,6 +1,4 @@
 'use strict';
-
-import './_modules/jqueryhub.js';
+import 'jquery_hub';
 import foo from './_modules/foo.js';
-
 foo( 'body' );

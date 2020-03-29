@@ -1,10 +1,11 @@
 'use strict';
 
-import $ from 'jquery';
+// import $ from 'jquery';
 import Locate from '../../js/_modules/locate.js';
 
 const
   mdls = {}
+  ,$ = window.jQuery
   ,TARGETSELECTOR = '.pl-nav_anchor'
 ;
 

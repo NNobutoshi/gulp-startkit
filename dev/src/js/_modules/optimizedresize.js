@@ -3,9 +3,11 @@
  * Inspired by https://developer.mozilla.org
  */
 
-import $ from 'jquery';
+// import $ from 'jquery';
 import '../_vendor/rAf.js';
-
+const
+  $ = window.jQuery
+;
 let
   counter = 0
 ;

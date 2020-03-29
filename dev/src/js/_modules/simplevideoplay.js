@@ -1,7 +1,9 @@
-import $ from 'jquery';
+// import $ from 'jquery';
 
 import closest from '../../js/_modules/utilities/closest.js';
-
+const
+  $ = window.jQuery
+;
 export default class SimpleVideoPlay {
 
   constructor( options ) {

@@ -1,10 +1,11 @@
 'use strict';
 
-import $ from 'jquery';
+// import $ from 'jquery';
 import Toggle from '../../js/_modules/transitiontoggle.js';
 
 const
   mdls = {}
+  ,$ = window.jQuery
 ;
 
 mdls.toggle = new Toggle( {
