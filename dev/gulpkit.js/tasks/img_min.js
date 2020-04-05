@@ -1,5 +1,5 @@
 const
-  gulp       = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,imagemin  = require( 'gulp-imagemin' )
   ,plumber   = require( 'gulp-plumber' )
 
@@ -10,13 +10,13 @@ const
 
   ,config   = require( '../config.js' ).config[ taskName ]
   ,settings = require( '../config.js' ).settings
+  ,watch = require( './watch.js' )
 
   ,options = config.options
 ;
 
-gulp.task( taskName, () => {
-  return gulp
-    .src( config.src, { since: gulp.lastRun( taskName ) } )
+function img_min() {
+  return src( config.src, { since: lastRun( img_min ) } )
     .pipe( plumber( options.plumber ) )
     .pipe( imagemin( [
       imageminMozjpeg( options.imageminMozjpeg ),
@@ -25,8 +25,9 @@ gulp.task( taskName, () => {
       imagemin.optipng(),
       imagemin.gifsicle(),
     ] ) )
-    .pipe( gulp.dest( settings.dist ) )
+    .pipe( dest( settings.dist ) )
   ;
-} )
-;
+}
 
+watch( config, img_min );
+module.exports = img_min;

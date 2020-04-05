@@ -6,7 +6,7 @@ require 'yaml'
 _conf = {
   "ip" => "192.168.33.10",
   "name" => "project_A",
-  "box" => "bento/centos-7.3",
+  "box" => "generic/centos7",
   "guestPort" => 22,
   "hostPort" => 2222,
 }
@@ -87,19 +87,24 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+    sudo yum update
     sudo yum -y install httpd
     sudo yum install -y gcc gcc-c++ make
     cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
     sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%#EnableMMAP off%EnableMMAP off%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
+    sed -i -e "s%SELINUX=enforcing%SELINUX=disabled%g" /etc/selinux/config
     ln -s /home/vagrant/www/dev/package.json /home/vagrant
     ln -s /home/vagrant/www/dev/package-lock.json /home/vagrant
     ln -s /home/vagrant/www/dev/npm-shrinkwrap.json /home/vagrant
+    curl -sL https://rpm.nodesource.com/setup_13.x | sudo bash -
+    sudo yum install -y nodejs-13.12.0
+    setenforce 0
+    firewall-cmd --permanent --add-service=http
+    firewall-cmd --reload
     systemctl enable httpd.service
     systemctl restart httpd.service
-    curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-    sudo yum install -y nodejs-10.7.0
     cd /home/vagrant
     npm install -g gulp
     npm install -g cross-env

@@ -1,5 +1,5 @@
 const
-  gulp     = require( 'gulp' )
+  { src, lastRun }     = require( 'gulp' )
   ,webpack = require( 'webpack' )
   ,tap       = require( 'gulp-tap' )
   ,path = require( 'path' )
@@ -10,28 +10,26 @@ const
 
   ,config   = require( '../config.js' ).config[ taskName ]
   ,settings = require( '../config.js' ).settings
+  ,watch = require( './watch.js' )
 
 ;
-let
-  timeoutId = null
-;
-gulp.task( taskName, ( cb ) => {
-  gulp.src( config.src, { since: gulp.lastRun( taskName ) } )
+
+function js_webpack() {
+  return src( config.src, { since: lastRun( js_webpack ) } )
     .pipe( plumber() )
-    .pipe( tap( _pack( cb ) ) )
+    .pipe( tap( _bundle() ) )
   ;
-} )
+}
 ;
 
-gulp.task( `${taskName}_partial`, ( cb ) => {
-  gulp.src( config.src  )
+function js_webpack_partial() {
+  return src( config.src  )
     .pipe( plumber() )
-    .pipe( tap( _pack( cb ) ) )
+    .pipe( tap( _bundle() ) )
   ;
-} )
-;
+}
 
-function _pack( cb ) {
+function _bundle() {
   return function( file ) {
     const
       webpackconfig = require( '../webpack_config.js' )
@@ -41,13 +39,15 @@ function _pack( cb ) {
     webpackconfig.output.filename = relPath.replace( /\.bundle\.js$/, '.js' );
     webpackconfig.output.path = path.resolve( process.cwd(), settings.dist );
     webpackconfig.mode = process.env.NODE_ENV;
-    clearTimeout( timeoutId );
     webpack( webpackconfig ).run( () => {
-      clearTimeout( timeoutId );
       console.info( 'webpack : ' + file.path );
-      timeoutId = setTimeout( () => {
-        cb();
-      }, 600 );
     } );
   };
 }
+
+
+watch( config, js_webpack );
+watch( require( '../config.js' ).config[ taskName + '_partial' ], js_webpack_partial );
+
+module.exports.js_webpack = js_webpack;
+module.exports.js_webpack_partial = js_webpack_partial;

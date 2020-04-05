@@ -1,5 +1,5 @@
 const
-  gulp = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,tap = require( 'gulp-tap' )
 
   ,beautifyHtml = require( 'js-beautify' ).html
@@ -9,35 +9,24 @@ const
 
   ,config   = require( '../config.js' ).config[ taskName ]
   ,settings = require( '../config.js' ).settings
+  ,watch = require( './watch.js' )
 
   ,options = config.options
 ;
 
-gulp.task( taskName, () => {
-  let
-    stream
-  ;
-  stream = gulp
-    .src( config.src, { since: gulp.lastRun( taskName ) } )
+function html_pug() {
+  return src( config.src, { since: lastRun( html_pug ) } )
     .pipe( tap( _pugRender ) )
-    .pipe( gulp.dest( settings.dist ) )
+    .pipe( dest( settings.dist ) )
   ;
-  return stream;
-} )
-;
+}
 
-gulp.task( `${taskName}_partial`, () => {
-  let
-    stream
-  ;
-  stream = gulp
-    .src( config.src )
+function html_pug_partial() {
+  return src( config.src )
     .pipe( tap( _pugRender ) )
-    .pipe( gulp.dest( settings.dist ) )
+    .pipe( dest( settings.dist ) )
   ;
-  return stream;
-} )
-;
+}
 
 function _pugRender( file, t ) {
   const
@@ -107,3 +96,9 @@ function _pugRender( file, t ) {
   }
 
 }
+
+watch( config, html_pug );
+watch( require( '../config.js' ).config[ taskName + '_partial' ], html_pug_partial );
+
+module.exports.html_pug = html_pug;
+module.exports.html_pug_partial = html_pug_partial;

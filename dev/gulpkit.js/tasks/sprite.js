@@ -1,34 +1,37 @@
 const
-  gulp     = require( 'gulp' )
+  { src, dest }     = require( 'gulp' )
   ,plumber = require( 'gulp-plumber' )
-  ,sprite  = require( 'gulp.spritesmith' )
+  ,spriteSmith  = require( 'gulp.spritesmith' )
 
   ,mergeStream = require( 'merge-stream' )
 
   ,config   = require( '../config.js' ).config.sprite
+  ,watch = require( './watch.js' )
 
   ,options = config.options
 ;
 
-gulp.task( 'sprite', () => {
+function sprite() {
   let
     spriteData
     ,imgStream
     ,cSSStream
   ;
-  spriteData = gulp
-    .src( config.src )
+  spriteData = src( config.src )
     .pipe( plumber() )
-    .pipe( sprite( options.sprite ) )
+    .pipe( spriteSmith( options.sprite ) )
   ;
   imgStream = spriteData
     .img
-    .pipe( gulp.dest( config.imgDist ) )
+    .pipe( dest( config.imgDist ) )
   ;
   cSSStream = spriteData
     .css
-    .pipe( gulp.dest( config.scssDist ) )
+    .pipe( dest( config.scssDist ) )
   ;
   return mergeStream( imgStream, cSSStream );
-} )
-;
+
+}
+
+watch( config, sprite );
+module.exports = sprite;

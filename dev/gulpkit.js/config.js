@@ -1,9 +1,6 @@
 const
-  autoprefixer = require( 'autoprefixer' )
-  ,babelify    = require( 'babelify' )
-  ,merge       = require( 'lodash/mergeWith' )
-  ,notify      = require( 'gulp-notify' )
-
+  merge   = require( 'lodash/mergeWith' )
+  ,notify = require( 'gulp-notify' )
 ;
 
 const NODE_ENV = process.env.NODE_ENV;
@@ -25,10 +22,9 @@ const
   settings_prod = {
     dist      : '../dist',
     src       : 'src',
-    sourcemap : true,
+    sourcemap : false,
   }
 ;
-
 
 if ( NODE_ENV === 'production' ) {
   settings = merge( {}, settings_dev, settings_prod );
@@ -55,7 +51,7 @@ const
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         postcss : {
-          plugins : [ autoprefixer() ]
+          plugins : [ require( 'autoprefixer' )() ]
         },
         sass : {
           outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -85,7 +81,7 @@ const
         }
       }
     },
-    'iconfont' : {
+    'icon_font' : {
       src           : [ settings.src + '/fonts/*.svg' ],
       watch         : true,
       default       : true,
@@ -155,7 +151,7 @@ const
         browserify : {
           cache        : {},
           packageCache : {},
-          transform    : [ babelify ],
+          transform    : [ require( 'babelify' ) ],
         },
         watchify : {
           poll: true,
@@ -294,7 +290,7 @@ const
         },
       }
     },
-    'iconfont' : {
+    'icon_font' : {
       watch    : false,
       tmspFile : '',
     },
@@ -306,7 +302,9 @@ const
       sourcemap : false,
     },
     'js_webpack' : {
-      uglify    : true,
+      sourcemap : false,
+    },
+    'js_webpack_partial' : {
       sourcemap : false,
     },
     'css_lint' : {
@@ -318,7 +316,7 @@ const
     'html_pug' : {
       watch : false,
     },
-    'html_pug_children' : {
+    'html_pug_partial' : {
       watch : false,
     },
     'sprite' : {

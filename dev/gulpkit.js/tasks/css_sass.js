@@ -1,5 +1,5 @@
 const
-  gulp       = require( 'gulp' )
+  { src, dest, series } = require( 'gulp' )
   ,gulpIf    = require( 'gulp-if' )
   ,plumber   = require( 'gulp-plumber' )
   ,postcss   = require( 'gulp-postcss' )
@@ -13,16 +13,15 @@ const
 
   ,config   = require( '../config.js' ).config[ taskName ]
   ,settings = require( '../config.js' ).settings
-
+  ,watch = require( './watch.js' )
   ,options = config.options
 ;
 
-gulp.task( taskName, gulp.series( _css_clean, () => {
+function css_sass() {
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
-  return gulp
-    .src( config.src )
+  return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpIf(
       config.sourcemap
@@ -34,15 +33,17 @@ gulp.task( taskName, gulp.series( _css_clean, () => {
       config.sourcemap
       ,sourcemap.write( './' )
     ) )
-    .pipe( gulp.dest( settings.dist ) )
+    .pipe( dest( settings.dist ) )
   ;
-} ) )
-;
+}
 
-function _css_clean( done ) {
+function css_clean( done ) {
   if ( !config.sourcemap ) {
     return del( options.del.dist, options.del.options );
   } else {
     done();
   }
 }
+
+watch( config, series( css_clean , css_sass ) );
+module.exports = series( css_clean , css_sass );

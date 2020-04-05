@@ -1,37 +1,22 @@
 const
-  gulp = require( 'gulp' )
-
-  ,fs = require( 'fs' )
-
+  { watch } = require( 'gulp' )
   ,taskName = 'watch'
 
   ,config = require( '../config.js' ).config
-
   ,options = config[ taskName ].options
 ;
 
-gulp.task( taskName, gulp.series( _callWatchTasks, _timeStamp ) );
-
-function _callWatchTasks( done ) {
-  Object
-    .keys( config )
-    .forEach( function( key ) {
-      var watch = config[ key ].watch;
-      if ( Array.isArray( watch ) ) {
-        gulp.watch( watch, options.watch, gulp.series( key ) );
-      } else if ( watch === true ) {
-        gulp.watch( config[ key ].src, options.watch, gulp.series( key ) );
-      }
-    } )
+module.exports = function( conf, func ) {
+  let
+    targets
   ;
-  done();
-}
-
-function _timeStamp( done ) {
-  fs.writeFileSync( config[ taskName ].tmspFile, new Date().getTime(), 'utf-8', function( error ) {
-    if ( error ) {
-      config.watch.errorHandler( error );
-    }
-  } );
-  done();
-}
+  if ( Array.isArray( conf.watch ) ) {
+    targets = conf.watch;
+  } else if ( conf.watch === true ) {
+    targets = conf.src;
+  }
+  if ( targets ) {
+    watch( targets, options, func );
+  }
+  return false;
+};
