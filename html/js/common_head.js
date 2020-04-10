@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/common_head.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/common_head.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1530,10 +1530,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 /***/ }),
 
-/***/ "./src/js/common_head.bundle.js":
-/*!**************************************!*\
-  !*** ./src/js/common_head.bundle.js ***!
-  \**************************************/
+/***/ "./src/js/common_head.entry.js":
+/*!*************************************!*\
+  !*** ./src/js/common_head.entry.js ***!
+  \*************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

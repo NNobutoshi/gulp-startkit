@@ -5,44 +5,31 @@ const
 
 const NODE_ENV = process.env.NODE_ENV;
 
-let
-  config
-  ,settings
-;
-
 const
-  settings_dev = {
+  DIR_DEV = {
     dist      : '../html',
     src       : 'src',
-    sourcemap : true,
   }
-;
-
-const
-  settings_prod = {
+  ,DIR_PROD = {
     dist      : '../dist',
     src       : 'src',
-    sourcemap : false,
   }
+  ,ENABLE_SOURCEMAP_DEV = true
+  ,ENABLE_SOURCEMAP_PROD = false
 ;
-
-if ( NODE_ENV === 'production' ) {
-  settings = merge( {}, settings_dev, settings_prod );
-} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
-  settings = settings_dev;
-}
 
 const
   config_dev = {
     'css_sass' : {
-      src       : [ settings.src + '/**/*.scss' ],
+      src       : [ DIR_DEV.src + '/**/*.scss' ],
+      dist      : DIR_DEV.dist,
       watch     : true,
       default   : true,
       cssMqpack : true,
-      sourcemap : true,
+      sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
         del : {
-          dist : [ settings.dist + '/**/*.css.map' ],
+          dist : [ DIR_DEV.dist + '/**/*.css.map' ],
           options : {
             force : true,
           },
@@ -63,10 +50,11 @@ const
     },
     'css_lint' : {
       src       : [
-        settings.src + '/**/*.scss',
-        '!' + settings.src + '/**/_vendor/*.scss',
-        '!' + settings.src + '/**/_templates/*.scss',
+        DIR_DEV.src + '/**/*.scss',
+        '!' + DIR_DEV.src + '/**/_vendor/*.scss',
+        '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
+      dist      : DIR_DEV.dist,
       watch     : true,
       default   : true,
       options   : {
@@ -82,14 +70,15 @@ const
       }
     },
     'icon_font' : {
-      src           : [ settings.src + '/fonts/*.svg' ],
+      src           : [ DIR_DEV.src + '/fonts/*.svg' ],
+      dist          : DIR_DEV.dist,
       watch         : true,
       default       : true,
       tmspFile      : './gulpkit.js/tasks/.timestamp',
-      fontsDist     : settings.src + '/fonts',
-      fontsCopyFrom : settings.src + '/fonts/*',
-      fontsCopyTo   : settings.dist + '/fonts/icons',
-      options : {
+      fontsDist     : DIR_DEV.src + '/fonts',
+      fontsCopyFrom : DIR_DEV.src + '/fonts/*',
+      fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
+      options       : {
         iconfont : {
           fontName       : 'icons',
           prependUnicode : true,
@@ -100,7 +89,7 @@ const
         },
         iconfontCss : {
           fontName   : 'icons',
-          path       : settings.src + '/_templates/_icons.scss',
+          path       : DIR_DEV.src + '/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/icons/',
           firstGlyph : 0xF001,
@@ -111,10 +100,9 @@ const
       },
     },
     'img_min' : {
-      src : [
-        settings.src + '/**/*.{png,jpg,svg}'
-      ],
-      watch : true,
+      src     : [ DIR_DEV.src + '/**/*.{png,jpg,svg}' ],
+      dist    : DIR_DEV.dist,
+      watch   : true,
       default : true,
       options : {
         plumber : {
@@ -134,44 +122,16 @@ const
         },
       }
     },
-    'js_bundle' : {
-      src       : [ settings.src + '/**/*bundle.js' ],
-      watch     : false,
-      default   : false,
-      uglify    : false,
-      sourcemap : true,
-      options   : {
-        del : {
-          dist : [ settings.dist + '/**/*.js.map' ],
-          options : {
-            force : true,
-          },
-        },
-        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
-        browserify : {
-          cache        : {},
-          packageCache : {},
-          transform    : [ require( 'babelify' ) ],
-        },
-        watchify : {
-          poll: true,
-        },
-        uglify : {
-          output : {
-            comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i,
-          },
-        },
-      },
-    },
     'js_webpack' : {
-      src       : [ settings.src + '/**/*.bundle.js' ],
+      src       : [ DIR_DEV.src + '/**/*.entry.js' ],
+      dist      : DIR_DEV.dist,
       watch     : true,
       default   : true,
       uglify    : false,
-      sourcemap : true,
+      sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
         del : {
-          dist : [ settings.dist + '/**/*.js.map' ],
+          dist : [ DIR_DEV.dist + '/**/*.js.map' ],
           options : {
             force : true,
           },
@@ -186,8 +146,8 @@ const
     },
     'js_webpack_partial': {
       watch   : [
-        settings.src + '/**/_*.js',
-        settings.src + '/**/_*/**/*.js',
+        DIR_DEV.src + '/**/_*.js',
+        DIR_DEV.src + '/**/_*/**/*.js',
       ],
       default : false,
     },
@@ -195,9 +155,10 @@ const
       src : [
         ''  + '*.js',
         ''  + 'gulpkit.js/**/*.js',
-        ''  + settings.src + '/**/*.js',
-        '!' + settings.src + '/**/_vendor/*.js',
+        ''  + DIR_DEV.src + '/**/*.js',
+        '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
+      dist    : DIR_DEV.dist,
       watch   : true,
       default : true,
       options : {
@@ -211,10 +172,11 @@ const
     },
     'html_pug' : {
       src : [
-        ''  + settings.src + '/**/*.pug',
-        '!' + settings.src + '/**/_*.pug',
-        '!' + settings.src + '/**/_*/**/*.pug',
+        ''  + DIR_DEV.src + '/**/*.pug',
+        '!' + DIR_DEV.src + '/**/_*.pug',
+        '!' + DIR_DEV.src + '/**/_*/**/*.pug',
       ],
+      dist    : DIR_DEV.dist,
       watch   : true,
       default : true,
       options : {
@@ -232,24 +194,25 @@ const
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         pug : {
           pretty  : true,
-          basedir : settings.src,
+          basedir : DIR_DEV.src,
         },
       },
     },
     'html_pug_partial' : {
       watch   : [
-        settings.src + '/**/_*.pug',
-        settings.src + '/**/_*/**/*.pug',
+        DIR_DEV.src + '/**/_*.pug',
+        DIR_DEV.src + '/**/_*/**/*.pug',
       ],
       default : false,
     },
     'sprite' : {
-      src      : [ settings.src + '/img/_sprite/*.png' ],
+      src      : [ DIR_DEV.src + '/img/_sprite/*.png' ],
+      dist     : DIR_DEV.dist,
       watch    : true,
       default  : true,
-      imgDist  : settings.dist + '/img',
-      scssDist : settings.src + '/css',
-      options : {
+      imgDist  : DIR_DEV.dist + '/img',
+      scssDist : DIR_DEV.src + '/css',
+      options  : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
@@ -259,7 +222,7 @@ const
           imgPath     : '../img/common_sprite.png',
           cssFormat   : 'scss',
           padding     : 10,
-          cssTemplate : settings.src + '/_templates/scss.template.handlebars',
+          cssTemplate : DIR_DEV.src + '/_templates/scss.template.handlebars',
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
@@ -282,8 +245,9 @@ const
 const
   config_prod = {
     'css_sass' : {
+      dist      : DIR_PROD.dist,
       watch     : false,
-      sourcemap : false,
+      sourcemap : false && ENABLE_SOURCEMAP_PROD,
       options : {
         sass : {
           outputStyle : 'compressed',
@@ -291,51 +255,49 @@ const
       }
     },
     'icon_font' : {
+      dist     : DIR_PROD.dist,
       watch    : false,
       tmspFile : '',
     },
     'img_min' : {
+      dist  : DIR_PROD.dist,
       watch : false,
     },
-    'js_bundle' : {
-      uglify    : true,
-      sourcemap : false,
-    },
     'js_webpack' : {
-      sourcemap : false,
+      dist      : DIR_PROD.dist,
+      sourcemap : false && ENABLE_SOURCEMAP_PROD,
     },
     'js_webpack_partial' : {
-      sourcemap : false,
+      sourcemap : false && ENABLE_SOURCEMAP_PROD,
     },
     'css_lint' : {
-      watch: false,
+      dist  : DIR_PROD.dist,
+      watch : false,
     },
     'js_lint' : {
+      dist  : DIR_PROD.dist,
       watch : false,
     },
     'html_pug' : {
+      dist  : DIR_PROD.dist,
       watch : false,
     },
     'html_pug_partial' : {
       watch : false,
     },
     'sprite' : {
+      dist  : DIR_PROD.dist,
       watch : false,
     },
     'watch' : {
+      dist    : DIR_PROD.dist,
       default : false,
     },
   }
 ;
 
 if ( NODE_ENV === 'production' ) {
-  config = merge( {}, config_dev, config_prod );
+  module.exports = merge( {}, config_dev, config_prod );
 } else if ( !NODE_ENV || NODE_ENV === 'development' ) {
-  config = config_dev;
+  module.exports = config_dev;
 }
-
-module.exports = {
-  settings : settings,
-  config  : config,
-}
-;

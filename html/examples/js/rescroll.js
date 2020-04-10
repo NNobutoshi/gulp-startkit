@@ -81,15 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/rescroll.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/rescroll.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/examples/js/rescroll.bundle.js":
-/*!********************************************!*\
-  !*** ./src/examples/js/rescroll.bundle.js ***!
-  \********************************************/
+/***/ "./src/examples/js/rescroll.entry.js":
+/*!*******************************************!*\
+  !*** ./src/examples/js/rescroll.entry.js ***!
+  \*******************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

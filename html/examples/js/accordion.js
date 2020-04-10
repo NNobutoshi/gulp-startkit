@@ -81,15 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/accordion.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/accordion.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/examples/js/accordion.bundle.js":
-/*!*********************************************!*\
-  !*** ./src/examples/js/accordion.bundle.js ***!
-  \*********************************************/
+/***/ "./src/examples/js/accordion.entry.js":
+/*!********************************************!*\
+  !*** ./src/examples/js/accordion.entry.js ***!
+  \********************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

@@ -3,15 +3,14 @@ const
   ,iconfont    = require( 'gulp-iconfont' )
   ,iconfontCss = require( 'gulp-iconfont-css' )
   ,plumber     = require( 'gulp-plumber' )
-
-  ,fs = require( 'fs' )
-
-  ,taskName = 'icon_font'
-
-  ,config   = require( '../config.js' ).config[ taskName ]
+  ,fs          = require( 'fs' )
+;
+const
+  config = require( '../config.js' ).icon_font
   ,watch = require( './watch.js' )
-
-  ,options = config.options
+;
+const
+  options = config.options
 ;
 
 function icon_font( done ) {

@@ -1,26 +1,21 @@
 const
   { src, lastRun }     = require( 'gulp' )
   ,webpack = require( 'webpack' )
-  ,tap       = require( 'gulp-tap' )
-  ,path = require( 'path' )
-  ,plumber     = require( 'gulp-plumber' )
+  ,tap     = require( 'gulp-tap' )
+  ,path    = require( 'path' )
+  ,plumber = require( 'gulp-plumber' )
 ;
 const
-  taskName = 'js_webpack'
-
-  ,config   = require( '../config.js' ).config[ taskName ]
-  ,settings = require( '../config.js' ).settings
+  config = require( '../config.js' ).js_webpack
   ,watch = require( './watch.js' )
-
 ;
 
-function js_webpack() {
+async function js_webpack() {
   return src( config.src, { since: lastRun( js_webpack ) } )
     .pipe( plumber() )
-    .pipe( tap( _bundle() ) )
+    .pipe( tap( await _bundle() ) )
   ;
 }
-;
 
 function js_webpack_partial() {
   return src( config.src  )
@@ -36,18 +31,17 @@ function _bundle() {
       ,relPath =  path.relative( file._base, file.path )
     ;
     webpackconfig.entry = file.path;
-    webpackconfig.output.filename = relPath.replace( /\.bundle\.js$/, '.js' );
-    webpackconfig.output.path = path.resolve( process.cwd(), settings.dist );
+    webpackconfig.output.filename = relPath.replace( /\.entry\.js$/, '.js' );
+    webpackconfig.output.path = path.resolve( process.cwd(), config.dist );
     webpackconfig.mode = process.env.NODE_ENV;
-    webpack( webpackconfig ).run( () => {
+    return webpack( webpackconfig ).run( () => {
       console.info( 'webpack : ' + file.path );
     } );
   };
 }
 
-
 watch( config, js_webpack );
-watch( require( '../config.js' ).config[ taskName + '_partial' ], js_webpack_partial );
+watch( require( '../config.js' ).js_webpack_partial, js_webpack_partial );
 
 module.exports.js_webpack = js_webpack;
 module.exports.js_webpack_partial = js_webpack_partial;

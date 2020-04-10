@@ -1,9 +1,9 @@
 const
   { watch } = require( 'gulp' )
-  ,taskName = 'watch'
-
-  ,config = require( '../config.js' ).config
-  ,options = config[ taskName ].options
+;
+const
+  config = require( '../config.js' ).watch
+  ,options = config.options
 ;
 
 module.exports = function( conf, func ) {

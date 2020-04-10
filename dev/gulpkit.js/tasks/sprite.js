@@ -1,14 +1,15 @@
 const
-  { src, dest }     = require( 'gulp' )
-  ,plumber = require( 'gulp-plumber' )
+  { src, dest } = require( 'gulp' )
+  ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
-
-  ,mergeStream = require( 'merge-stream' )
-
-  ,config   = require( '../config.js' ).config.sprite
-  ,watch = require( './watch.js' )
-
-  ,options = config.options
+  ,mergeStream  = require( 'merge-stream' )
+;
+const
+  config = require( '../config.js' ).sprite
+  ,watch  = require( './watch.js' )
+;
+const
+  options = config.options
 ;
 
 function sprite() {

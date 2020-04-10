@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/videoground.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/videoground.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -3110,10 +3110,10 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/examples/js/videoground.bundle.js":
-/*!***********************************************!*\
-  !*** ./src/examples/js/videoground.bundle.js ***!
-  \***********************************************/
+/***/ "./src/examples/js/videoground.entry.js":
+/*!**********************************************!*\
+  !*** ./src/examples/js/videoground.entry.js ***!
+  \**********************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

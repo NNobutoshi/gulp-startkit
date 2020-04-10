@@ -1,20 +1,19 @@
 const
   { src, dest, series } = require( 'gulp' )
-  ,gulpIf    = require( 'gulp-if' )
-  ,plumber   = require( 'gulp-plumber' )
-  ,postcss   = require( 'gulp-postcss' )
-  ,sass      = require( 'gulp-sass' )
-  ,sourcemap = require( 'gulp-sourcemaps' )
-
+  ,gulpIf      = require( 'gulp-if' )
+  ,plumber     = require( 'gulp-plumber' )
+  ,postcss     = require( 'gulp-postcss' )
+  ,sass        = require( 'gulp-sass' )
+  ,sourcemap   = require( 'gulp-sourcemaps' )
   ,cssMqpacker = require( 'css-mqpacker' )
   ,del         = require( 'del' )
-
-  ,taskName = 'css_sass'
-
-  ,config   = require( '../config.js' ).config[ taskName ]
-  ,settings = require( '../config.js' ).settings
+;
+const
+  config = require( '../config.js' ).css_sass
   ,watch = require( './watch.js' )
-  ,options = config.options
+;
+const
+  options = config.options
 ;
 
 function css_sass() {
@@ -33,7 +32,7 @@ function css_sass() {
       config.sourcemap
       ,sourcemap.write( './' )
     ) )
-    .pipe( dest( settings.dist ) )
+    .pipe( dest( config.dist ) )
   ;
 }
 

@@ -1,18 +1,16 @@
 const
   { src, dest, lastRun } = require( 'gulp' )
-  ,imagemin  = require( 'gulp-imagemin' )
-  ,plumber   = require( 'gulp-plumber' )
-
+  ,imagemin = require( 'gulp-imagemin' )
+  ,plumber  = require( 'gulp-plumber' )
   ,imageminMozjpeg  = require( 'imagemin-mozjpeg' )
   ,imageminPngquant = require( 'imagemin-pngquant' )
-
-  ,taskName = 'img_min'
-
-  ,config   = require( '../config.js' ).config[ taskName ]
-  ,settings = require( '../config.js' ).settings
+;
+const
+  config = require( '../config.js' ).img_min
   ,watch = require( './watch.js' )
-
-  ,options = config.options
+;
+const
+  options = config.options
 ;
 
 function img_min() {
@@ -25,7 +23,7 @@ function img_min() {
       imagemin.optipng(),
       imagemin.gifsicle(),
     ] ) )
-    .pipe( dest( settings.dist ) )
+    .pipe( dest( config.dist ) )
   ;
 }
 

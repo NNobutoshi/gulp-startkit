@@ -81,15 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/resize.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/examples/js/resize.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/examples/js/resize.bundle.js":
-/*!******************************************!*\
-  !*** ./src/examples/js/resize.bundle.js ***!
-  \******************************************/
+/***/ "./src/examples/js/resize.entry.js":
+/*!*****************************************!*\
+  !*** ./src/examples/js/resize.entry.js ***!
+  \*****************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

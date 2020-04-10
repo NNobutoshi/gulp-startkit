@@ -1,14 +1,14 @@
 const
-  { src }       = require( 'gulp' )
+  { src }    = require( 'gulp' )
   ,plumber   = require( 'gulp-plumber' )
   ,stylelint = require( 'gulp-stylelint' )
-
-  ,taskName = 'css_lint'
-
-  ,config = require( '../config.js' ).config[ taskName ]
+;
+const
+  config = require( '../config.js' ).css_lint
   ,watch = require( './watch.js' )
-
-  ,options = config.options
+;
+const
+  options = config.options
 ;
 
 function css_lint() {

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/common_body.bundle.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/common_body.entry.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10723,10 +10723,10 @@ window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jq
 
 /***/ }),
 
-/***/ "./src/js/common_body.bundle.js":
-/*!**************************************!*\
-  !*** ./src/js/common_body.bundle.js ***!
-  \**************************************/
+/***/ "./src/js/common_body.entry.js":
+/*!*************************************!*\
+  !*** ./src/js/common_body.entry.js ***!
+  \*************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
