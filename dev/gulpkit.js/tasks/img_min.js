@@ -7,7 +7,6 @@ const
 ;
 const
   config = require( '../config.js' ).img_min
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
@@ -27,5 +26,4 @@ function img_min() {
   ;
 }
 
-watch( config, img_min );
 module.exports = img_min;

@@ -6,11 +6,11 @@ const
 ;
 const
   config = require( '../config.js' ).html_pug
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
 ;
+
 function html_pug() {
   return src( config.src, { since: lastRun( html_pug ) } )
     .pipe( tap( _pugRender ) )
@@ -93,9 +93,6 @@ function _pugRender( file, t ) {
   }
 
 }
-
-watch( config, html_pug );
-watch( require( '../config.js' ).html_pug_partial, html_pug_partial );
 
 module.exports.html_pug = html_pug;
 module.exports.html_pug_partial = html_pug_partial;

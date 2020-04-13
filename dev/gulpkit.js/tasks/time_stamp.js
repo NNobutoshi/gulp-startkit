@@ -3,7 +3,8 @@ const
   ,notify = require( 'gulp-notify' )
   ,STAMP_FILE_PATH = './gulpkit.js/tasks/.timestamp'
 ;
-module.exports = function( done ) {
+
+function time_stamp( done ) {
   fs.writeFileSync( STAMP_FILE_PATH, new Date().getTime(), 'utf-8', function( error ) {
     if ( error ) {
       notify.onError( 'Error: <%= error.message %>' ).errorHandler( error );
@@ -12,4 +13,5 @@ module.exports = function( done ) {
   } );
   done();
 }
-;
+
+module.exports = time_stamp;

@@ -4,7 +4,6 @@ const
 ;
 module.exports = {
   mode: 'development',
-  // entry: path.resolve( `${process.cwd()}/src/js/common_body.bundle.js` ),
   output: {},
   devtool: 'source-map',
   resolve: {

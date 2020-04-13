@@ -7,18 +7,17 @@ const
 ;
 const
   config = require( '../config.js' ).js_webpack
-  ,watch = require( './watch.js' )
 ;
 
-async function js_webpack() {
+function js_webpack() {
   return src( config.src, { since: lastRun( js_webpack ) } )
     .pipe( plumber() )
-    .pipe( tap( await _bundle() ) )
+    .pipe( tap( _bundle() ) )
   ;
 }
 
 function js_webpack_partial() {
-  return src( config.src  )
+  return src( config.src )
     .pipe( plumber() )
     .pipe( tap( _bundle() ) )
   ;
@@ -34,14 +33,11 @@ function _bundle() {
     webpackconfig.output.filename = relPath.replace( /\.entry\.js$/, '.js' );
     webpackconfig.output.path = path.resolve( process.cwd(), config.dist );
     webpackconfig.mode = process.env.NODE_ENV;
-    return webpack( webpackconfig ).run( () => {
+    webpack( webpackconfig ).run( () => {
       console.info( 'webpack : ' + file.path );
     } );
   };
 }
-
-watch( config, js_webpack );
-watch( require( '../config.js' ).js_webpack_partial, js_webpack_partial );
 
 module.exports.js_webpack = js_webpack;
 module.exports.js_webpack_partial = js_webpack_partial;

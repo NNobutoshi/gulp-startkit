@@ -7,7 +7,6 @@ const
 ;
 const
   config = require( '../config.js' ).icon_font
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
@@ -34,8 +33,6 @@ function icon_font( done ) {
       ;
     } )
   ;
-
 }
 
-watch( config, icon_font );
 module.exports = icon_font;

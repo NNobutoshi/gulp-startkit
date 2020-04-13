@@ -6,7 +6,6 @@ const
 ;
 const
   config = require( '../config.js' ).sprite
-  ,watch  = require( './watch.js' )
 ;
 const
   options = config.options
@@ -34,5 +33,4 @@ function sprite() {
 
 }
 
-watch( config, sprite );
 module.exports = sprite;

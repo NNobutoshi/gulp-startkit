@@ -1,16 +1,15 @@
 const
-  { src, dest, series } = require( 'gulp' )
-  ,gulpIf      = require( 'gulp-if' )
-  ,plumber     = require( 'gulp-plumber' )
-  ,postcss     = require( 'gulp-postcss' )
-  ,sass        = require( 'gulp-sass' )
-  ,sourcemap   = require( 'gulp-sourcemaps' )
-  ,cssMqpacker = require( 'css-mqpacker' )
-  ,del         = require( 'del' )
+  { src, dest } = require( 'gulp' )
+  ,gulpIf       = require( 'gulp-if' )
+  ,plumber      = require( 'gulp-plumber' )
+  ,postcss      = require( 'gulp-postcss' )
+  ,sass         = require( 'gulp-sass' )
+  ,sourcemap    = require( 'gulp-sourcemaps' )
+  ,cssMqpacker  = require( 'css-mqpacker' )
+  ,del          = require( 'del' )
 ;
 const
   config = require( '../config.js' ).css_sass
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
@@ -44,5 +43,5 @@ function css_clean( done ) {
   }
 }
 
-watch( config, series( css_clean , css_sass ) );
-module.exports = series( css_clean , css_sass );
+module.exports.css_sass = css_sass;
+module.exports.css_clean = css_clean;

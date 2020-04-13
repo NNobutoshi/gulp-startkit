@@ -5,7 +5,6 @@ const
 ;
 const
   config = require( '../config.js' ).css_lint
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
@@ -18,5 +17,4 @@ function css_lint() {
   ;
 }
 
-watch( config, css_lint );
 module.exports = css_lint;

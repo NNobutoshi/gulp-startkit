@@ -5,7 +5,6 @@ const
 ;
 const
   config = require( '../config.js' ).js_lint
-  ,watch = require( './watch.js' )
 ;
 const
   options = config.options
@@ -20,5 +19,4 @@ function js_lint() {
   ;
 }
 
-watch( config, js_lint );
 module.exports = js_lint;
