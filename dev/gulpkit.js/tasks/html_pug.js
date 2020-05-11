@@ -11,6 +11,9 @@ const
   options = config.options
 ;
 
+module.exports.html_pug = html_pug;
+module.exports.html_pug_partial = html_pug_partial;
+
 function html_pug() {
   return src( config.src, { since: lastRun( html_pug ) } )
     .pipe( tap( _pugRender ) )
@@ -93,6 +96,3 @@ function _pugRender( file, t ) {
   }
 
 }
-
-module.exports.html_pug = html_pug;
-module.exports.html_pug_partial = html_pug_partial;

@@ -7,6 +7,7 @@
 // import $ from 'jquery';
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
+import merge from 'lodash/mergeWith';
 
 const
   $ = window.jQuery
@@ -15,15 +16,14 @@ const
 export default class AdaptiveHover {
 
   constructor( options ) {
-
     this.defaultSettings = {
       name      : 'adaptiveHover',
       target    : '',
       timeout   : 400,
       range     : 10,
-      eventRoot : document.querySelectorAll( 'body' )[ 0 ],
+      eventRoot : document.body,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.target = null;
     this.eventRoot = this.settings.eventRoot;
@@ -45,7 +45,7 @@ export default class AdaptiveHover {
     ;
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
-    this.target = document.querySelectorAll( settings.target )[ 0 ];
+    this.target = document.querySelector( settings.target );
     $root.on( this.enteringEventName, settings.target, ( e ) => {
       this.handleForEnter( e );
     } );

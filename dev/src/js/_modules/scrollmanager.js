@@ -5,8 +5,10 @@
  */
 
 // import $ from 'jquery';
+import merge from 'lodash/mergeWith';
 import offset from './utilities/offset.js';
 import '../_vendor/rAf.js';
+
 const
   $ = window.jQuery
 ;
@@ -26,7 +28,7 @@ export default class ScrollManager {
       throttle      : 0,
       catchPoint    : '100%',
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.topOffsetsSelector = this.settings.topOffsetsSelector;
     this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
@@ -62,7 +64,7 @@ export default class ScrollManager {
         ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + offset( targetElem ).top )
         ,ratio      = scrollFrom / range
       ;
-      entry.observed = $.extend( entry.observed, {
+      entry.observed = merge( entry.observed, {
         name   : entry.name,
         target : entry.targetElem,
         range  : range,
@@ -197,7 +199,6 @@ function _getMaxOffset( selector , pos ) {
 function _getUniqueName( base ) {
   return base + new Date().getTime() + counter++;
 }
-
 
 function _calcPoint( base, val ) {
   let

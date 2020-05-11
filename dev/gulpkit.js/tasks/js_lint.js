@@ -10,6 +10,8 @@ const
   options = config.options
 ;
 
+module.exports = js_lint;
+
 function js_lint() {
   return src( config.src, { since: lastRun( js_lint ) } )
     .pipe( plumber( options.plumber ) )
@@ -18,5 +20,3 @@ function js_lint() {
     .pipe( eslint.failAfterError() )
   ;
 }
-
-module.exports = js_lint;

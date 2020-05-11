@@ -6,22 +6,28 @@ const
   mdls = {}
 ;
 mdls.resize = new OptimizedResize();
-mdls.counter = 0;
 mdls.resize
-  .one( ( inst ) => {
+  .one( inst => {
     document.querySelector( '.pl-test_one' ).textContent = inst.query;
   }, '(min-width: 980px)' )
-  .turn( ( inst ) => {
-    document.querySelector( '.pl-test_turn' ).textContent = inst.query;
-  }, '(min-width: 980px)', 'foo' )
-  .turn( ( inst ) => {
-    document.querySelector( '.pl-test_turn' ).textContent = inst.query;
+  .turn( inst => {
+    if ( inst.counter === undefined ) {
+      inst.counter = 0;
+    }
+    document.querySelector( '.pl-test_turn' ).textContent = `${inst.query} == ${inst.counter++}`;
   }, '(max-width: 979px)' )
-  .on( ( inst ) => {
-    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${mdls.counter++}`;
+  .on( inst => {
+    if ( inst.counter === undefined ) {
+      inst.counter = 0;
+    }
+    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${inst.counter++}`;
   }, '(max-width: 374px)' )
-  .cross( () => {
-    console.info( 'cross' );
+  .cross( inst => {
+    if ( inst.counter === undefined ) {
+      inst.counter = 0;
+    }
+    document.querySelector( '.pl-test_cross' ).textContent =
+      `${inst.query} == ${inst.counter++}`;
   }, '(max-width: 1000px)' )
   .run()
 ;

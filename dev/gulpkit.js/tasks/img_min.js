@@ -12,6 +12,8 @@ const
   options = config.options
 ;
 
+module.exports = img_min;
+
 function img_min() {
   return src( config.src, { since: lastRun( img_min ) } )
     .pipe( plumber( options.plumber ) )
@@ -25,5 +27,3 @@ function img_min() {
     .pipe( dest( config.dist ) )
   ;
 }
-
-module.exports = img_min;

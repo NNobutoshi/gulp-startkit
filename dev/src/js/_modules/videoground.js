@@ -1,5 +1,5 @@
 // import $ from 'jquery';
-
+import merge from 'lodash/mergeWith';
 import 'core-js/modules/es.promise';
 import 'regenerator-runtime/runtime';
 
@@ -25,7 +25,7 @@ export default class VideoGround {
       onBefore           : null,
       onLoad             : null,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.elemVideo = null;
     this.elemVideoFrame = null;
     this.id = this.settings.name;

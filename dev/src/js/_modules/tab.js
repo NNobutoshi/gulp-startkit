@@ -1,4 +1,5 @@
 // import $ from 'jquery';
+import merge from 'lodash/mergeWith';
 import closest from './utilities/closest.js';
 const
   $ = window.jQuery
@@ -15,7 +16,7 @@ export default class Tab {
       defaultIndex : 0,
       onLoad       : null,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.wrapperSelector = this.settings.wrapper;
     this.triggerSelector = this.settings.trigger;

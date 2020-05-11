@@ -15,7 +15,21 @@ mdls.locate = new Locate( {
 
 $( TARGETSELECTOR ).on( 'click', ( e ) => {
   history.pushState( null ,null, e.currentTarget.href );
-  $( '.pl-nav_item' ).removeClass( 'js-current' );
-  $( mdls.locate.run().currentItem ).parents( '.pl-nav_item' ).addClass( 'js-current' );
+  _run();
   e.preventDefault();
 } );
+
+$( window )
+  .on( 'popstate.locate' , _run )
+  .trigger( 'popstate.locate', _run )
+;
+
+function _run() {
+  mdls.locate.currentItem = null;
+  $( '.pl-nav_item' ).removeClass( 'js-current' );
+  mdls.locate.run( inst => {
+    if ( inst.currentItem ) {
+      $( inst.currentItem ).parents( '.pl-nav_item' ).addClass( 'js-current' );
+    }
+  } );
+}

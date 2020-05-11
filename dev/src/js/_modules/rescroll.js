@@ -3,6 +3,7 @@
  */
 
 // import $ from 'jquery';
+import merge from 'lodash/mergeWith';
 import offset from './utilities/offset.js';
 import '../_vendor/rAf.js';
 
@@ -10,6 +11,7 @@ const
   $ = window.jQuery
   ,$w = $( window )
 ;
+
 export default class Rescroll {
 
   constructor( options ) {
@@ -18,7 +20,7 @@ export default class Rescroll {
       offsetTop : 0,
       delay     : 32,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;

@@ -6,7 +6,9 @@ const
   ,options = config.options
 ;
 
-module.exports = function( conf, func ) {
+module.exports = _watch;
+
+function _watch( conf, func ) {
   let
     targets
   ;
@@ -19,4 +21,4 @@ module.exports = function( conf, func ) {
     watch( targets, options, func );
   }
   return false;
-};
+}

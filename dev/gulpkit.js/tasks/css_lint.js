@@ -10,11 +10,11 @@ const
   options = config.options
 ;
 
+module.exports = css_lint;
+
 function css_lint() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( stylelint( options.stylelint ) )
   ;
 }
-
-module.exports = css_lint;

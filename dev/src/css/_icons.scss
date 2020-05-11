@@ -32,6 +32,9 @@
   @if $filename == arrow1_r {
     $char: "\F001";
   }
+  @if $filename == arrow2_r {
+    $char: "\F002";
+  }
 
   @return $char;
 }
@@ -49,4 +52,7 @@
 
 .icon-arrow1_r {
   @include icon(arrow1_r);
+}
+.icon-arrow2_r {
+  @include icon(arrow2_r);
 }

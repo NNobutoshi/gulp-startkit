@@ -4,7 +4,7 @@ const uaParser = new UaParser();
 
 export default function( className ) {
   const
-    elemHtml = document.querySelector( 'html' )
+    elemHtml = document.documentElement
     ,browser = uaParser.getBrowser()
   ;
   elemHtml.classList.add( className );

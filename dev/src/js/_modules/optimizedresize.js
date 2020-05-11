@@ -5,6 +5,8 @@
 
 // import $ from 'jquery';
 import '../_vendor/rAf.js';
+import merge from 'lodash/mergeWith';
+
 const
   $ = window.jQuery
 ;
@@ -18,7 +20,7 @@ export default class OptimizedResize {
       name  : 'optimizedresize',
       delay : 16,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.callBacks = {};
     this.isRunning = false;
@@ -26,50 +28,62 @@ export default class OptimizedResize {
   }
 
   runCallBacksAll() {
-    Object.keys( this.callBacks ).forEach( ( key ) => {
+    for ( const key in this.callBacks ) {
       const
         props = this.callBacks[ key ]
       ;
       let
         query = false
       ;
-      if ( props.query ) {
-        query = matchMedia( props.query ).matches;
-        if (
-          query === true && (
-            ( props.turn === true && props.lastQuery !== query ) ||
-            ( props.one === true ) ||
-            ( !props.one && !props.turn && !props.cross )
-          ) ||
+      if ( !props.query ) {
+        props.callBack.call( this, props );
+        props.lastQuery = query;
+        continue;
+      }
+      query = window.matchMedia( props.query ).matches;
+
+      if (
+        // turn
+        ( props.turn === true && query === true && props.lastQuery !== query ) ||
+        // one
+        (  props.one === true && query === true ) ||
+        // cross
+        ( props.cross === true &&
           (
             ( query === true && props.lastQuery === false ) ||
             ( query === false && props.lastQuery === true )
           )
-        ) {
-          props.callBack.call( this, props );
-        }
-        props.lastQuery = query;
-        if ( props.one === true && query === true ) {
-          this.remove( key );
-        }
-      } else {
+        ) ||
+        // on
+        ( query === true &&
+          ( !props.one && !props.turn && !props.cross )
+        )
+      ) {
         props.callBack.call( this, props );
       }
+      props.lastQuery = query;
+      if ( props.one === true && query === true ) {
+        this.remove( key );
+      }
+    } // for
 
-    } );
     this.isRunning = false;
     return this;
   }
 
   add( callBack, options ) {
     const
-      defaultSettings = {
-        name   : _getUniqueName( this.id ),
-        query  : '',
-        one    : false,
-        turn   : false,
-      }
-      ,settings = $.extend( {}, defaultSettings, options )
+      settings = merge(
+        {},
+        { // default
+          name   : _getUniqueName( this.id ),
+          query  : '',
+          one    : false,
+          turn   : false,
+          cross  : false,
+        },
+        options,
+      )
     ;
     settings.callBack = callBack;
     this.setUp();

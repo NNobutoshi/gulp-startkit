@@ -7,37 +7,54 @@ const
 ;
 const
   config = require( '../config.js' ).js_webpack
+  ,options = config.options
+  ,wbpkConfig = config.wbpkConfig
 ;
-
-function js_webpack() {
-  return src( config.src, { since: lastRun( js_webpack ) } )
-    .pipe( plumber() )
-    .pipe( tap( _bundle() ) )
-  ;
-}
-
-function js_webpack_partial() {
-  return src( config.src )
-    .pipe( plumber() )
-    .pipe( tap( _bundle() ) )
-  ;
-}
-
-function _bundle() {
-  return function( file ) {
-    const
-      webpackconfig = require( '../webpack_config.js' )
-      ,relPath =  path.relative( file._base, file.path )
-    ;
-    webpackconfig.entry = file.path;
-    webpackconfig.output.filename = relPath.replace( /\.entry\.js$/, '.js' );
-    webpackconfig.output.path = path.resolve( process.cwd(), config.dist );
-    webpackconfig.mode = process.env.NODE_ENV;
-    webpack( webpackconfig ).run( () => {
-      console.info( 'webpack : ' + file.path );
-    } );
-  };
-}
 
 module.exports.js_webpack = js_webpack;
 module.exports.js_webpack_partial = js_webpack_partial;
+
+function js_webpack( done ) {
+  src( config.src, { since: lastRun( js_webpack ) } )
+    .pipe( plumber() )
+    .pipe( tap( _bundle( done ) ) )
+  ;
+}
+
+function js_webpack_partial( done ) {
+  return src( config.src )
+    .pipe( plumber() )
+    .pipe( tap( _bundle( done ) ) )
+  ;
+}
+
+function _bundle( done ) {
+  let
+    counter = 0
+  ;
+  return function( file ) {
+    const
+      relPath =  path.relative( file._base, file.path )
+    ;
+    counter = counter + 1;
+    wbpkConfig.entry = file.path;
+    wbpkConfig.output.filename = relPath.replace( /\.entry\.js$/, '.js' );
+    wbpkConfig.output.path = path.resolve( process.cwd(), config.dist );
+    wbpkConfig.mode = process.env.NODE_ENV;
+    try {
+      webpack( wbpkConfig, () => {
+        counter = counter - 1;
+        console.info( 'webpack : ' + file.path );
+        if ( counter === 0 ) {
+          done();
+        }
+      } );
+    } catch ( e ) {
+      counter = counter - 1;
+      options.errorHandler( e );
+      if ( counter === 0 ) {
+        done();
+      }
+    }
+  };
+}

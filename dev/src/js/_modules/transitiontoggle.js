@@ -5,6 +5,7 @@
  */
 
 // import $ from 'jquery';
+import merge from 'lodash/mergeWith';
 
 const
   $ = window.jQuery
@@ -19,7 +20,7 @@ export default class Toggle {
       selectorIndicator : null,
       selectorEventRoot : 'body',
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.eventRoot = this.settings.selectorEventRoot;
     this.elemIndicator = document.querySelector( this.settings.selectorIndicator );

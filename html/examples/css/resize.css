@@ -5,7 +5,7 @@
   src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
 }
 
-.icon-arrow1_r:before {
+.icon-arrow1_r:before, .icon-arrow2_r:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -20,6 +20,10 @@
 
 .icon-arrow1_r:before {
   content: "";
+}
+
+.icon-arrow2_r:before {
+  content: "";
 }
 
 /* stylelint-disable */

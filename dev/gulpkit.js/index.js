@@ -2,13 +2,14 @@ const
   { parallel, series, watch }         = require( 'gulp' )
   ,{ html_pug, html_pug_partial }     = require( './tasks/html_pug' )
   ,{ js_webpack, js_webpack_partial } = require( './tasks/js_webpack' )
-  ,{ css_sass, css_clean }            = require( './tasks/css_sass' )
+  ,css_sass   = require( './tasks/css_sass' )
   ,time_stamp = require( './tasks/time_stamp' )
   ,icon_font  = require( './tasks/icon_font' )
   ,img_min    = require( './tasks/img_min' )
   ,sprite     = require( './tasks/sprite' )
   ,css_lint   = require( './tasks/css_lint' )
   ,js_lint    = require( './tasks/js_lint' )
+  ,clean    = require( './tasks/clean' )
 ;
 const
   config = require( './config.js' )
@@ -24,33 +25,34 @@ exports.sprite             = sprite;
 exports.css_sass           = css_sass;
 exports.css_lint           = css_lint;
 exports.js_lint            = js_lint;
+exports.clean              = clean;
 
+/* default tasks */
 exports.default = series(
+  clean,
   parallel(
-    html_pug
-    ,series( icon_font, img_min ,sprite, css_clean, css_sass, css_lint )
-    ,js_webpack
-    ,js_lint
-  )
-  ,time_stamp
-  ,_setupWatch
+    html_pug,
+    series( icon_font, img_min ,sprite, css_sass, css_lint ),
+    js_webpack,
+    js_lint,
+  ),
+  time_stamp,
+  _setupWatch,
 );
 
 function _setupWatch( done ) {
-  Object
-    .keys( config )
-    .forEach( key => {
-      let targets;
-      const item = config[ key ];
-      if ( Array.isArray( item.watch ) ) {
-        targets = item.watch;
-      } else if ( item.watch === true ) {
-        targets = item.src;
-      }
-      if ( targets ) {
-        watch( targets, config.watch.options, exports[ key ] );
-      }
-    } )
+  const
+    watch_options = config.watch.options
   ;
+  for ( const key in config ) {
+    const
+      item = config[ key ]
+    ;
+    if ( item.watch === true && item.src ) {
+      watch( item.src, watch_options, exports[ key ] );
+    } else if ( Array.isArray( item.watch ) ) {
+      watch(  item.watch, watch_options, exports[ key ] );
+    }
+  }
   done();
 }

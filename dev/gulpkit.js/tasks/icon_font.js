@@ -12,15 +12,17 @@ const
   options = config.options
 ;
 
+module.exports = icon_font;
+
 function icon_font( done ) {
   let
     srcOptions = {}
   ;
-  if ( config.tmspFile ) {
-    if ( !fs.existsSync( config.tmspFile ) ) {
+  if ( config.timeStampFile ) {
+    if ( !fs.existsSync( config.timeStampFile ) ) {
       return done();
     }
-    srcOptions.since = Number( fs.readFileSync( config.tmspFile, 'utf-8' ) );
+    srcOptions.since = Number( fs.readFileSync( config.timeStampFile, 'utf-8' ) );
   }
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
@@ -34,5 +36,3 @@ function icon_font( done ) {
     } )
   ;
 }
-
-module.exports = icon_font;

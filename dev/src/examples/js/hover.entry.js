@@ -8,7 +8,7 @@ const
   ,$ = window.jQuery
 ;
 mdls.hover = new Adaptivehover( {
-  target : '.pl-hoverTarget'
+  target : '.pl-hoverTarget',
 } );
 mdls.hover
   .on(

@@ -24,24 +24,24 @@ mdls.toggle.on(
       'height' : $target.find( '.pl-list_list' ).outerHeight( true ) + 'px'
     } );
     $( inst.elemIndicator ).addClass( 'js-list--isOpening' );
-  }
-  ,( e, inst ) => {
+  },
+  ( e, inst ) => {
     $( inst.elemTarget ).css( {
       'height' : ''
     } );
     inst.timeoutId = setTimeout( () => {
       $( inst.elemIndicator ).removeClass( 'js-list--isOpening' );
     },100 );
-  }
-  ,( e, inst ) => {
+  },
+  ( e, inst ) => {
     const
       $parent = $( inst.elemIndicator )
     ;
-    console.info( 'end' );
     if ( inst.isChanged === true ) {
       $parent.addClass( 'js-list--isOpen' );
     } else {
       $parent.removeClass( 'js-list--isOpen' );
     }
-  } )
+  },
+)
 ;

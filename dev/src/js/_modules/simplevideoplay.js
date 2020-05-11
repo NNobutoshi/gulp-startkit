@@ -1,6 +1,7 @@
 // import $ from 'jquery';
-
+import merge from 'lodash/mergeWith';
 import closest from '../../js/_modules/utilities/closest.js';
+
 const
   $ = window.jQuery
 ;
@@ -17,12 +18,7 @@ export default class SimpleVideoPlay {
       classNameOfPaused  : 'js-video--isPaused',
       classNameOfEnded   : 'js-video--isEnded',
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
-    if ( this.settings.videoSelector === '' && this.settings.videoOuterSelector === '' ) {
-
-      // error
-      console.info( 'e' );
-    }
+    this.settings = merge( {}, this.defaultSettings, options );
     this.elemVideo = document.querySelector( this.settings.videoSelector );
     this.elemWrapper = closest( this.elemVideo, this.settings.outerSelector );
     this.id = this.settings.name;

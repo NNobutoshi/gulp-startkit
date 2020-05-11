@@ -1,7 +1,6 @@
 // import $ from 'jquery';
-const
-  $ = window.jQuery
-;
+import merge from 'lodash/mergeWith';
+
 export default class Locate {
 
   constructor( options ) {
@@ -10,31 +9,34 @@ export default class Locate {
       target     : '',
       indexRegex : /index\.[^/]+?$/,
     };
-    this.settings = $.extend( {}, this.defaultSettings, options );
+    this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.targetSelector = this.settings.target;
     this.target = document.querySelectorAll( this.targetSelector );
     this.currentItem = null;
   }
 
-  run() {
+  run( callBack ) {
     const
       hostName = location.host
       ,wPathname = location.pathname.replace( this.settings.indexRegex, '' )
+      ,targets = this.target
     ;
-    Array.prototype.forEach.call( this.target, ( self ) => {
+    for ( let i = 0, len = targets.length; i < len; i++ ) {
       const
-        aPathname = self.pathname.replace( this.settings.indexRegex, '' )
+        self = targets[ i ]
+        ,aPathname = self.pathname.replace( this.settings.indexRegex, '' )
         ,aHost = self.host
       ;
       if ( hostName !== aHost ) {
-        return this;
-      } else {
-        if ( aPathname === wPathname ) {
-          this.currentItem = self;
-        }
+        continue;
+      } else if ( aPathname === wPathname ) {
+        this.currentItem = self;
       }
-    } );
+    }
+    if ( typeof callBack === 'function' ) {
+      callBack.call( this, this );
+    }
     return this;
   }
 

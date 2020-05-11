@@ -161,7 +161,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var uaParser = new _vendor_ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default.a();
 /* harmony default export */ __webpack_exports__["default"] = (function (className) {
-  var elemHtml = document.querySelector('html'),
+  var elemHtml = document.documentElement,
       browser = uaParser.getBrowser();
   elemHtml.classList.add(className);
   elemHtml.classList.add(browser.name + browser.major);

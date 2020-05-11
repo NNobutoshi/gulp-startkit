@@ -1,18 +1,19 @@
 const
   merge   = require( 'lodash/mergeWith' )
   ,notify = require( 'gulp-notify' )
+  ,path = require( 'path' )
 ;
 
 const NODE_ENV = process.env.NODE_ENV;
 
 const
   DIR_DEV = {
-    dist      : '../html',
-    src       : 'src',
+    dist : '../html',
+    src  : 'src',
   }
   ,DIR_PROD = {
-    dist      : '../dist',
-    src       : 'src',
+    dist : '../dist',
+    src  : 'src',
   }
   ,ENABLE_SOURCEMAP_DEV = true
   ,ENABLE_SOURCEMAP_PROD = false
@@ -20,6 +21,12 @@ const
 
 const
   config_dev = {
+    'clean': {
+      dist : [ DIR_DEV.dist + '/**/*.map' ],
+      options : {
+        force : true,
+      },
+    },
     'css_sass' : {
       src       : [ DIR_DEV.src + '/**/*.scss' ],
       dist      : DIR_DEV.dist,
@@ -28,12 +35,6 @@ const
       cssMqpack : true,
       sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
-        del : {
-          dist : [ DIR_DEV.dist + '/**/*.css.map' ],
-          options : {
-            force : true,
-          },
-        },
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
@@ -74,7 +75,7 @@ const
       dist          : DIR_DEV.dist,
       watch         : true,
       default       : true,
-      tmspFile      : './gulpkit.js/tasks/.timestamp',
+      timeStampFile      : './gulpkit.js/tasks/.timestamp',
       fontsDist     : DIR_DEV.src + '/fonts',
       fontsCopyFrom : DIR_DEV.src + '/fonts/*',
       fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
@@ -127,8 +128,6 @@ const
       dist      : DIR_DEV.dist,
       watch     : true,
       default   : true,
-      uglify    : false,
-      sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
         del : {
           dist : [ DIR_DEV.dist + '/**/*.js.map' ],
@@ -137,15 +136,34 @@ const
           },
         },
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
-        uglify : {
-          output : {
-            comments : /^!|(@preserve|@cc_on|\( *c *\)|license|copyright)/i,
-          },
-        },
       },
+      wbpkConfig: {
+        mode: 'development',
+        output: {},
+        devtool: ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
+        resolve: {
+          alias: {
+            jquery_hub: path.resolve( __dirname, '../src/js/_modules/jquery_hub.js' )
+          }
+        },
+        module: {
+          rules: [ {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: [ {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  '@babel/preset-env',
+                ]
+              }
+            } ]
+          } ]
+        },
+      }
     },
     'js_webpack_partial': {
-      watch   : [
+      watch : [
         DIR_DEV.src + '/**/_*.js',
         DIR_DEV.src + '/**/_*/**/*.js',
       ],
@@ -244,15 +262,20 @@ const
 
 const
   config_prod = {
+    'clean': {
+      dist : [ DIR_PROD.dist + '/**/*.map' ],
+      options : {
+        force : true,
+      },
+    },
     'css_sass' : {
       dist      : DIR_PROD.dist,
       watch     : false,
       sourcemap : false && ENABLE_SOURCEMAP_PROD,
-      options : {
-        sass : {
-          outputStyle : 'compressed',
-        },
-      }
+    },
+    'css_lint' : {
+      dist  : DIR_PROD.dist,
+      watch : false,
     },
     'icon_font' : {
       dist     : DIR_PROD.dist,
@@ -265,14 +288,12 @@ const
     },
     'js_webpack' : {
       dist      : DIR_PROD.dist,
-      sourcemap : false && ENABLE_SOURCEMAP_PROD,
+      wbpkConfig: {
+        mode: 'production',
+        devtool: ( false && ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
+      }
     },
     'js_webpack_partial' : {
-      sourcemap : false && ENABLE_SOURCEMAP_PROD,
-    },
-    'css_lint' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
     },
     'js_lint' : {
       dist  : DIR_PROD.dist,

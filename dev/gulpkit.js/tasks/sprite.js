@@ -11,6 +11,8 @@ const
   options = config.options
 ;
 
+module.exports = sprite;
+
 function sprite() {
   let
     spriteData
@@ -30,7 +32,4 @@ function sprite() {
     .pipe( dest( config.scssDist ) )
   ;
   return mergeStream( imgStream, cSSStream );
-
 }
-
-module.exports = sprite;
