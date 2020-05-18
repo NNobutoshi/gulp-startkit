@@ -3,7 +3,7 @@
 
 require 'yaml'
 
-_conf = {
+_conf_defaults = {
   "ip" => "192.168.33.10",
   "name" => "project_A",
   "box" => "generic/centos7",
@@ -12,13 +12,13 @@ _conf = {
 }
 
 if File.exists?("./config.yml")
-  _custom = YAML.load(
+  _conf_custom = YAML.load(
     File.open(
       "./config.yml",
       File::RDONLY
     ).read
   )
-  _conf.merge!(_custom) if _custom.is_a?(Hash)
+  _conf = _conf_defaults.merge!(_conf_custom) if _conf_custom.is_a?(Hash)
 end
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -90,21 +90,28 @@ Vagrant.configure("2") do |config|
     sudo yum update
     sudo yum -y install httpd
     sudo yum install -y gcc gcc-c++ make
+    # apache conf
     cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
     sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%#EnableMMAP off%EnableMMAP off%g" /etc/httpd/conf/httpd.conf
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
+    # selinux conf
     sed -i -e "s%SELINUX=enforcing%SELINUX=disabled%g" /etc/selinux/config
+    # package.json symlink
     ln -s /home/vagrant/www/dev/package.json /home/vagrant
     ln -s /home/vagrant/www/dev/package-lock.json /home/vagrant
     ln -s /home/vagrant/www/dev/npm-shrinkwrap.json /home/vagrant
+    # nodejs
     curl -sL https://rpm.nodesource.com/setup_13.x | sudo bash -
     sudo yum install -y nodejs-13.12.0
+    # firewall
     setenforce 0
     firewall-cmd --permanent --add-service=http
     firewall-cmd --reload
+    # http
     systemctl enable httpd.service
     systemctl restart httpd.service
+    # npm install
     cd /home/vagrant
     npm install -g gulp
     npm install -g cross-env

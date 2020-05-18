@@ -13,16 +13,6 @@
   "repository": {
     "type": "git"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "jquery": "global:jQuery",
-    "raf": "global:requestAnimationFrame",
-    "modernizr": "global:Modernizr"
-  },
   "browserslist": [
     "last 2 versions",
     "ie >= 10",
@@ -38,6 +28,7 @@
     "css-mqpacker": "*",
     "del": "*",
     "eslint-config-jquery": "*",
+    "fancy-log": "*",
     "gulp": "*",
     "gulp-buffer": "*",
     "gulp-changed": "*",
@@ -60,7 +51,6 @@
     "imagemin-mozjpeg": "*",
     "imagemin-pngquant": "*",
     "js-beautify": "*",
-    "lodash": "*",
     "merge-stream": "*",
     "patch-package": "*",
     "pug": "*",
@@ -77,6 +67,7 @@
   },
   "dependencies": {
     "core-js": "*",
-    "jquery": "*"
+    "jquery": "*",
+    "lodash": "*"
   }
 }

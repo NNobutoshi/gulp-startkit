@@ -9,7 +9,8 @@
 @mixin lh( $size: 14, $height: 18 ) {
   line-height: ( $height / $size );
 }
-// メディアクエリ
+
+// メディアクエリ用
 @mixin mq( $queries... ) {
   $query: "";
   $len: length( $queries );
@@ -41,8 +42,6 @@
     @content;
   }
 }
-
-
 
 // link style
 @mixin anc(

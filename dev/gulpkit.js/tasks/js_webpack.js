@@ -4,6 +4,7 @@ const
   ,tap     = require( 'gulp-tap' )
   ,path    = require( 'path' )
   ,plumber = require( 'gulp-plumber' )
+  ,log     = require( 'fancy-log' )
 ;
 const
   config = require( '../config.js' ).js_webpack
@@ -22,7 +23,7 @@ function js_webpack( done ) {
 }
 
 function js_webpack_partial( done ) {
-  return src( config.src )
+  src( config.src )
     .pipe( plumber() )
     .pipe( tap( _bundle( done ) ) )
   ;
@@ -30,29 +31,31 @@ function js_webpack_partial( done ) {
 
 function _bundle( done ) {
   let
-    counter = 0
+    remainings = 0
+    ,totalFiles = 0
   ;
   return function( file ) {
     const
       relPath =  path.relative( file._base, file.path )
     ;
-    counter = counter + 1;
+    remainings = remainings + 1;
     wbpkConfig.entry = file.path;
     wbpkConfig.output.filename = relPath.replace( /\.entry\.js$/, '.js' );
     wbpkConfig.output.path = path.resolve( process.cwd(), config.dist );
     wbpkConfig.mode = process.env.NODE_ENV;
     try {
       webpack( wbpkConfig, () => {
-        counter = counter - 1;
-        console.info( 'webpack : ' + file.path );
-        if ( counter === 0 ) {
+        remainings = remainings - 1;
+        totalFiles = totalFiles + 1;
+        if ( remainings === 0 ) {
+          log( `webpack: packed ${totalFiles} files` );
           done();
         }
       } );
     } catch ( e ) {
-      counter = counter - 1;
+      remainings = remainings - 1;
       options.errorHandler( e );
-      if ( counter === 0 ) {
+      if ( remainings === 0 ) {
         done();
       }
     }

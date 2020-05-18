@@ -3,6 +3,7 @@ const
   ,tap          = require( 'gulp-tap' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,pug          = require( 'pug' )
+  ,log          = require( 'fancy-log' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -10,57 +11,71 @@ const
 const
   options = config.options
 ;
-
 module.exports.html_pug = html_pug;
 module.exports.html_pug_partial = html_pug_partial;
 
 function html_pug() {
+  const
+    totalFiles = { counter : 0 }
+  ;
   return src( config.src, { since: lastRun( html_pug ) } )
-    .pipe( tap( _pugRender ) )
+    .pipe( tap( _pugRender( totalFiles ) ) )
     .pipe( dest( config.dist ) )
+    .on( 'finish', () => {
+      log( `Pug: rendered ${totalFiles.counter} files` );
+    } )
   ;
 }
 
 function html_pug_partial() {
+  const
+    totalFiles = { counter : 0 }
+  ;
   return src( config.src )
-    .pipe( tap( _pugRender ) )
+    .pipe( tap( _pugRender( totalFiles ) ) )
     .pipe( dest( config.dist ) )
+    .on( 'finish', () => {
+      log( `Pug: rendered ${totalFiles.counter} files` );
+    } )
   ;
 }
 
-function _pugRender( file, t ) {
+function _pugRender( totalFiles ) {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
     ,errorHandler = options.errorHandler
   ;
-  let
-    contents = ''
-  ;
-  options.pug.filename = file.path;
-  try {
-    contents = pug.render( String( file.contents ), options.pug );
-  } catch ( e ) {
-    errorHandler( e );
-  }
-  if ( options.assistPretty.assistAElement ) {
-    contents = contents.replace( ugliyAElementRegEx, function( _all, indent, element, linefeed ) {
-      element = element
-        .replace( '><a ', '>' + linefeed + '<a ' )
-        .replace( '</a>', '</a>' + linefeed )
-      ;
-      return beautifyHtml( element, options.beautifyHtml ).replace( /^/mg, indent );
-    } );
-  }
-  if ( options.assistPretty.indent === false ) {
-    contents = contents.replace( /^([\t ]+)/mg, '' );
-  }
-  if ( options.assistPretty.commentPosition ) {
-    contents = contents.replace( endCommentRegEx, _replacementEndComment );
-  }
-  file.contents = new global.Buffer.from( contents );
-  file.path = file.path.replace( /\.pug$/, '.html' );
-  return t.through;
+  return ( file, t ) => {
+    let
+      contents = ''
+    ;
+    options.pug.filename = file.path;
+    try {
+      contents = pug.render( String( file.contents ), options.pug );
+      totalFiles.counter++;
+    } catch ( e ) {
+      errorHandler( e );
+    }
+    if ( options.assistPretty.assistAElement ) {
+      contents = contents.replace( ugliyAElementRegEx, function( _all, indent, element, linefeed ) {
+        element = element
+          .replace( '><a ', '>' + linefeed + '<a ' )
+          .replace( '</a>', '</a>' + linefeed )
+        ;
+        return beautifyHtml( element, options.beautifyHtml ).replace( /^/mg, indent );
+      } );
+    }
+    if ( options.assistPretty.indent === false ) {
+      contents = contents.replace( /^([\t ]+)/mg, '' );
+    }
+    if ( options.assistPretty.commentPosition ) {
+      contents = contents.replace( endCommentRegEx, _replacementEndComment );
+    }
+    file.contents = new global.Buffer.from( contents );
+    file.path = file.path.replace( /\.pug$/, '.html' );
+    return t.through;
+  };
 
   function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
     comment = '<!--' + comment + '-->';

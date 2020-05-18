@@ -9,7 +9,7 @@ const
   ,sprite     = require( './tasks/sprite' )
   ,css_lint   = require( './tasks/css_lint' )
   ,js_lint    = require( './tasks/js_lint' )
-  ,clean    = require( './tasks/clean' )
+  ,clean      = require( './tasks/clean' )
 ;
 const
   config = require( './config.js' )
