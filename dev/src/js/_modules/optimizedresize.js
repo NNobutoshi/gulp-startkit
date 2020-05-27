@@ -65,7 +65,7 @@ export default class OptimizedResize {
       if ( props.one === true && query === true ) {
         this.remove( key );
       }
-    } // for
+    } // for loop
 
     this.isRunning = false;
     return this;

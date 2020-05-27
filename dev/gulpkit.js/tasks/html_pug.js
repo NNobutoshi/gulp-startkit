@@ -22,7 +22,7 @@ function html_pug() {
     .pipe( tap( _pugRender( totalFiles ) ) )
     .pipe( dest( config.dist ) )
     .on( 'finish', () => {
-      log( `Pug: rendered ${totalFiles.counter} files` );
+      log( `html_pug: rendered ${totalFiles.counter} files` );
     } )
   ;
 }

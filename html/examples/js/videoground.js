@@ -6754,7 +6754,7 @@ var OptimizedResize = /*#__PURE__*/function () {
         if (props.one === true && query === true) {
           this.remove(key);
         }
-      } // for
+      } // for loop
 
 
       this.isRunning = false;

@@ -4,12 +4,25 @@
   "variables"
   ,"mixins"
   ,"icons"
+  ,"fonts"
   ,"_vendor/normalize"
   ,"mixins_sprite"
 ;
 
-@import "components/layout";
-@import "components/nav";
+@import
+  "_components/layout"
+  ,"_components/group"
+  ,"_components/nav"
+  ,"_components/sections"
+  ,"_components/headings"
+  ,"_components/paragraphs"
+  ,"_components/links"
+  ,"_components/buttons"
+  ,"_components/banners"
+  ,"_components/lists"
+  ,"_components/tables"
+;
+
 
 .and {
   @include mq( min-width, md, and, max-width, md ) {
@@ -25,7 +38,6 @@
     margin-top: 20px;
   }
 }
-
 .caseTwo {
   @include mq( max-height, 100px ) {
     margin-top: 0;

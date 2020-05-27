@@ -66,4 +66,5 @@ export default class SimpleVideoPlay {
       this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
     } );
   }
+
 }

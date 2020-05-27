@@ -32,7 +32,7 @@ const
       dist      : DIR_DEV.dist,
       watch     : true,
       default   : true,
-      cssMqpack : true,
+      cssMqpack : false,
       sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
         plumber : {

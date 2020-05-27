@@ -82,6 +82,52 @@
   }
 }
 
-// @mixin columns() {
+@mixin each_in_queries() {
+  $keys : map-keys( $break-points );
+  $len : length( $keys );
+  $index: 1;
+  $next_key: "";
+  & {
+    @content;
+  }
+  @each $key in $keys {
+    @if ( $len > $index ) {
+      $next_key : nth( $keys, $index + 1 );
+    }
+    @include mq( max-width, $key ){
+      &--#{$key} {
+        @content;
+      }
+    }
+    @include mq( min-width, $key ){
+      &--#{$key}- {
+        @content;
+      }
+    }
+    @if ( $len > $index ) {
+      @for $index_sub from $index + 1 through $len {
+        $sub_key : nth( $keys, $index_sub );
+        &--#{$key}-#{$sub_key} {
+          @include mq( min-width, $key, and, max-width, $sub_key ){
+            @content;
+          }
+        }
+      }
+    }
+    $index: $index+1;
+  }
+}
 
-// }
+@mixin columns() {
+  @for $i from 1 through 12 {
+    @for $ii from 1 through $i {
+      @include column_width( $ii, $i );
+    }
+  }
+}
+
+@mixin column_width( $num:1, $base:1 ) {
+  @include each_in_queries() {
+    width: $num/$base * 100%;
+  }
+}
