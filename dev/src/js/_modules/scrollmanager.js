@@ -80,7 +80,7 @@ export default class ScrollManager {
       this.scrollDown = true;
       this.scrollUp = false;
     } else {
-      this.isScrollDown = false;
+      this.scrollDown = false;
       this.scrollUp = true;
     }
     this.isRunning = false;

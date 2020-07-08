@@ -3760,7 +3760,7 @@ var ScrollManager = /*#__PURE__*/function () {
         this.scrollDown = true;
         this.scrollUp = false;
       } else {
-        this.isScrollDown = false;
+        this.scrollDown = false;
         this.scrollUp = true;
       }
 

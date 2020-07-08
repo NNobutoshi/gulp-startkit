@@ -104,10 +104,10 @@ export default class Rescroll {
 
 function _getTotalHeight( elems ) {
   let
-    botoms = []
+    bottoms = []
   ;
   Array.prototype.forEach.call( elems, ( self ) => {
-    botoms.push( self.getBoundingClientRect().bottom );
+    bottoms.push( self.getBoundingClientRect().bottom );
   } );
-  return Math.max.apply( null, botoms );
+  return Math.max.apply( null, bottoms );
 }

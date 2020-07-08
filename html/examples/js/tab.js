@@ -3814,11 +3814,11 @@ var Rescroll = /*#__PURE__*/function () {
 
 
 function _getTotalHeight(elems) {
-  var botoms = [];
+  var bottoms = [];
   Array.prototype.forEach.call(elems, function (self) {
-    botoms.push(self.getBoundingClientRect().bottom);
+    bottoms.push(self.getBoundingClientRect().bottom);
   });
-  return Math.max.apply(null, botoms);
+  return Math.max.apply(null, bottoms);
 }
 
 /***/ }),
