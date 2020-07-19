@@ -6,41 +6,41 @@ block vars
 block config
   include /_config.pug
   -
-    siteData = {}
-    for ( var o in SiteData._defaults ) {
-      if ( SiteData[ page ] && SiteData[ page ][ o ] ) {
-        siteData[ o ] = SiteData[ page ][ o ]
+    pageData = {}
+    for ( var o in siteData._defaults ) {
+      if ( siteData[ page ] && siteData[ page ][ o ] ) {
+        pageData[ o ] = siteData[ page ][ o ]
       } else {
-        siteData[ o ] = SiteData._defaults[ o ]
+        pageData[ o ] = siteData._defaults[ o ]
       }
     }
 
 doctype html
-html(lang=siteData.lang)
-  head(prefix=siteData.ogPrefix)
+html(lang=pageData.lang)
+  head(prefix=pageData.ogPrefix)
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
-    meta(name="viewport", content=siteData.viewport)
+    meta(name="viewport", content=pageData.viewport)
     meta(name="format-detection", content="telephone=no")
-    meta(name="description", content=siteData.description)
-    meta(name="keywords", content=siteData.keywords)
-    meta(property="og:type", content=siteData.ogType)
-    meta(property="og:site_name", content=siteData.siteName)
-    meta(property="og:title", content=siteData.title)
-    meta(property="og:description", content=siteData.description)
-    meta(property="og:url", content=siteData.siteUrl+siteData.url)
-    meta(property="og:image", content=siteData.ogImg)
+    meta(name="description", content=pageData.description)
+    meta(name="keywords", content=pageData.keywords)
+    meta(property="og:type", content=pageData.ogType)
+    meta(property="og:site_name", content=pageData.siteName)
+    meta(property="og:title", content=pageData.title)
+    meta(property="og:description", content=pageData.description)
+    meta(property="og:url", content=pageData.siteUrl+pageData.url)
+    meta(property="og:image", content=pageData.ogImg)
     meta(name="msapplication-tap-highlight", content="no")
-    meta(name="application-name",content=siteData.siteName)
-    meta(name="apple-mobile-web-app-title", content=siteData.siteName)
-    title #{siteData.title}
-    //- link(rel="shortcut icon", href=siteData.favicon, type="image/vnd.microsoft.icon")
-    //- link(rel="icon", sizes="192x192", href=siteData.icon)
+    meta(name="application-name",content=pageData.siteName)
+    meta(name="apple-mobile-web-app-title", content=pageData.siteName)
+    title #{pageData.title}
+    //- link(rel="shortcut icon", href=pageData.favicon, type="image/vnd.microsoft.icon")
+    //- link(rel="icon", sizes="192x192", href=pageData.icon)
     //- link(rel="apple-touch-icon-precomposed", type="image/png", sizes="114x114", href=appleIcon)
     block style
-      link(rel="stylesheet", href=siteData.cssCommonDir + "/common.css")
+      link(rel="stylesheet", href=pageData.cssCommonDir + "/common.css")
     block script_head
-      script(src=siteData.jsCommonDir + "/common_head.js")
+      script(src=pageData.jsCommonDir + "/common_head.js")
   body
     div.page#page
       block pageHead
@@ -58,4 +58,4 @@ html(lang=siteData.lang)
         footer.page_foot
     ///.page#page
     block script_body
-      script(src=siteData.jsCommonDir + "/common_body.js")
+      script(src=pageData.jsCommonDir + "/common_body.js")
