@@ -11,7 +11,7 @@ const
   $ = window.jQuery
 ;
 let
-  counter = 0
+  uniqueNumber = 0
 ;
 export default class OptimizedResize {
 
@@ -46,7 +46,7 @@ export default class OptimizedResize {
         // turn
         ( props.turn === true && query === true && props.lastQuery !== query ) ||
         // one
-        (  props.one === true && query === true ) ||
+        ( props.one === true && query === true ) ||
         // cross
         ( props.cross === true &&
           (
@@ -160,5 +160,5 @@ export default class OptimizedResize {
 }
 
 function _getUniqueName( base ) {
-  return base + new Date().getTime() + counter++;
+  return base + new Date().getTime() + uniqueNumber++;
 }

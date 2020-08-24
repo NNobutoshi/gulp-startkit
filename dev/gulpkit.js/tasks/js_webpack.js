@@ -1,5 +1,5 @@
 const
-  { src, lastRun }     = require( 'gulp' )
+  { src, lastRun } = require( 'gulp' )
   ,webpack = require( 'webpack' )
   ,tap     = require( 'gulp-tap' )
   ,path    = require( 'path' )

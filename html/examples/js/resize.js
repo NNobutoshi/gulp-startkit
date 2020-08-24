@@ -3693,7 +3693,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 var $ = window.jQuery;
-var counter = 0;
+var uniqueNumber = 0;
 
 var OptimizedResize = /*#__PURE__*/function () {
   function OptimizedResize(options) {
@@ -3847,7 +3847,7 @@ var OptimizedResize = /*#__PURE__*/function () {
 
 
 function _getUniqueName(base) {
-  return base + new Date().getTime() + counter++;
+  return base + new Date().getTime() + uniqueNumber++;
 }
 
 /***/ }),
