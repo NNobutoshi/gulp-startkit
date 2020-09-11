@@ -1,9 +1,7 @@
-// import $ from 'jquery';
+import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 import closest from './utilities/closest.js';
-const
-  $ = window.jQuery
-;
+
 export default class Tab {
 
   constructor( options ) {

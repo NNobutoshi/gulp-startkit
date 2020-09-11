@@ -4,14 +4,10 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-// import $ from 'jquery';
+import $ from 'jquery';
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
 import merge from 'lodash/mergeWith';
-
-const
-  $ = window.jQuery
-;
 
 export default class AdaptiveHover {
 

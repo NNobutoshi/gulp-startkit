@@ -1,5 +1,6 @@
 'use strict';
 // import $ from 'jquery';
+import '../../js/common_body.entry.js';
 import Rescroll from '../../js/_modules/rescroll.js';
 
 const

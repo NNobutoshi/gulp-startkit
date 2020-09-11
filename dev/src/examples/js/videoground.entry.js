@@ -1,5 +1,6 @@
 'use strict';
 
+import '../../js/common_body.entry.js';
 import ScrollManager from '../../js/_modules/scrollmanager.js';
 import Optimizedresize from '../../js/_modules/optimizedresize.js';
 import VideoGround from '../../js/_modules/videoground.js';

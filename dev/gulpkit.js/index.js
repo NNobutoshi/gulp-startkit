@@ -1,7 +1,7 @@
 const
   { parallel, series, watch }         = require( 'gulp' )
   ,{ html_pug, html_pug_partial }     = require( './tasks/html_pug' )
-  ,{ js_webpack, js_webpack_partial } = require( './tasks/js_webpack' )
+  ,js_webpack = require( './tasks/js_webpack' )
   ,css_sass   = require( './tasks/css_sass' )
   ,time_stamp = require( './tasks/time_stamp' )
   ,icon_font  = require( './tasks/icon_font' )
@@ -18,7 +18,6 @@ const
 exports.html_pug           = html_pug;
 exports.html_pug_partial   = html_pug_partial;
 exports.js_webpack         = js_webpack;
-exports.js_webpack_partial = js_webpack_partial;
 exports.icon_font          = icon_font;
 exports.img_min            = img_min;
 exports.sprite             = sprite;

@@ -1,7 +1,8 @@
 const
   merge   = require( 'lodash/mergeWith' )
   ,notify = require( 'gulp-notify' )
-  ,path = require( 'path' )
+  // ,path = require( 'path' )
+  // ,webpack = require( 'webpack' )
 ;
 
 const NODE_ENV = process.env.NODE_ENV;
@@ -75,7 +76,7 @@ const
       dist          : DIR_DEV.dist,
       watch         : true,
       default       : true,
-      timeStampFile      : './gulpkit.js/tasks/.timestamp',
+      timeStampFile : './gulpkit.js/tasks/.timestamp',
       fontsDist     : DIR_DEV.src + '/fonts',
       fontsCopyFrom : DIR_DEV.src + '/fonts/*',
       fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
@@ -124,11 +125,12 @@ const
       }
     },
     'js_webpack' : {
-      src       : [ DIR_DEV.src + '/**/*.entry.js' ],
-      dist      : DIR_DEV.dist,
-      watch     : true,
-      default   : true,
-      options   : {
+      src     : [ DIR_DEV.src + '/**/*.entry.js' ],
+      base    : DIR_DEV.src,
+      dist    : DIR_DEV.dist,
+      watch   : false,
+      default : true,
+      options : {
         del : {
           dist : [ DIR_DEV.dist + '/**/*.js.map' ],
           options : {
@@ -140,12 +142,17 @@ const
       wbpkConfig: {
         mode: 'development',
         output: {},
+        // plugins: [
+        //   new webpack.ProvidePlugin( {
+        //     jQuery: 'jquery',
+        //   } ),
+        // ],
         devtool: ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
-        resolve: {
-          alias: {
-            jquery_hub: path.resolve( __dirname, '../src/js/_modules/jquery_hub.js' )
-          }
-        },
+        // resolve: {
+        //   alias: {
+        //     jquery_hub: path.resolve( __dirname, '../src/js/_modules/jquery_hub.js' )
+        //   }
+        // },
         module: {
           rules: [ {
             test: /\.js$/,
@@ -153,21 +160,15 @@ const
             use: [ {
               loader: 'babel-loader',
               options: {
-                presets: [
-                  '@babel/preset-env',
-                ]
+                presets: [ '@babel/preset-env' ]
               }
             } ]
           } ]
         },
+        stats: 'normal',
+        cache: true,
+        watch: true,
       }
-    },
-    'js_webpack_partial': {
-      watch : [
-        DIR_DEV.src + '/**/_*.js',
-        DIR_DEV.src + '/**/_*/**/*.js',
-      ],
-      default : false,
     },
     'js_lint' : {
       src : [
@@ -292,8 +293,6 @@ const
         mode: 'production',
         devtool: ( false && ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
       }
-    },
-    'js_webpack_partial' : {
     },
     'js_lint' : {
       dist  : DIR_PROD.dist,

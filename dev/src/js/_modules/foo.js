@@ -1,6 +1,5 @@
-const
-  $ = window.jQuery
-;
+import $ from 'jquery';
+
 export default function( selector ) {
   return $( selector ).length;
 }

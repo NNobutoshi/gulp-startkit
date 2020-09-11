@@ -10705,21 +10705,12 @@ return jQuery;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var $ = window.jQuery;
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
 /* harmony default export */ __webpack_exports__["default"] = (function (selector) {
-  return $(selector).length;
+  return jquery__WEBPACK_IMPORTED_MODULE_0___default()(selector).length;
 });
-
-/***/ }),
-
-/***/ "./src/js/_modules/jquery_hub.js":
-/*!***************************************!*\
-  !*** ./src/js/_modules/jquery_hub.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /***/ }),
 
@@ -10732,14 +10723,11 @@ window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jq
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery_hub__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery_hub */ "./src/js/_modules/jquery_hub.js");
-/* harmony import */ var jquery_hub__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery_hub__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
+/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
 
 
 
-
-Object(_modules_foo_js__WEBPACK_IMPORTED_MODULE_1__["default"])('body');
+console.info(Object(_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])('body'));
 
 /***/ })
 

@@ -1,11 +1,8 @@
-// import $ from 'jquery';
+import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 import 'core-js/modules/es.promise';
 import 'regenerator-runtime/runtime';
 
-const
-  $ = window.jQuery
-;
 export default class VideoGround {
 
   constructor( options ) {

@@ -1,4 +1,3 @@
-// import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 
 export default class Locate {

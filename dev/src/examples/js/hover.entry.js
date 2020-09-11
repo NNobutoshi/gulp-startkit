@@ -1,11 +1,10 @@
 'use strict';
 
-// import $ from 'jquery';
+import '../../js/common_body.entry.js';
 import Adaptivehover from '../../js/_modules/adaptivehover.js';
 
 const
   mdls = {}
-  ,$ = window.jQuery
 ;
 mdls.hover = new Adaptivehover( {
   target : '.pl-hoverTarget',
@@ -13,10 +12,10 @@ mdls.hover = new Adaptivehover( {
 mdls.hover
   .on(
     ( e, inst ) =>  {
-      $( inst.target ).addClass( 'js-hover' );
+      inst.target.classList.add( 'js-hover' );
     }
     ,( e, inst ) => {
-      $( inst.target ).removeClass( 'js-hover' );
+      inst.target.classList.remove( 'js-hover' );
     }
   )
 ;

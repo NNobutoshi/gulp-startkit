@@ -1,5 +1,6 @@
 'use strict';
 
+import '../../js/common_body.entry.js';
 import ScrollManager from '../../js/_modules/scrollmanager.js';
 
 const
@@ -13,6 +14,7 @@ mdls.scrollManager = new ScrollManager( {
   topOffsetsSelector: '.pl-nav_nav',
   catchPoint: 0,
 } );
+
 mdls.scrollManager
   .on( ( ovserved ) => {
     if ( ovserved.ratio >= 0 ) {

@@ -29,6 +29,7 @@
     "del": "*",
     "eslint-config-jquery": "*",
     "fancy-log": "*",
+    "glob": "*",
     "gulp": "*",
     "gulp-buffer": "*",
     "gulp-changed": "*",

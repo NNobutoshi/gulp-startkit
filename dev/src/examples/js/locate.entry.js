@@ -1,6 +1,6 @@
 'use strict';
 
-// import $ from 'jquery';
+import '../../js/common_body.entry.js';
 import Locate from '../../js/_modules/locate.js';
 
 const

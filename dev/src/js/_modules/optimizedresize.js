@@ -3,13 +3,10 @@
  * Inspired by https://developer.mozilla.org
  */
 
-// import $ from 'jquery';
+import $ from 'jquery';
 import '../_vendor/rAf.js';
 import merge from 'lodash/mergeWith';
 
-const
-  $ = window.jQuery
-;
 let
   uniqueNumber = 0
 ;

@@ -2,14 +2,13 @@
  * rescroll.js
  */
 
-// import $ from 'jquery';
+import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 import offset from './utilities/offset.js';
 import '../_vendor/rAf.js';
 
 const
-  $ = window.jQuery
-  ,$w = $( window )
+  $w = $( window )
 ;
 
 export default class Rescroll {

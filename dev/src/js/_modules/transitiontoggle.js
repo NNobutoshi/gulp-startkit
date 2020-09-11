@@ -4,12 +4,9 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-// import $ from 'jquery';
+import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 
-const
-  $ = window.jQuery
-;
 export default class Toggle {
 
   constructor( options ) {

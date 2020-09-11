@@ -1,6 +1,6 @@
 'use strict';
 
-// import $ from 'jquery';
+import '../../js/common_body.entry.js';
 import ScrollManager from '../../js/_modules/scrollmanager.js';
 
 const
