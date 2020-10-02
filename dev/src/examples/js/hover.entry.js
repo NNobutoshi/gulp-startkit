@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import Adaptivehover from '../../js/_modules/adaptivehover.js';
 
 const

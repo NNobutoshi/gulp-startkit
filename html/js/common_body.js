@@ -86,6 +86,68 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/expose-loader/dist/cjs.js?exposes[]=jQuery!./node_modules/jquery/dist/jquery-exposed.js":
+/*!**************************************************************************************************************!*\
+  !*** ./node_modules/expose-loader/dist/cjs.js?exposes[]=jQuery!./node_modules/jquery/dist/jquery-exposed.js ***!
+  \**************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ___EXPOSE_LOADER_IMPORT___ = __webpack_require__(/*! -!./jquery.js */ "./node_modules/jquery/dist/jquery.js");
+var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = __webpack_require__(/*! ../../expose-loader/dist/runtime/getGlobalThis.js */ "./node_modules/expose-loader/dist/runtime/getGlobalThis.js");
+var ___EXPOSE_LOADER_GLOBAL_THIS___ = ___EXPOSE_LOADER_GET_GLOBAL_THIS___;
+if (typeof ___EXPOSE_LOADER_GLOBAL_THIS___["jQuery"] === 'undefined') ___EXPOSE_LOADER_GLOBAL_THIS___["jQuery"] = ___EXPOSE_LOADER_IMPORT___;
+else throw new Error('[exposes-loader] The "jQuery" value exists in the global scope, it may not be safe to overwrite it, use the "override" option')
+module.exports = ___EXPOSE_LOADER_IMPORT___;
+
+
+/***/ }),
+
+/***/ "./node_modules/expose-loader/dist/runtime/getGlobalThis.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/expose-loader/dist/runtime/getGlobalThis.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+// eslint-disable-next-line func-names
+module.exports = function () {
+  if (typeof globalThis === 'object') {
+    return globalThis;
+  }
+
+  var g;
+
+  try {
+    // This works if eval is allowed (see CSP)
+    // eslint-disable-next-line no-new-func
+    g = this || new Function('return this')();
+  } catch (e) {
+    // This works if the window reference is available
+    if (typeof window === 'object') {
+      return window;
+    } // This works if the self reference is available
+
+
+    if (typeof self === 'object') {
+      return self;
+    } // This works if the global reference is available
+
+
+    if (typeof global !== 'undefined') {
+      return global;
+    }
+  }
+
+  return g;
+}();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
 /***/ "./node_modules/jquery/dist/jquery.js":
 /*!********************************************!*\
   !*** ./node_modules/jquery/dist/jquery.js ***!
@@ -10696,6 +10758,37 @@ return jQuery;
 
 /***/ }),
 
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
 /***/ "./src/js/_modules/foo.js":
 /*!********************************!*\
   !*** ./src/js/_modules/foo.js ***!
@@ -10705,7 +10798,7 @@ return jQuery;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = (function (selector) {
@@ -10723,11 +10816,25 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
+/* harmony import */ var expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes[]=jQuery!jquery */ "./node_modules/expose-loader/dist/cjs.js?exposes[]=jQuery!./node_modules/jquery/dist/jquery-exposed.js");
+/* harmony import */ var expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
 
 
 
-console.info(Object(_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])('body'));
+
+console.info(Object(_modules_foo_js__WEBPACK_IMPORTED_MODULE_1__["default"])('body'));
+
+/***/ }),
+
+/***/ "jquery":
+/*!*************************!*\
+  !*** external "jQuery" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = jQuery;
 
 /***/ })
 

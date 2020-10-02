@@ -28,6 +28,7 @@
     "css-mqpacker": "*",
     "del": "*",
     "eslint-config-jquery": "*",
+    "expose-loader": "*",
     "fancy-log": "*",
     "glob": "*",
     "gulp": "*",

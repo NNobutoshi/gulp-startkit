@@ -142,30 +142,27 @@ const
       wbpkConfig: {
         mode: 'development',
         output: {},
-        // plugins: [
-        //   new webpack.ProvidePlugin( {
-        //     jQuery: 'jquery',
-        //   } ),
-        // ],
         devtool: ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
-        // resolve: {
-        //   alias: {
-        //     jquery_hub: path.resolve( __dirname, '../src/js/_modules/jquery_hub.js' )
-        //   }
-        // },
         module: {
-          rules: [ {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: [ {
-              loader: 'babel-loader',
-              options: {
-                presets: [ '@babel/preset-env' ]
-              }
-            } ]
-          } ]
+          rules: [
+            {
+              test: /\.js$/,
+              exclude: /node_modules/,
+              use: [
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: [ '@babel/preset-env' ]
+                  },
+                },
+              ]
+            },
+          ],
         },
-        stats: 'normal',
+        externals: {
+          'ua-parser-js': 'UaParser',
+          'jquery': 'jQuery',
+        },
         cache: true,
         watch: true,
       }

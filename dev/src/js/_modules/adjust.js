@@ -1,4 +1,4 @@
-import UaParser from '../_vendor/ua-parser.js';
+import UaParser from 'ua-parser-js';
 
 const uaParser = new UaParser();
 

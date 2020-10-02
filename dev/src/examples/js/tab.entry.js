@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import Tab from '../../js/_modules/tab.js';
 import Rescroll from '../../js/_modules/rescroll.js';
 

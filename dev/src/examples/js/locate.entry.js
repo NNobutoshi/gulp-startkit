@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import Locate from '../../js/_modules/locate.js';
 
 const

@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import OptimizedResize from '../../js/_modules/optimizedresize.js';
 
 const

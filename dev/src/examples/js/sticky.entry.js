@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import ScrollManager from '../../js/_modules/scrollmanager.js';
 
 const

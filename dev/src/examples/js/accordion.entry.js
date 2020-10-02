@@ -1,6 +1,5 @@
 'use strict';
 
-import '../../js/common_body.entry.js';
 import Toggle from '../../js/_modules/transitiontoggle.js';
 
 const
