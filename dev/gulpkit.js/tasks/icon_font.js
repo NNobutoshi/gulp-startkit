@@ -1,9 +1,8 @@
 const
-  { src, dest } = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,iconfont    = require( 'gulp-iconfont' )
   ,iconfontCss = require( 'gulp-iconfont-css' )
   ,plumber     = require( 'gulp-plumber' )
-  ,fs          = require( 'fs' )
 ;
 const
   config = require( '../config.js' ).icon_font
@@ -14,16 +13,12 @@ const
 
 module.exports = icon_font;
 
-function icon_font( done ) {
-  let
-    srcOptions = {}
-  ;
-  if ( config.timeStampFile ) {
-    if ( !fs.existsSync( config.timeStampFile ) ) {
-      return done();
+function icon_font() {
+  const
+    srcOptions = {
+      since : lastRun( icon_font ) || process.lastRunTime,
     }
-    srcOptions.since = Number( fs.readFileSync( config.timeStampFile, 'utf-8' ) );
-  }
+  ;
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( iconfontCss( options.iconfontCss ) )

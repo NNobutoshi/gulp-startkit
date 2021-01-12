@@ -15,7 +15,12 @@ const
 module.exports = img_min;
 
 function img_min() {
-  return src( config.src, { since: lastRun( img_min ) } )
+  const
+    srcOptions = {
+      since : lastRun( img_min ) || process.lastRunTime,
+    }
+  ;
+  return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( imagemin( [
       imageminMozjpeg( options.imageminMozjpeg ),

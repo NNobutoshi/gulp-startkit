@@ -1,12 +1,13 @@
 const
-  webpack = require( 'webpack' )
+  { src }  = require( 'gulp' )
+  ,webpack = require( 'webpack' )
   ,path    = require( 'path' )
-  ,glob    = require( 'glob' )
   ,log     = require( 'fancy-log' )
+  ,tap     = require( 'gulp-tap' )
 ;
 const
-  config = require( '../config.js' ).js_webpack
-  ,options = config.options
+  config      = require( '../config.js' ).js_webpack
+  ,options    = config.options
   ,wbpkConfig = config.wbpkConfig
 ;
 
@@ -15,27 +16,45 @@ module.exports = js_webpack;
 function js_webpack( done ) {
   const
     entries = {}
+    ,srcOptions = {
+      // since : lastRun( js_webpack ) || process.lastRunTime,
+    }
   ;
-  glob( config.src.join( '|' ), ( err, files ) => {
-    _pack( files, path.resolve( config.base ) );
-  } )
+  src( config.src, srcOptions )
+    .pipe( tap( ( file ) => {
+      const
+        key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' )
+        ,val = `./${config.base}/${path.relative( config.base, file.path ).replace( /\\/g, '/' )}`
+      ;
+      entries[ key ] = val;
+    } ) )
+    .on( 'finish', () => {
+      if ( Object.keys( entries ).length > 0 ) {
+        _pack();
+      } else {
+        done();
+      }
+    } )
   ;
-  function _pack( files, base ) {
-    files.forEach( ( filePath ) => {
-      entries[ path.relative( base, filePath ).replace( /\.entry\.js$/, '' ) ] = './' + filePath;
-    } );
+
+  function _pack() {
     wbpkConfig.entry = entries;
     wbpkConfig.output.filename = '[name].js';
     wbpkConfig.output.path = path.resolve( process.cwd(), config.dist );
     wbpkConfig.mode = process.env.NODE_ENV;
-    try {
-      webpack( wbpkConfig, () => {
-        log( 'webpack: packed' );
+    webpack( wbpkConfig, ( error, stats ) => {
+      let chunks;
+      if ( error || stats.hasErrors() ) {
         done();
-      } );
-    } catch ( e ) {
-      options.errorHandler( e );
+        return options.errorHandler( error );
+      }
+      chunks = stats.compilation.chunks;
+      for ( let i = 0; chunks.length > i; i++ ) {
+        if ( chunks[ i ].rendered === true ) {
+          log( `webpack:${chunks[ i ].id}` );
+        };
+      }
       done();
-    }
+    } );
   }
 }

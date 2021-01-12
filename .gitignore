@@ -8,3 +8,4 @@ node_modules
 /dev/config.yml
 /dev/gulpkit.js/tasks/.timestamp
 /html/examples/media/mainvisual.mp4
+/dev/gulpkit.js/tasks/.last_run_timestamp

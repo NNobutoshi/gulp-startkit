@@ -4006,7 +4006,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__);
 
 function closest(elem, wrapper) {
-  for (var closest = elem; closest; closest = closest.parentElement) {
+  var closest = elem;
+
+  for (; closest; closest = closest.parentElement) {
     if (closest.matches(wrapper)) {
       break;
     }

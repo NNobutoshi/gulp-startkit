@@ -13,7 +13,12 @@ const
 module.exports = js_lint;
 
 function js_lint() {
-  return src( config.src, { since: lastRun( js_lint ) } )
+  const
+    srcOptions = {
+      since : lastRun( js_lint ) || process.lastRunTime,
+    }
+  ;
+  return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( eslint( options.eslint ) )
     .pipe( eslint.format() )

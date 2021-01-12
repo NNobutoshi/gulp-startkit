@@ -1,10 +1,7 @@
 const
   merge   = require( 'lodash/mergeWith' )
   ,notify = require( 'gulp-notify' )
-  // ,path = require( 'path' )
-  // ,webpack = require( 'webpack' )
 ;
-
 const NODE_ENV = process.env.NODE_ENV;
 
 const
@@ -76,7 +73,6 @@ const
       dist          : DIR_DEV.dist,
       watch         : true,
       default       : true,
-      timeStampFile : './gulpkit.js/tasks/.timestamp',
       fontsDist     : DIR_DEV.src + '/fonts',
       fontsCopyFrom : DIR_DEV.src + '/fonts/*',
       fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
@@ -128,7 +124,6 @@ const
       src     : [ DIR_DEV.src + '/**/*.entry.js' ],
       base    : DIR_DEV.src,
       dist    : DIR_DEV.dist,
-      watch   : false,
       default : true,
       options : {
         del : {
@@ -248,12 +243,14 @@ const
     'watch' : {
       default      : true,
       errorHandler : notify.onError( 'Error: <%= error.message %>' ),
-      tmspFile     : './gulpkit.js/tasks/.timestamp',
       options : {
         watch : {
           usePolling : true
         },
       }
+    },
+    'last_run_time': {
+      filePath: './gulpkit.js/tasks/.last_run_timestamp',
     },
   }
 ;
@@ -276,19 +273,18 @@ const
       watch : false,
     },
     'icon_font' : {
-      dist     : DIR_PROD.dist,
-      watch    : false,
-      tmspFile : '',
+      dist  : DIR_PROD.dist,
+      watch : false,
     },
     'img_min' : {
       dist  : DIR_PROD.dist,
       watch : false,
     },
     'js_webpack' : {
-      dist      : DIR_PROD.dist,
-      wbpkConfig: {
-        mode: 'production',
-        devtool: ( false && ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
+      dist       : DIR_PROD.dist,
+      wbpkConfig : {
+        mode    : 'production',
+        devtool : ( false && ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
       }
     },
     'js_lint' : {
@@ -309,6 +305,9 @@ const
     'watch' : {
       dist    : DIR_PROD.dist,
       default : false,
+    },
+    'last_run_time': {
+      filePath: false,
     },
   }
 ;

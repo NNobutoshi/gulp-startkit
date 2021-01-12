@@ -1,5 +1,5 @@
 const
-  { src, dest } = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
   ,mergeStream  = require( 'merge-stream' )
@@ -14,12 +14,17 @@ const
 module.exports = sprite;
 
 function sprite() {
+  const
+    srcOptions = {
+      since : lastRun( sprite ) || process.lastRunTime,
+    }
+  ;
   let
     spriteData
     ,imgStream
     ,cSSStream
   ;
-  spriteData = src( config.src )
+  spriteData = src( config.src, srcOptions )
     .pipe( plumber() )
     .pipe( spriteSmith( options.sprite ) )
   ;

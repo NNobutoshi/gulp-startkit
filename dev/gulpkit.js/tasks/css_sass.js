@@ -6,6 +6,7 @@ const
   ,sass         = require( 'gulp-sass' )
   ,sourcemap    = require( 'gulp-sourcemaps' )
   ,cssMqpacker  = require( 'css-mqpacker' )
+  ,tap          = require( 'gulp-tap' )
 ;
 const
   config = require( '../config.js' ).css_sass
@@ -17,15 +18,23 @@ const
 module.exports = css_sass;
 
 function css_sass() {
+  const
+    srcOptions = {
+      // since : lastRun( css_sass ) || process.lastRunTime,
+    }
+  ;
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
-  return src( config.src )
+  return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpIf(
       config.sourcemap,
       sourcemap.init( { loadMaps: true } ),
     ) )
+    .pipe( tap( ( file ) => {
+      console.info( file.path );
+    } ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf(

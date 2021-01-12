@@ -61,7 +61,6 @@
     "stylelint-config-recommended": "*",
     "webpack": "*",
     "webpack-cli": "*",
-    "webpack-stream": "*",
     "xls-to-json": "*"
   },
   "optionalDependencies": {

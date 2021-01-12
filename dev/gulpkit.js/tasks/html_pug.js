@@ -20,8 +20,11 @@ module.exports = {
 function html_pug() {
   const
     totalFiles = { counter : 0 }
+    ,srcOptions = {
+      since : lastRun( html_pug ) || process.lastRunTime,
+    }
   ;
-  return src( config.src, { since: lastRun( html_pug ) } )
+  return src( config.src, srcOptions )
     .pipe( tap( _pugRender( totalFiles ) ) )
     .pipe( dest( config.dist ) )
     .on( 'finish', () => {
