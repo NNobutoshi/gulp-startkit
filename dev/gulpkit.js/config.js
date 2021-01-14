@@ -15,6 +15,7 @@ const
   }
   ,ENABLE_SOURCEMAP_DEV = true
   ,ENABLE_SOURCEMAP_PROD = false
+  ,ORDERD_WACHE = !!JSON.parse( process.env.WATCH_ENV )
 ;
 
 const
@@ -28,8 +29,7 @@ const
     'css_sass' : {
       src       : [ DIR_DEV.src + '/**/*.scss' ],
       dist      : DIR_DEV.dist,
-      watch     : true,
-      default   : true,
+      watch     : true && ORDERD_WACHE,
       cssMqpack : false,
       sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
@@ -54,8 +54,7 @@ const
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
       dist      : DIR_DEV.dist,
-      watch     : true,
-      default   : true,
+      watch     : true && ORDERD_WACHE,
       options   : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -71,8 +70,7 @@ const
     'icon_font' : {
       src           : [ DIR_DEV.src + '/fonts/*.svg' ],
       dist          : DIR_DEV.dist,
-      watch         : true,
-      default       : true,
+      watch         : true && ORDERD_WACHE,
       fontsDist     : DIR_DEV.src + '/fonts',
       fontsCopyFrom : DIR_DEV.src + '/fonts/*',
       fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
@@ -100,8 +98,7 @@ const
     'img_min' : {
       src     : [ DIR_DEV.src + '/**/*.{png,jpg,svg}' ],
       dist    : DIR_DEV.dist,
-      watch   : true,
-      default : true,
+      watch   : true && ORDERD_WACHE,
       options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -124,7 +121,6 @@ const
       src     : [ DIR_DEV.src + '/**/*.entry.js' ],
       base    : DIR_DEV.src,
       dist    : DIR_DEV.dist,
-      default : true,
       options : {
         del : {
           dist : [ DIR_DEV.dist + '/**/*.js.map' ],
@@ -135,31 +131,31 @@ const
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       },
       wbpkConfig: {
-        mode: 'development',
-        output: {},
+        mode   : 'development',
+        output : {},
         devtool: ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
-        module: {
-          rules: [
+        module : {
+          rules : [
             {
-              test: /\.js$/,
+              test   : /\.js$/,
               exclude: /node_modules/,
-              use: [
+              use    : [
                 {
-                  loader: 'babel-loader',
-                  options: {
-                    presets: [ '@babel/preset-env' ]
+                  loader  : 'babel-loader',
+                  options : {
+                    presets : [ '@babel/preset-env' ]
                   },
                 },
               ]
             },
           ],
         },
-        externals: {
-          'ua-parser-js': 'UaParser',
-          'jquery': 'jQuery',
+        externals : {
+          'ua-parser-js' : 'UaParser',
+          'jquery'       : 'jQuery',
         },
-        cache: true,
-        watch: true,
+        cache : true,
+        watch : true && ORDERD_WACHE,
       }
     },
     'js_lint' : {
@@ -170,8 +166,7 @@ const
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
       dist    : DIR_DEV.dist,
-      watch   : true,
-      default : true,
+      watch   : true && ORDERD_WACHE,
       options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -184,12 +179,11 @@ const
     'html_pug' : {
       src : [
         ''  + DIR_DEV.src + '/**/*.pug',
-        '!' + DIR_DEV.src + '/**/_*.pug',
-        '!' + DIR_DEV.src + '/**/_*/**/*.pug',
+        // '!' + DIR_DEV.src + '/**/_*.pug',
+        // '!' + DIR_DEV.src + '/**/_*/**/*.pug',
       ],
       dist    : DIR_DEV.dist,
-      watch   : true,
-      default : true,
+      watch   : true && ORDERD_WACHE,
       options : {
         assistPretty : {
           assistAElement   : true,
@@ -209,18 +203,10 @@ const
         },
       },
     },
-    'html_pug_partial' : {
-      watch   : [
-        DIR_DEV.src + '/**/_*.pug',
-        DIR_DEV.src + '/**/_*/**/*.pug',
-      ],
-      default : false,
-    },
     'sprite' : {
       src      : [ DIR_DEV.src + '/img/_sprite/*.png' ],
       dist     : DIR_DEV.dist,
-      watch    : true,
-      default  : true,
+      watch    : true && ORDERD_WACHE,
       imgDist  : DIR_DEV.dist + '/img',
       scssDist : DIR_DEV.src + '/css',
       options  : {
@@ -240,8 +226,7 @@ const
         },
       },
     },
-    'watch' : {
-      default      : true,
+    'setup_watch' : {
       errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       options : {
         watch : {
@@ -266,7 +251,7 @@ const
     'css_sass' : {
       dist      : DIR_PROD.dist,
       watch     : false,
-      sourcemap : false && ENABLE_SOURCEMAP_PROD,
+      sourcemap : false || ENABLE_SOURCEMAP_PROD,
     },
     'css_lint' : {
       dist  : DIR_PROD.dist,
@@ -284,7 +269,7 @@ const
       dist       : DIR_PROD.dist,
       wbpkConfig : {
         mode    : 'production',
-        devtool : ( false && ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
+        devtool : ( false || ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
       }
     },
     'js_lint' : {
@@ -295,15 +280,11 @@ const
       dist  : DIR_PROD.dist,
       watch : false,
     },
-    'html_pug_partial' : {
-      watch : false,
-    },
     'sprite' : {
       dist  : DIR_PROD.dist,
       watch : false,
     },
-    'watch' : {
-      dist    : DIR_PROD.dist,
+    'setup_watch' : {
       default : false,
     },
     'last_run_time': {

@@ -6,7 +6,6 @@ const
   ,sass         = require( 'gulp-sass' )
   ,sourcemap    = require( 'gulp-sourcemaps' )
   ,cssMqpacker  = require( 'css-mqpacker' )
-  ,tap          = require( 'gulp-tap' )
 ;
 const
   config = require( '../config.js' ).css_sass
@@ -32,9 +31,6 @@ function css_sass() {
       config.sourcemap,
       sourcemap.init( { loadMaps: true } ),
     ) )
-    .pipe( tap( ( file ) => {
-      console.info( file.path );
-    } ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf(
