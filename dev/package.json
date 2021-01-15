@@ -7,8 +7,7 @@
     "dev": "cross-env NODE_ENV=development WATCH_ENV=1 gulp --gulpfile gulpkit.js",
     "one": "cross-env NODE_ENV=development WATCH_ENV=0 gulp --gulpfile gulpkit.js",
     "prod": "cross-env NODE_ENV=production WATCH_ENV=0 gulp --gulpfile gulpkit.js",
-    "gulp": "gulp --gulpfile gulpkit.js",
-    "lr": "node livereload.js"
+    "gulp": "gulp --gulpfile gulpkit.js"
   },
   "author": "",
   "repository": {
@@ -25,6 +24,7 @@
     "@babel/preset-env": "*",
     "autoprefixer": "*",
     "babel-loader": "*",
+    "browser-sync": "*",
     "cross-env": "*",
     "css-mqpacker": "*",
     "del": "*",
@@ -63,9 +63,6 @@
     "webpack": "*",
     "webpack-cli": "*",
     "xls-to-json": "*"
-  },
-  "optionalDependencies": {
-    "browser-sync": "*"
   },
   "dependencies": {
     "core-js": "*",

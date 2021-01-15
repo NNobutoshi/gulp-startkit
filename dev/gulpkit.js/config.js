@@ -1,8 +1,11 @@
 const
   merge   = require( 'lodash/mergeWith' )
   ,notify = require( 'gulp-notify' )
+  ,fs     = require( 'fs' )
 ;
-const NODE_ENV = process.env.NODE_ENV;
+const
+  NODE_ENV = process.env.NODE_ENV
+;
 
 const
   DIR_DEV = {
@@ -226,6 +229,7 @@ const
         },
       },
     },
+    'serve' : null,
     'setup_watch' : {
       errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       options : {
@@ -284,6 +288,7 @@ const
       dist  : DIR_PROD.dist,
       watch : false,
     },
+    'serve' : null,
     'setup_watch' : {
       default : false,
     },
@@ -292,6 +297,11 @@ const
     },
   }
 ;
+
+if ( fs.existsSync( './gulpkit.js/config_serve.js' ) ) {
+  config_dev.serve = require( './config_serve' ).conf_dev;
+  config_prod.serve = require( './config_serve' ).conf_prod;
+}
 
 if ( NODE_ENV === 'production' ) {
   module.exports = merge( {}, config_dev, config_prod );

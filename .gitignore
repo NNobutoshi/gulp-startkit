@@ -9,3 +9,4 @@ node_modules
 /dev/gulpkit.js/tasks/.timestamp
 /html/examples/media/mainvisual.mp4
 /dev/gulpkit.js/tasks/.last_run_timestamp
+/dev/gulpkit.js/config_serve.js
