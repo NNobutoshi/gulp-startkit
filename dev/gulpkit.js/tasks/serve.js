@@ -16,7 +16,7 @@ module.exports.serve_init = ( () => {
     };
   }
   return function serve_init( done ) {
-    browserSync( options );
+    browserSync.init( options );
     _done( done );
   };
 } )();
@@ -26,7 +26,9 @@ module.exports.serve_reload = ( () => {
     return false;
   }
   return function serve_reload( done ) {
-    browserSync.reload();
+    if ( browserSync.active ) {
+      browserSync.reload();
+    }
     _done( done );
   };
 } )();

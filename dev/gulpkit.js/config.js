@@ -18,9 +18,8 @@ const
   }
   ,ENABLE_SOURCEMAP_DEV = true
   ,ENABLE_SOURCEMAP_PROD = false
-  ,ORDERD_WACHE = !!JSON.parse( process.env.WATCH_ENV )
+  ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
 ;
-
 const
   config_dev = {
     'clean': {
@@ -32,7 +31,7 @@ const
     'css_sass' : {
       src       : [ DIR_DEV.src + '/**/*.scss' ],
       dist      : DIR_DEV.dist,
-      watch     : true && ORDERD_WACHE,
+      watch     : true && ENABLE_WATCH,
       cssMqpack : false,
       sourcemap : true && ENABLE_SOURCEMAP_DEV,
       options   : {
@@ -57,7 +56,7 @@ const
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
       dist      : DIR_DEV.dist,
-      watch     : true && ORDERD_WACHE,
+      watch     : true && ENABLE_WATCH,
       options   : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -73,7 +72,7 @@ const
     'icon_font' : {
       src           : [ DIR_DEV.src + '/fonts/*.svg' ],
       dist          : DIR_DEV.dist,
-      watch         : true && ORDERD_WACHE,
+      watch         : true && ENABLE_WATCH,
       fontsDist     : DIR_DEV.src + '/fonts',
       fontsCopyFrom : DIR_DEV.src + '/fonts/*',
       fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
@@ -101,7 +100,7 @@ const
     'img_min' : {
       src     : [ DIR_DEV.src + '/**/*.{png,jpg,svg}' ],
       dist    : DIR_DEV.dist,
-      watch   : true && ORDERD_WACHE,
+      watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -158,7 +157,7 @@ const
           'jquery'       : 'jQuery',
         },
         cache : true,
-        watch : true && ORDERD_WACHE,
+        watch : true && ENABLE_WATCH,
       }
     },
     'js_lint' : {
@@ -169,7 +168,7 @@ const
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
       dist    : DIR_DEV.dist,
-      watch   : true && ORDERD_WACHE,
+      watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -186,7 +185,7 @@ const
         // '!' + DIR_DEV.src + '/**/_*/**/*.pug',
       ],
       dist    : DIR_DEV.dist,
-      watch   : true && ORDERD_WACHE,
+      watch   : true && ENABLE_WATCH,
       options : {
         assistPretty : {
           assistAElement   : true,
@@ -209,7 +208,7 @@ const
     'sprite' : {
       src      : [ DIR_DEV.src + '/img/_sprite/*.png' ],
       dist     : DIR_DEV.dist,
-      watch    : true && ORDERD_WACHE,
+      watch    : true && ENABLE_WATCH,
       imgDist  : DIR_DEV.dist + '/img',
       scssDist : DIR_DEV.src + '/css',
       options  : {

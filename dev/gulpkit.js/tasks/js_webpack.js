@@ -4,6 +4,7 @@ const
   ,path    = require( 'path' )
   ,log     = require( 'fancy-log' )
   ,tap     = require( 'gulp-tap' )
+  ,serve_reload = require( './serve.js' ).serve_reload
 ;
 const
   config      = require( '../config.js' ).js_webpack
@@ -54,6 +55,7 @@ function js_webpack( done ) {
           log( `webpack:${chunks[ i ].id}` );
         };
       }
+      serve_reload();
       done();
     } );
   }
