@@ -17,9 +17,8 @@ module.exports = {
     }
   },
   set : function() {
-    console.info( LAST_RUN_TIME_FILE_PATH );
     if ( LAST_RUN_TIME_FILE_PATH ) {
-      fs.writeFileSync( LAST_RUN_TIME_FILE_PATH, new Date().getTime(), 'utf-8', function( error ) {
+      fs.writeFileSync( LAST_RUN_TIME_FILE_PATH, '' + new Date().getTime(), 'utf-8', ( error ) => {
         if ( error ) {
           console.info( error );
         }
