@@ -45,17 +45,21 @@ function js_webpack( done ) {
     wbpkConfig.mode = process.env.NODE_ENV;
     webpack( wbpkConfig, ( error, stats ) => {
       let chunks;
-      if ( error || stats.hasErrors() ) {
-        done();
-        return options.errorHandler( error );
+      if ( stats.hasErrors() ) {
+        log( 'webpack: has error' );
+      }
+      if ( error ) {
+        options.errorHandler( error );
       }
       chunks = stats.compilation.chunks;
-      for ( let i = 0; chunks.length > i; i++ ) {
-        if ( chunks[ i ].rendered === true ) {
-          log( `webpack:${chunks[ i ].id}` );
-        };
+      for ( let item of chunks ) {
+        if ( item.rendered === true ) {
+          log( `webpack:${item.id}` );
+        }
       }
-      serve_reload();
+      if ( typeof serve_reload === 'function' ) {
+        serve_reload();
+      }
       done();
     } );
   }

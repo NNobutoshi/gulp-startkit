@@ -1,7 +1,9 @@
 const
   fs = require( 'fs' )
   ,config = require( '../config.js' ).last_run_time
-  ,LAST_RUN_TIME_FILE_PATH = config.filePath
+;
+const
+  LAST_RUN_TIME_FILE_PATH = config.filePath
   ,NODE_ENV = process.env.NODE_ENV
 ;
 module.exports = {
@@ -15,10 +17,13 @@ module.exports = {
     }
   },
   set : function() {
-    fs.writeFileSync( LAST_RUN_TIME_FILE_PATH, new Date().getTime(), 'utf-8', function( error ) {
-      if ( error ) {
-        console.info( error );
-      }
-    } );
+    console.info( LAST_RUN_TIME_FILE_PATH );
+    if ( LAST_RUN_TIME_FILE_PATH ) {
+      fs.writeFileSync( LAST_RUN_TIME_FILE_PATH, new Date().getTime(), 'utf-8', function( error ) {
+        if ( error ) {
+          console.info( error );
+        }
+      } );
+    }
   },
 };

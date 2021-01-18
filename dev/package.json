@@ -56,6 +56,7 @@
     "js-beautify": "*",
     "merge-stream": "*",
     "patch-package": "*",
+    "postcss": "*",
     "pug": "*",
     "require-dir": "*",
     "stylelint": "*",
@@ -67,6 +68,7 @@
   "dependencies": {
     "core-js": "*",
     "jquery": "*",
-    "lodash": "*"
+    "lodash": "*",
+    "ua-parser-js": "*"
   }
 }
