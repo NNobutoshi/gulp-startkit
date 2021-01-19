@@ -158,6 +158,10 @@ const
         },
         cache : true,
         watch : true && ENABLE_WATCH,
+        watchOptions: {
+          aggregateTimeout: 200,
+          poll: 500,
+        },
       }
     },
     'js_lint' : {

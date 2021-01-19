@@ -3,9 +3,8 @@ const
 ;
 const
   config = require( './config.js' )
-  ,options = config.setup_watch.options
+  ,options = config.setup_watch.options.watch
 ;
-
 module.exports = function( tasks, reload ) {
   return function setupWatch( done ) {
     for ( const key in tasks ) {

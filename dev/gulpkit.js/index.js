@@ -19,7 +19,6 @@ const
 const
   args = process.argv.slice( 4 )
 ;
-
 if ( args.length ) {
   for ( let i = 0; i < args.length; i++ ) {
     exports[ args[ i ] ] = tasks[ args[ i ] ];
