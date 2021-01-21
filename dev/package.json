@@ -61,6 +61,7 @@
     "require-dir": "*",
     "stylelint": "*",
     "stylelint-config-recommended": "*",
+    "through2": "*",
     "webpack": "*",
     "webpack-cli": "*",
     "xls-to-json": "*"
