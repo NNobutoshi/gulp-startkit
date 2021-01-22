@@ -2,6 +2,7 @@ const
   merge   = require( 'lodash/mergeWith' )
   ,notify = require( 'gulp-notify' )
   ,fs     = require( 'fs' )
+  ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
 const
   NODE_ENV = process.env.NODE_ENV
@@ -22,7 +23,7 @@ const
 ;
 const
   config_dev = {
-    'clean': {
+    'clean' : {
       dist : [ DIR_DEV.dist + '/**/*.map' ],
       options : {
         force : true,
@@ -61,11 +62,11 @@ const
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
-        stylelint: {
-          fix: false,
-          failAfterError: true,
-          reporters: [ { formatter: 'string', console: true } ],
-          debug: true,
+        stylelint : {
+          fix            : false,
+          failAfterError : true,
+          reporters      : [ { formatter: 'string', console: true } ],
+          debug          : true,
         }
       }
     },
@@ -106,15 +107,15 @@ const
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         imageminMozjpeg : {
-          quality: 90
+          quality : 90
         },
         imageminPngquant : {
-          quality: [ 0.8, 0.9 ],
+          quality : [ 0.8, 0.9 ],
         },
         svgo : {
-          plugins: [
-            { removeViewBox: false },
-            { cleanupIDs: true },
+          plugins : [
+            { removeViewBox : false },
+            { cleanupIDs : true },
           ],
         },
       }
@@ -133,15 +134,15 @@ const
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       },
       wbpkConfig: {
-        mode   : 'development',
-        output : {},
-        devtool: ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
-        module : {
+        mode    : 'development',
+        output  : {},
+        devtool : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
+        module  : {
           rules : [
             {
-              test   : /\.js$/,
-              exclude: /node_modules/,
-              use    : [
+              test    : /\.js$/,
+              exclude : /node_modules/,
+              use     : [
                 {
                   loader  : 'babel-loader',
                   options : {
@@ -158,9 +159,9 @@ const
         },
         cache : true,
         watch : true && ENABLE_WATCH,
-        watchOptions: {
-          aggregateTimeout: 200,
-          poll: 500,
+        watchOptions : {
+          aggregateTimeout : 200,
+          poll : 500,
         },
       }
     },
@@ -241,15 +242,15 @@ const
         },
       }
     },
-    'last_run_time': {
-      filePath: './gulpkit.js/tasks/.last_run_timestamp',
+    'last_run_time' : {
+      filePath : './gulpkit.js/tasks/.last_run_timestamp',
     },
   }
 ;
 
 const
   config_prod = {
-    'clean': {
+    'clean' : {
       dist : [ DIR_PROD.dist + '/**/*.map' ],
       options : {
         force : true,
@@ -277,6 +278,9 @@ const
       wbpkConfig : {
         mode    : 'production',
         devtool : ( false || ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
+        optimization : {
+          minimizer : [ new TerserPlugin( { extractComments : false } ) ],
+        },
       }
     },
     'js_lint' : {
@@ -295,8 +299,8 @@ const
     'setup_watch' : {
       default : false,
     },
-    'last_run_time': {
-      filePath: false,
+    'last_run_time' : {
+      filePath : false,
     },
   }
 ;

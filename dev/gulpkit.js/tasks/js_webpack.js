@@ -45,7 +45,7 @@ function js_webpack( done ) {
     wbpkConfig.mode = process.env.NODE_ENV;
     webpack( wbpkConfig, ( error, stats ) => {
       let chunks;
-      if ( stats.hasErrors() ) {
+      if ( stats.hasErrors && stats.hasErrors() ) {
         log( 'webpack: has error' );
       }
       if ( error ) {

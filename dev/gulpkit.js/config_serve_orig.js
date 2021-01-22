@@ -1,6 +1,7 @@
 
 const
   conf_dev = {
+    enable : !!JSON.parse( process.env.SERVE_ENV || 'false' ),
     options : {
       port           : 9039,
       browser        : 'Chrome',
@@ -16,7 +17,8 @@ const
   //     open           : false,
   //   },
   // }
-  ,conf_prod = false;
+  ,conf_prod = false
+;
 
 module.exports = {
   conf_dev,

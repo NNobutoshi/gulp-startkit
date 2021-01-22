@@ -1,10 +1,11 @@
 const
   config = require( '../config.js' ).serve
-  ,options = ( config && config.options ) || false;
+  ,options = ( config && config.enable && config.options ) || false;
 ;
 let
   browserSync
 ;
+
 if ( options ) {
   browserSync = require( 'browser-sync' );
 }
