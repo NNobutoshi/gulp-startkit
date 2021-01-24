@@ -1,6 +1,6 @@
 const
   config = require( '../config.js' ).serve
-  ,options = ( config && config.enable && config.options ) || false;
+  ,options = ( config && config.enable && config.options ) || false
 ;
 let
   browserSync

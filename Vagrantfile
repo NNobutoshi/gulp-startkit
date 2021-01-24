@@ -11,10 +11,10 @@ _conf_defaults = {
   "hostPort" => 2222,
 }
 
-if File.exists?("./config.yml")
+if File.exists?("./vagrant_config.yml")
   _conf_custom = YAML.load(
     File.open(
-      "./config.yml",
+      "./vagrant_config.yml",
       File::RDONLY
     ).read
   )
@@ -58,8 +58,10 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
 
-  config.vm.synced_folder "../", "/home/vagrant/www"
-  config.vm.synced_folder "../html", "/var/www/html"
+  config.vm.synced_folder "./", "/home/vagrant/www", type: "rsync", rsync__exclude: "node_modules/"
+  config.vm.synced_folder "./html", "/home/vagrant/www/html"
+  config.vm.synced_folder "./html", "/var/www/html"
+  config.vm.synced_folder "./dev", "/home/vagrant/www/dev"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -97,10 +99,6 @@ Vagrant.configure("2") do |config|
     sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
     # selinux conf
     sed -i -e "s%SELINUX=enforcing%SELINUX=disabled%g" /etc/selinux/config
-    # package.json symlink
-    ln -s /home/vagrant/www/dev/package.json /home/vagrant
-    ln -s /home/vagrant/www/dev/package-lock.json /home/vagrant
-    ln -s /home/vagrant/www/dev/npm-shrinkwrap.json /home/vagrant
     # nodejs
     curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
     sudo yum install -y nodejs-14.15.4
@@ -114,7 +112,7 @@ Vagrant.configure("2") do |config|
     # systemctl enable httpd.service
     systemctl start httpd.service
     # npm install
-    cd /home/vagrant
+    cd /home/vagrant/www
     npm install -g gulp
     npm install -g cross-env
     sudo npm install
