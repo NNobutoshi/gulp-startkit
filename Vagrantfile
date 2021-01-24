@@ -109,7 +109,7 @@ Vagrant.configure("2") do |config|
     firewall-cmd --permanent --add-port=3001/tcp
     firewall-cmd --reload
     # http
-    # systemctl enable httpd.service
+    systemctl enable httpd.service
     systemctl start httpd.service
     # npm install
     cd /home/vagrant/www
