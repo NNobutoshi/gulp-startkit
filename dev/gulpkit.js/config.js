@@ -1,7 +1,8 @@
 const
-  merge   = require( 'lodash/mergeWith' )
-  ,notify = require( 'gulp-notify' )
-  ,fs     = require( 'fs' )
+  merge         = require( 'lodash/mergeWith' )
+  ,notify       = require( 'gulp-notify' )
+  ,fs           = require( 'fs' )
+  ,webpack      = require( 'webpack' )
   ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
 const
@@ -137,6 +138,9 @@ const
         mode    : 'development',
         output  : {},
         devtool : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
+        plugins : [
+          new webpack.SourceMapDevToolPlugin( {} ),
+        ],
         module  : {
           rules : [
             {
