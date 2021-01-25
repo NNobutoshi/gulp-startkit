@@ -24,7 +24,7 @@ function js_webpack( done ) {
   src( config.src, srcOptions )
     .pipe( tap( ( file ) => {
       const
-        key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' )
+        key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' ).replace( /\\/g, '/' )
         ,val = `./${config.base}/${path.relative( config.base, file.path ).replace( /\\/g, '/' )}`
       ;
       entries[ key ] = val;
