@@ -35,7 +35,7 @@ function css_sass() {
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf(
       config.sourcemap,
-      sourcemap.write( './' ),
+      sourcemap.write( config.sourcemap_dir ),
     ) )
     .pipe( dest( config.dist ) )
   ;

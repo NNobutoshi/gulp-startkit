@@ -2,12 +2,12 @@ const
   merge         = require( 'lodash/mergeWith' )
   ,notify       = require( 'gulp-notify' )
   ,fs           = require( 'fs' )
+  ,webpack      = require( 'webpack' )
   ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
 const
   NODE_ENV = process.env.NODE_ENV
 ;
-
 const
   DIR_DEV = {
     dist : '../html',
@@ -24,17 +24,22 @@ const
 const
   config_dev = {
     'clean' : {
-      dist : [ DIR_DEV.dist + '/**/*.map' ],
+      dist : [
+        DIR_DEV.dist
+      ],
       options : {
-        force : true,
+        del : {
+          force : true,
+        },
       },
     },
     'css_sass' : {
-      src       : [ DIR_DEV.src + '/**/*.scss' ],
-      dist      : DIR_DEV.dist,
-      watch     : true && ENABLE_WATCH,
-      cssMqpack : false,
-      sourcemap : true && ENABLE_SOURCEMAP_DEV,
+      src           : [ DIR_DEV.src + '/**/*.scss' ],
+      dist          : DIR_DEV.dist,
+      watch         : true && ENABLE_WATCH,
+      cssMqpack     : false,
+      sourcemap     : true && ENABLE_SOURCEMAP_DEV,
+      sourcemap_dir : '/sourcemaps',
       options   : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -159,6 +164,11 @@ const
         },
         cache : true,
         watch : true && ENABLE_WATCH,
+        plugins: [
+          new webpack.SourceMapDevToolPlugin( {
+            filename : 'sourcemaps/[file].map',
+          } ),
+        ],
         watchOptions : {
           aggregateTimeout : 200,
           poll : 500,
@@ -247,13 +257,16 @@ const
     },
   }
 ;
-
 const
   config_prod = {
     'clean' : {
-      dist : [ DIR_PROD.dist + '/**/*.map' ],
+      dist : [
+        DIR_PROD.dist
+      ],
       options : {
-        force : true,
+        del : {
+          force : true,
+        },
       },
     },
     'css_sass' : {

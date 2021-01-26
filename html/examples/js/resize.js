@@ -3754,4 +3754,4 @@ module.exports = jQuery;
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;
-//# sourceMappingURL=resize.js.map
+//# sourceMappingURL=../../sourcemaps/examples/js/resize.js.map

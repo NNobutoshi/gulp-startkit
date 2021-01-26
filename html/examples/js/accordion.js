@@ -3655,4 +3655,4 @@ module.exports = jQuery;
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;
-//# sourceMappingURL=accordion.js.map
+//# sourceMappingURL=../../sourcemaps/examples/js/accordion.js.map

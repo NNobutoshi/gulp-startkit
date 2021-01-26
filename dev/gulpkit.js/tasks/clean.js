@@ -8,5 +8,5 @@ const
 module.exports = clean;
 
 function clean() {
-  return del( config.dist, config.options );
+  return del( config.dist, config.options.del );
 }
