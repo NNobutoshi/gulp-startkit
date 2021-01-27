@@ -104,7 +104,11 @@ const
       },
     },
     'img_min' : {
-      src     : [ DIR_DEV.src + '/**/*.{png,jpg,svg}' ],
+      src     : [
+        DIR_DEV.src + '/**/*.{png,jpg,svg}',
+        '!' + DIR_DEV.src + '/**/_sprite/*.png',
+        '!' + DIR_DEV.src + '/**/_sprite_svg/*.svg',
+      ],
       dist    : DIR_DEV.dist,
       watch   : true && ENABLE_WATCH,
       options : {
@@ -243,6 +247,39 @@ const
         },
       },
     },
+    'sprite_svg': {
+      src   : [ DIR_DEV.src + '/img/_sprite_svg/*.svg' ],
+      dist  : DIR_DEV.dist,
+      watch : true && ENABLE_WATCH,
+      options :  {
+        svgSprite : {
+          mode  : {
+            symbol : {
+              dest    : 'img',
+              sprite  : 'common_sprite_svg.svg',
+              example : {
+                dest : '../examples/sprite_svg.html',
+              }
+            },
+          },
+          shape : {
+            transform : [
+              {
+                svgo: {
+                  plugins : [
+                    { removeViewBox : false },
+                  ]
+                }
+              },
+            ],
+          },
+          svg : {
+            xmlDeclaration     : false,
+            doctypeDeclaration : false,
+          }
+        },
+      },
+    },
     'serve' : null,
     'setup_watch' : {
       errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -305,6 +342,10 @@ const
       watch : false,
     },
     'sprite' : {
+      dist  : DIR_PROD.dist,
+      watch : false,
+    },
+    'sprite_svg' : {
       dist  : DIR_PROD.dist,
       watch : false,
     },
