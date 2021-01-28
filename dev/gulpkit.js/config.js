@@ -2,6 +2,7 @@ const
   merge         = require( 'lodash/mergeWith' )
   ,notify       = require( 'gulp-notify' )
   ,fs           = require( 'fs' )
+  ,path         = require( 'path' )
   ,webpack      = require( 'webpack' )
   ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
@@ -106,8 +107,7 @@ const
     'img_min' : {
       src     : [
         DIR_DEV.src + '/**/*.{png,jpg,svg}',
-        '!' + DIR_DEV.src + '/**/_sprite/*.png',
-        '!' + DIR_DEV.src + '/**/_sprite_svg/*.svg',
+        '!' + DIR_DEV.src + '/**/_sprite*/*.{png,svg}',
       ],
       dist    : DIR_DEV.dist,
       watch   : true && ENABLE_WATCH,
@@ -259,7 +259,7 @@ const
               sprite  : 'common_sprite_svg.svg',
               example : {
                 dest : '../examples/sprite_svg.html',
-              }
+              },
             },
           },
           shape : {
@@ -268,15 +268,41 @@ const
                 svgo: {
                   plugins : [
                     { removeViewBox : false },
-                  ]
-                }
+                  ],
+                },
               },
             ],
           },
           svg : {
             xmlDeclaration     : false,
             doctypeDeclaration : false,
-          }
+          },
+        },
+      },
+    },
+    'sprite_svg_bg': {
+      src   : [ DIR_DEV.src + '/img/_sprite_svg_bg/*.svg' ],
+      base  : DIR_DEV.src,
+      dist  : DIR_DEV.dist,
+      watch : true && ENABLE_WATCH,
+      options :  {
+        svgSprite : {
+          mode : {
+            css : {
+              dest       : 'css',
+              sprite     : '../img/common_sprite_svg_bg.svg',
+              prefix     : '.icon_%s',
+              dimensions : '_dims',
+              render     : {
+                scss : {
+                  dest: path.resolve( process.cwd() + '/css/_sprite_svg_bg.scss' ),
+                },
+              },
+              example: {
+                dest: path.resolve( process.cwd() + '/examples/sprite-svg-bg.html' ),
+              }
+            },
+          },
         },
       },
     },

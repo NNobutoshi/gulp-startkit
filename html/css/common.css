@@ -377,6 +377,46 @@ template {
 
 /* stylelint-disable */
 /* stylelint-anable */
+.icon_arrow_down, .icon_arrow_left, .icon_arrow_right, .icon_arrow_up {
+  background: url("../img/common_sprite_svg_bg-9082c34e.svg") no-repeat;
+}
+
+.icon_arrow_down {
+  background-position: 0 0;
+}
+
+.icon_arrow_down_dims {
+  width: 166.07px;
+  height: 201.22px;
+}
+
+.icon_arrow_left {
+  background-position: 49.90384037502254% 0;
+}
+
+.icon_arrow_left_dims {
+  width: 201.22px;
+  height: 166.07px;
+}
+
+.icon_arrow_right {
+  background-position: 0 99.64839300747784%;
+}
+
+.icon_arrow_right_dims {
+  width: 201.22px;
+  height: 166.07px;
+}
+
+.icon_arrow_up {
+  background-position: 99.82605386894247% 0;
+}
+
+.icon_arrow_up_dims {
+  width: 166.07px;
+  height: 201.22px;
+}
+
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons/icons.eot");
