@@ -59,6 +59,7 @@ const
     'css_lint' : {
       src       : [
         DIR_DEV.src + '/**/*.scss',
+        '!' + DIR_DEV.src + '/css/_sprite_vector.scss',
         '!' + DIR_DEV.src + '/**/_vendor/*.scss',
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
@@ -249,6 +250,7 @@ const
     },
     'sprite_svg': {
       src   : [ DIR_DEV.src + '/img/_sprite_svg/*.svg' ],
+      base  : DIR_DEV.src,
       dist  : DIR_DEV.dist,
       watch : true && ENABLE_WATCH,
       options :  {
@@ -256,13 +258,34 @@ const
           mode  : {
             symbol : {
               dest    : 'img',
-              sprite  : 'common_sprite_svg.svg',
+              sprite  : 'common_symbols.svg',
               example : {
-                dest : '../examples/sprite_svg.html',
+                dest : '../examples/sprite_svg_symbols.html',
               },
+            },
+            css : {
+              dest       : 'css',
+              sprite     : '../img/common_sheet.svg',
+              prefix     : '.icon_%s',
+              dimensions : '_dims',
+              render     : {
+                scss : {
+                  dest: path.resolve( process.cwd(), 'css/_sprite_vector.scss' ),
+                },
+              },
+              example: {
+                dest: path.resolve( process.cwd(), 'examples/sprite_svg_bg.html' ),
+              }
             },
           },
           shape : {
+            // dimension : {
+            //   maxWidth  : 32,
+            //   maxHeight : 32,
+            // },
+            spacing : {
+              // padding : 10,
+            },
             transform : [
               {
                 svgo: {
@@ -276,32 +299,6 @@ const
           svg : {
             xmlDeclaration     : false,
             doctypeDeclaration : false,
-          },
-        },
-      },
-    },
-    'sprite_svg_bg': {
-      src   : [ DIR_DEV.src + '/img/_sprite_svg_bg/*.svg' ],
-      base  : DIR_DEV.src,
-      dist  : DIR_DEV.dist,
-      watch : true && ENABLE_WATCH,
-      options :  {
-        svgSprite : {
-          mode : {
-            css : {
-              dest       : 'css',
-              sprite     : '../img/common_sprite_svg_bg.svg',
-              prefix     : '.icon_%s',
-              dimensions : '_dims',
-              render     : {
-                scss : {
-                  dest: path.resolve( process.cwd() + '/css/_sprite_svg_bg.scss' ),
-                },
-              },
-              example: {
-                dest: path.resolve( process.cwd() + '/examples/sprite-svg-bg.html' ),
-              }
-            },
           },
         },
       },
@@ -336,6 +333,11 @@ const
       dist      : DIR_PROD.dist,
       watch     : false,
       sourcemap : false || ENABLE_SOURCEMAP_PROD,
+      options   : {
+        sass : {
+          outputStyle : 'compressed', // nested, compact, compressed, expanded
+        },
+      }
     },
     'css_lint' : {
       dist  : DIR_PROD.dist,
@@ -357,6 +359,9 @@ const
         optimization : {
           minimizer : [ new TerserPlugin( { extractComments : false } ) ],
         },
+        plugins: [
+          function() {},
+        ],
       }
     },
     'js_lint' : {
@@ -373,7 +378,7 @@ const
     },
     'sprite_svg' : {
       dist  : DIR_PROD.dist,
-      watch : false,
+      watch: false,
     },
     'serve' : null,
     'setup_watch' : {

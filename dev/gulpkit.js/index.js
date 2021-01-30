@@ -10,7 +10,6 @@ const
     serve_reload  : require( './tasks/serve' ).serve_reload,
     sprite        : require( './tasks/sprite' ),
     sprite_svg    : require( './tasks/sprite_svg' ),
-    sprite_svg_bg : require( './tasks/sprite_svg_bg' ),
     css_lint      : require( './tasks/css_lint' ),
     js_lint       : require( './tasks/js_lint' ),
     clean         : require( './tasks/clean' ),
@@ -39,7 +38,7 @@ exports.default = series(
     series(
       tasks.icon_font,
       tasks.img_min,
-      parallel( tasks.sprite, tasks.sprite_svg, tasks.sprite_svg_bg ),
+      parallel( tasks.sprite, tasks.sprite_svg ),
       tasks.css_sass,
       tasks.css_lint,
     ),

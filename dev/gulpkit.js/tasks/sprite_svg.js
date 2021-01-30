@@ -2,6 +2,7 @@ const
   { src, dest, lastRun } = require( 'gulp' )
   ,svgSprite = require( 'gulp-svg-sprite' )
   ,plumber  = require( 'gulp-plumber' )
+  ,gulpIf   = require( 'gulp-if' )
 ;
 const
   config = require( '../config.js' ).sprite_svg
@@ -21,6 +22,9 @@ function sprite_svg() {
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( svgSprite( options.svgSprite ) )
-    .pipe( dest( config.dist ) )
+    .pipe( gulpIf( /\.svg$/, dest( config.dist ) ) )
+    .pipe( gulpIf( /\.css$/, dest( config.dist ) ) )
+    .pipe( gulpIf( /\.scss$/, dest( config.base ) ) )
+    .pipe( gulpIf( /\.html$/, dest( config.dist ) ) )
   ;
 }
