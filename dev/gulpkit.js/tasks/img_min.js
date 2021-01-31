@@ -2,6 +2,7 @@ const
   { src, dest, lastRun } = require( 'gulp' )
   ,imagemin = require( 'gulp-imagemin' )
   ,plumber  = require( 'gulp-plumber' )
+  ,diff     = require( 'gulp-diff-build' )
   ,imageminMozjpeg  = require( 'imagemin-mozjpeg' )
   ,imageminPngquant = require( 'imagemin-pngquant' )
 ;
@@ -15,13 +16,12 @@ const
 module.exports = img_min;
 
 function img_min() {
-  const
-    srcOptions = {
-      since : lastRun( img_min ) || process.lastRunTime,
-    }
-  ;
+  const srcOptions = {
+    since : lastRun( img_min ) || process.lastRunTime
+  };
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
+    .pipe( diff( options.diff ) )
     .pipe( imagemin( [
       imageminMozjpeg( options.imageminMozjpeg ),
       imageminPngquant( options.imageminPngquant ),

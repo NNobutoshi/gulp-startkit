@@ -13,11 +13,9 @@ const
 module.exports = js_lint;
 
 function js_lint() {
-  const
-    srcOptions = {
-      since : lastRun( js_lint ) || process.lastRunTime,
-    }
-  ;
+  const srcOptions = {
+    since : lastRun( js_lint ) || process.lastRunTime
+  };
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
     .pipe( eslint( options.eslint ) )

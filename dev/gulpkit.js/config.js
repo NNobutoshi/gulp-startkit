@@ -45,6 +45,9 @@ const
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
+        diff : {
+          hash : 'css_sass',
+        },
         postcss : {
           plugins : [ require( 'autoprefixer' )() ]
         },
@@ -74,7 +77,10 @@ const
           failAfterError : true,
           reporters      : [ { formatter: 'string', console: true } ],
           debug          : true,
-        }
+        },
+        diff : {
+          hash : 'css_lint',
+        },
       }
     },
     'icon_font' : {
@@ -99,6 +105,9 @@ const
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/icons/',
           firstGlyph : 0xF001,
+        },
+        diff : {
+          hash : 'icon_font',
         },
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -128,6 +137,9 @@ const
             { cleanupIDs : true },
           ],
         },
+        diff : {
+          hash : 'img_min',
+        }
       }
     },
     'js_webpack' : {
@@ -167,7 +179,10 @@ const
           'ua-parser-js' : 'UaParser',
           'jquery'       : 'jQuery',
         },
-        cache : true,
+        cache: {
+          type : 'filesystem',
+          cacheDirectory : path.resolve( process.cwd(), '.webpack_cache' ),
+        },
         watch : true && ENABLE_WATCH,
         plugins: [
           new webpack.SourceMapDevToolPlugin( {
@@ -219,6 +234,9 @@ const
           indent_char : ' ',
         },
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+        diff : {
+          hash : 'html_pug',
+        },
         pug : {
           pretty  : true,
           basedir : DIR_DEV.src,
@@ -245,6 +263,9 @@ const
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
+        },
+        diff : {
+          hash : 'sprite',
         },
       },
     },
@@ -300,6 +321,9 @@ const
             xmlDeclaration     : false,
             doctypeDeclaration : false,
           },
+        },
+        diff      : {
+          hash : 'sprite_svg'
         },
       },
     },

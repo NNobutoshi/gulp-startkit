@@ -1,8 +1,9 @@
 const
-  { src, dest, lastRun } = require( 'gulp' )
+  { src, dest } = require( 'gulp' )
   ,svgSprite = require( 'gulp-svg-sprite' )
-  ,plumber  = require( 'gulp-plumber' )
-  ,gulpIf   = require( 'gulp-if' )
+  ,plumber   = require( 'gulp-plumber' )
+  ,gulpIf    = require( 'gulp-if' )
+  ,diff      = require( 'gulp-diff-build' )
 ;
 const
   config = require( '../config.js' ).sprite_svg
@@ -14,13 +15,9 @@ const
 module.exports = sprite_svg;
 
 function sprite_svg() {
-  const
-    srcOptions = {
-      since : lastRun( sprite_svg ) || process.lastRunTime,
-    }
-  ;
-  return src( config.src, srcOptions )
+  return src( config.src )
     .pipe( plumber( options.plumber ) )
+    .pipe( diff( { hash : 'sprite_svg' } ) )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/, dest( config.dist ) ) )
     .pipe( gulpIf( /\.css$/, dest( config.dist ) ) )

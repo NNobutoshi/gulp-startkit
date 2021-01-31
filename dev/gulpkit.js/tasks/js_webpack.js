@@ -1,9 +1,9 @@
 const
-  { src }  = require( 'gulp' )
-  ,webpack = require( 'webpack' )
-  ,path    = require( 'path' )
-  ,log     = require( 'fancy-log' )
-  ,tap     = require( 'gulp-tap' )
+  { src }       = require( 'gulp' )
+  ,webpack      = require( 'webpack' )
+  ,path         = require( 'path' )
+  ,log          = require( 'fancy-log' )
+  ,tap          = require( 'gulp-tap' )
   ,serve_reload = require( './serve.js' ).serve_reload
 ;
 const
@@ -15,13 +15,8 @@ const
 module.exports = js_webpack;
 
 function js_webpack( done ) {
-  const
-    entries = {}
-    ,srcOptions = {
-      // since : lastRun( js_webpack ) || process.lastRunTime,
-    }
-  ;
-  src( config.src, srcOptions )
+  const entries = {};
+  src( config.src )
     .pipe( tap( ( file ) => {
       const
         key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' ).replace( /\\/g, '/' )

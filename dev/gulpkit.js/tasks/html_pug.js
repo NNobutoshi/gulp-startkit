@@ -5,6 +5,7 @@ const
   ,log          = require( 'fancy-log' )
   ,path         = require( 'path' )
   ,through      = require( 'through2' )
+  ,diff         = require( 'gulp-diff-build' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -16,12 +17,8 @@ const
 module.exports = html_pug;
 
 function html_pug() {
-  const
-    srcOptions = {
-      // since : lastRun( html_pug ) || process.lastRunTime,
-    }
-  ;
-  return src( config.src, srcOptions )
+  return src( config.src )
+    .pipe( diff( options.diff ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )

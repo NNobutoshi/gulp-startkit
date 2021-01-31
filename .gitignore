@@ -12,3 +12,5 @@ npm-debug.log
 /dev/gulpkit.js/tasks/.last_run_timestamp
 /dev/gulpkit.js/config_serve.js
 /vagrant_config.yml
+/dev/.webpack_cache
+/dev/.gulp
