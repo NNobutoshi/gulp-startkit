@@ -112,9 +112,7 @@ Vagrant.configure("2") do |config|
     systemctl enable httpd.service
     systemctl start httpd.service
     # npm install
-    cd /home/vagrant/www
-    npm install -g gulp
-    npm install -g cross-env
+    cd /home/vagrant/project
     sudo npm install
   SHELL
 end
