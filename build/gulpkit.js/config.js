@@ -11,11 +11,11 @@ const
 ;
 const
   DIR_DEV = {
-    dist : '../html',
+    dist : '../dist/development',
     src  : 'src',
   }
   ,DIR_PROD = {
-    dist : '../dist',
+    dist : '../dist/production',
     src  : 'src',
   }
   ,ENABLE_SOURCEMAP_DEV = true
