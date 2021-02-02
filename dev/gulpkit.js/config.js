@@ -137,10 +137,7 @@ const
             { cleanupIDs : true },
           ],
         },
-        diff : {
-          hash : 'img_min',
-        }
-      }
+      },
     },
     'js_webpack' : {
       src     : [ DIR_DEV.src + '/**/*.entry.js' ],
@@ -361,19 +358,24 @@ const
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
         },
-      }
+        diff : false,
+      },
     },
     'css_lint' : {
       dist  : DIR_PROD.dist,
       watch : false,
     },
     'icon_font' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
+      dist        : DIR_PROD.dist,
+      watch       : false,
+      fontsCopyTo : DIR_PROD.dist + '/fonts/icons',
+      options : {
+        diff : false,
+      },
     },
     'img_min' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
+      dist    : DIR_PROD.dist,
+      watch   : false,
     },
     'js_webpack' : {
       dist       : DIR_PROD.dist,
@@ -393,16 +395,25 @@ const
       watch : false,
     },
     'html_pug' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
+      dist    : DIR_PROD.dist,
+      watch   : false,
+      options : {
+        diff : false,
+      },
     },
     'sprite' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
+      dist    : DIR_PROD.dist,
+      watch   : false,
+      options : {
+        diff : false,
+      },
     },
     'sprite_svg' : {
       dist  : DIR_PROD.dist,
       watch: false,
+      options : {
+        diff : false,
+      },
     },
     'serve' : null,
     'setup_watch' : {

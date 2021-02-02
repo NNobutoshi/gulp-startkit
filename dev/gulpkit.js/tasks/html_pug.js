@@ -6,6 +6,7 @@ const
   ,path         = require( 'path' )
   ,through      = require( 'through2' )
   ,diff         = require( 'gulp-diff-build' )
+  ,gulpIf       = require( 'gulp-if' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -18,7 +19,10 @@ module.exports = html_pug;
 
 function html_pug() {
   return src( config.src )
-    .pipe( diff( options.diff ) )
+    .pipe( gulpIf(
+      options.diff,
+      diff( options.diff )
+    ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )

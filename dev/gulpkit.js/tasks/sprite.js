@@ -2,8 +2,9 @@ const
   { src, dest } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
-  ,mergeStream  = require( 'merge-stream' )
   ,diff         = require( 'gulp-diff-build' )
+  ,gulpIf       = require( 'gulp-if' )
+  ,mergeStream  = require( 'merge-stream' )
 ;
 const
   config = require( '../config.js' ).sprite
@@ -22,7 +23,10 @@ function sprite() {
   ;
   spriteData = src( config.src )
     .pipe( plumber() )
-    .pipe( diff( options.diff ) )
+    .pipe( gulpIf(
+      options.diff,
+      diff( options.diff )
+    ) )
     .pipe( spriteSmith( options.sprite ) )
   ;
   imgStream = spriteData

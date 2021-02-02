@@ -17,7 +17,10 @@ module.exports = sprite_svg;
 function sprite_svg() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( { hash : 'sprite_svg' } ) )
+    .pipe( gulpIf(
+      options.diff,
+      diff( options.diff )
+    ) )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/, dest( config.dist ) ) )
     .pipe( gulpIf( /\.css$/, dest( config.dist ) ) )

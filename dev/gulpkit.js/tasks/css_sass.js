@@ -5,8 +5,8 @@ const
   ,postcss      = require( 'gulp-postcss' )
   ,sass         = require( 'gulp-sass' )
   ,sourcemap    = require( 'gulp-sourcemaps' )
-  ,cssMqpacker  = require( 'css-mqpacker' )
   ,diff         = require( 'gulp-diff-build' )
+  ,cssMqpacker  = require( 'css-mqpacker' )
 ;
 const
   config = require( '../config.js' ).css_sass
@@ -23,7 +23,10 @@ function css_sass() {
   }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff ) )
+    .pipe( gulpIf(
+      options.diff,
+      diff( options.diff )
+    ) )
     .pipe( gulpIf(
       config.sourcemap,
       sourcemap.init( { loadMaps: true } ),

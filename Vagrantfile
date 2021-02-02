@@ -58,10 +58,10 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
 
-  config.vm.synced_folder "./", "/home/vagrant/www", type: "rsync", rsync__exclude: "node_modules/"
-  config.vm.synced_folder "./html", "/home/vagrant/www/html"
+  config.vm.synced_folder "./", "/home/vagrant/project", type: "rsync", rsync__exclude: "node_modules/"
+  config.vm.synced_folder "./html", "/home/vagrant/project/html"
   config.vm.synced_folder "./html", "/var/www/html"
-  config.vm.synced_folder "./dev", "/home/vagrant/www/dev"
+  config.vm.synced_folder "./dev", "/home/vagrant/project/dev"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
