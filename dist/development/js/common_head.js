@@ -33,7 +33,7 @@ var uaParser = new (ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default())();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes[]=UaParser!ua-parser-js */ "../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser.js");
+/* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes[]=UaParser!ua-parser-js */ "../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser-exposed.js");
 /* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _modules_adjust_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/adjust.js */ "./src/js/_modules/adjust.js");
 
@@ -44,10 +44,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser.js":
-/*!******************************************************************************************************************!*\
-  !*** ../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser.js ***!
-  \******************************************************************************************************************/
+/***/ "../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser-exposed.js":
+/*!**************************************************************************************************************************!*\
+  !*** ../node_modules/expose-loader/dist/cjs.js?exposes[]=UaParser!../node_modules/ua-parser-js/src/ua-parser-exposed.js ***!
+  \**************************************************************************************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var ___EXPOSE_LOADER_IMPORT___ = __webpack_require__(/*! -!./ua-parser.js */ "../node_modules/ua-parser-js/src/ua-parser.js");
