@@ -2,7 +2,6 @@ const
   { src, lastRun } = require( 'gulp' )
   ,plumber   = require( 'gulp-plumber' )
   ,stylelint = require( 'gulp-stylelint' )
-  ,diff      = require( 'gulp-diff-build' )
 ;
 const
   config = require( '../config.js' ).css_lint
@@ -19,7 +18,6 @@ function css_lint() {
   };
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff ) )
     .pipe( stylelint( options.stylelint ) )
   ;
 }

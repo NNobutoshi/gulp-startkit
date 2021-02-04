@@ -37,6 +37,7 @@ const
     'css_sass' : {
       src           : [ DIR_DEV.src + '/**/*.scss' ],
       dist          : DIR_DEV.dist,
+      base          : DIR_DEV.src,
       watch         : true && ENABLE_WATCH,
       cssMqpack     : false,
       sourcemap     : true && ENABLE_SOURCEMAP_DEV,
@@ -77,9 +78,6 @@ const
           failAfterError : true,
           reporters      : [ { formatter: 'string', console: true } ],
           debug          : true,
-        },
-        diff : {
-          hash : 'css_lint',
         },
       }
     },
