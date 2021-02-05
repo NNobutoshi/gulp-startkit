@@ -104,9 +104,6 @@ const
           fontPath   : '../fonts/icons/',
           firstGlyph : 0xF001,
         },
-        diff : {
-          hash : 'icon_font',
-        },
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
@@ -368,9 +365,6 @@ const
       dist        : DIR_PROD.dist,
       watch       : false,
       fontsCopyTo : DIR_PROD.dist + '/fonts/icons',
-      options : {
-        diff : false,
-      },
     },
     'img_min' : {
       dist    : DIR_PROD.dist,
