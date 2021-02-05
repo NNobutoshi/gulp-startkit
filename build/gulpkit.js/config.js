@@ -215,6 +215,7 @@ const
         // '!' + DIR_DEV.src + '/**/_*/**/*.pug',
       ],
       dist    : DIR_DEV.dist,
+      base    : DIR_DEV.src,
       watch   : true && ENABLE_WATCH,
       options : {
         assistPretty : {

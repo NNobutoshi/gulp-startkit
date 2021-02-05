@@ -1,12 +1,10 @@
 const
-  { src, dest } = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,pug          = require( 'pug' )
   ,log          = require( 'fancy-log' )
   ,path         = require( 'path' )
   ,through      = require( 'through2' )
-  ,diff         = require( 'gulp-diff-build' )
-  ,gulpIf       = require( 'gulp-if' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -19,10 +17,7 @@ module.exports = html_pug;
 
 function html_pug() {
   return src( config.src )
-    .pipe( gulpIf(
-      options.diff,
-      diff( options.diff )
-    ) )
+    .pipe( _diff_build() )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )
@@ -30,6 +25,71 @@ function html_pug() {
       log( `html_pug: rendered ${_pugRender.totalFiles.counter} files` );
     } )
   ;
+}
+
+function _diff_build() {
+  const
+    allFiles = {}
+    ,deps = {}
+    ,targets = []
+    ,since = lastRun( html_pug ) || process.lastRunTime
+  ;
+  return through.obj( _transform, _flush );
+
+  function _transform( file, enc, callBack ) {
+    const
+      contents = String( file.contents )
+      ,regex = /^.*?(extends|include) *(.+)$/mg
+      ,matches = contents.matchAll( regex )
+    ;
+    if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
+      targets.push( file.path );
+    }
+    allFiles[ file.path ] = file;
+
+    for ( const match of matches ) {
+      for ( let i = 0, len = match.length; i < len; i++ ) {
+        let keyFileName;
+        if ( i % 3 === 2 ) { // パス部分
+          if ( /^\//.test( match[ i ] ) ) {
+            keyFileName = path.join( process.cwd(), config.base, match[ i ] );
+          } else {
+            keyFileName = path.resolve( file.dirname, match[ i ] );
+          }
+          if ( !deps[ keyFileName ] ) {
+            deps[ keyFileName ] = [];
+          };
+          deps[ keyFileName ].push( file.path );
+        }
+      }
+    }
+    callBack();
+  }
+
+  function _flush( callBack ) {
+    const
+      destFiles = {}
+      ,self = this
+    ;
+    targets.forEach( ( filePath ) => {
+      destFiles[ filePath ] = 1;
+      createDestFiles( filePath );
+    } );
+    function createDestFiles( filePath ) {
+      if ( deps[ filePath ] && deps[ filePath ].length ) {
+        deps[ filePath ].forEach( ( item ) => {
+          destFiles[ item ] = 1;
+          if ( Object.keys( deps ).includes( item ) ) {
+            createDestFiles( item );
+          }
+        } );
+      }
+    }
+    Object.keys( destFiles ).forEach( ( item ) => {
+      self.push( allFiles[ item ] );
+    } );
+    callBack();
+  }
 }
 
 function _pugRender() {
