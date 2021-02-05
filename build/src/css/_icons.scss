@@ -28,7 +28,7 @@
 
 @function icon-char($filename) {
   $char: "";
-
+  
   @if $filename == arrow1_r {
     $char: "\F001";
   }

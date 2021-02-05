@@ -5,6 +5,7 @@ const
   ,plumber     = require( 'gulp-plumber' )
   ,diff        = require( 'gulp-diff-build' )
   ,gulpIf      = require( 'gulp-if' )
+  ,tap         = require( 'gulp-tap' )
 ;
 const
   config = require( '../config.js' ).icon_font
@@ -22,15 +23,14 @@ function icon_font() {
       options.diff,
       diff( options.diff )
     ) )
+    .pipe( tap( ( file ) => {
+      console.info( file.path );
+    } ) )
     .pipe( iconfontCss( options.iconfontCss ) )
     .pipe( iconfont( options.iconfont ) )
     .pipe( dest( config.fontsDist ) )
     .on( 'finish', function() {
       src( config.fontsCopyFrom )
-        .pipe( gulpIf(
-          options.diff,
-          diff( options.diff )
-        ) )
         .pipe( dest( config.fontsCopyTo ) )
       ;
     } )
