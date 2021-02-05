@@ -1,12 +1,11 @@
 const
-  { src, dest, lastRun, series } = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,plumber     = require( 'gulp-plumber' )
   ,postcss     = require( 'gulp-postcss' )
   ,sass        = require( 'gulp-sass' )
   ,cssMqpacker = require( 'css-mqpacker' )
   ,grapher     = require( 'sass-graph' )
   ,through     = require( 'through2' )
-  ,path        = require( 'path' )
 ;
 const
   config = require( '../config.js' ).css_sass
@@ -18,66 +17,54 @@ const
   graph = grapher.parseDir( config.base )
 ;
 
-module.exports = css_sass();
+module.exports = css_sass;
 
 function css_sass() {
-  let
-    newSrc
+  const
+    srcOptions = { sourcemaps : config.sourcemap }
+    ,destOptions = { sourcemaps : config.sourcemap_dir }
   ;
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
+  return src( config.src, srcOptions )
+    .pipe( plumber( options.plumber ) )
+    .pipe( _diff_build() )
+    .pipe( sass( options.sass ) )
+    .pipe( postcss( options.postcss.plugins ) )
+    .pipe( dest( config.dist, destOptions ) )
+  ;
+}
 
-  return series( css_sass_diff, css_sass_build );
+function _diff_build() {
+  const
+    allFiles = {}
+    ,destFiles = {}
+    ,targets = []
+    ,since = lastRun( css_sass ) || process.lastRunTime
+  ;
+  return through.obj( _transform, _flush );
 
-  function css_sass_diff() {
-    const
-      srcOptions = {
-        since : lastRun( css_sass_diff ) || process.lastRunTime
-      }
-    ;
-    return src( config.src, srcOptions )
-      .pipe( _diff() )
-    ;
-  }
-
-  function css_sass_build( cb ) {
-    if ( !newSrc.length ) {
-      return cb();
+  function _transform( file, enc, callBack ) {
+    if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
+      targets.push( file.path );
     }
-    const
-      srcOptions = { cwd : config.base, sourcemaps : config.sourcemap }
-      ,destOptions = { sourcemaps : config.sourcemap_dir }
-    ;
-    return src( newSrc, srcOptions )
-      .pipe( plumber( options.plumber ) )
-      .pipe( sass( options.sass ) )
-      .pipe( postcss( options.postcss.plugins ) )
-      .pipe( dest( config.dist, destOptions ) )
-    ;
+    allFiles[ file.path ] = file;
+    callBack();
   }
-
-  function _diff() {
-    const deps = {};
-
-    return through.obj( _transform, _flush );
-
-    function _transform( file, encoding, callback ) {
-      deps[ file.path ] = 1;
-      graph.visitAncestors( file.path, function( item ) {
-        if ( !Object.keys( deps ).includes( item ) ) {
-          deps[ item ] = 1;
+  function _flush( callBack ) {
+    const self = this;
+    targets.forEach( ( filePath ) => {
+      destFiles[ filePath ] = 1;
+      graph.visitAncestors( filePath, function( item ) {
+        if ( !Object.keys( destFiles ).includes( item ) ) {
+          destFiles[ item ] = 1;
         }
       } );
-      callback();
-    }
-
-    function _flush( callback ) {
-      newSrc = Object.keys( deps ).map( ( item ) => {
-        return path.relative( path.join( process.cwd(), config.base ), item );
-      } );
-      callback();
-    }
-
+    } );
+    Object.keys( destFiles ).forEach( ( item ) => {
+      self.push( allFiles[ item ] );
+    } );
+    callBack();
   }
 }
