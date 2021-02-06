@@ -3,32 +3,32 @@ const
   ,options = ( config && config.enable && config.options ) || false
 ;
 let
-  browserSync
+  server
 ;
 
 if ( options ) {
-  browserSync = require( 'browser-sync' );
+  server = require( 'browser-sync' );
 }
 
 module.exports.serve_init = ( () => {
-  if ( !browserSync ) {
+  if ( !server ) {
     return function no_serve( done ) {
       _done( done );
     };
   }
   return function serve_init( done ) {
-    browserSync.init( options );
+    server.init( options );
     _done( done );
   };
 } )();
 
 module.exports.serve_reload = ( () => {
-  if ( !browserSync ) {
+  if ( !server ) {
     return false;
   }
   return function serve_reload( done ) {
-    if ( browserSync.active ) {
-      browserSync.reload();
+    if ( server.active ) {
+      server.reload();
     }
     _done( done );
   };

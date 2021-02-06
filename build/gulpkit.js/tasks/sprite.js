@@ -1,10 +1,9 @@
 const
-  { src, dest } = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
-  ,diff         = require( 'gulp-diff-build' )
-  ,gulpIf       = require( 'gulp-if' )
   ,mergeStream  = require( 'merge-stream' )
+  ,diffBuild    = require( '../diff_build.js' )
 ;
 const
   config = require( '../config.js' ).sprite
@@ -23,9 +22,11 @@ function sprite() {
   ;
   spriteData = src( config.src )
     .pipe( plumber() )
-    .pipe( gulpIf(
-      options.diff,
-      diff( options.diff )
+    .pipe( diffBuild(
+      {
+        since   : lastRun( sprite ) || process.lastRunTime,
+        allPass : true,
+      }
     ) )
     .pipe( spriteSmith( options.sprite ) )
   ;

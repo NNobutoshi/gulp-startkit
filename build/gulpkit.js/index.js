@@ -14,7 +14,7 @@ const
     js_lint       : require( './tasks/js_lint' ),
     clean         : require( './tasks/clean' ),
   }
-  ,setupWatch  = require( './setup_watch' )
+  ,watch  = require( './tasks/watch' )
   ,lastRunTime = require( './tasks/last_run_time' )
 ;
 const
@@ -25,7 +25,7 @@ if ( args.length ) {
     exports[ args[ i ] ] = tasks[ args[ i ] ];
   }
   tasks.serve_init();
-  setupWatch( exports, tasks.serve_reload )();
+  watch( exports, tasks.serve_reload )();
 }
 
 process.lastRunTime = lastRunTime.get();
@@ -46,7 +46,7 @@ exports.default = series(
     tasks.js_lint,
   ),
   tasks.serve_init,
-  setupWatch( tasks, tasks.serve_reload ),
+  watch( tasks, tasks.serve_reload ),
 );
 
 process.on( 'SIGINT', function() {

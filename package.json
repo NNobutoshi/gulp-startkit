@@ -36,7 +36,6 @@
     "gulp-buffer": "*",
     "gulp-changed": "*",
     "gulp-concat": "*",
-    "gulp-diff-build": "*",
     "gulp-duration": "*",
     "gulp-eslint": "*",
     "gulp-iconfont": "*",

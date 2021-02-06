@@ -46,9 +46,6 @@ const
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
-        diff : {
-          hash : 'css_sass',
-        },
         postcss : {
           plugins : [ require( 'autoprefixer' )() ]
         },
@@ -227,9 +224,6 @@ const
           indent_char : ' ',
         },
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
-        diff : {
-          hash : 'html_pug',
-        },
         pug : {
           pretty  : true,
           basedir : DIR_DEV.src,
@@ -256,9 +250,6 @@ const
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
-        },
-        diff : {
-          hash : 'sprite',
         },
       },
     },
@@ -315,9 +306,6 @@ const
             doctypeDeclaration : false,
           },
         },
-        diff      : {
-          hash : 'sprite_svg'
-        },
       },
     },
     'serve' : null,
@@ -354,7 +342,6 @@ const
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
         },
-        diff : false,
       },
     },
     'css_lint' : {
@@ -390,23 +377,14 @@ const
     'html_pug' : {
       dist    : DIR_PROD.dist,
       watch   : false,
-      options : {
-        diff : false,
-      },
     },
     'sprite' : {
       dist    : DIR_PROD.dist,
       watch   : false,
-      options : {
-        diff : false,
-      },
     },
     'sprite_svg' : {
       dist  : DIR_PROD.dist,
       watch: false,
-      options : {
-        diff : false,
-      },
     },
     'serve' : null,
     'setup_watch' : {
