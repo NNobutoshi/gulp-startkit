@@ -86,7 +86,6 @@ function _reset( hash ) {
 }
 
 function _resetAll( ) {
-  console.info( 'resetAll' );
   if ( fs.existsSync( FILEPATH ) ) {
     fs.unlink( FILEPATH, ( error ) => {
       if ( error ) {
