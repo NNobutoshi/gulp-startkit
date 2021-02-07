@@ -5,7 +5,7 @@ const
   ,sass         = require( 'gulp-sass' )
   ,cssMqpacker  = require( 'css-mqpacker' )
   ,grapher      = require( 'sass-graph' )
-  ,diff         = require( '../diff_build.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).css_sass

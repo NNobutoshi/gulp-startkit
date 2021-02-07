@@ -7,6 +7,8 @@
     "dev": "cross-env NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 gulp --gulpfile build/gulpkit.js",
     "one": "cross-env NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 gulp --gulpfile build/gulpkit.js",
     "prod": "cross-env NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 gulp --gulpfile build/gulpkit.js",
+    "fresh": "node ./build/bin/time_reset.js fresh",
+    "reset": "node ./build/bin/time_reset.js reset",
     "gulp": "gulp --gulpfile gulpkit.js"
   },
   "author": "",

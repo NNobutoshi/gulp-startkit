@@ -3,7 +3,7 @@ const
   ,iconfont     = require( 'gulp-iconfont' )
   ,iconfontCss  = require( 'gulp-iconfont-css' )
   ,plumber      = require( 'gulp-plumber' )
-  ,diff         = require( '../diff_build.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).icon_font

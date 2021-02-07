@@ -2,7 +2,7 @@ const
   { src }  = require( 'gulp' )
   ,eslint  = require( 'gulp-eslint' )
   ,plumber = require( 'gulp-plumber' )
-  ,diff    = require( '../diff_build.js' )
+  ,diff    = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).js_lint

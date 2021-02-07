@@ -5,7 +5,7 @@ const
   ,log          = require( 'fancy-log' )
   ,path         = require( 'path' )
   ,through      = require( 'through2' )
-  ,diff         = require( '../diff_build.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).html_pug

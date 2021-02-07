@@ -3,7 +3,7 @@ const
   ,svgSprite    = require( 'gulp-svg-sprite' )
   ,plumber      = require( 'gulp-plumber' )
   ,gulpIf       = require( 'gulp-if' )
-  ,diff         = require( '../diff_build.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).sprite_svg

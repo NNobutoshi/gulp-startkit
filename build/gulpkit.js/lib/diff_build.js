@@ -1,11 +1,9 @@
 const
   through    = require( 'through2' )
   ,merge     = require( 'lodash/mergeWith' )
-  ,LastStamp = require( './last_stamp.js' )
+  ,lastStamp = require( './last_stamp.js' )
 ;
-const
-  lastStamp = new LastStamp()
-;
+
 module.exports = diff_build;
 
 function diff_build( options, map, filter ) {
@@ -25,7 +23,7 @@ function diff_build( options, map, filter ) {
   function _transform( file, enc, callBack ) {
     const
       hash = settings.hash
-      ,since = ( hash ) ? lastStamp.read( hash ) : false
+      ,since = ( hash ) ? lastStamp.get( hash ) : false
     ;
     if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
       targets.push( file.path );
@@ -61,7 +59,7 @@ function diff_build( options, map, filter ) {
       }
     }
     self.on( 'finish', () => {
-      lastStamp.write( hash );
+      lastStamp.set( hash );
     } );
     callBack();
   }

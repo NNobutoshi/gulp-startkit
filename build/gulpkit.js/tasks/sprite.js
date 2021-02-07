@@ -3,7 +3,7 @@ const
   ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
   ,mergeStream  = require( 'merge-stream' )
-  ,diff         = require( '../diff_build.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).sprite

@@ -4,7 +4,7 @@ const
   ,plumber          = require( 'gulp-plumber' )
   ,imageminMozjpeg  = require( 'imagemin-mozjpeg' )
   ,imageminPngquant = require( 'imagemin-pngquant' )
-  ,diff             = require( '../diff_build.js' )
+  ,diff             = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).img_min
