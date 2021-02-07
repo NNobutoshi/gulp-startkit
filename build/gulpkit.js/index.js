@@ -15,7 +15,6 @@ const
     clean         : require( './tasks/clean' ),
   }
   ,watch  = require( './tasks/watch' )
-  ,lastRunTime = require( './tasks/last_run_time' )
 ;
 const
   args = process.argv.slice( 4 )
@@ -27,8 +26,6 @@ if ( args.length ) {
   tasks.serve_init();
   watch( exports, tasks.serve_reload )();
 }
-
-process.lastRunTime = lastRunTime.get();
 
 /* default tasks */
 exports.default = series(
@@ -49,11 +46,8 @@ exports.default = series(
   watch( tasks, tasks.serve_reload ),
 );
 
-process.on( 'SIGINT', function() {
-  process.exit();
-} );
-
-process.on( 'exit', () => {
-  console.info( 'exit' );
-  lastRunTime.set();
-} );
+// process.on( 'SIGINT', function() {
+// } );
+//
+// process.on( 'exit', () => {
+// } );

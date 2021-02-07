@@ -14,3 +14,4 @@ npm-debug.log
 /build/gulpkit.js/config_serve.js
 /build/.webpack_cache
 /build/.gulp
+/build/.last_run

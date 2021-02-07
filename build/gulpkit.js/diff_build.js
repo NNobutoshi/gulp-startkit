@@ -1,8 +1,11 @@
 const
   through    = require( 'through2' )
-  ,merge      = require( 'lodash/mergeWith' )
+  ,merge     = require( 'lodash/mergeWith' )
+  ,LastStamp = require( './last_stamp.js' )
 ;
-
+const
+  lastStamp = new LastStamp()
+;
 module.exports = diff_build;
 
 function diff_build( options, map, filter ) {
@@ -11,16 +14,19 @@ function diff_build( options, map, filter ) {
     ,deps = {}
     ,targets = []
     ,defaultSettings = {
-      since   : false,
-      allPass : false,
+      hash      : '',
+      allForOne : false,
     }
     ,settings = merge( {}, defaultSettings, options )
   ;
+
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-    const since = settings.since;
-
+    const
+      hash = settings.hash
+      ,since = ( hash ) ? lastStamp.read( hash ) : false
+    ;
     if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
       targets.push( file.path );
     }
@@ -30,13 +36,15 @@ function diff_build( options, map, filter ) {
     }
     callBack();
   }
+
   function _flush( callBack ) {
     const
-      self = this
+      self       = this
       ,destFiles = {}
+      ,hash      = settings.hash
     ;
     if ( targets.length ) {
-      if ( settings.allPass === true ) {
+      if ( settings.allForOne === true ) {
         for ( let o in allFiles ) {
           self.push( allFiles[ o ] );
         }
@@ -52,6 +60,10 @@ function diff_build( options, map, filter ) {
         } );
       }
     }
+    self.on( 'finish', () => {
+      lastStamp.write( hash );
+    } );
     callBack();
   }
+
 }

@@ -55,6 +55,7 @@ const
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
         },
+        diff : { hash : 'css_sass' },
       },
     },
     'css_lint' : {
@@ -76,7 +77,8 @@ const
           reporters      : [ { formatter: 'string', console: true } ],
           debug          : true,
         },
-      }
+        diff : { hash : 'css_lint' },
+      },
     },
     'icon_font' : {
       src           : [ DIR_DEV.src + '/fonts/*.svg' ],
@@ -104,6 +106,10 @@ const
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
+        diff : {
+          hash      : 'icon_font',
+          allForOne : true,
+        },
       },
     },
     'img_min' : {
@@ -118,7 +124,7 @@ const
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
         imageminMozjpeg : {
-          quality : 90
+          quality : 90,
         },
         imageminPngquant : {
           quality : [ 0.8, 0.9 ],
@@ -129,6 +135,7 @@ const
             { cleanupIDs : true },
           ],
         },
+        diff : { hash : 'img_min' },
       },
     },
     'js_webpack' : {
@@ -160,7 +167,7 @@ const
                     presets : [ '@babel/preset-env' ]
                   },
                 },
-              ]
+              ],
             },
           ],
         },
@@ -169,18 +176,18 @@ const
           'jquery'       : 'jQuery',
         },
         cache: {
-          type : 'filesystem',
+          type           : 'filesystem',
           cacheDirectory : path.resolve( process.cwd(), '.webpack_cache' ),
         },
-        watch : true && ENABLE_WATCH,
-        plugins: [
+        watch   : true && ENABLE_WATCH,
+        plugins : [
           new webpack.SourceMapDevToolPlugin( {
             filename : 'sourcemaps/[file].map',
           } ),
         ],
         watchOptions : {
           aggregateTimeout : 200,
-          poll : 500,
+          poll             : 500,
         },
       }
     },
@@ -200,6 +207,7 @@ const
         eslint : {
           useEslintrc: true,
         },
+        diff : { hash : 'js_lint' },
       },
     },
     'html_pug' : {
@@ -228,6 +236,7 @@ const
           pretty  : true,
           basedir : DIR_DEV.src,
         },
+        diff : { hash : 'html_pug' },
       },
     },
     'sprite' : {
@@ -250,6 +259,10 @@ const
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
+        },
+        diff : {
+          hash      : 'sprite',
+          allForOne : true,
         },
       },
     },
@@ -306,6 +319,10 @@ const
             doctypeDeclaration : false,
           },
         },
+        diff : {
+          hash     : 'sprite_svg',
+          allForOne: true,
+        },
       },
     },
     'serve' : null,
@@ -316,9 +333,6 @@ const
           usePolling : true
         },
       }
-    },
-    'last_run_time' : {
-      filePath : './gulpkit.js/tasks/.last_run_timestamp',
     },
   }
 ;
@@ -342,20 +356,33 @@ const
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
         },
+        diff : { hash : '' },
       },
     },
     'css_lint' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
+      dist    : DIR_PROD.dist,
+      watch   : false,
+      options : {
+        diff : { hash : '' },
+      },
     },
     'icon_font' : {
       dist        : DIR_PROD.dist,
       watch       : false,
       fontsCopyTo : DIR_PROD.dist + '/fonts/icons',
+      options : {
+        diff : {
+          hash      : '',
+          allForOne : false,
+        },
+      },
     },
     'img_min' : {
       dist    : DIR_PROD.dist,
       watch   : false,
+      options : {
+        diff : { hash : '' },
+      },
     },
     'js_webpack' : {
       dist       : DIR_PROD.dist,
@@ -373,25 +400,40 @@ const
     'js_lint' : {
       dist  : DIR_PROD.dist,
       watch : false,
+      options : {
+        diff : { hash : '' },
+      },
     },
     'html_pug' : {
       dist    : DIR_PROD.dist,
       watch   : false,
+      options : {
+        diff : { hash : '' },
+      },
     },
     'sprite' : {
       dist    : DIR_PROD.dist,
       watch   : false,
+      options : {
+        diff : {
+          hash      : '',
+          allForOne : false,
+        },
+      },
     },
     'sprite_svg' : {
       dist  : DIR_PROD.dist,
       watch: false,
+      options : {
+        diff : {
+          hash      : '',
+          allForOne : false,
+        },
+      },
     },
     'serve' : null,
     'setup_watch' : {
       default : false,
-    },
-    'last_run_time' : {
-      filePath : false,
     },
   }
 ;

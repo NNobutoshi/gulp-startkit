@@ -1,5 +1,5 @@
 const
-  config = require( '../config.js' ).serve
+  config   = require( '../config.js' ).serve
   ,options = ( config && config.enable && config.options ) || false
 ;
 let

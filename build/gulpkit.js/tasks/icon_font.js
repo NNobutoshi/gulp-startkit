@@ -1,9 +1,9 @@
 const
-  { src, dest, lastRun } = require( 'gulp' )
-  ,iconfont    = require( 'gulp-iconfont' )
-  ,iconfontCss = require( 'gulp-iconfont-css' )
-  ,plumber     = require( 'gulp-plumber' )
-  ,diffBuild   = require( '../diff_build.js' )
+  { src, dest } = require( 'gulp' )
+  ,iconfont     = require( 'gulp-iconfont' )
+  ,iconfontCss  = require( 'gulp-iconfont-css' )
+  ,plumber      = require( 'gulp-plumber' )
+  ,diff         = require( '../diff_build.js' )
 ;
 const
   config = require( '../config.js' ).icon_font
@@ -17,12 +17,7 @@ module.exports = icon_font;
 function icon_font() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diffBuild(
-      {
-        since   : lastRun( icon_font ) || process.lastRunTime,
-        allPass : true,
-      }
-    ) )
+    .pipe( diff( options.diff ) )
     .pipe( iconfontCss( options.iconfontCss ) )
     .pipe( iconfont( options.iconfont ) )
     .pipe( dest( config.fontsDist ) )

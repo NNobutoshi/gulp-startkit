@@ -1,11 +1,11 @@
 const
-  { src, dest, lastRun } = require( 'gulp' )
+  { src, dest } = require( 'gulp' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,pug          = require( 'pug' )
   ,log          = require( 'fancy-log' )
   ,path         = require( 'path' )
   ,through      = require( 'through2' )
-  ,diffBuild    = require( '../diff_build.js' )
+  ,diff         = require( '../diff_build.js' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -18,8 +18,8 @@ module.exports = html_pug;
 
 function html_pug() {
   return src( config.src )
-    .pipe( diffBuild(
-      { since : lastRun( html_pug ) || process.lastRunTime }
+    .pipe( diff(
+      options.diff
       ,_map
       ,_filter
     ) )
@@ -49,7 +49,7 @@ function _map( file, deps ) {
         }
         if ( !deps[ keyFileName ] ) {
           deps[ keyFileName ] = [];
-        };
+        }
         deps[ keyFileName ].push( file.path );
       }
     }

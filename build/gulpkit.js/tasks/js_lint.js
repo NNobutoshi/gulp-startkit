@@ -1,7 +1,8 @@
 const
-  { src, lastRun }  = require( 'gulp' )
+  { src }  = require( 'gulp' )
   ,eslint  = require( 'gulp-eslint' )
   ,plumber = require( 'gulp-plumber' )
+  ,diff    = require( '../diff_build.js' )
 ;
 const
   config = require( '../config.js' ).js_lint
@@ -13,11 +14,9 @@ const
 module.exports = js_lint;
 
 function js_lint() {
-  const srcOptions = {
-    since : lastRun( js_lint ) || process.lastRunTime
-  };
-  return src( config.src, srcOptions )
+  return src( config.src )
     .pipe( plumber( options.plumber ) )
+    .pipe( diff( options.diff ) )
     .pipe( eslint( options.eslint ) )
     .pipe( eslint.format() )
     .pipe( eslint.failAfterError() )

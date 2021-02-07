@@ -1,11 +1,11 @@
 const
-  { src, dest, lastRun } = require( 'gulp' )
-  ,plumber     = require( 'gulp-plumber' )
-  ,postcss     = require( 'gulp-postcss' )
-  ,sass        = require( 'gulp-sass' )
-  ,cssMqpacker = require( 'css-mqpacker' )
-  ,grapher     = require( 'sass-graph' )
-  ,diffBuild   = require( '../diff_build.js' )
+  { src, dest } = require( 'gulp' )
+  ,plumber      = require( 'gulp-plumber' )
+  ,postcss      = require( 'gulp-postcss' )
+  ,sass         = require( 'gulp-sass' )
+  ,cssMqpacker  = require( 'css-mqpacker' )
+  ,grapher      = require( 'sass-graph' )
+  ,diff         = require( '../diff_build.js' )
 ;
 const
   config = require( '../config.js' ).css_sass
@@ -29,8 +29,8 @@ function css_sass() {
   }
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
-    .pipe( diffBuild(
-      { since : lastRun( css_sass ) || process.lastRunTime }
+    .pipe( diff(
+      options.diff
       ,false
       ,_filter
     ) )
