@@ -60,7 +60,7 @@ const
     },
     'css_lint' : {
       src       : [
-        DIR_DEV.src + '/**/*.scss',
+        ''  + DIR_DEV.src + '/**/*.scss',
         '!' + DIR_DEV.src + '/css/_sprite_vector.scss',
         '!' + DIR_DEV.src + '/**/_vendor/*.scss',
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
@@ -325,7 +325,7 @@ const
         },
       },
     },
-    'serve' : null,
+    'serve' : null, // 別途の設定ファイルにて
     'setup_watch' : {
       errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       options : {
@@ -342,11 +342,6 @@ const
       dist : [
         DIR_PROD.dist
       ],
-      options : {
-        del : {
-          force : true,
-        },
-      },
     },
     'css_sass' : {
       dist      : DIR_PROD.dist,
@@ -431,18 +426,20 @@ const
         },
       },
     },
-    'serve' : null,
-    'setup_watch' : {
-      default : false,
-    },
+    'serve' : null, // 別途の設定ファイルにて
+    'setup_watch' : {},
   }
 ;
 
+// config_serve_orig.js がconfig_serve.js にリネーム、複製されていれば、、
+// config_serve.js 自体はGit でignore されている。
+// 作業者毎でip アドレス等を自由に設定させるため。
 if ( fs.existsSync( './gulpkit.js/config_serve.js' ) ) {
   config_dev.serve = require( './config_serve' ).conf_dev;
   config_prod.serve = require( './config_serve' ).conf_prod;
 }
 
+// 'production'用の設定は、'development' を基準にしてマージする
 if ( NODE_ENV === 'production' ) {
   module.exports = merge( {}, config_dev, config_prod );
 } else if ( !NODE_ENV || NODE_ENV === 'development' ) {
