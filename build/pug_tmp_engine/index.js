@@ -1,18 +1,18 @@
 const
-  nodeX2j = require( 'xls-to-json' )
-  ,fs = require( 'fs' )
-  ,charset = 'utf-8'
+  nodeX2j   = require( 'xls-to-json' )
+  ,fs       = require( 'fs' )
+  ,charset  = 'utf-8'
   ,settings = {
-    src         : './src'
-    ,extension  : /\.pug?$/
-    ,configFile : './src/_config.pug'
-    ,indexName  : 'index.pug'
-    ,linefeed   : '\n' // '\r\n'
-    ,x2j        : {
-      input   : './sitemap.xlsx'
-      ,output : './output.json'
-      ,sheet  : 'Sheet1'
-    }
+    src        : '../src',
+    extension  : /\.pug?$/,
+    configFile : '../src/_config.pug',
+    indexName  : 'index.pug',
+    linefeed   : '\n', // '\r\n'
+    x2j        : {
+      input  : './sitemap.xlsx',
+      output : './output.json',
+      sheet  : 'Sheet1',
+    },
   }
   ,force = ( process.argv.includes( '-f' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
@@ -20,7 +20,6 @@ const
 let
   jSONData = {}
 ;
-
 ( function _run() {
   nodeX2j( settings.x2j, function( err, result ) {
     let
