@@ -18,7 +18,7 @@ module.exports = function( tasks, nextCall ) {
         }
       }
     }
-    if ( typeof done === 'function' ) {
+    if ( typeof callBack === 'function' ) {
       callBack();
     }
   };
