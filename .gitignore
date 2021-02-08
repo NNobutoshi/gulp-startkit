@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 .sass-cache
+.last_run_time_log
+.webpack_cache
 npm-debug.log
 *.map
 /.npm-version
@@ -9,6 +11,4 @@ npm-debug.log
 /package-lock.json
 /config.yml
 /vagrant_config.yml
-/build/gulpkit.js/.last_run_time_log
-/build/gulpkit.js/.webpack_cache
-/build/gulpkit.js/config_serve.js
+/build/gulpkit/gulpfile.js/config_serve.js
