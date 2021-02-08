@@ -4,8 +4,8 @@ const
   ,mkdirp = require( 'mkdirp' )
 ;
 const
-  FILEPATH  = path.resolve( __dirname, '../../.last_run/.timestamps' )
-  ,DIRNAME = FILEPATH.replace( /[^\/]+$/, '' )
+  FILEPATH  = path.resolve( __dirname, '../.last_run/.timestamps' )
+  ,DIRNAME = path.dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastRunTime'
   ,ZERO     = new Date( 0 )
 ;
@@ -30,6 +30,9 @@ function _get( hash ) {
     return false;
   }
   if ( hash in map ) {
+    if ( typeof map[ hash ] === 'string' ) {
+      return new Date( map[ hash ] );
+    }
     return map[ hash ];
   } else {
     return ZERO;
@@ -64,7 +67,7 @@ function _write() {
   }
   fs.writeFileSync( FILEPATH, JSON.stringify( envData ), 'utf-8', ( error ) => {
     if ( error ) {
-      console.info( error );
+      throw error;
     }
   } );
 }
@@ -91,6 +94,11 @@ function _resetAll( ) {
       if ( error ) {
         throw error;
       }
+      fs.rmdir( DIRNAME, { recursive : true }, ( error ) => {
+        if ( error ) {
+          throw error;
+        }
+      } );
     } );
   }
 }

@@ -22,6 +22,7 @@ const
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
 ;
+
 const
   config_dev = {
     'clean' : {
@@ -139,23 +140,23 @@ const
       },
     },
     'js_webpack' : {
-      src     : [ DIR_DEV.src + '/**/*.entry.js' ],
-      base    : DIR_DEV.src,
-      dist    : DIR_DEV.dist,
-      options : {
-        del : {
-          dist : [ DIR_DEV.dist + '/**/*.js.map' ],
+      src            : [ DIR_DEV.src + '/**/*.entry.js' ],
+      base           : DIR_DEV.src,
+      dist           : DIR_DEV.dist,
+      options        : {
+        del          : {
+          dist    : [ DIR_DEV.dist + '/**/*.js.map' ],
           options : {
             force : true,
           },
         },
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       },
-      wbpkConfig: {
-        mode    : 'development',
-        output  : {},
-        devtool : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
-        module  : {
+      webpackConfig  : {
+        mode      : 'development',
+        output    : {},
+        devtool   : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
+        module    : {
           rules : [
             {
               test    : /\.js$/,
@@ -177,7 +178,7 @@ const
         },
         cache: {
           type           : 'filesystem',
-          cacheDirectory : path.resolve( process.cwd(), '.webpack_cache' ),
+          cacheDirectory : path.resolve( __dirname, '.webpack_cache' ),
         },
         watch   : true && ENABLE_WATCH,
         plugins : [
@@ -440,8 +441,11 @@ if ( fs.existsSync( './gulpkit.js/config_serve.js' ) ) {
 }
 
 // 'production'用の設定は、'development' を基準にしてマージする
-if ( NODE_ENV === 'production' ) {
+switch ( NODE_ENV ) {
+case 'production':
   module.exports = merge( {}, config_dev, config_prod );
-} else if ( !NODE_ENV || NODE_ENV === 'development' ) {
+  break;
+case 'development':
+default:
   module.exports = config_dev;
 }

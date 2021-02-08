@@ -7,9 +7,9 @@ const
   ,serve_reload = require( './serve.js' ).serve_reload
 ;
 const
-  config      = require( '../config.js' ).js_webpack
-  ,options    = config.options
-  ,wbpkConfig = config.wbpkConfig
+  config         = require( '../config.js' ).js_webpack
+  ,options       = config.options
+  ,webpackConfig = config.webpackConfig
 ;
 
 module.exports = js_webpack;
@@ -44,11 +44,11 @@ function _init_webpak() {
 }
 
 function _pack( entries, done ) {
-  wbpkConfig.entry = entries;
-  wbpkConfig.output.filename = '[name].js';
-  wbpkConfig.output.path = path.resolve( process.cwd(), config.dist );
-  wbpkConfig.mode = process.env.NODE_ENV;
-  webpack( wbpkConfig, ( error, stats ) => {
+  webpackConfig.entry = entries;
+  webpackConfig.output.filename = '[name].js';
+  webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
+  webpackConfig.mode = process.env.NODE_ENV;
+  webpack( webpackConfig, ( error, stats ) => {
     let chunks;
     if ( stats.hasErrors && stats.hasErrors() ) {
       log( 'webpack: has error' );

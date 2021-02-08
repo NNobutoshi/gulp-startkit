@@ -16,15 +16,12 @@ function diff_build( options, map, filter ) {
       allForOne : false,
     }
     ,settings = merge( {}, defaultSettings, options )
+    ,since = ( settings.hash ) ? lastStamp.get( settings.hash ) : false
   ;
 
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-    const
-      hash = settings.hash
-      ,since = ( hash ) ? lastStamp.get( hash ) : false
-    ;
     if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
       targets.push( file.path );
     }
