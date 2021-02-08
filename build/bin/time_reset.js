@@ -2,9 +2,9 @@ const
   fs = require( 'fs' )
   ,WEBPACK_CACHE_PATH = require( '../gulpkit.js/config.js' )
     .js_webpack.webpackConfig.cache.cacheDirectory
-  ,lastStampFresh     = require( '../gulpkit.js/lib/last_stamp.js' ).fresh
-  ,lastStampReset     = require( '../gulpkit.js/lib/last_stamp.js' ).reset
-  ,lastStampResetAll  = require( '../gulpkit.js/lib/last_stamp.js' ).resetAll
+  ,lastStampFresh     = require( '../gulpkit.js/lib/last_run_time.js' ).fresh
+  ,lastStampReset     = require( '../gulpkit.js/lib/last_run_time.js' ).reset
+  ,lastStampResetAll  = require( '../gulpkit.js/lib/last_run_time.js' ).resetAll
 ;
 const
   func = process.argv[ 2 ]
@@ -24,10 +24,10 @@ if ( func === 'reset' ) {
   if ( args && args.length ) {
     switch ( args[ 0 ] ) {
     case 'js_webpack':
-      _delWebpackConfig();
+      _delWebpackCache();
       break;
     case 'all':
-      _delWebpackConfig();
+      _delWebpackCache();
       lastStampResetAll();
       break;
     default:
@@ -38,7 +38,7 @@ if ( func === 'reset' ) {
   }
 }
 
-function _delWebpackConfig() {
+function _delWebpackCache() {
   if ( fs.existsSync( WEBPACK_CACHE_PATH ) ) {
     fs.rmdir( WEBPACK_CACHE_PATH, { recursive : true }, ( error ) => {
       if ( error ) {

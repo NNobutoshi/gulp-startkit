@@ -9,6 +9,6 @@ npm-debug.log
 /package-lock.json
 /config.yml
 /vagrant_config.yml
-/build/gulpkit.js/.last_run
+/build/gulpkit.js/.last_run_time_log
 /build/gulpkit.js/.webpack_cache
 /build/gulpkit.js/config_serve.js

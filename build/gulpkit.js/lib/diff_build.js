@@ -1,8 +1,14 @@
 const
   through    = require( 'through2' )
   ,merge     = require( 'lodash/mergeWith' )
-  ,lastStamp = require( './last_stamp.js' )
+  ,lastStamp = require( './last_run_time.js' )
   ,log       = require( 'fancy-log' )
+;
+const
+  WRITING_DELAY_TIME = 2000
+;
+let
+  writing_timeoutId = null
 ;
 
 module.exports = diff_build;
@@ -24,6 +30,13 @@ function diff_build( options, map, filter ) {
   function _transform( file, enc, callBack ) {
     if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
       targets.push( file.path );
+    }
+    if ( file.isnNull ) {
+      return callBack( null, file );
+    }
+    if ( file.isStream() ) {
+      this.emit( 'error' );
+      callBack();
     }
     allFiles[ file.path ] = file;
     if ( typeof map === 'function' ) {
@@ -64,9 +77,14 @@ function diff_build( options, map, filter ) {
     self.on( 'finish', () => {
       lastStamp.set( hash );
     } );
+    clearTimeout( writing_timeoutId );
+    writing_timeoutId = setTimeout( () => {
+      lastStamp.write();
+      clearTimeout( writing_timeoutId );
+    }, WRITING_DELAY_TIME );
     callBack();
   }
 }
-process.on( 'exit', () => {
-  lastStamp.write();
-} );
+// process.on( 'exit', () => {
+//   lastStamp.write();
+// } );
