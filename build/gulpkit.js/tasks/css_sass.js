@@ -1,10 +1,12 @@
 const
   { src, dest } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
-  ,postcss      = require( 'gulp-postcss' )
   ,sass         = require( 'gulp-sass' )
-  ,cssMqpacker  = require( 'css-mqpacker' )
   ,grapher      = require( 'sass-graph' )
+  ,postcss      = require( 'gulp-postcss' )
+  ,cssMqpacker  = require( 'css-mqpacker' )
+  ,through      = require( 'through2' )
+  ,log          = require( 'fancy-log' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -21,7 +23,7 @@ module.exports = css_sass;
 
 function css_sass() {
   const
-    srcOptions = { sourcemaps : config.sourcemap }
+    srcOptions   = { sourcemaps : config.sourcemap }
     ,destOptions = { sourcemaps : config.sourcemap_dir }
   ;
   if ( config.cssMqpack ) {
@@ -31,16 +33,30 @@ function css_sass() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff(
       options.diff
-      ,false
+      ,null
       ,_filter
     ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
+    .pipe( _log() )
     .pipe( dest( config.dist, destOptions ) )
   ;
 }
 
-function _filter( filePath, _deps, destFiles ) {
+function _log() {
+  const rendered = {
+    files : []
+  };
+  return through.obj( ( file, enc, callBack ) => {
+    rendered.files.push( file.path );
+    callBack();
+  }, ( callBack ) => {
+    log( `${options.diff.hash}: rendered ${rendered.files.length } files` );
+    callBack();
+  } );
+}
+
+function _filter( filePath, _collection, destFiles ) {
   graph.visitAncestors( filePath, function( item ) {
     if ( !Object.keys( destFiles ).includes( item ) ) {
       destFiles[ item ] = 1;

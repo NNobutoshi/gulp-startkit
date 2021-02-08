@@ -1,10 +1,12 @@
 const
+  path = require( 'path' )
+;
+const
   { src, dest } = require( 'gulp' )
-  ,beautifyHtml = require( 'js-beautify' ).html
   ,pug          = require( 'pug' )
-  ,log          = require( 'fancy-log' )
-  ,path         = require( 'path' )
   ,through      = require( 'through2' )
+  ,beautifyHtml = require( 'js-beautify' ).html
+  ,log          = require( 'fancy-log' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -26,13 +28,10 @@ function html_pug() {
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )
-    .on( 'finish', () => {
-      log( `html_pug: rendered ${_pugRender.totalFiles.counter} files` );
-    } )
   ;
 }
 
-function _map( file, deps ) {
+function _map( file, collection ) {
   const
     contents = String( file.contents )
     ,regex = /^.*?(extends|include) *(.+)$/mg
@@ -47,22 +46,22 @@ function _map( file, deps ) {
         } else {
           keyFileName = path.resolve( file.dirname, match[ i ] );
         }
-        if ( !deps[ keyFileName ] ) {
-          deps[ keyFileName ] = [];
+        if ( !collection[ keyFileName ] ) {
+          collection[ keyFileName ] = [];
         }
-        deps[ keyFileName ].push( file.path );
+        collection[ keyFileName ].push( file.path );
       }
     }
   }
 }
 
-function _filter( filePath, deps, destFiles ) {
-  ( function _step( filePath ) {
-    if ( deps[ filePath ] && deps[ filePath ].length ) {
-      deps[ filePath ].forEach( ( item ) => {
+function _filter( filePath, collection, destFiles ) {
+  ( function _run_recursive( filePath ) {
+    if ( collection[ filePath ] && collection[ filePath ].length ) {
+      collection[ filePath ].forEach( ( item ) => {
         destFiles[ item ] = 1;
-        if ( Object.keys( deps ).includes( item ) ) {
-          _step( item );
+        if ( Object.keys( collection ).includes( item ) ) {
+          _run_recursive( item );
         }
       } );
     }
@@ -73,23 +72,28 @@ function _pugRender() {
   const
     errorHandler = options.errorHandler
     ,partialFileRegEx = /[\\/]_/
+    ,rendered = {
+      files : []
+    }
   ;
-  _pugRender.totalFiles = { counter : 0 };
-  return through.obj( ( file, enc, cb ) => {
+  return through.obj( ( file, enc, callBack ) => {
     if ( partialFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
-      return cb();
+      return callBack();
     }
     options.pug.filename = file.path;
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        cb();
+        callBack();
         return errorHandler( error );
       }
-      _pugRender.totalFiles.counter++;
+      rendered.files.push( file.path );
       file.contents = new global.Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
-      return cb( null, file );
+      return callBack( null, file );
     } );
+  }, ( callBack ) => {
+    log( `html_pug: rendered ${rendered.files.length } files` );
+    callBack();
   } );
 }
 

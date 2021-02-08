@@ -15,7 +15,6 @@ const
     clean         : require( './tasks/clean' ),
   }
   ,watch  = require( './tasks/watch' )
-  ,lastStampWrite = require( './lib/last_stamp.js' ).write
 ;
 const
   args = process.argv.slice( 4 )
@@ -49,8 +48,4 @@ exports.default = series(
 
 process.on( 'SIGINT', function() {
   process.exit();
-} );
-
-process.on( 'exit', () => {
-  lastStampWrite();
 } );
