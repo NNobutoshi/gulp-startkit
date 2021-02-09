@@ -1,10 +1,10 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/_modules/adjust.js":
-/*!***********************************!*\
-  !*** ./src/js/_modules/adjust.js ***!
-  \***********************************/
+/***/ "../src/js/_modules/adjust.js":
+/*!************************************!*\
+  !*** ../src/js/_modules/adjust.js ***!
+  \************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25,17 +25,17 @@ var uaParser = new (ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default())();
 
 /***/ }),
 
-/***/ "./src/js/common_head.entry.js":
-/*!*************************************!*\
-  !*** ./src/js/common_head.entry.js ***!
-  \*************************************/
+/***/ "../src/js/common_head.entry.js":
+/*!**************************************!*\
+  !*** ../src/js/common_head.entry.js ***!
+  \**************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes=UaParser!ua-parser-js */ "../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../node_modules/ua-parser-js/src/ua-parser.js");
+/* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes=UaParser!ua-parser-js */ "../../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../../node_modules/ua-parser-js/src/ua-parser-exposed.js");
 /* harmony import */ var expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(expose_loader_exposes_UaParser_ua_parser_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _modules_adjust_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/adjust.js */ "./src/js/_modules/adjust.js");
+/* harmony import */ var _modules_adjust_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/adjust.js */ "../src/js/_modules/adjust.js");
 
 
 
@@ -44,14 +44,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../node_modules/ua-parser-js/src/ua-parser.js":
-/*!****************************************************************************************************************!*\
-  !*** ../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../node_modules/ua-parser-js/src/ua-parser.js ***!
-  \****************************************************************************************************************/
+/***/ "../../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../../node_modules/ua-parser-js/src/ua-parser-exposed.js":
+/*!******************************************************************************************************************************!*\
+  !*** ../../node_modules/expose-loader/dist/cjs.js?exposes=UaParser!../../node_modules/ua-parser-js/src/ua-parser-exposed.js ***!
+  \******************************************************************************************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
-var ___EXPOSE_LOADER_IMPORT___ = __webpack_require__(/*! -!./ua-parser.js */ "../node_modules/ua-parser-js/src/ua-parser.js");
-var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = __webpack_require__(/*! ../../expose-loader/dist/runtime/getGlobalThis.js */ "../node_modules/expose-loader/dist/runtime/getGlobalThis.js");
+var ___EXPOSE_LOADER_IMPORT___ = __webpack_require__(/*! -!./ua-parser.js */ "../../node_modules/ua-parser-js/src/ua-parser.js");
+var ___EXPOSE_LOADER_GET_GLOBAL_THIS___ = __webpack_require__(/*! ../../expose-loader/dist/runtime/getGlobalThis.js */ "../../node_modules/expose-loader/dist/runtime/getGlobalThis.js");
 var ___EXPOSE_LOADER_GLOBAL_THIS___ = ___EXPOSE_LOADER_GET_GLOBAL_THIS___;
 if (typeof ___EXPOSE_LOADER_GLOBAL_THIS___["UaParser"] === 'undefined') ___EXPOSE_LOADER_GLOBAL_THIS___["UaParser"] = ___EXPOSE_LOADER_IMPORT___;
 else throw new Error('[exposes-loader] The "UaParser" value exists in the global scope, it may not be safe to overwrite it, use the "override" option')
@@ -60,10 +60,10 @@ module.exports = ___EXPOSE_LOADER_IMPORT___;
 
 /***/ }),
 
-/***/ "../node_modules/expose-loader/dist/runtime/getGlobalThis.js":
-/*!*******************************************************************!*\
-  !*** ../node_modules/expose-loader/dist/runtime/getGlobalThis.js ***!
-  \*******************************************************************/
+/***/ "../../node_modules/expose-loader/dist/runtime/getGlobalThis.js":
+/*!**********************************************************************!*\
+  !*** ../../node_modules/expose-loader/dist/runtime/getGlobalThis.js ***!
+  \**********************************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
@@ -103,10 +103,10 @@ module.exports = function () {
 
 /***/ }),
 
-/***/ "../node_modules/ua-parser-js/src/ua-parser.js":
-/*!*****************************************************!*\
-  !*** ../node_modules/ua-parser-js/src/ua-parser.js ***!
-  \*****************************************************/
+/***/ "../../node_modules/ua-parser-js/src/ua-parser.js":
+/*!********************************************************!*\
+  !*** ../../node_modules/ua-parser-js/src/ua-parser.js ***!
+  \********************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1131,7 +1131,7 @@ module.exports = UaParser;
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
-/******/ 	__webpack_require__("./src/js/common_head.entry.js");
+/******/ 	__webpack_require__("../src/js/common_head.entry.js");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;

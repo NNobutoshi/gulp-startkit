@@ -19,6 +19,8 @@ if File.exists?("./vagrant_config.yml")
     ).read
   )
   _conf = _conf_defaults.merge!(_conf_custom) if _conf_custom.is_a?(Hash)
+else
+  _conf = _conf_defaults
 end
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -58,10 +60,9 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
 
-  config.vm.synced_folder "./", "/home/vagrant/project", type: "rsync", rsync__exclude: "node_modules/"
-  config.vm.synced_folder "./dist", "/home/vagrant/project/dist"
-  config.vm.synced_folder "./dist/development", "/var/www/html"
-  config.vm.synced_folder "./build", "/home/vagrant/project/build"
+  config.vm.synced_folder "./", "/home/vagrant/myproject", type: "rsync", rsync__exclude: "node_modules/"
+  config.vm.synced_folder "./build", "/home/vagrant/myproject/build"
+  config.vm.synced_folder "./build/dist/development/html", "/var/www/html"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -112,7 +113,7 @@ Vagrant.configure("2") do |config|
     systemctl enable httpd.service
     systemctl start httpd.service
     # npm install
-    cd /home/vagrant/project
+    cd /home/vagrant/myproject
     sudo npm install
   SHELL
 end

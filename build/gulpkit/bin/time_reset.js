@@ -1,10 +1,10 @@
 const
   fs = require( 'fs' )
-  ,WEBPACK_CACHE_PATH = require( '../gulpkit.js/config.js' )
+  ,WEBPACK_CACHE_PATH = require( '../gulpfile.js/config.js' )
     .js_webpack.webpackConfig.cache.cacheDirectory
-  ,lastStampFresh     = require( '../gulpkit.js/lib/last_run_time.js' ).fresh
-  ,lastStampReset     = require( '../gulpkit.js/lib/last_run_time.js' ).reset
-  ,lastStampResetAll  = require( '../gulpkit.js/lib/last_run_time.js' ).resetAll
+  ,lastStampFresh     = require( '../gulpfile.js/lib/last_run_time.js' ).fresh
+  ,lastStampReset     = require( '../gulpfile.js/lib/last_run_time.js' ).reset
+  ,lastStampResetAll  = require( '../gulpfile.js/lib/last_run_time.js' ).resetAll
 ;
 const
   func = process.argv[ 2 ]

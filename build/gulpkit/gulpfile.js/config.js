@@ -11,16 +11,17 @@ const
 ;
 const
   DIR_DEV = {
-    dist : '../dist/development',
-    src  : 'src',
+    dist : '../dist/development/html',
+    src  : '../src',
   }
   ,DIR_PROD = {
-    dist : '../dist/production',
+    dist : '../dist/production/html',
     src  : 'src',
   }
   ,ENABLE_SOURCEMAP_DEV = true
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
+  ,SOURCEMAPS_DIR = 'sourcemaps'
 ;
 
 const
@@ -42,7 +43,7 @@ const
       watch         : true && ENABLE_WATCH,
       cssMqpack     : false,
       sourcemap     : true && ENABLE_SOURCEMAP_DEV,
-      sourcemap_dir : '/sourcemaps',
+      sourcemap_dir : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -115,7 +116,7 @@ const
     },
     'img_min' : {
       src     : [
-        DIR_DEV.src + '/**/*.{png,jpg,svg}',
+        ''  + DIR_DEV.src + '/**/*.{png,jpg,svg}',
         '!' + DIR_DEV.src + '/**/_sprite*/*.{png,svg}',
       ],
       dist    : DIR_DEV.dist,
@@ -178,12 +179,12 @@ const
         },
         cache: {
           type           : 'filesystem',
-          cacheDirectory : path.resolve( __dirname, '.webpack_cache' ),
+          cacheDirectory : path.resolve( __dirname, '../../../.webpack_cache' ),
         },
         watch   : true && ENABLE_WATCH,
         plugins : [
           new webpack.SourceMapDevToolPlugin( {
-            filename : 'sourcemaps/[file].map',
+            filename : SOURCEMAPS_DIR + '/[file].map',
           } ),
         ],
         watchOptions : {
@@ -382,7 +383,7 @@ const
     },
     'js_webpack' : {
       dist       : DIR_PROD.dist,
-      wbpkConfig : {
+      webpackConfig : {
         mode    : 'production',
         devtool : ( false || ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
         optimization : {
@@ -431,11 +432,10 @@ const
     'setup_watch' : {},
   }
 ;
-
 // config_serve_orig.js がconfig_serve.js にリネーム、複製されていれば、、
 // config_serve.js 自体はGit でignore されている。
 // 作業者毎でip アドレス等を自由に設定させるため。
-if ( fs.existsSync( './gulpkit.js/config_serve.js' ) ) {
+if ( fs.existsSync( './gulpfile.js/config_serve.js' ) ) {
   config_dev.serve = require( './config_serve' ).conf_dev;
   config_prod.serve = require( './config_serve' ).conf_prod;
 }
@@ -443,7 +443,9 @@ if ( fs.existsSync( './gulpkit.js/config_serve.js' ) ) {
 // 'production'用の設定は、'development' を基準にしてマージする
 switch ( NODE_ENV ) {
 case 'production':
-  module.exports = merge( {}, config_dev, config_prod );
+  let m;
+  module.exports = m = merge( {}, config_dev, config_prod );
+  console.info( m.js_webpack );
   break;
 case 'development':
 default:
