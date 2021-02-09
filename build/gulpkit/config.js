@@ -22,7 +22,7 @@ const
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../../.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../.webpack_cache' )
 ;
 const
   config_dev = {
@@ -196,7 +196,7 @@ const
     'js_lint' : {
       src : [
         ''  + '*.js',
-        ''  + 'gulpkit.js/**/*.js',
+        ''  + 'gulpkit/**/*.js',
         ''  + DIR_DEV.src + '/**/*.js',
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
@@ -430,10 +430,11 @@ const
     'setup_watch' : {},
   }
 ;
+
 // config_serve_orig.js がconfig_serve.js にリネーム、複製されていれば、、
 // config_serve.js 自体はGit でignore されている。
 // 作業者毎でip アドレス等を自由に設定させるため。
-if ( fs.existsSync( './gulpfile.js/config_serve.js' ) ) {
+if ( fs.existsSync( './config_serve.js' ) ) {
   config_dev.serve = require( './config_serve' ).conf_dev;
   config_prod.serve = require( './config_serve' ).conf_prod;
 }

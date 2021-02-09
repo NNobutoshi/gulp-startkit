@@ -42,7 +42,7 @@ function _map( file, collection ) {
       let keyFileName;
       if ( i % 3 === 2 ) { // パス部分
         if ( /^\//.test( match[ i ] ) ) {
-          keyFileName = path.join( config.base, match[ i ] );
+          keyFileName = path.join( path.resolve( process.cwd(), config.base ), match[ i ] );
         } else {
           keyFileName = path.resolve( file.dirname, match[ i ] );
         }

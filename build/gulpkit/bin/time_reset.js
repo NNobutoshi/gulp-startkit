@@ -1,11 +1,11 @@
 const
   del = require( 'del' )
-  ,lastStampFresh     = require( '../gulpfile.js/lib/last_run_time.js' ).fresh
-  ,lastStampReset     = require( '../gulpfile.js/lib/last_run_time.js' ).reset
-  ,lastStampResetAll  = require( '../gulpfile.js/lib/last_run_time.js' ).resetAll
+  ,lastStampFresh     = require( '../lib/last_run_time.js' ).fresh
+  ,lastStampReset     = require( '../lib/last_run_time.js' ).reset
+  ,lastStampResetAll  = require( '../lib/last_run_time.js' ).resetAll
 ;
 const
-  WEBPACK_CACHE_PATH = require( '../gulpfile.js/config.js' )
+  WEBPACK_CACHE_PATH = require( '../config.js' )
     .js_webpack.webpackConfig.cache.cacheDirectory
 ;
 const

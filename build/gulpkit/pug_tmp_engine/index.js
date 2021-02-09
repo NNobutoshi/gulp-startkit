@@ -3,9 +3,9 @@ const
   ,fs       = require( 'fs' )
   ,charset  = 'utf-8'
   ,settings = {
-    src        : '../src',
+    src        : '../../src',
     extension  : /\.pug?$/,
-    configFile : '../src/_config.pug',
+    configFile : '../../src/_config.pug',
     indexName  : 'index.pug',
     linefeed   : '\n', // '\r\n'
     x2j        : {

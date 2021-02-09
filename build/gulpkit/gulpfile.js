@@ -43,7 +43,7 @@ exports.default = series(
     tasks.js_lint,
   ),
   tasks.serve_init,
-  watch( tasks, tasks.serve_reload ),
+  watcher( tasks, tasks.serve_reload ),
 );
 
 process.on( 'SIGINT', function() {

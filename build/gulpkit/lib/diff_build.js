@@ -59,7 +59,7 @@ function diff_build( options, map, filter ) {
         for ( let o in allFiles ) {
           self.push( allFiles[ o ] );
         }
-        total = targets.length;
+        total = Object.keys( allFiles ).length;
       } else {
         targets.forEach( ( filePath ) => {
           destFiles[ filePath ] = 1;
