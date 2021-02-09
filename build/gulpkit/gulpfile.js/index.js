@@ -14,7 +14,7 @@ const
     js_lint       : require( './tasks/js_lint' ),
     clean         : require( './tasks/clean' ),
   }
-  ,watch  = require( './tasks/watch' )
+  ,watcher  = require( './tasks/watch' )
 ;
 const
   args = process.argv.slice( 4 )
@@ -24,7 +24,7 @@ if ( args.length ) {
     exports[ args[ i ] ] = tasks[ args[ i ] ];
   }
   tasks.serve_init();
-  watch( exports, tasks.serve_reload )();
+  watcher( exports, tasks.serve_reload )();
 }
 
 /* default tasks */

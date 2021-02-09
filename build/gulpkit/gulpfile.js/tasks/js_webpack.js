@@ -28,7 +28,7 @@ function _init_webpak() {
   function _transform( file, enc, callBack ) {
     const
       key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' ).replace( /\\/g, '/' )
-      ,val = `./${config.base}/${path.relative( config.base, file.path ).replace( /\\/g, '/' )}`
+      ,val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' )
     ;
     entries[ key ] = val;
     callBack();

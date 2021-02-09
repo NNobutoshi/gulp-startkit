@@ -1,18 +1,31 @@
 const
-  fs = require( 'fs' )
-  ,WEBPACK_CACHE_PATH = require( '../gulpfile.js/config.js' )
-    .js_webpack.webpackConfig.cache.cacheDirectory
+  del = require( 'del' )
   ,lastStampFresh     = require( '../gulpfile.js/lib/last_run_time.js' ).fresh
   ,lastStampReset     = require( '../gulpfile.js/lib/last_run_time.js' ).reset
   ,lastStampResetAll  = require( '../gulpfile.js/lib/last_run_time.js' ).resetAll
+;
+const
+  WEBPACK_CACHE_PATH = require( '../gulpfile.js/config.js' )
+    .js_webpack.webpackConfig.cache.cacheDirectory
 ;
 const
   func = process.argv[ 2 ]
   ,args = process.argv.slice( 3 )
 ;
 
+( () => {
+  switch ( func ) {
+  case 'fresh':
+    _fresh( args );
+    break;
+  case 'reset':
+    _reset( args );
+  default:
+    return;
+  }
+} )();
 
-if ( func === 'fresh' ) {
+function _fresh() {
   if ( args && args.length ) {
     for ( let i = 0, len = args.length; i < len; i++ ) {
       lastStampFresh( args[ i ] );
@@ -20,7 +33,7 @@ if ( func === 'fresh' ) {
   }
 }
 
-if ( func === 'reset' ) {
+function _reset()  {
   if ( args && args.length ) {
     switch ( args[ 0 ] ) {
     case 'js_webpack':
@@ -39,11 +52,5 @@ if ( func === 'reset' ) {
 }
 
 function _delWebpackCache() {
-  if ( fs.existsSync( WEBPACK_CACHE_PATH ) ) {
-    fs.rmdir( WEBPACK_CACHE_PATH, { recursive : true }, ( error ) => {
-      if ( error ) {
-        throw error;
-      }
-    } );
-  }
+  del( WEBPACK_CACHE_PATH );
 }

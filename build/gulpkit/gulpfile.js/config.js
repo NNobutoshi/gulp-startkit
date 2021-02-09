@@ -1,8 +1,8 @@
 const
-  merge         = require( 'lodash/mergeWith' )
-  ,notify       = require( 'gulp-notify' )
-  ,fs           = require( 'fs' )
+  fs            = require( 'fs' )
   ,path         = require( 'path' )
+  ,merge        = require( 'lodash/mergeWith' )
+  ,notify       = require( 'gulp-notify' )
   ,webpack      = require( 'webpack' )
   ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
@@ -12,18 +12,18 @@ const
 const
   DIR_DEV = {
     dist : '../dist/development/html',
-    src  : '../src',
+    src  :  '../src',
   }
   ,DIR_PROD = {
     dist : '../dist/production/html',
-    src  : 'src',
+    src  :  '../src',
   }
   ,ENABLE_SOURCEMAP_DEV = true
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
+  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../../.webpack_cache' )
 ;
-
 const
   config_dev = {
     'clean' : {
@@ -179,7 +179,7 @@ const
         },
         cache: {
           type           : 'filesystem',
-          cacheDirectory : path.resolve( __dirname, '../../../.webpack_cache' ),
+          cacheDirectory : WEBPACK_CACHE_PATH,
         },
         watch   : true && ENABLE_WATCH,
         plugins : [
@@ -215,8 +215,6 @@ const
     'html_pug' : {
       src : [
         ''  + DIR_DEV.src + '/**/*.pug',
-        // '!' + DIR_DEV.src + '/**/_*.pug',
-        // '!' + DIR_DEV.src + '/**/_*/**/*.pug',
       ],
       dist    : DIR_DEV.dist,
       base    : DIR_DEV.src,

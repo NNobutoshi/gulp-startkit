@@ -29,7 +29,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes=jQuery!jquery */ "../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery-exposed.js");
+/* harmony import */ var expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! expose-loader?exposes=jQuery!jquery */ "../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery.js");
 /* harmony import */ var expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(expose_loader_exposes_jQuery_jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/foo.js */ "../src/js/_modules/foo.js");
 
@@ -40,10 +40,10 @@ console.info((0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_1__.default)('body'));
 
 /***/ }),
 
-/***/ "../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery-exposed.js":
-/*!********************************************************************************************************************!*\
-  !*** ../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery-exposed.js ***!
-  \********************************************************************************************************************/
+/***/ "../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery.js":
+/*!************************************************************************************************************!*\
+  !*** ../../node_modules/expose-loader/dist/cjs.js?exposes=jQuery!../../node_modules/jquery/dist/jquery.js ***!
+  \************************************************************************************************************/
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var ___EXPOSE_LOADER_IMPORT___ = __webpack_require__(/*! -!./jquery.js */ "../../node_modules/jquery/dist/jquery.js");

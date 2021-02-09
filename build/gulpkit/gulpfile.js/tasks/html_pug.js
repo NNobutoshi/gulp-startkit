@@ -42,7 +42,7 @@ function _map( file, collection ) {
       let keyFileName;
       if ( i % 3 === 2 ) { // パス部分
         if ( /^\//.test( match[ i ] ) ) {
-          keyFileName = path.join( process.cwd(), config.base, match[ i ] );
+          keyFileName = path.join( config.base, match[ i ] );
         } else {
           keyFileName = path.resolve( file.dirname, match[ i ] );
         }
@@ -86,9 +86,9 @@ function _pugRender() {
         callBack();
         return errorHandler( error );
       }
-      rendered.files.push( file.path );
       file.contents = new global.Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
+      rendered.files.push( file.path );
       return callBack( null, file );
     } );
   }, ( callBack ) => {
