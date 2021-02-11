@@ -141,10 +141,13 @@ const
       },
     },
     'js_webpack' : {
-      src            : [ DIR_DEV.src + '/**/*.entry.js' ],
-      base           : DIR_DEV.src,
-      dist           : DIR_DEV.dist,
-      options        : {
+      src           : [ DIR_DEV.src + '/**/*.js' ],
+      target        : /\.entry\.js$/,
+      // target        : '.entry.js',
+      watch         : true && ENABLE_WATCH,
+      base          : DIR_DEV.src,
+      dist          : DIR_DEV.dist,
+      options       : {
         del          : {
           dist    : [ DIR_DEV.dist + '/**/*.js.map' ],
           options : {
@@ -153,7 +156,7 @@ const
         },
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       },
-      webpackConfig  : {
+      webpackConfig : {
         mode      : 'development',
         output    : {},
         devtool   : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
@@ -181,7 +184,7 @@ const
           type           : 'filesystem',
           cacheDirectory : WEBPACK_CACHE_PATH,
         },
-        watch   : true && ENABLE_WATCH,
+        // watch   : true && ENABLE_WATCH,
         plugins : [
           new webpack.SourceMapDevToolPlugin( {
             filename : SOURCEMAPS_DIR + '/[file].map',

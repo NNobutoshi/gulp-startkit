@@ -1,20 +1,20 @@
 const
   { parallel, series } = require( 'gulp' )
   ,tasks = {
-    html_pug      : require( './tasks/html_pug' ),
-    js_webpack    : require( './tasks/js_webpack' ),
-    css_sass      : require( './tasks/css_sass' ),
-    icon_font     : require( './tasks/icon_font' ),
-    img_min       : require( './tasks/img_min' ),
-    serve_init    : require( './tasks/serve' ).serve_init,
-    serve_reload  : require( './tasks/serve' ).serve_reload,
-    sprite        : require( './tasks/sprite' ),
-    sprite_svg    : require( './tasks/sprite_svg' ),
-    css_lint      : require( './tasks/css_lint' ),
-    js_lint       : require( './tasks/js_lint' ),
-    clean         : require( './tasks/clean' ),
+    html_pug     : require( './tasks/html_pug' ),
+    js_webpack   : require( './tasks/js_webpack' ),
+    css_sass     : require( './tasks/css_sass' ),
+    icon_font    : require( './tasks/icon_font' ),
+    img_min      : require( './tasks/img_min' ),
+    serve_init   : require( './tasks/serve' ).serve_init,
+    serve_reload : require( './tasks/serve' ).serve_reload,
+    sprite       : require( './tasks/sprite' ),
+    sprite_svg   : require( './tasks/sprite_svg' ),
+    css_lint     : require( './tasks/css_lint' ),
+    js_lint      : require( './tasks/js_lint' ),
+    clean        : require( './tasks/clean' ),
   }
-  ,watcher  = require( './tasks/watch' )
+  ,watcher = require( './tasks/watch' )
 ;
 const
   args = process.argv.slice( 4 )
@@ -46,6 +46,9 @@ exports.default = series(
   watcher( tasks, tasks.serve_reload ),
 );
 
-process.on( 'SIGINT', function() {
-  process.exit();
-} );
+// process.on( 'SIGINT', () => {
+//   process.exit();
+// } );
+// process.on( 'exit', () => {
+//   console.info( 'exit' );
+// } );

@@ -4,12 +4,16 @@ const
   ,path         = require( 'path' )
   ,log          = require( 'fancy-log' )
   ,through      = require( 'through2' )
-  ,serve_reload = require( './serve.js' ).serve_reload
+  ,isRegExp     = require( 'lodash/isRegExp' )
 ;
 const
   config         = require( '../config.js' ).js_webpack
   ,options       = config.options
   ,webpackConfig = config.webpackConfig
+;
+let
+  isFirst = true
+  ,done
 ;
 
 module.exports = js_webpack;
@@ -26,28 +30,45 @@ function _init_webpak() {
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-    const
-      key = path.relative( config.base, file.path ).replace( /\.entry\.js$/, '' ).replace( /\\/g, '/' )
-      ,val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' )
-    ;
+    let key, val, targetSuffix;
+
+    if ( config.target && typeof config.target === 'string' ) {
+      targetSuffix = new RegExp( config.target.replace( /\./g, '\\.' ) + '$' );
+    } else if ( isRegExp( config.target ) ) {
+      targetSuffix = config.target;
+    }
+    if ( !targetSuffix || !targetSuffix.test( file.basename ) ) {
+      return callBack();
+    }
+    key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
+    val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
     entries[ key ] = val;
     callBack();
   }
 
   function _flush( callBack ) {
-    if ( Object.keys( entries ).length > 0 ) {
-      return _pack( entries, callBack );
+    if ( isFirst === true ) {
+      if ( Object.keys( entries ).length > 0 ) {
+        _pack( entries );
+        done = callBack;
+      }
+      isFirst = false;
+    } else {
+      if ( typeof done === 'function' ) {
+        // webpack が動作中は、callBack は自分で処理する。
+        callBack();
+      } else {
+        done = callBack;
+      }
     }
-    callBack();
   }
-
 }
 
-function _pack( entries, done ) {
+function _pack( entries ) {
   webpackConfig.entry = entries;
   webpackConfig.output.filename = '[name].js';
   webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-  webpackConfig.mode = process.env.NODE_ENV;
+  webpackConfig.watch = config.watch;
   webpack( webpackConfig, ( error, stats ) => {
     let chunks;
     if ( stats.hasErrors && stats.hasErrors() ) {
@@ -62,11 +83,9 @@ function _pack( entries, done ) {
         log( `webpack:${item.id}` );
       }
     }
-    if ( typeof serve_reload === 'function' ) {
-      serve_reload();
-    }
     if ( typeof done === 'function' ) {
       done();
+    } else {
       done = null;
     }
   } );
