@@ -22,7 +22,7 @@ const
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '../.webpack_cache' )
 ;
 const
   config_dev = {
@@ -142,8 +142,7 @@ const
     },
     'js_webpack' : {
       src           : [ DIR_DEV.src + '/**/*.js' ],
-      target        : /\.entry\.js$/,
-      // target        : '.entry.js',
+      target        : /\.entry\.js$/, // '.entry.js',
       watch         : true && ENABLE_WATCH,
       base          : DIR_DEV.src,
       dist          : DIR_DEV.dist,
@@ -198,8 +197,7 @@ const
     },
     'js_lint' : {
       src : [
-        ''  + '*.js',
-        ''  + 'gulpkit/**/*.js',
+        ''  + './**/*.js',
         ''  + DIR_DEV.src + '/**/*.js',
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
@@ -445,9 +443,7 @@ if ( fs.existsSync( './config_serve.js' ) ) {
 // 'production'用の設定は、'development' を基準にしてマージする
 switch ( NODE_ENV ) {
 case 'production':
-  let m;
-  module.exports = m = merge( {}, config_dev, config_prod );
-  console.info( m.js_webpack );
+  module.exports = merge( {}, config_dev, config_prod );
   break;
 case 'development':
 default:
