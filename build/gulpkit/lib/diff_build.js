@@ -25,6 +25,7 @@ function diff_build( options, map, filter ) {
     ,settings = merge( {}, defaultSettings, options )
     ,since = ( settings.hash ) ? lastStamp.get( settings.hash ) : false
   ;
+
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
@@ -73,15 +74,19 @@ function diff_build( options, map, filter ) {
         total = Object.keys( destFiles ).length;
       }
     }
+    log( `[${hash}]: detected ${targets.length} files time diff` );
     log( `[${hash}]: thrown ${total} files` );
+
     self.on( 'finish', () => {
       lastStamp.set( hash );
     } );
+
     clearTimeout( writing_timeoutId );
     writing_timeoutId = setTimeout( () => {
       lastStamp.write();
       clearTimeout( writing_timeoutId );
     }, WRITING_DELAY_TIME );
+
     callBack();
   }
 }
