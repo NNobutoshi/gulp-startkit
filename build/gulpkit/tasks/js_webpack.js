@@ -1,6 +1,7 @@
 const
   { src }       = require( 'gulp' )
   ,webpack      = require( 'webpack' )
+  ,gulpIf       = require( 'gulp-if' )
   ,path         = require( 'path' )
   ,log          = require( 'fancy-log' )
   ,through      = require( 'through2' )
@@ -10,25 +11,26 @@ const
   config         = require( '../config.js' ).js_webpack
   ,options       = config.options
   ,webpackConfig = config.webpackConfig
+  ,entries       = {}
 ;
 let
-  isFirst = true
-  ,done
+  compiler = null
 ;
 
 module.exports = js_webpack;
 
 function js_webpack() {
   return src( config.src )
-    .pipe( _init_webpak() )
+    .pipe( gulpIf(
+      Object.keys( entries ).length === 0
+      ,_initWebpack()
+    ) )
+    .pipe( _compile() )
   ;
 }
 
-function _init_webpak() {
-  const entries = {};
-
+function _initWebpack() {
   return through.obj( _transform, _flush );
-
   function _transform( file, enc, callBack ) {
     let key, val, targetSuffix;
 
@@ -38,38 +40,39 @@ function _init_webpak() {
       targetSuffix = config.target;
     }
     if ( !targetSuffix || !targetSuffix.test( file.basename ) ) {
-      return callBack();
+      return callBack( null, file );
     }
     key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
     val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
     entries[ key ] = val;
-    callBack();
+    callBack( null, file );
   }
-
   function _flush( callBack ) {
-    if ( isFirst === true ) {
-      if ( Object.keys( entries ).length > 0 ) {
-        _pack( entries );
-        done = callBack;
-      }
-      isFirst = false;
-    } else {
-      if ( typeof done === 'function' ) {
-        // webpack が動作中は、callBack は自分で処理する。
-        callBack();
-      } else {
-        done = callBack;
-      }
+    webpackConfig.entry = entries;
+    webpackConfig.output.filename = '[name].js';
+    webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
+    if ( !Object.keys( entries ).length  ) {
+      return callBack();
     }
+    if ( compiler === null ) {
+      compiler = webpack( webpackConfig );
+    }
+    callBack();
   }
 }
 
-function _pack( entries ) {
-  webpackConfig.entry = entries;
-  webpackConfig.output.filename = '[name].js';
-  webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-  webpackConfig.watch = config.watch;
-  webpack( webpackConfig, ( error, stats ) => {
+function _compile() {
+  return through.obj( _transform, _flush );
+  function _transform( file, enc, callBack ) {
+    callBack( null, file );
+  }
+  function _flush( callBack ) {
+    compiler.run( _webPackCall( callBack ) );
+  }
+}
+
+function _webPackCall( callBack ) {
+  return ( error, stats ) => {
     let chunks;
     if ( stats.hasErrors && stats.hasErrors() ) {
       log( 'webpack: has error' );
@@ -83,10 +86,6 @@ function _pack( entries ) {
         log( `webpack:${item.id}` );
       }
     }
-    if ( typeof done === 'function' ) {
-      done();
-    } else {
-      done = null;
-    }
-  } );
+    callBack();
+  };
 }
