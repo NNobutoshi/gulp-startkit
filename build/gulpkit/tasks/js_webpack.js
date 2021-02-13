@@ -1,44 +1,46 @@
 const
   { src }       = require( 'gulp' )
   ,webpack      = require( 'webpack' )
-  ,gulpIf       = require( 'gulp-if' )
   ,path         = require( 'path' )
   ,log          = require( 'fancy-log' )
   ,through      = require( 'through2' )
-  ,isRegExp     = require( 'lodash/isRegExp' )
+  ,{ isRegExp, isEqual } = require( 'lodash' )
 ;
 const
   config         = require( '../config.js' ).js_webpack
   ,options       = config.options
   ,webpackConfig = config.webpackConfig
-  ,entries       = {}
 ;
 let
   compiler = null
+  ,entries
 ;
 
 module.exports = js_webpack;
 
 function js_webpack() {
   return src( config.src )
-    .pipe( gulpIf(
-      Object.keys( entries ).length === 0
-      ,_initWebpack()
-    ) )
+    .pipe( _createEntries() )
+    .pipe( _initWebpack() )
     .pipe( _compile() )
   ;
 }
 
-function _initWebpack() {
-  return through.obj( _transform, _flush );
-  function _transform( file, enc, callBack ) {
-    let key, val, targetSuffix;
+function _createEntries() {
+  let targetSuffix;
 
-    if ( config.target && typeof config.target === 'string' ) {
-      targetSuffix = new RegExp( config.target.replace( /\./g, '\\.' ) + '$' );
-    } else if ( isRegExp( config.target ) ) {
-      targetSuffix = config.target;
-    }
+  entries = {};
+
+  if ( config.target && typeof config.target === 'string' ) {
+    targetSuffix = new RegExp( config.target.replace( /\./g, '\\.' ) + '$' );
+  } else if ( isRegExp( config.target ) ) {
+    targetSuffix = config.target;
+  }
+
+  return through.obj( _transform, _flush );
+
+  function _transform( file, enc, callBack ) {
+    let key, val;
     if ( !targetSuffix || !targetSuffix.test( file.basename ) ) {
       return callBack( null, file );
     }
@@ -48,13 +50,23 @@ function _initWebpack() {
     callBack( null, file );
   }
   function _flush( callBack ) {
-    webpackConfig.entry = entries;
-    webpackConfig.output.filename = '[name].js';
-    webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-    if ( !Object.keys( entries ).length  ) {
+    if ( !Object.keys( entries ).length ) {
       return callBack();
     }
-    if ( compiler === null ) {
+    callBack();
+  }
+}
+
+function _initWebpack() {
+  return through.obj( _transform, _flush );
+  function _transform( file, enc, callBack ) {
+    callBack( null, file );
+  }
+  function _flush( callBack ) {
+    if ( compiler === null || !isEqual( webpackConfig.entry, entries ) ) {
+      webpackConfig.entry = entries;
+      webpackConfig.output.filename = '[name].js';
+      webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
       compiler = webpack( webpackConfig );
     }
     callBack();
