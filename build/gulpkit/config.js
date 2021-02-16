@@ -22,7 +22,7 @@ const
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '../.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../.webpack_cache' )
 ;
 const
   config_dev = {
@@ -63,7 +63,7 @@ const
     'css_lint' : {
       src       : [
         ''  + DIR_DEV.src + '/**/*.scss',
-        '!' + DIR_DEV.src + '/css/_sprite_vector.scss',
+        '!' + DIR_DEV.src + '/**/css/_sprite_vector.scss',
         '!' + DIR_DEV.src + '/**/_vendor/*.scss',
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
@@ -83,12 +83,14 @@ const
       },
     },
     'icon_font' : {
-      src           : [ DIR_DEV.src + '/fonts/*.svg' ],
+      src           : [ DIR_DEV.src + '/**/fonts/*.svg' ],
       dist          : DIR_DEV.dist,
+      base          : DIR_DEV.src,
+      point         : '/fonts',
       watch         : true && ENABLE_WATCH,
-      fontsDist     : DIR_DEV.src + '/fonts',
-      fontsCopyFrom : DIR_DEV.src + '/fonts/*',
-      fontsCopyTo   : DIR_DEV.dist + '/fonts/icons',
+      fontsDist     : DIR_DEV.src +  '[point]/fonts',
+      fontsCopyFrom : DIR_DEV.src +  '[point]/fonts/*',
+      fontsCopyTo   : DIR_DEV.dist + '[point]/fonts/icons',
       options       : {
         iconfont : {
           fontName       : 'icons',
@@ -111,6 +113,7 @@ const
         diff : {
           hash      : 'icon_font',
           allForOne : true,
+          base      : '/fonts',
         },
       },
     },
@@ -241,12 +244,16 @@ const
       },
     },
     'sprite' : {
-      src      : [ DIR_DEV.src + '/img/_sprite/*.png' ],
-      dist     : DIR_DEV.dist,
-      watch    : true && ENABLE_WATCH,
+      src     : [ DIR_DEV.src + '/**/img/_sprite/**/*.png' ],
+      dist    : DIR_DEV.dist,
+      base    : DIR_DEV.src,
+      point   : '/img/_sprite',
+      watch   : true && ENABLE_WATCH,
+      imgDir  : DIR_DEV.dist + '[point]/img',
+      scssDir : DIR_DEV.src  + '[point]/css',
       imgDist  : DIR_DEV.dist + '/img',
-      scssDist : DIR_DEV.src + '/css',
-      options  : {
+      scssDist : DIR_DEV.src  + '/css',
+      options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         },
@@ -264,14 +271,16 @@ const
         diff : {
           hash      : 'sprite',
           allForOne : true,
+          base      : '/img/_sprite',
         },
       },
     },
-    'sprite_svg': {
-      src   : [ DIR_DEV.src + '/img/_sprite_svg/*.svg' ],
-      base  : DIR_DEV.src,
-      dist  : DIR_DEV.dist,
-      watch : true && ENABLE_WATCH,
+    'sprite_svg' : {
+      src     : [ DIR_DEV.src + '/**/img/_sprite_svg/**/*.svg' ],
+      base    : DIR_DEV.src,
+      dist    : DIR_DEV.dist,
+      point   : '/img/_sprite_svg',
+      watch   : true && ENABLE_WATCH,
       options :  {
         svgSprite : {
           mode  : {
@@ -279,7 +288,7 @@ const
               dest    : 'img',
               sprite  : 'common_symbols.svg',
               example : {
-                dest : '../examples/sprite_svg_symbols.html',
+                dest : '../_sprite_svg_example.html',
               },
             },
             css : {
@@ -293,7 +302,7 @@ const
                 },
               },
               example: {
-                dest: path.resolve( process.cwd(), 'examples/sprite_svg_bg.html' ),
+                dest: path.resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
               }
             },
           },
@@ -321,8 +330,9 @@ const
           },
         },
         diff : {
-          hash     : 'sprite_svg',
-          allForOne: true,
+          hash      : 'sprite_svg',
+          allForOne : true,
+          base      : '/img/_sprite_svg'
         },
       },
     },

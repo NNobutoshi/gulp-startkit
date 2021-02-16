@@ -2,10 +2,11 @@ const
   fs      = require( 'fs' )
   ,path   = require( 'path' )
   ,mkdirp = require( 'mkdirp' )
+  ,del    = require( 'del' )
 ;
 const
   FILEPATH  = path.resolve( __dirname , '../../.last_run_time_log/.timestamps' )
-  ,DIRNAME = path.dirname( FILEPATH )
+  ,DIRNAME  = path.dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastRunTime'
   ,ZERO     = new Date( 0 )
 ;
@@ -17,11 +18,11 @@ module.exports.default = {
   set : _set,
 };
 
-module.exports.get = _get;
-module.exports.set = _set;
-module.exports.write = _write;
-module.exports.fresh = _fresh;
-module.exports.reset = _reset;
+module.exports.get      = _get;
+module.exports.set      = _set;
+module.exports.write    = _write;
+module.exports.fresh    = _fresh;
+module.exports.reset    = _reset;
 module.exports.resetAll = _resetAll;
 
 function _get( hash ) {
@@ -34,9 +35,8 @@ function _get( hash ) {
       return new Date( map[ hash ] );
     }
     return map[ hash ];
-  } else {
-    return ZERO;
   }
+  return ZERO;
 }
 
 function _getAll() {
@@ -44,9 +44,8 @@ function _getAll() {
     return envData;
   } else if ( fs.existsSync( FILEPATH ) ) {
     return JSON.parse( fs.readFileSync( FILEPATH, 'utf-8' ) );
-  } else {
-    return {};
   }
+  return {};
 }
 
 function _set( hash ) {
@@ -89,16 +88,5 @@ function _reset( hash ) {
 }
 
 function _resetAll( ) {
-  if ( fs.existsSync( FILEPATH ) ) {
-    fs.unlink( FILEPATH, ( error ) => {
-      if ( error ) {
-        throw error;
-      }
-      fs.rmdir( DIRNAME, { recursive : true }, ( error ) => {
-        if ( error ) {
-          throw error;
-        }
-      } );
-    } );
-  }
+  del( DIRNAME );
 }

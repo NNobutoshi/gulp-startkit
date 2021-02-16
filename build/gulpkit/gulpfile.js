@@ -20,11 +20,15 @@ const
   args = process.argv.slice( 4 )
 ;
 if ( args.length ) {
-  for ( let i = 0; i < args.length; i++ ) {
-    exports[ args[ i ] ] = tasks[ args[ i ] ];
-  }
   tasks.serve_init();
-  watcher( exports, tasks.serve_reload )();
+  for ( let i = 0; i < args.length; i++ ) {
+    if ( tasks.serve_reload ) {
+      exports[ args[ i ] ] = series( tasks[ args[ i ] ], tasks.serve_reload );
+    } else {
+      exports[ args[ i ] ] = tasks[ args[ i ] ];
+    }
+  }
+  watcher( exports )();
 }
 
 /* default tasks */
@@ -45,7 +49,6 @@ exports.default = series(
   tasks.serve_init,
   watcher( tasks, tasks.serve_reload ),
 );
-
 // process.on( 'SIGINT', () => {
 //   process.exit();
 // } );

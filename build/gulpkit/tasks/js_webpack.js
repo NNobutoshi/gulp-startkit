@@ -49,12 +49,14 @@ function _createEntries() {
     entries[ key ] = val;
     callBack( null, file );
   }
+
   function _flush( callBack ) {
     if ( !Object.keys( entries ).length ) {
       return callBack();
     }
     callBack();
   }
+
 }
 
 function _initWebpack() {
