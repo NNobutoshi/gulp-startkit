@@ -1,8 +1,9 @@
 const
   { src, dest } = require( 'gulp' )
-  ,plumber      = require( 'gulp-plumber' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
+  ,plumber      = require( 'gulp-plumber' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
+  ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -15,12 +16,22 @@ const
 module.exports = sprite;
 
 function sprite( cb ) {
-  taskForEach( {
-    mainSrc : config.src,
-    point   : config.point,
-    base    : config.base,
-    diff    : () => diff( options.diff ),
-  }, _branchTask, cb );
+  taskForEach( _mainTask, _branchTask, cb );
+}
+
+function _mainTask() {
+  const
+    srcCollection = {}
+  ;
+  return new Promise( ( resolve ) => {
+    src( config.src )
+      .pipe( diff( options.diff ) )
+      .pipe( groupSrc( srcCollection, config.point, config.base ) )
+      .on( 'finish', () => {
+        resolve( srcCollection );
+      } )
+    ;
+  } );
 }
 
 function _branchTask( subSrc, baseDir ) {
@@ -28,8 +39,8 @@ function _branchTask( subSrc, baseDir ) {
     ( async function() {
       let spriteData;
       spriteData = await _sprite( subSrc );
-      await _img( spriteData, config.imgDir.replace( '[point]' , baseDir ) );
-      await _css( spriteData , config.scssDir.replace( '[point]' , baseDir ) );
+      await _img( spriteData, config.imgDir.replace( '[subdir]' , baseDir ) );
+      await _css( spriteData , config.scssDir.replace( '[subdir]' , baseDir ) );
       resolve();
     } )( );
   } );

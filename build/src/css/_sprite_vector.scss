@@ -1,44 +1,54 @@
 %svg-common {
-	background: url("../img/common_sheet-c4c487a1.svg") no-repeat;
+	background: url("../img/common_sheet.svg") no-repeat;
 }
 
-.icon_arrow_down {
+.icon_factory {
+	@extend %svg-common;
+	background-position: 79.54842202477627% 52.74926777050367%;
+}
+
+.icon_factory_dims {
+	width: 148.594px;
+	height: 83.219px;
+}
+
+.icon_home {
 	@extend %svg-common;
 	background-position: 0 0;
 }
 
-.icon_arrow_down_dims {
-	width: 166.07px;
-	height: 201.22px;
+.icon_home_dims {
+	width: 174.5px;
+	height: 106.438px;
 }
 
-.icon_arrow_left {
+.icon_mail {
 	@extend %svg-common;
-	background-position: 49.90384037502254% 0;
+	background-position: 0 56.28840682411923%;
 }
 
-.icon_arrow_left_dims {
-	width: 201.22px;
-	height: 166.07px;
+.icon_mail_dims {
+	width: 149.874px;
+	height: 95.906px;
 }
 
-.icon_arrow_right {
+.icon_network {
 	@extend %svg-common;
-	background-position: 0 99.64839300747784%;
+	background-position: 99.4483324594798% 0;
 }
 
-.icon_arrow_right_dims {
-	width: 201.22px;
-	height: 166.07px;
+.icon_network_dims {
+	width: 161.532px;
+	height: 101.874px;
 }
 
-.icon_arrow_up {
+.icon_school {
 	@extend %svg-common;
-	background-position: 99.82605386894247% 0;
+	background-position: 0 99.67684729064038%;
 }
 
-.icon_arrow_up_dims {
-	width: 166.07px;
-	height: 201.22px;
+.icon_school_dims {
+	width: 148px;
+	height: 82px;
 }
 

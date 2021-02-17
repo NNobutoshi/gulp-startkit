@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="161.532" height="101.874" viewBox="0 0 161.532 101.874">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00e486;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="network.png_network.svg" data-name="network.png,network.svg" class="cls-1" d="M1030.11,595.121v-43.1h43.1v43.1h-43.1Zm-75.325-21.5v26.937h-43.1v-43.1h43.1v1.469l15.672-29.385V498.687h43.093v43.1H971.762Z" transform="translate(-911.688 -498.688)"/>
+</svg>

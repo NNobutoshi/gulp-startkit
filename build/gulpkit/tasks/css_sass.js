@@ -49,7 +49,7 @@ function _log() {
   };
   return through.obj( ( file, enc, callBack ) => {
     rendered.files.push( file.path );
-    callBack();
+    callBack( null, file );
   }, ( callBack ) => {
     log( `${options.diff.hash}: rendered ${rendered.files.length } files` );
     callBack();

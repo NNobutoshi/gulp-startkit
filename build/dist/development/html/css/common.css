@@ -7,11 +7,11 @@ html {
 
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 
-.icon-arrow1_r:before, .icon-arrow2_r:before {
+.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -24,12 +24,20 @@ html {
   text-transform: none;
 }
 
-.icon-arrow1_r:before {
+.icon-arrow_down:before {
   content: "";
 }
 
-.icon-arrow2_r:before {
+.icon-arrow_left:before {
   content: "";
+}
+
+.icon-arrow_right:before {
+  content: "";
+}
+
+.icon-arrow_up:before {
+  content: "";
 }
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -377,53 +385,62 @@ template {
 
 /* stylelint-disable */
 /* stylelint-anable */
-.icon_arrow_down, .icon_arrow_left, .icon_arrow_right, .icon_arrow_up {
-  background: url("../img/common_sheet-c4c487a1.svg") no-repeat;
+.icon_factory, .icon_home, .icon_mail, .icon_network, .icon_school {
+  background: url("../img/common_sheet.svg") no-repeat;
 }
 
-.icon_arrow_down {
+.icon_factory {
+  background-position: 79.54842202477627% 52.74926777050367%;
+}
+
+.icon_factory_dims {
+  width: 148.594px;
+  height: 83.219px;
+}
+
+.icon_home {
   background-position: 0 0;
 }
 
-.icon_arrow_down_dims {
-  width: 166.07px;
-  height: 201.22px;
+.icon_home_dims {
+  width: 174.5px;
+  height: 106.438px;
 }
 
-.icon_arrow_left {
-  background-position: 49.90384037502254% 0;
+.icon_mail {
+  background-position: 0 56.28840682411923%;
 }
 
-.icon_arrow_left_dims {
-  width: 201.22px;
-  height: 166.07px;
+.icon_mail_dims {
+  width: 149.874px;
+  height: 95.906px;
 }
 
-.icon_arrow_right {
-  background-position: 0 99.64839300747784%;
+.icon_network {
+  background-position: 99.4483324594798% 0;
 }
 
-.icon_arrow_right_dims {
-  width: 201.22px;
-  height: 166.07px;
+.icon_network_dims {
+  width: 161.532px;
+  height: 101.874px;
 }
 
-.icon_arrow_up {
-  background-position: 99.82605386894247% 0;
+.icon_school {
+  background-position: 0 99.67684729064038%;
 }
 
-.icon_arrow_up_dims {
-  width: 166.07px;
-  height: 201.22px;
+.icon_school_dims {
+  width: 148px;
+  height: 82px;
 }
 
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 
-.icon-arrow1_r:before, .icon-arrow2_r:before {
+.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -436,12 +453,20 @@ template {
   text-transform: none;
 }
 
-.icon-arrow1_r:before {
+.icon-arrow_down:before {
   content: "";
 }
 
-.icon-arrow2_r:before {
+.icon-arrow_left:before {
   content: "";
+}
+
+.icon-arrow_right:before {
+  content: "";
+}
+
+.icon-arrow_up:before {
+  content: "";
 }
 
 /* stylelint-disable */
@@ -1466,11 +1491,11 @@ template {
 
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 
-.icon-arrow1_r:before, .icon-arrow2_r:before {
+.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -1483,16 +1508,90 @@ template {
   text-transform: none;
 }
 
-.icon-arrow1_r:before {
+.icon-arrow_down:before {
   content: "";
 }
 
-.icon-arrow2_r:before {
+.icon-arrow_left:before {
   content: "";
+}
+
+.icon-arrow_right:before {
+  content: "";
+}
+
+.icon-arrow_up:before {
+  content: "";
 }
 
 /* stylelint-disable */
 /* stylelint-anable */
+.link {
+  vertical-align: middle;
+}
+
+.link::before {
+  font-size: 14px;
+  /* stylelint-disable */
+  font-family: "icons";
+  /* stylelint-anable */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  display: inline-block;
+  -webkit-transform: translateY(2px);
+          transform: translateY(2px);
+  margin-right: 2px;
+}
+
+.link--normal::before {
+  content: "";
+}
+
+/* stylelint-disable */
+/* stylelint-anable */
+.iconList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.iconList_item + .iconList_item {
+  margin-left: 10px;
+}
+
+.iconList_item--home {
+  background-image: url(../img/common_sprite.png);
+  background-position: 0px 0px;
+  width: 87.5px;
+  height: 53.5px;
+  background-size: 174px 153px;
+}
+
+.iconList_item--factory {
+  background-image: url(../img/common_sprite.png);
+  background-position: -80px -58.5px;
+  width: 74.5px;
+  height: 42px;
+  background-size: 174px 153px;
+}
+
+.iconList_item--school {
+  background-image: url(../img/common_sprite.png);
+  background-position: 0px -112px;
+  width: 74px;
+  height: 41px;
+  background-size: 174px 153px;
+}
+
 @media (min-width: 768px) and (max-width: 767px) {
   .and {
     font-size: 0.875rem;

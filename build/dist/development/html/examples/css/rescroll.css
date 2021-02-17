@@ -1,11 +1,11 @@
 @charset "UTF-8";
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 
-.icon-arrow1_r:before, .icon-arrow2_r:before {
+.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -18,12 +18,20 @@
   text-transform: none;
 }
 
-.icon-arrow1_r:before {
+.icon-arrow_down:before {
   content: "";
 }
 
-.icon-arrow2_r:before {
+.icon-arrow_left:before {
   content: "";
+}
+
+.icon-arrow_right:before {
+  content: "";
+}
+
+.icon-arrow_up:before {
+  content: "";
 }
 
 /* stylelint-disable */

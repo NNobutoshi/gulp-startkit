@@ -1,1 +1,28 @@
 @charset "utf-8";
+
+@import
+  "../_mixins_sprite.scss"
+;
+
+.iconList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  @at-root {
+    &_item {
+      & + & {
+        margin-left:10px;
+      }
+      &--home {
+        @include sprite($sheet-home,2);
+      }
+      &--factory {
+        @include sprite($sheet-factory,2);
+      }
+      &--school {
+        @include sprite($sheet-school,2);
+      }
+    }
+  }
+}

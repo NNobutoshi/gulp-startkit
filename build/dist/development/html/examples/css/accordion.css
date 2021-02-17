@@ -1,11 +1,13 @@
 @charset "UTF-8";
+/* stylelint-disable */
+/* stylelint-anable */
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"), url("../fonts/icons/icons.woff2") format("woff2"), url("../fonts/icons/icons.woff") format("woff"), url("../fonts/icons/icons.ttf") format("truetype"), url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 
-.icon-arrow1_r:before, .icon-arrow2_r:before {
+.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -18,21 +20,55 @@
   text-transform: none;
 }
 
-.icon-arrow1_r:before {
+.icon-arrow_down:before {
   content: "";
 }
 
-.icon-arrow2_r:before {
+.icon-arrow_left:before {
   content: "";
 }
 
-/* stylelint-disable */
-/* stylelint-anable */
+.icon-arrow_right:before {
+  content: "";
+}
+
+.icon-arrow_up:before {
+  content: "";
+}
+
 .pl-list_btn {
   display: block;
   padding: 10px;
   border: solid 1px #f00;
   cursor: pointer;
+}
+
+.pl-list_btn::after {
+  display: inline-block;
+  /* stylelint-disable */
+  font-family: "icons";
+  /* stylelint-anable */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  content: "";
+  font-size: 10px;
+  margin-left: 10px;
+  -webkit-transform: rotate(0) scale(0.8);
+          transform: rotate(0) scale(0.8);
+  -webkit-transition: -webkit-transform .3s ease-in-out;
+  transition: -webkit-transform .3s ease-in-out;
+  transition: transform .3s ease-in-out;
+  transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+}
+
+.js-list--isOpening .pl-list_btn::after {
+  -webkit-transform: rotate(180deg) scale(0.8);
+          transform: rotate(180deg) scale(0.8);
 }
 
 .pl-list_inner {

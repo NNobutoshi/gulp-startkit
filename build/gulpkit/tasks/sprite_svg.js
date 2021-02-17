@@ -3,8 +3,9 @@ const
   ,svgSprite    = require( 'gulp-svg-sprite' )
   ,plumber      = require( 'gulp-plumber' )
   ,gulpIf       = require( 'gulp-if' )
-  ,diff         = require( '../lib/diff_build.js' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
+  ,groupSrc     = require( '../lib/group_src.js' )
+  ,diff         = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).sprite_svg
@@ -16,12 +17,22 @@ const
 module.exports = sprite_svg;
 
 function sprite_svg( cb ) {
-  taskForEach( {
-    mainSrc : config.src,
-    point   : config.point,
-    base    : config.base,
-    diff    : () => diff( options.diff ),
-  }, _branchTask, cb );
+  taskForEach( _mainTask, _branchTask, cb );
+}
+
+function _mainTask() {
+  const
+    srcCollection = {}
+  ;
+  return new Promise( ( resolve ) => {
+    src( config.src )
+      .pipe( diff( options.diff ) )
+      .pipe( groupSrc( srcCollection, config.point, config.base ) )
+      .on( 'finish', () => {
+        resolve( srcCollection );
+      } )
+    ;
+  } );
 }
 
 function _branchTask( subSrc, baseDir ) {

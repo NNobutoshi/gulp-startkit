@@ -64,10 +64,9 @@ function diff_build( options, map, filter ) {
     let
       total = 0
     ;
+
     if ( targets.length ) {
-
       if ( settings.allForOne === true && settings.base ) {
-
         for ( let filePath in allFiles ) {
           targets.forEach( ( targetFilePath ) => {
             const base = allFiles[ targetFilePath ].base;
@@ -76,36 +75,24 @@ function diff_build( options, map, filter ) {
             }
           } );
         }
-        Object.keys( destFiles ).forEach( ( filePath ) => {
-          self.push( allFiles[ filePath ].file );
-        } );
-        total = Object.keys( destFiles ).length;
-
       } else if ( settings.allForOne === true ) {
-
         for ( let filePath in allFiles ) {
-          self.push( allFiles[ filePath ].file );
+          destFiles[ filePath ] = 1;
         }
-
-        total = Object.keys( allFiles ).length;
-
       } else {
-
         targets.forEach( ( filePath ) => {
           destFiles[ filePath ] = 1;
           if ( typeof filter === 'function' ) {
             filter.call( null, filePath, collection, destFiles );
           }
         } );
-
-        Object.keys( destFiles ).forEach( ( filePath ) => {
-          self.push( allFiles[ filePath ].file );
-        } );
-        total = Object.keys( destFiles ).length;
-
       }
-
+      Object.keys( destFiles ).forEach( ( filePath ) => {
+        self.push( allFiles[ filePath ].file );
+      } );
+      total = Object.keys( destFiles ).length;
     }
+
     log( `[${hash}]: detected ${targets.length} files time diff` );
     log( `[${hash}]: thrown ${total} files` );
 

@@ -3,8 +3,8 @@
 @import
   "../../css/variables"
   ,"../../css/mixins"
-  ,"../../css/icons"
   ,"../../css/mixins_sprite"
+  ,"icons"
 ;
 
 .pl-list {
@@ -14,6 +14,18 @@
       padding: 10px;
       border: solid 1px #f00;
       cursor: pointer;
+      &::after {
+        display: inline-block;
+        @include icon-styles;
+        content: icon-char(arrow_down);
+        font-size: 10px;
+        margin-left: 10px;
+        transform: rotate(0) scale(.8);
+        transition: transform .3s ease-in-out;
+      }
+      .js-list--isOpening &::after {
+        transform: rotate(180deg) scale(.8);
+      }
     }
     .pl-list_inner {
       background-color: rgba(0, 0, 255, .2);

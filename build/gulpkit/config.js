@@ -16,11 +16,11 @@ const
   }
   ,DIR_PROD = {
     dist : '../dist/production/html',
-    src  :  '../src',
+    // src  :  '../src',
   }
-  ,ENABLE_SOURCEMAP_DEV = true
+  ,ENABLE_SOURCEMAP_DEV  = true
   ,ENABLE_SOURCEMAP_PROD = false
-  ,ENABLE_WATCH = !!JSON.parse( process.env.WATCH_ENV || 'false' )
+  ,ENABLE_WATCH   = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../.webpack_cache' )
 ;
@@ -83,19 +83,19 @@ const
       },
     },
     'icon_font' : {
-      src           : [ DIR_DEV.src + '/**/fonts/*.svg' ],
+      src           : [ DIR_DEV.src + '/**/fonts/icons/*.svg' ],
       dist          : DIR_DEV.dist,
       base          : DIR_DEV.src,
-      point         : '/fonts',
+      point         : '/fonts/icons',
       watch         : true && ENABLE_WATCH,
-      fontsDist     : DIR_DEV.src +  '[point]/fonts',
-      fontsCopyFrom : DIR_DEV.src +  '[point]/fonts/*',
-      fontsCopyTo   : DIR_DEV.dist + '[point]/fonts/icons',
+      fontsDist     : DIR_DEV.src +  '[subdir]/fonts',
+      fontsCopyFrom : DIR_DEV.src +  '[subdir]/fonts/*.*',
+      fontsCopyTo   : DIR_DEV.dist + '[subdir]/fonts',
       options       : {
         iconfont : {
           fontName       : 'icons',
           prependUnicode : true,
-          formats        : [ 'ttf', 'eot', 'woff' ],
+          formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
           timestamp      : Math.round( Date.now() / 1000 ),
           normalize      : true,
           startUnicode   : 0xF001,
@@ -104,7 +104,7 @@ const
           fontName   : 'icons',
           path       : DIR_DEV.src + '/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
-          fontPath   : '../fonts/icons/',
+          fontPath   : '../fonts/',
           firstGlyph : 0xF001,
         },
         plumber : {
@@ -113,7 +113,7 @@ const
         diff : {
           hash      : 'icon_font',
           allForOne : true,
-          base      : '/fonts',
+          base      : '/fonts/icons',
         },
       },
     },
@@ -121,6 +121,7 @@ const
       src     : [
         ''  + DIR_DEV.src + '/**/*.{png,jpg,svg}',
         '!' + DIR_DEV.src + '/**/_sprite*/*.{png,svg}',
+        '!' + DIR_DEV.src + '/**/fonts/icons/*.{png,svg}',
       ],
       dist    : DIR_DEV.dist,
       watch   : true && ENABLE_WATCH,
@@ -249,8 +250,8 @@ const
       base    : DIR_DEV.src,
       point   : '/img/_sprite',
       watch   : true && ENABLE_WATCH,
-      imgDir  : DIR_DEV.dist + '[point]/img',
-      scssDir : DIR_DEV.src  + '[point]/css',
+      imgDir  : DIR_DEV.dist + '[subdir]/img',
+      scssDir : DIR_DEV.src  + '[subdir]/css',
       imgDist  : DIR_DEV.dist + '/img',
       scssDist : DIR_DEV.src  + '/css',
       options : {
@@ -296,6 +297,7 @@ const
               sprite     : '../img/common_sheet.svg',
               prefix     : '.icon_%s',
               dimensions : '_dims',
+              bust       : false,
               render     : {
                 scss : {
                   dest: path.resolve( process.cwd(), 'css/_sprite_vector.scss' ),
@@ -311,9 +313,9 @@ const
             //   maxWidth  : 32,
             //   maxHeight : 32,
             // },
-            spacing : {
-              // padding : 10,
-            },
+            // spacing : {
+            //   padding : 10,
+            // },
             transform : [
               {
                 svgo: {

@@ -4,6 +4,7 @@ const
   ,iconfontCss  = require( 'gulp-iconfont-css' )
   ,plumber      = require( 'gulp-plumber' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
+  ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -16,12 +17,22 @@ const
 module.exports = icon_font;
 
 function icon_font( cb ) {
-  taskForEach( {
-    mainSrc : config.src,
-    point   : config.point,
-    base    : config.base,
-    diff    : () => diff( options.diff ),
-  }, _branchTask, cb );
+  taskForEach( _mainTask, _branchTask, cb );
+}
+
+function _mainTask() {
+  const
+    srcCollection = {}
+  ;
+  return new Promise( ( resolve ) => {
+    src( config.src )
+      .pipe( diff( options.diff ) )
+      .pipe( groupSrc( srcCollection, config.point, config.base ) )
+      .on( 'finish', () => {
+        resolve( srcCollection );
+      } )
+    ;
+  } );
 }
 
 function _branchTask( subSrc, baseDir ) {
@@ -30,10 +41,10 @@ function _branchTask( subSrc, baseDir ) {
       .pipe( plumber( options.plumber ) )
       .pipe( iconfontCss( options.iconfontCss ) )
       .pipe( iconfont( options.iconfont ) )
-      .pipe( dest( config.fontsDist.replace( '[point]', baseDir ) ) )
+      .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ) ) )
       .on( 'finish', () => {
-        src( config.fontsCopyFrom.replace( '[point]', baseDir ) )
-          .pipe( dest( config.fontsCopyTo.replace( '[point]', baseDir )  ) )
+        src( config.fontsCopyFrom.replace( '[subdir]', baseDir ) )
+          .pipe( dest( config.fontsCopyTo.replace( '[subdir]', baseDir )  ) )
           .on( 'finish', () => resolve() )
         ;
       } )

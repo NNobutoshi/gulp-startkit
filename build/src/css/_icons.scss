@@ -1,11 +1,11 @@
 @font-face {
   font-family: "icons";
-  src: url("../fonts/icons/icons.eot");
-  src: url("../fonts/icons/icons.eot?#iefix") format("eot"),
-    url("../fonts/icons/icons.woff2") format("woff2"),
-    url("../fonts/icons/icons.woff") format("woff"),
-    url("../fonts/icons/icons.ttf") format("truetype"),
-    url("../fonts/icons/icons.svg#icons") format("svg");
+  src: url("../fonts/icons.eot");
+  src: url("../fonts/icons.eot?#iefix") format("eot"),
+    url("../fonts/icons.woff2") format("woff2"),
+    url("../fonts/icons.woff") format("woff"),
+    url("../fonts/icons.ttf") format("truetype"),
+  // url("../fonts/icons.svg#icons") format("svg");
 }
 
 @mixin icon-styles {
@@ -29,11 +29,17 @@
 @function icon-char($filename) {
   $char: "";
   
-  @if $filename == arrow1_r {
+  @if $filename == arrow_down {
     $char: "\F001";
   }
-  @if $filename == arrow2_r {
+  @if $filename == arrow_left {
     $char: "\F002";
+  }
+  @if $filename == arrow_right {
+    $char: "\F003";
+  }
+  @if $filename == arrow_up {
+    $char: "\F004";
   }
 
   @return $char;
@@ -50,9 +56,15 @@
   }
 }
 
-.icon-arrow1_r {
-  @include icon(arrow1_r);
+.icon-arrow_down {
+  @include icon(arrow_down);
 }
-.icon-arrow2_r {
-  @include icon(arrow2_r);
+.icon-arrow_left {
+  @include icon(arrow_left);
+}
+.icon-arrow_right {
+  @include icon(arrow_right);
+}
+.icon-arrow_up {
+  @include icon(arrow_up);
 }
