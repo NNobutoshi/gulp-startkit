@@ -3,9 +3,10 @@ const
   ,iconfont     = require( 'gulp-iconfont' )
   ,iconfontCss  = require( 'gulp-iconfont-css' )
   ,plumber      = require( 'gulp-plumber' )
+  ,gulpIf       = require( 'gulp-if' )
+  ,through      = require( 'through2' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
   ,groupSrc     = require( '../lib/group_src.js' )
-  ,through      = require( 'through2' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -18,9 +19,7 @@ const
 module.exports = icon_font;
 
 function icon_font( cb ) {
-  taskForEach( _mainTask, _branchTask, () => {
-    cb();
-  } );
+  taskForEach( _mainTask, _branchTask, () => cb( ) );
 }
 
 function _mainTask() {
@@ -30,7 +29,7 @@ function _mainTask() {
   options.iconfont.timestamp = 0;
   return new Promise( ( resolve ) => {
     src( config.src )
-      .pipe( diff( options.diff ) )
+      .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( _setTimestampOption( options.iconfont.timestamp ) )
       .pipe( groupSrc( srcCollection, config.point, config.base ) )
       .on( 'finish', () => {

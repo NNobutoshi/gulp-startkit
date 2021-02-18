@@ -64,41 +64,45 @@ function diff_build( options, map, filter ) {
     let
       total = 0
     ;
+    if ( targets.length === 0 ) {
+      _log( hash, total );
+      return callBack();
+    }
 
-    if ( targets.length ) {
-      if ( settings.allForOne === true && settings.base ) {
-        for ( let filePath in allFiles ) {
-          targets.forEach( ( targetFilePath ) => {
-            const base = allFiles[ targetFilePath ].base;
-            if ( filePath.indexOf( base ) === 0 ) {
-              destFiles[ filePath ] = 1;
-            }
-          } );
-        }
-      } else if ( settings.allForOne === true ) {
-        for ( let filePath in allFiles ) {
-          destFiles[ filePath ] = 1;
-        }
-      } else {
-        targets.forEach( ( filePath ) => {
-          destFiles[ filePath ] = 1;
-          if ( typeof filter === 'function' ) {
-            filter.call( null, filePath, collection, destFiles );
+    if ( settings.allForOne === true && settings.base ) {
+      for ( let filePath in allFiles ) {
+        targets.forEach( ( targetFilePath ) => {
+          const base = allFiles[ targetFilePath ].base;
+          if ( filePath.indexOf( base ) === 0 ) {
+            destFiles[ filePath ] = 1;
           }
         } );
       }
-      Object.keys( destFiles ).forEach( ( filePath ) => {
-        self.push( allFiles[ filePath ].file );
+    } else if ( settings.allForOne === true ) {
+      for ( let filePath in allFiles ) {
+        destFiles[ filePath ] = 1;
+      }
+    } else {
+      targets.forEach( ( filePath ) => {
+        destFiles[ filePath ] = 1;
+        if ( typeof filter === 'function' ) {
+          filter.call( null, filePath, collection, destFiles );
+        }
       } );
-      total = Object.keys( destFiles ).length;
     }
 
-    log( `[${hash}]: detected ${targets.length} files time diff` );
-    log( `[${hash}]: thrown ${total} files` );
-
-    self.on( 'finish', () => {
-      lastStamp.set( hash );
+    Object.keys( destFiles ).forEach( ( filePath ) => {
+      self.push( allFiles[ filePath ].file );
     } );
+    total = Object.keys( destFiles ).length;
+
+    _log( hash, total );
+
+    if ( hash ) {
+      self.on( 'finish', () => {
+        lastStamp.set( hash );
+      } );
+    }
 
     clearTimeout( writing_timeoutId );
     writing_timeoutId = setTimeout( () => {
@@ -106,6 +110,13 @@ function diff_build( options, map, filter ) {
       clearTimeout( writing_timeoutId );
     }, WRITING_DELAY_TIME );
 
-    callBack();
+    return callBack();
+  }
+
+  function _log( hash, total ) {
+    if ( hash ) {
+      log( `[${hash}]: detected ${targets.length} files time diff` );
+      log( `[${hash}]: thrown ${total} files` );
+    }
   }
 }

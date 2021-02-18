@@ -2,8 +2,9 @@ const
   { src, dest } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
   ,sass         = require( 'gulp-sass' )
-  ,grapher      = require( 'sass-graph' )
+  ,gulpIf       = require( 'gulp-if' )
   ,postcss      = require( 'gulp-postcss' )
+  ,grapher      = require( 'sass-graph' )
   ,cssMqpacker  = require( 'css-mqpacker' )
   ,through      = require( 'through2' )
   ,log          = require( 'fancy-log' )
@@ -31,11 +32,7 @@ function css_sass() {
   }
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff(
-      options.diff
-      ,null
-      ,_filter
-    ) )
+    .pipe( gulpIf( options.diff, diff( options.diff, null, _filter ) ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( _log() )
@@ -51,7 +48,7 @@ function _log() {
     rendered.files.push( file.path );
     callBack( null, file );
   }, ( callBack ) => {
-    log( `${options.diff.hash}: rendered ${rendered.files.length } files` );
+    log( `css_sass: rendered ${rendered.files.length } files` );
     callBack();
   } );
 }

@@ -16,8 +16,9 @@ const
   }
   ,DIR_PROD = {
     dist : '../dist/production/html',
-    // src  :  '../src',
+    src  :  '../src',
   }
+  ,DIST = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist // ここで振り分けておく、config_prod で指定が漏れがちな為。
   ,ENABLE_SOURCEMAP_DEV  = true
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH   = !!JSON.parse( process.env.WATCH_ENV || 'false' )
@@ -27,9 +28,7 @@ const
 const
   config_dev = {
     'clean' : {
-      dist : [
-        DIR_DEV.dist
-      ],
+      dist : DIST,
       options : {
         del : {
           force : true,
@@ -38,7 +37,7 @@ const
     },
     'css_sass' : {
       src           : [ DIR_DEV.src + '/**/*.scss' ],
-      dist          : DIR_DEV.dist,
+      dist          : DIST,
       base          : DIR_DEV.src,
       watch         : true && ENABLE_WATCH,
       cssMqpack     : false,
@@ -67,7 +66,7 @@ const
         '!' + DIR_DEV.src + '/**/_vendor/*.scss',
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
-      dist      : DIR_DEV.dist,
+      dist      : DIST,
       watch     : true && ENABLE_WATCH,
       options   : {
         plumber : {
@@ -84,13 +83,13 @@ const
     },
     'icon_font' : {
       src           : [ DIR_DEV.src + '/**/fonts/icons/*.svg' ],
-      dist          : DIR_DEV.dist,
+      dist          : DIST,
       base          : DIR_DEV.src,
       point         : '/fonts/icons',
       watch         : true && ENABLE_WATCH,
       fontsDist     : DIR_DEV.src +  '[subdir]/fonts',
       fontsCopyFrom : DIR_DEV.src +  '[subdir]/fonts/*.*',
-      fontsCopyTo   : DIR_DEV.dist + '[subdir]/fonts',
+      fontsCopyTo   : DIST + '[subdir]/fonts',
       options       : {
         iconfont : {
           fontName       : 'icons',
@@ -122,7 +121,7 @@ const
         '!' + DIR_DEV.src + '/**/_sprite*/*.{png,svg}',
         '!' + DIR_DEV.src + '/**/fonts/icons/*.{png,svg}',
       ],
-      dist    : DIR_DEV.dist,
+      dist    : DIST,
       watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
@@ -148,10 +147,10 @@ const
       target        : /\.entry\.js$/, // '.entry.js',
       watch         : true && ENABLE_WATCH,
       base          : DIR_DEV.src,
-      dist          : DIR_DEV.dist,
+      dist          : DIST,
       options       : {
         del          : {
-          dist    : [ DIR_DEV.dist + '/**/*.js.map' ],
+          dist    : [ DIST + '/**/*.js.map' ],
           options : {
             force : true,
           },
@@ -159,7 +158,7 @@ const
         errorHandler : notify.onError( 'Error: <%= error.message %>' ),
       },
       webpackConfig : {
-        mode      : 'development',
+        mode      : NODE_ENV,
         output    : {},
         devtool   : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
         module    : {
@@ -204,7 +203,7 @@ const
         ''  + DIR_DEV.src + '/**/*.js',
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
-      dist    : DIR_DEV.dist,
+      dist    : DIST,
       watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
@@ -217,10 +216,8 @@ const
       },
     },
     'html_pug' : {
-      src : [
-        ''  + DIR_DEV.src + '/**/*.pug',
-      ],
-      dist    : DIR_DEV.dist,
+      src     : [ DIR_DEV.src + '/**/*.pug' ],
+      dist    : DIST,
       base    : DIR_DEV.src,
       watch   : true && ENABLE_WATCH,
       options : {
@@ -244,15 +241,13 @@ const
       },
     },
     'sprite' : {
-      src     : [ DIR_DEV.src + '/**/img/_sprite/**/*.png' ],
-      dist    : DIR_DEV.dist,
-      base    : DIR_DEV.src,
-      point   : '/img/_sprite',
-      watch   : true && ENABLE_WATCH,
-      imgDir  : DIR_DEV.dist + '[subdir]/img',
-      scssDir : DIR_DEV.src  + '[subdir]/css',
-      imgDist  : DIR_DEV.dist + '/img',
-      scssDist : DIR_DEV.src  + '/css',
+      src      : [ DIR_DEV.src + '/**/img/_sprite/**/*.png' ],
+      dist     : DIST,
+      base     : DIR_DEV.src,
+      point    : '/img/_sprite',
+      watch    : true && ENABLE_WATCH,
+      imgDist  : DIST + '[subdir]/img',
+      scssDist : DIR_DEV.src + '[subdir]/css',
       options : {
         plumber : {
           errorHandler : notify.onError( 'Error: <%= error.message %>' ),
@@ -278,7 +273,7 @@ const
     'sprite_svg' : {
       src     : [ DIR_DEV.src + '/**/img/_sprite_svg/**/*.svg' ],
       base    : DIR_DEV.src,
-      dist    : DIR_DEV.dist,
+      dist    : DIST,
       point   : '/img/_sprite_svg',
       watch   : true && ENABLE_WATCH,
       options :  {
@@ -350,51 +345,33 @@ const
 ;
 const
   config_prod = {
-    'clean' : {
-      dist : [
-        DIR_PROD.dist
-      ],
-    },
+    'clean' : {},
     'css_sass' : {
-      dist      : DIR_PROD.dist,
-      watch     : false,
       sourcemap : false || ENABLE_SOURCEMAP_PROD,
       options   : {
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
         },
-        diff : { hash : '' },
+        diff : false,
       },
     },
     'css_lint' : {
-      dist    : DIR_PROD.dist,
-      watch   : false,
       options : {
-        diff : { hash : '' },
+        diff : false,
       },
     },
     'icon_font' : {
-      dist        : DIR_PROD.dist,
-      watch       : false,
-      fontsCopyTo : DIR_PROD.dist + '/fonts/icons',
       options : {
-        diff : {
-          hash      : '',
-          allForOne : false,
-        },
+        diff : false,
       },
     },
     'img_min' : {
-      dist    : DIR_PROD.dist,
-      watch   : false,
       options : {
-        diff : { hash : '' },
+        diff : false,
       },
     },
     'js_webpack' : {
-      dist       : DIR_PROD.dist,
       webpackConfig : {
-        mode    : 'production',
         devtool : ( false || ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
         optimization : {
           minimizer : [ new TerserPlugin( { extractComments : false } ) ],
@@ -405,37 +382,33 @@ const
       }
     },
     'js_lint' : {
-      dist  : DIR_PROD.dist,
-      watch : false,
       options : {
-        diff : { hash : '' },
+        diff : false,
       },
     },
     'html_pug' : {
-      dist    : DIR_PROD.dist,
-      watch   : false,
       options : {
-        diff : { hash : '' },
+        diff : false,
       },
     },
     'sprite' : {
-      dist    : DIR_PROD.dist,
-      watch   : false,
       options : {
-        diff : {
-          hash      : '',
-          allForOne : false,
-        },
+        diff : false,
       },
     },
     'sprite_svg' : {
-      dist  : DIR_PROD.dist,
-      watch: false,
       options : {
-        diff : {
-          hash      : '',
-          allForOne : false,
+        svgSprite : {
+          mode  : {
+            symbol : {
+              example : false,
+            },
+            css : {
+              example : false,
+            },
+          },
         },
+        diff : false,
       },
     },
     'serve' : null, // 別途の設定ファイルにて
@@ -446,9 +419,9 @@ const
 // config_serve_orig.js がconfig_serve.js にリネーム、複製されていれば、、
 // config_serve.js 自体はGit でignore されている。
 // 作業者毎でip アドレス等を自由に設定させるため。
-if ( fs.existsSync( './config_serve.js' ) ) {
-  config_dev.serve = require( './config_serve' ).conf_dev;
-  config_prod.serve = require( './config_serve' ).conf_prod;
+if ( fs.existsSync( path.resolve( __dirname, './config_serve.js' ) ) ) {
+  config_dev.serve = require( './config_serve.js' ).conf_dev;
+  config_prod.serve = require( './config_serve.js' ).conf_prod;
 }
 
 // 'production'用の設定は、'development' を基準にしてマージする

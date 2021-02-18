@@ -3,6 +3,7 @@ const
 ;
 const
   { src, dest } = require( 'gulp' )
+  ,gulpIf       = require( 'gulp-if' )
   ,pug          = require( 'pug' )
   ,through      = require( 'through2' )
   ,beautifyHtml = require( 'js-beautify' ).html
@@ -20,11 +21,7 @@ module.exports = html_pug;
 
 function html_pug() {
   return src( config.src )
-    .pipe( diff(
-      options.diff
-      ,_map
-      ,_filter
-    ) )
+    .pipe( gulpIf( options.diff, diff( options.diff ,_map ,_filter ) ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )

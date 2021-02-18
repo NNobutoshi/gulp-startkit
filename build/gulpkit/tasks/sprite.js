@@ -2,6 +2,7 @@ const
   { src, dest } = require( 'gulp' )
   ,spriteSmith  = require( 'gulp.spritesmith' )
   ,plumber      = require( 'gulp-plumber' )
+  ,gulpIf       = require( 'gulp-if' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
   ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
@@ -25,7 +26,7 @@ function _mainTask() {
   ;
   return new Promise( ( resolve ) => {
     src( config.src )
-      .pipe( diff( options.diff ) )
+      .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( groupSrc( srcCollection, config.point, config.base ) )
       .on( 'finish', () => {
         resolve( srcCollection );
@@ -39,8 +40,8 @@ function _branchTask( subSrc, baseDir ) {
     ( async function() {
       let spriteData;
       spriteData = await _sprite( subSrc );
-      await _img( spriteData, config.imgDir.replace( '[subdir]' , baseDir ) );
-      await _css( spriteData , config.scssDir.replace( '[subdir]' , baseDir ) );
+      await _img( spriteData, config.imgDist.replace( '[subdir]' , baseDir ) );
+      await _css( spriteData, config.scssDist.replace( '[subdir]', baseDir ) );
       resolve();
     } )( );
   } );
