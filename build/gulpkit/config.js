@@ -96,7 +96,6 @@ const
           fontName       : 'icons',
           prependUnicode : true,
           formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
-          timestamp      : Math.round( Date.now() / 1000 ),
           normalize      : true,
           startUnicode   : 0xF001,
         },
