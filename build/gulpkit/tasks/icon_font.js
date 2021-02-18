@@ -30,7 +30,7 @@ function _mainTask() {
   options.iconfont.timestamp = 0;
   return new Promise( ( resolve ) => {
     src( config.src )
-      // .pipe( diff( options.diff ) )
+      .pipe( diff( options.diff ) )
       .pipe( _setTimestampOption( options.iconfont.timestamp ) )
       .pipe( groupSrc( srcCollection, config.point, config.base ) )
       .on( 'finish', () => {
