@@ -5,7 +5,7 @@ const
   ,del    = require( 'del' )
 ;
 const
-  FILEPATH  = path.resolve( __dirname , '../../.last_run_time_log/.timestamps' )
+  FILEPATH  = path.resolve( __dirname, '../.last_run_time_log/.timestamps' )
   ,DIRNAME  = path.dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastRunTime'
   ,ZERO     = new Date( 0 )

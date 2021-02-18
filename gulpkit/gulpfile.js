@@ -17,7 +17,7 @@ const
   ,watcher = require( './tasks/watch' )
 ;
 const
-  args = process.argv.slice( 4 )
+  args = process.argv.slice( 6 )
 ;
 if ( args.length ) {
   tasks.serve_init();

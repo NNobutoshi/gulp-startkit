@@ -61,8 +61,10 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
 
   config.vm.synced_folder "./", "/home/vagrant/myproject", type: "rsync", rsync__exclude: "node_modules/"
-  config.vm.synced_folder "./build", "/home/vagrant/myproject/build"
-  config.vm.synced_folder "./build/dist/development/html", "/var/www/html"
+  config.vm.synced_folder "./gulpkit", "/home/vagrant/myproject/gulpkit"
+  config.vm.synced_folder "./src", "/home/vagrant/myproject/src"
+  config.vm.synced_folder "./dist", "/home/vagrant/myproject/dist"
+  config.vm.synced_folder "./dist/development/html", "/var/www/html"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.

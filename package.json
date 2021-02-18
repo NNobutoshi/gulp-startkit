@@ -4,11 +4,11 @@
   "description": "project example",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 gulp --gulpfile build/gulpkit/gulpfile.js",
-    "one": "cross-env NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 gulp --gulpfile build/gulpkit/gulpfile.js",
-    "prod": "cross-env NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 gulp --gulpfile build/gulpkit/gulpfile.js",
-    "fresh": "node ./build/gulpkit/bin/time_reset.js fresh",
-    "reset": "node ./build/gulpkit/bin/time_reset.js reset"
+    "dev": "cross-env NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 gulp --gulpfile gulpkit/gulpfile.js --cwd ./",
+    "one": "cross-env NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 gulp --gulpfile gulpkit/gulpfile.js --cwd ./",
+    "prod": "cross-env NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 gulp --gulpfile gulpkit/gulpfile.js --cwd ./",
+    "fresh": "node ./gulpkit/bin/time_reset.js fresh",
+    "reset": "node ./gulpkit/bin/time_reset.js reset"
   },
   "author": "",
   "repository": {

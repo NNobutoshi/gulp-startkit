@@ -46,8 +46,9 @@ function _createEntries() {
     }
     key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
     val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
+    val =  /^\.?\.\//.test( val ) ? val : './' + val;
     entries[ key ] = val;
-    callBack( null, file );
+    return callBack( null, file );
   }
 
   function _flush( callBack ) {

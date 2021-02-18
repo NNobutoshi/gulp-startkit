@@ -11,19 +11,19 @@ const
 ;
 const
   DIR_DEV = {
-    dist : '../dist/development/html',
-    src  :  '../src',
+    dist : 'dist/development/html',
+    src  :  'src',
   }
   ,DIR_PROD = {
-    dist : '../dist/production/html',
-    src  :  '../src',
+    dist : 'dist/production/html',
+    src  :  'src',
   }
   ,DIST = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist // ここで振り分けておく、config_prod で指定が漏れがちな為。
   ,ENABLE_SOURCEMAP_DEV  = true
   ,ENABLE_SOURCEMAP_PROD = false
   ,ENABLE_WATCH   = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,SOURCEMAPS_DIR = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '../.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
 ;
 const
   config_dev = {
@@ -199,7 +199,7 @@ const
     },
     'js_lint' : {
       src : [
-        ''  + './**/*.js',
+        ''  + './gulpkit/**/*.js',
         ''  + DIR_DEV.src + '/**/*.js',
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
