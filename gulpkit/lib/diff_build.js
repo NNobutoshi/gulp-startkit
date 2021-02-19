@@ -32,7 +32,15 @@ function diff_build( options, map, filter ) {
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-    if ( !since || ( since && file.stat && file.stat.mtime >= since ) ) {
+    if ( !since ||
+      ( since && file.stat &&
+        (
+          file.stat.mtime     >= since ||
+          file.stat.ctime     >= since ||
+          file.stat.birthtime >= since
+        )
+      )
+    ) {
       targets.push( file.path );
     }
     if ( file.isnNull ) {
@@ -119,4 +127,5 @@ function diff_build( options, map, filter ) {
       log( `[${hash}]: thrown ${total} files` );
     }
   }
+
 }
