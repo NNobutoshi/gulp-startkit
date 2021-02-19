@@ -1,4 +1,5 @@
 'use strict';
+
 import $ from 'jquery';
 import Rescroll from '../../js/_modules/rescroll.js';
 

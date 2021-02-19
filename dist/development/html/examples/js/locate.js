@@ -9,31 +9,33 @@
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/locate.js */ "./src/js/_modules/locate.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/locate.js */ "./src/js/_modules/locate.js");
+
 
 
 
 var mdls = {},
-    $ = window.jQuery,
     TARGETSELECTOR = '.pl-nav_anchor';
-mdls.locate = new _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_0__.default({
+mdls.locate = new _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_1__.default({
   target: TARGETSELECTOR
 });
-$(TARGETSELECTOR).on('click', function (e) {
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(TARGETSELECTOR).on('click', function (e) {
   history.pushState(null, null, e.currentTarget.href);
 
   _run();
 
   e.preventDefault();
 });
-$(window).on('popstate.locate', _run).trigger('popstate.locate', _run);
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(window).on('popstate.locate', _run).trigger('popstate.locate', _run);
 
 function _run() {
   mdls.locate.currentItem = null;
-  $('.pl-nav_item').removeClass('js-current');
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.pl-nav_item').removeClass('js-current');
   mdls.locate.run(function (inst) {
     if (inst.currentItem) {
-      $(inst.currentItem).parents('.pl-nav_item').addClass('js-current');
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()(inst.currentItem).parents('.pl-nav_item').addClass('js-current');
     }
   });
 }
