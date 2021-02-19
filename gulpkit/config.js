@@ -177,20 +177,27 @@ const
             },
           ],
         },
-        externals : {
-          'ua-parser-js' : 'UaParser',
-          'jquery'       : 'jQuery',
-        },
         cache: {
           type           : 'filesystem',
           cacheDirectory : WEBPACK_CACHE_PATH,
         },
-        // watch   : true && ENABLE_WATCH,
         plugins : [
           new webpack.SourceMapDevToolPlugin( {
             filename : SOURCEMAPS_DIR + '/[file].map',
           } ),
         ],
+        optimization : {
+          splitChunks : {
+            cacheGroups : {
+              'vendor' : {
+                test : /ua-parser-js|jquery|lodash/,
+                name: './js/common_vendor',
+                chunks: 'initial',
+                enforce: true,
+              },
+            }
+          },
+        },
         watchOptions : {
           aggregateTimeout : 200,
           poll             : 500,
