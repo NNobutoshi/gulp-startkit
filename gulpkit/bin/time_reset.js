@@ -5,8 +5,8 @@ const
   ,lastStampResetAll  = require( '../lib/last_run_time.js' ).resetAll
 ;
 const
-  WEBPACK_CACHE_PATH = require( '../config.js' )
-    .js_webpack.webpackConfig.cache.cacheDirectory
+  CONFIG = require( '../config.js' )
+  ,WEBPACK_CACHE_PATH = CONFIG .js_webpack.webpackConfig.cache.cacheDirectory
 ;
 const
   func = process.argv[ 2 ]
@@ -25,15 +25,33 @@ const
   }
 } )();
 
-function _fresh() {
+function _fresh( args ) {
   if ( args && args.length ) {
-    for ( let i = 0, len = args.length; i < len; i++ ) {
-      lastStampFresh( args[ i ] );
+    switch ( args[ 0 ] ) {
+    case 'all':
+      _lastStampFreshAll();
+      break;
+    default:
+      for ( let i = 0, len = args.length; i < len; i++ ) {
+        lastStampFresh( args[ i ] );
+      }
     }
   }
 }
 
-function _reset()  {
+function _lastStampFreshAll() {
+  Object.values( CONFIG ).forEach( ( val ) => {
+    if (
+      val &&
+      val.options &&
+      val.options.diff &&
+      val.options.diff.hash ) {
+      lastStampFresh( val.options.diff.hash );
+    }
+  } );
+}
+
+function _reset( args )  {
   if ( args && args.length ) {
     switch ( args[ 0 ] ) {
     case 'js_webpack':

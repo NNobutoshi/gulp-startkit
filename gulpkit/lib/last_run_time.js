@@ -48,12 +48,12 @@ function _getAll() {
   return {};
 }
 
-function _set( hash ) {
+function _set( hash, time ) {
   const map = _getAll();
   if ( !hash ) {
     return false;
   }
-  map[ hash ] = new Date();
+  map[ hash ] = ( typeof time === 'number' ) ? time : Date.now();
   envData = map;
 }
 
@@ -73,11 +73,9 @@ function _write() {
 
 function _fresh( hash ) {
   const map = _getAll();
-  if ( hash in map ) {
-    map[ hash ] = ZERO;
-    envData = map;
-    _write();
-  }
+  map[ hash ] = Date.now();
+  envData = map;
+  _write();
 }
 
 function _reset( hash ) {
