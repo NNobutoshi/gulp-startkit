@@ -19,17 +19,25 @@ const
 const
   args = process.argv.slice( 6 )
 ;
-if ( args.length ) {
+
+( function _taskOnCommand() {
+  const watchTasks = [];
+  if ( !args.length ) {
+    return;
+  }
   tasks.serve_init();
   for ( let i = 0; i < args.length; i++ ) {
+    watchTasks[ args[ i ] ] = tasks[ args[ i ] ];
     if ( tasks.serve_reload ) {
-      exports[ args[ i ] ] = series( tasks[ args[ i ] ], tasks.serve_reload );
+      exports[ args[ i ] ] = () => {
+        return tasks[ args[ i ] ]().on( 'finish', () => tasks.serve_reload() );
+      };
     } else {
       exports[ args[ i ] ] = tasks[ args[ i ] ];
     }
   }
-  watcher( exports )();
-}
+  watcher( watchTasks, tasks.serve_reload )();
+} )();
 
 /* default tasks */
 exports.default = series(
