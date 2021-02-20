@@ -17,9 +17,9 @@ const
   ,watcher = require( './tasks/watch' )
 ;
 const
-  args = process.argv.slice( 6 )
+  args = process.argv.slice( 4 )
 ;
-
+console.info( args );
 ( function _taskOnCommand() {
   const watchTasks = [];
   if ( !args.length ) {

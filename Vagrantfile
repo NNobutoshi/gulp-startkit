@@ -61,7 +61,7 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
 
   config.vm.synced_folder "./", "/home/vagrant/myproject", type: "rsync", rsync__exclude: "node_modules/"
-  config.vm.synced_folder "./gulpkit", "/home/vagrant/myproject/gulpkit"
+  config.vm.synced_folder "./gulpkit.js", "/home/vagrant/myproject/gulpkit.js"
   config.vm.synced_folder "./src", "/home/vagrant/myproject/src"
   config.vm.synced_folder "./dist", "/home/vagrant/myproject/dist"
   config.vm.synced_folder "./dist/development/html", "/var/www/html"

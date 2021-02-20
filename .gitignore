@@ -11,4 +11,4 @@ npm-debug.log
 /package-lock.json
 /config.yml
 /vagrant_config.yml
-/gulpkit/config_serve.js
+/gulpkit.js/config_serve.js
