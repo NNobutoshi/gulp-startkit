@@ -1,53 +1,94 @@
 const
+  fs    = require( 'fs' )
+  ,path = require( 'path' )
+;
+const
   nodeX2j   = require( 'xls-to-json' )
-  ,fs       = require( 'fs' )
-  ,charset  = 'utf-8'
+  ,mkdirp   = require( 'mkdirp' )
+  ,log      = require( 'fancy-log' )
+;
+const
+  CHARSET               = 'utf-8'
+  ,SRC_DIR              = '../../src'
+  ,PUG_CONFIG_FILE_PATH = '../../src/_config.pug'
+  ,SITE_MAP_FILE_PATH   = './sitemap.xlsx'
+  ,OUTPUT_JSON_PATH     = './output.json'
   ,settings = {
-    src        : '../../src',
+    src        : path.resolve( __dirname, SRC_DIR ),
     extension  : /\.pug?$/,
-    configFile : '../../src/_config.pug',
+    configFile : path.resolve( __dirname, PUG_CONFIG_FILE_PATH ),
     indexName  : 'index.pug',
     linefeed   : '\n', // '\r\n'
     x2j        : {
-      input  : './sitemap.xlsx',
-      output : './output.json',
+      input  : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
+      output : path.resolve( __dirname, OUTPUT_JSON_PATH ),
       sheet  : 'Sheet1',
     },
   }
-  ,force = ( process.argv.includes( '-f' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
+  ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
-
-let
-  jSONData = {}
-;
-( function _run() {
-  nodeX2j( settings.x2j, function( err, result ) {
-    let
-      content = ''
-      ,string = ''
-      ,indent = ''
-    ;
-    if ( err ) {
-      console.error( err );
-      return;
-    }
-    jSONData = _reJsonData( result );
-    content = fs.readFileSync( settings.configFile, charset );
-    indent = content.match( /[\s\S]+?( +)\/\/{{/ )[ 1 ];
-    string = JSON
-      .stringify( jSONData, null, '  ' )
-      .replace( new RegExp( '^\\{' + '\\' + settings.linefeed, 'g' ), '' )
-      .replace( /\}$/, '' )
-      .replace( /^ {2}/mg, indent )
-    ;
-    content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed + string + indent}//}}` );
-    fs.writeFileSync( settings.configFile, content, charset );
-    Object.keys( jSONData ).forEach( ( url ) => {
-      _recursivelyRunDirectories( jSONData[ url ], _writeFile );
-    } );
+( async function _run() {
+  const
+    jSONData    = await _nodeX2j( settings.x2j )
+    ,confStrings = await _readConfigFile()
+    ,indent     = _getIndent( confStrings, /[\s\S]+?( +)\/\/{{/ )
+    ,dataStrings = _convertSringsForPug( jSONData, indent )
+  ;
+  _writePugConfigFile( confStrings, dataStrings, indent );
+  Object.keys( jSONData ).forEach( ( url ) => {
+    _createPugFileByProps( jSONData[ url ], _createPugFile );
   } );
 } )();
 
+function _nodeX2j( options ) {
+  return new Promise( ( resolve, reject ) => {
+    nodeX2j( options, ( error, result ) => {
+      if ( error ) {
+        reject();
+        return console.error( error );
+      }
+      return resolve( _reJsonData( result ) );
+    } );
+  } );
+}
+
+function _readConfigFile() {
+  return new Promise( ( resolve, reject ) => {
+    fs.readFile( settings.configFile, CHARSET, ( error, content ) => {
+      if ( error ) {
+        reject();
+        return console.error( error );
+      }
+      return resolve( content );
+    } );
+  } );
+}
+
+function _getIndent( configContent, indentRegeX ) {
+  const
+    matches = configContent.match( indentRegeX )
+  ;
+  return ( matches !== null &&  matches[ 1 ] ) ? matches[ 1 ] : false;
+}
+
+function _convertSringsForPug( jSONData, indent ) {
+  return JSON
+    .stringify( jSONData, null, 2 )
+    .replace( new RegExp( '^\\{' + '\\' + settings.linefeed, 'g' ), '' )
+    .replace( /\}$/, '' )
+    .replace( /^ {2}/mg, indent )
+  ;
+}
+
+function _writePugConfigFile( content, newStrings, indent ) {
+  content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed + newStrings + indent}//}}` );
+  fs.writeFile( settings.configFile, content, CHARSET, ( error )  => {
+    if ( error ) {
+      return console.error( error );
+    }
+    log( `configed  "${path.relative( process.cwd(), settings.configFile )}"` );
+  } );
+}
 
 function _reJsonData( data ) {
   const
@@ -59,12 +100,10 @@ function _reJsonData( data ) {
   return res;
 }
 
-function _recursivelyRunDirectories( prop, callback ) {
+function _createPugFileByProps( props, callback ) {
   let
-    leaves = []
-    ,parent = ''
-    ,url = prop.url
-    ,temp = prop.template
+    url = props.url
+    ,temp = props.template
     ,htmlUrl = url
     ,pugUrl = ''
   ;
@@ -74,38 +113,48 @@ function _recursivelyRunDirectories( prop, callback ) {
   if ( url.match( /\.html?$/ ) ) {
     pugUrl = url.replace( /\.html?$/, '.pug' );
   }
-  pugUrl = settings.src + pugUrl;
-  leaves = pugUrl.split( '/' );
-  leaves.forEach( function( leaf ) {
-    if ( parent === '' ) {
-      parent = leaf;
-    } else {
-      parent  = parent + '/' + leaf;
-    }
-    if ( pugUrl === parent ) {
-      callback( pugUrl, htmlUrl, temp );
-    } else {
-      if ( !fs.existsSync( parent ) ) {
-        fs.mkdirSync( parent );
+  pugUrl = path.join( settings.src , pugUrl );
+  mkdirp.sync( path.dirname( pugUrl ) );
+  callback( pugUrl, htmlUrl, temp );
+}
+
+async function _createPugFile( pugUrl, htmlUrl, template ) {
+  let
+    content
+    ,isNew = !fs.existsSync( pugUrl )
+  ;
+  if ( !isNew && force === false ) {
+    return;
+  }
+  content = await _readTemplateFile( template );
+  await _writePugFile( content, pugUrl, htmlUrl, isNew );
+}
+
+function _readTemplateFile( template ) {
+  return new Promise( ( resolve, reject ) => {
+    fs.readFile( path.join( settings.src, template ), CHARSET, ( error, content ) => {
+      if ( error ) {
+        reject();
+        return console.error( error );
       }
-    }
+      return resolve( content );
+    } );
   } );
 }
 
-function _writeFile( pugUrl, htmlUrl, template ) {
-  if ( !fs.existsSync( pugUrl ) || force ) {
-    fs.readFile( template, charset, ( err, content ) => {
-      if ( err ) {
-        console.error( err );
-        return;
+function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
+  return new Promise( ( resolve, reject ) => {
+    fs.writeFile( pugUrl, content.replace( '//{page}', `"${htmlUrl}"` ), CHARSET, ( error ) => {
+      if ( error ) {
+        reject();
+        return console.error( error );
       }
-      fs.writeFile( pugUrl, content.replace( '//{page}', `"${htmlUrl}"` ), charset, ( err ) => {
-        if ( err ) {
-          console.error( err );
-          return;
-        }
-        console.info( pugUrl );
-      } );
+      if ( isNew ) {
+        log( `new created "${path.relative( process.cwd(), pugUrl )}"` );
+      } else {
+        log( `renewed     "${path.relative( process.cwd(), pugUrl )}"` );
+      }
+      resolve();
     } );
-  }
+  } );
 }
