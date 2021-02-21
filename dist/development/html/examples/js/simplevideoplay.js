@@ -274,7 +274,7 @@ function closest(elem, wrapper) {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/simplevideoplay.entry.js","./js/common_vendor"]
+/******/ 			["./src/examples/js/simplevideoplay.entry.js","./js/common_vendor","./examples/js/common_vendor"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

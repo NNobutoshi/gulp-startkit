@@ -565,7 +565,7 @@ function offset(elem) {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/tab.entry.js","./js/common_vendor"]
+/******/ 			["./src/examples/js/tab.entry.js","./js/common_vendor","./examples/js/common_vendor"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

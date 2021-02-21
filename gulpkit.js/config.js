@@ -143,12 +143,12 @@ const
       },
     },
     'js_webpack' : {
-      src           : [ DIR_DEV.src + '/**/*.js' ],
-      target        : /\.entry\.js$/, // '.entry.js',
-      watch         : true && ENABLE_WATCH,
-      base          : DIR_DEV.src,
-      dist          : DIST,
-      options       : {
+      src     : [ DIR_DEV.src + '/**/*.{js,json}' ],
+      dist    : DIST,
+      target  : /\.entry\.js$|\.split\.json$/, // '.entry.js',
+      watch   : true && ENABLE_WATCH,
+      base    : DIR_DEV.src,
+      options : {
         del          : {
           dist    : [ DIST + '/**/*.js.map' ],
           options : {
@@ -186,18 +186,6 @@ const
             filename : SOURCEMAPS_DIR + '/[file].map',
           } ),
         ],
-        optimization : {
-          splitChunks : {
-            cacheGroups : {
-              'vendor' : {
-                test : /ua-parser-js|jquery|lodash/,
-                name: './js/common_vendor',
-                chunks: 'initial',
-                enforce: true,
-              },
-            }
-          },
-        },
         watchOptions : {
           aggregateTimeout : 200,
           poll             : 500,

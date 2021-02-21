@@ -4,7 +4,7 @@ const
   ,path         = require( 'path' )
   ,log          = require( 'fancy-log' )
   ,through      = require( 'through2' )
-  ,{ isRegExp, isEqual } = require( 'lodash' )
+  ,{ isRegExp, isEqual, mergeWith } = require( 'lodash' )
 ;
 const
   config         = require( '../config.js' ).js_webpack
@@ -40,21 +40,22 @@ function _createEntries() {
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
+    const targetMatch = file.path.match( targetSuffix );
     let key, val;
-    if ( !targetSuffix || !targetSuffix.test( file.basename ) ) {
-      return callBack( null, file );
+    if ( targetMatch ) {
+      if ( targetMatch[ 0 ] === '.split.json' ) {
+        _createSplitChunks( file.contents );
+      } else {
+        key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
+        val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
+        val =  /^\.?\.\//.test( val ) ? val : './' + val;
+        entries[ key ] = val;
+      }
     }
-    key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
-    val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
-    val =  /^\.?\.\//.test( val ) ? val : './' + val;
-    entries[ key ] = val;
-    return callBack( null, file );
+    callBack( null, file );
   }
 
   function _flush( callBack ) {
-    if ( !Object.keys( entries ).length ) {
-      return callBack();
-    }
     callBack();
   }
 
@@ -103,4 +104,21 @@ function _webPackCall( callBack ) {
     }
     callBack();
   };
+}
+
+function _createSplitChunks( subConfContents ) {
+  const
+    subConfData = JSON.parse( subConfContents )
+    ,cacheGroups = subConfData.optimization.splitChunks.cacheGroups
+  ;
+  for ( let o in cacheGroups ) {
+    cacheGroups[ o ].test = new RegExp( cacheGroups[ o ].test.join( '|' ) );
+  }
+  if ( webpackConfig.optimization ) {
+    webpackConfig.optimization = mergeWith(
+      {}, webpackConfig.optimization, subConfData.optimization
+    );
+  } else {
+    webpackConfig.optimization = subConfData.optimization;
+  }
 }

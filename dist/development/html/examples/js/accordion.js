@@ -275,7 +275,7 @@ var Toggle = /*#__PURE__*/function () {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/accordion.entry.js","./js/common_vendor"]
+/******/ 			["./src/examples/js/accordion.entry.js","./js/common_vendor","./examples/js/common_vendor"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		
