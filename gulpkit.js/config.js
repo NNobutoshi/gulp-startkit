@@ -84,8 +84,8 @@ const
     'icon_font' : {
       src           : [ DIR_DEV.src + '/**/fonts/icons/*.svg' ],
       dist          : DIST,
+      group         : '/fonts/icons',
       base          : DIR_DEV.src,
-      point         : '/fonts/icons',
       watch         : true && ENABLE_WATCH,
       fontsDist     : DIR_DEV.src +  '[subdir]/fonts',
       fontsCopyFrom : DIR_DEV.src +  '[subdir]/fonts/*.*',
@@ -110,8 +110,7 @@ const
         },
         diff : {
           hash      : 'icon_font',
-          allForOne : true,
-          base      : '/fonts/icons',
+          allForOne : '/fonts/icons',
         },
       },
     },
@@ -143,12 +142,13 @@ const
       },
     },
     'js_webpack' : {
-      src     : [ DIR_DEV.src + '/**/*.{js,json}' ],
-      dist    : DIST,
-      target  : /\.entry\.js$|\.split\.json$/, // '.entry.js',
-      watch   : true && ENABLE_WATCH,
-      base    : DIR_DEV.src,
-      options : {
+      src           : [ DIR_DEV.src + '/**/*.{js,json}' ],
+      dist          : DIST,
+      targetEntry   : /\.entry\.js$/,
+      shareFileConf : /\.split\.json$/,
+      watch         : true && ENABLE_WATCH,
+      base          : DIR_DEV.src,
+      options       : {
         del          : {
           dist    : [ DIST + '/**/*.js.map' ],
           options : {
@@ -194,7 +194,7 @@ const
     },
     'js_lint' : {
       src : [
-        ''  + './gulpkit/**/*.js',
+        ''  + './gulpkit.js/**/*.js',
         ''  + DIR_DEV.src + '/**/*.js',
         '!' + DIR_DEV.src + '/**/_vendor/*.js',
       ],
@@ -239,7 +239,7 @@ const
       src      : [ DIR_DEV.src + '/**/img/_sprite/**/*.png' ],
       dist     : DIST,
       base     : DIR_DEV.src,
-      point    : '/img/_sprite',
+      group    : '/img/_sprite',
       watch    : true && ENABLE_WATCH,
       imgDist  : DIST + '[subdir]/img',
       scssDist : DIR_DEV.src + '[subdir]/css',
@@ -260,8 +260,7 @@ const
         },
         diff : {
           hash      : 'sprite',
-          allForOne : true,
-          base      : '/img/_sprite',
+          allForOne : '/img/_sprite',
         },
       },
     },
@@ -269,7 +268,7 @@ const
       src     : [ DIR_DEV.src + '/**/img/_sprite_svg/**/*.svg' ],
       base    : DIR_DEV.src,
       dist    : DIST,
-      point   : '/img/_sprite_svg',
+      group   : '/img/_sprite_svg',
       watch   : true && ENABLE_WATCH,
       options :  {
         svgSprite : {
@@ -322,8 +321,7 @@ const
         },
         diff : {
           hash      : 'sprite_svg',
-          allForOne : true,
-          base      : '/img/_sprite_svg'
+          allForOne : '/img/_sprite_svg',
         },
       },
     },

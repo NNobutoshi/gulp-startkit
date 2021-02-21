@@ -31,7 +31,7 @@ function _mainTask() {
     src( config.src )
       .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( _setTimestampOption( options.iconfont.timestamp ) )
-      .pipe( groupSrc( srcCollection, config.point, config.base ) )
+      .pipe( groupSrc( srcCollection, config.group, config.base ) )
       .on( 'finish', () => {
         resolve( srcCollection );
       } )

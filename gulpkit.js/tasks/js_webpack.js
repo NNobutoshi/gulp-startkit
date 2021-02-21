@@ -4,7 +4,7 @@ const
   ,path         = require( 'path' )
   ,log          = require( 'fancy-log' )
   ,through      = require( 'through2' )
-  ,{ isRegExp, isEqual, mergeWith } = require( 'lodash' )
+  ,{ isEqual, mergeWith } = require( 'lodash' )
 ;
 const
   config         = require( '../config.js' ).js_webpack
@@ -27,30 +27,24 @@ function js_webpack() {
 }
 
 function _createEntries() {
-  let targetSuffix;
-
+  let
+    regexTarget = config.targetEntry
+    ,regexShareFileConf = config.shareFileConf
+  ;
   entries = {};
-
-  if ( config.target && typeof config.target === 'string' ) {
-    targetSuffix = new RegExp( config.target.replace( /\./g, '\\.' ) + '$' );
-  } else if ( isRegExp( config.target ) ) {
-    targetSuffix = config.target;
-  }
 
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-    const targetMatch = file.path.match( targetSuffix );
     let key, val;
-    if ( targetMatch ) {
-      if ( targetMatch[ 0 ] === '.split.json' ) {
-        _createSplitChunks( file.contents );
-      } else {
-        key = path.relative( config.base, file.path ).replace( targetSuffix, '' ).replace( /\\/g, '/' );
-        val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
-        val =  /^\.?\.\//.test( val ) ? val : './' + val;
-        entries[ key ] = val;
-      }
+    if ( regexShareFileConf && regexShareFileConf.test( file.path ) ) {
+      _createSplitChunks( file.contents );
+    }
+    if ( regexTarget.test( file.path ) ) {
+      key = path.relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
+      val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
+      val =  /^\.?\.\//.test( val ) ? val : './' + val;
+      entries[ key ] = val;
     }
     callBack( null, file );
   }
@@ -108,17 +102,17 @@ function _webPackCall( callBack ) {
 
 function _createSplitChunks( subConfContents ) {
   const
-    subConfData = JSON.parse( subConfContents )
-    ,cacheGroups = subConfData.optimization.splitChunks.cacheGroups
+    subConfObj = JSON.parse( subConfContents )
+    ,cacheGroups = subConfObj.optimization.splitChunks.cacheGroups
   ;
   for ( let o in cacheGroups ) {
     cacheGroups[ o ].test = new RegExp( cacheGroups[ o ].test.join( '|' ) );
   }
   if ( webpackConfig.optimization ) {
     webpackConfig.optimization = mergeWith(
-      {}, webpackConfig.optimization, subConfData.optimization
+      {}, webpackConfig.optimization, subConfObj.optimization
     );
   } else {
-    webpackConfig.optimization = subConfData.optimization;
+    webpackConfig.optimization = subConfObj.optimization;
   }
 }

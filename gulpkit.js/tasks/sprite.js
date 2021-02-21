@@ -27,7 +27,7 @@ function _mainTask() {
   return new Promise( ( resolve ) => {
     src( config.src )
       .pipe( gulpIf( options.diff, diff( options.diff ) ) )
-      .pipe( groupSrc( srcCollection, config.point, config.base ) )
+      .pipe( groupSrc( srcCollection, config.group, config.base ) )
       .on( 'finish', () => {
         resolve( srcCollection );
       } )

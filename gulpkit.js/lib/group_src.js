@@ -5,16 +5,16 @@ const
 
 module.exports = groupSrc;
 
-function groupSrc( srcCollection, point, base ) {
+function groupSrc( srcCollection, group, base ) {
 
-  point = point.replace( /[/\\]/g, path.sep );
+  group = group.replace( /[/\\]/g, path.sep );
 
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
     const
-      splits = file.path.split( point )
-      ,parent = splits[ 0 ] + point
+      splits = file.path.split( group )
+      ,parent = splits[ 0 ] + group
       ,child  = splits[ 1 ]
     ;
     if ( !srcCollection[ parent ] ) {

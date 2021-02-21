@@ -22,12 +22,19 @@ function diff_build( options, map, filter ) {
     ,defaultSettings = {
       hash      : '',
       allForOne : false,
-      base      : '',
     }
     ,settings = merge( {}, defaultSettings, options )
     ,since = ( settings.hash ) ? lastStamp.get( settings.hash ) : false
   ;
-  settings.base = settings.base.replace( /[/\\]/g, path.sep );
+  let
+    group = ''
+    ,allForOne
+  ;
+  if ( typeof settings.allForOne === 'string' ) {
+    group = settings.allForOne.replace( /[/\\]/g, path.sep );
+  } else {
+    allForOne = settings.allForOne;
+  }
 
   return through.obj( _transform, _flush );
 
@@ -53,9 +60,8 @@ function diff_build( options, map, filter ) {
     allFiles[ file.path ]  = {
       file : file,
     };
-    if ( settings.base ) {
-      allFiles[ file.path ].base = file.path.slice( 0, file.path.indexOf( settings.base ) );
-      allFiles[ file.path ].base += settings.base;
+    if ( group ) {
+      allFiles[ file.path ].group = file.path.slice( 0, file.path.indexOf( group ) + group.length );
     }
     if ( typeof map === 'function' ) {
       map.call( null, file, collection );
@@ -77,16 +83,15 @@ function diff_build( options, map, filter ) {
       return callBack();
     }
 
-    if ( settings.allForOne === true && settings.base ) {
+    if ( group ) {
       for ( let filePath in allFiles ) {
         targets.forEach( ( targetFilePath ) => {
-          const base = allFiles[ targetFilePath ].base;
-          if ( filePath.indexOf( base ) === 0 ) {
+          if ( filePath.indexOf( allFiles[ targetFilePath ].group ) === 0 ) {
             destFiles[ filePath ] = 1;
           }
         } );
       }
-    } else if ( settings.allForOne === true ) {
+    } else if ( allForOne ) {
       for ( let filePath in allFiles ) {
         destFiles[ filePath ] = 1;
       }
