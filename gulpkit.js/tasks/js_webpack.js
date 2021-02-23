@@ -1,9 +1,12 @@
 const
-  { src }       = require( 'gulp' )
-  ,webpack      = require( 'webpack' )
-  ,path         = require( 'path' )
-  ,log          = require( 'fancy-log' )
-  ,through      = require( 'through2' )
+  path = require( 'path' )
+;
+const
+  { src }  = require( 'gulp' )
+  ,plumber = require( 'gulp-plumber' )
+  ,webpack = require( 'webpack' )
+  ,log     = require( 'fancy-log' )
+  ,through = require( 'through2' )
   ,{ isEqual, mergeWith } = require( 'lodash' )
 ;
 const
@@ -14,14 +17,23 @@ const
 let
   compiler = null
   ,entries
+  ,groups = {
+    splitChunks : {
+      cacheGroups : {}
+    }
+  }
 ;
+
+if ( webpackConfig.optimization ) {
+  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, groups  );
+}
 
 module.exports = js_webpack;
 
 function js_webpack() {
   return src( config.src )
+    .pipe( plumber( options.plumber ) )
     .pipe( _createEntries() )
-    .pipe( _initWebpack() )
     .pipe( _compile() )
   ;
 }
@@ -31,7 +43,9 @@ function _createEntries() {
     regexTarget = config.targetEntry
     ,regexShareFileConf = config.shareFileConf
   ;
+
   entries = {};
+  groups = {};
 
   return through.obj( _transform, _flush );
 
@@ -50,25 +64,19 @@ function _createEntries() {
   }
 
   function _flush( callBack ) {
-    callBack();
-  }
-
-}
-
-function _initWebpack() {
-  return through.obj( _transform, _flush );
-  function _transform( file, enc, callBack ) {
-    callBack( null, file );
-  }
-  function _flush( callBack ) {
-    if ( compiler === null || !isEqual( webpackConfig.entry, entries ) ) {
+    if ( compiler === null ||
+      !isEqual( webpackConfig.entry, entries ) ||
+      !isEqual( webpackConfig.optimization, groups )
+    ) {
       webpackConfig.entry = entries;
       webpackConfig.output.filename = '[name].js';
       webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
+      webpackConfig.optimization = groups;
       compiler = webpack( webpackConfig );
     }
     callBack();
   }
+
 }
 
 function _compile() {
@@ -77,24 +85,31 @@ function _compile() {
     callBack( null, file );
   }
   function _flush( callBack ) {
-    compiler.run( _webPackCall( callBack ) );
+    this.resume();
+    compiler.run( _webPackCall( callBack, this ) );
   }
 }
 
-function _webPackCall( callBack ) {
+function _webPackCall( callBack, stream ) {
   return ( error, stats ) => {
-    let chunks;
+    let errorMessages = [];
     if ( stats.hasErrors && stats.hasErrors() ) {
-      log( 'webpack: has error' );
+      stats.toJson().errors.forEach( ( item ) => {
+        errorMessages.push( item.message );
+      } );
+      stream.emit( 'error', new Error( errorMessages.join( '\n' ) ) );
     }
     if ( error ) {
-      options.errorHandler( error );
+      stream.emit( 'error', error );
     }
-    chunks = stats.compilation.chunks;
-    for ( let item of chunks ) {
-      if ( item.rendered === true ) {
-        log( `webpack:${item.id}` );
-      }
+    if ( stats ) {
+      log( stats.toString( {
+        colors : true,
+        chunks : false,
+        assets : false,
+        hash   : true,
+        errors : false,
+      } ) );
     }
     callBack();
   };
@@ -103,16 +118,10 @@ function _webPackCall( callBack ) {
 function _createSplitChunks( subConfContents ) {
   const
     subConfObj = JSON.parse( subConfContents )
-    ,cacheGroups = subConfObj.optimization.splitChunks.cacheGroups
+    ,cacheGroups = subConfObj.splitChunks.cacheGroups
   ;
   for ( let o in cacheGroups ) {
     cacheGroups[ o ].test = new RegExp( cacheGroups[ o ].test.join( '|' ) );
   }
-  if ( webpackConfig.optimization ) {
-    webpackConfig.optimization = mergeWith(
-      {}, webpackConfig.optimization, subConfObj.optimization
-    );
-  } else {
-    webpackConfig.optimization = subConfObj.optimization;
-  }
+  groups = mergeWith( {}, groups, subConfObj );
 }
