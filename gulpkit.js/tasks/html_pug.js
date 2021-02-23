@@ -4,6 +4,7 @@ const
 const
   { src, dest } = require( 'gulp' )
   ,gulpIf       = require( 'gulp-if' )
+  ,plumber      = require( 'gulp-plumber' )
   ,pug          = require( 'pug' )
   ,through      = require( 'through2' )
   ,beautifyHtml = require( 'js-beautify' ).html
@@ -21,6 +22,7 @@ module.exports = html_pug;
 
 function html_pug() {
   return src( config.src )
+    .pipe( plumber( options.plumber ) )
     .pipe( gulpIf( options.diff, diff( options.diff ,_map ,_filter ) ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
@@ -67,23 +69,22 @@ function _filter( filePath, collection, destFiles ) {
 
 function _pugRender() {
   const
-    errorHandler = options.errorHandler
-    ,partialFileRegEx = /[\\/]_/
+    partialFileRegEx = /[\\/]_/
     ,rendered = {
       files : []
     }
   ;
-  return through.obj( ( file, enc, callBack ) => {
+  const self = through.obj( ( file, enc, callBack ) => {
     if ( partialFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
       return callBack();
     }
     options.pug.filename = file.path;
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        callBack();
-        return errorHandler( error );
+        self.emit( 'error', error );
+        return callBack();
       }
-      file.contents = new global.Buffer.from( contents );
+      file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
       rendered.files.push( file.path );
       return callBack( null, file );
@@ -92,6 +93,7 @@ function _pugRender() {
     log( `html_pug: rendered ${rendered.files.length } files` );
     callBack();
   } );
+  return self;
 }
 
 function _postPug() {
@@ -99,7 +101,7 @@ function _postPug() {
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
   ;
-  return through.obj( ( file, enc, cb ) => {
+  return through.obj( ( file, enc, callBack ) => {
     let
       contents = String( file.contents )
     ;
@@ -122,7 +124,7 @@ function _postPug() {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
     file.contents = new global.Buffer.from( contents );
-    return cb( null, file );
+    return callBack( null, file );
   } );
 }
 

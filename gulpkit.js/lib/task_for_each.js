@@ -13,5 +13,10 @@ async function taskForEach( mainTask, branchTask, cb ) {
       )
     );
   }
-  Promise.all( asyncArray ).then( () => cb() );
+  return Promise.all( asyncArray ).then( () => {
+    if ( typeof cb === 'function' ) {
+      cb();
+    }
+    return;
+  } );
 }

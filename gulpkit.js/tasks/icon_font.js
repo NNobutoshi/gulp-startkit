@@ -19,7 +19,7 @@ const
 module.exports = icon_font;
 
 function icon_font( cb ) {
-  taskForEach( _mainTask, _branchTask, () => cb( ) );
+  return taskForEach( _mainTask, _branchTask, cb );
 }
 
 function _mainTask() {
@@ -32,9 +32,7 @@ function _mainTask() {
       .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( _setTimestampOption( options.iconfont.timestamp ) )
       .pipe( groupSrc( srcCollection, config.group, config.base ) )
-      .on( 'finish', () => {
-        resolve( srcCollection );
-      } )
+      .on( 'finish', () => resolve( srcCollection ) )
     ;
   } );
 }
@@ -49,7 +47,7 @@ function _branchTask( subSrc, baseDir ) {
       .on( 'finish', () => {
         src( config.fontsCopyFrom.replace( '[subdir]', baseDir ) )
           .pipe( dest( config.fontsCopyTo.replace( '[subdir]', baseDir )  ) )
-          .on( 'finish', () => resolve() )
+          .on( 'finish', resolve )
         ;
       } )
     ;

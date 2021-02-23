@@ -2,8 +2,9 @@ const
   fs            = require( 'fs' )
   ,path         = require( 'path' )
   ,merge        = require( 'lodash/mergeWith' )
-  ,notify       = require( 'gulp-notify' )
   ,webpack      = require( 'webpack' )
+  ,log          = require( 'fancy-log' )
+  ,chalk        = require( 'chalk' )
   ,TerserPlugin = require( 'terser-webpack-plugin' )
 ;
 const
@@ -21,9 +22,10 @@ const
   ,DIST = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist // ここで振り分けておく、config_prod で指定が漏れがちな為。
   ,ENABLE_SOURCEMAP_DEV  = true
   ,ENABLE_SOURCEMAP_PROD = false
-  ,ENABLE_WATCH   = !!JSON.parse( process.env.WATCH_ENV || 'false' )
-  ,SOURCEMAPS_DIR = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
+  ,ENABLE_WATCH          = !!JSON.parse( process.env.WATCH_ENV || 'false' )
+  ,SOURCEMAPS_DIR        = 'sourcemaps'
+  ,WEBPACK_CACHE_PATH    = path.resolve( __dirname, '.webpack_cache' )
+  ,ERROR_COLOR_HEX       = '#FF0000'
 ;
 const
   config_dev = {
@@ -45,7 +47,10 @@ const
       sourcemap_dir : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error.formatted ) );
+            this.emit( 'end' );
+          },
         },
         postcss : {
           plugins : [ require( 'autoprefixer' )() ]
@@ -70,7 +75,10 @@ const
       watch     : true && ENABLE_WATCH,
       options   : {
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
         stylelint : {
           fix            : false,
@@ -106,7 +114,10 @@ const
           firstGlyph : 0xF001,
         },
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          // errorHandler : function( error ) {
+          //   log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          //   this.emit( 'end' );
+          // },
         },
         diff : {
           hash      : 'icon_font',
@@ -124,7 +135,9 @@ const
       watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          errorHandler : function( error ) {
+            this.emit( 'end' );
+          },
         },
         imageminMozjpeg : {
           quality : 90,
@@ -155,7 +168,12 @@ const
             force : true,
           },
         },
-        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
+        },
       },
       webpackConfig : {
         mode      : NODE_ENV,
@@ -177,7 +195,7 @@ const
             },
           ],
         },
-        cache: {
+        cache : {
           type           : 'filesystem',
           cacheDirectory : WEBPACK_CACHE_PATH,
         },
@@ -186,6 +204,7 @@ const
             filename : SOURCEMAPS_DIR + '/[file].map',
           } ),
         ],
+        optimization : {},
         watchOptions : {
           aggregateTimeout : 200,
           poll             : 500,
@@ -202,7 +221,10 @@ const
       watch   : true && ENABLE_WATCH,
       options : {
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
         eslint : {
           useEslintrc: true,
@@ -227,12 +249,16 @@ const
           indent_size : 2,
           indent_char : ' ',
         },
-        errorHandler : notify.onError( 'Error: <%= error.message %>' ),
         pug : {
-          pretty  : true,
-          basedir : DIR_DEV.src,
+          pretty       : true,
+          basedir      : DIR_DEV.src,
         },
         diff : { hash : 'html_pug' },
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          },
+        },
       },
     },
     'sprite' : {
@@ -245,7 +271,9 @@ const
       scssDist : DIR_DEV.src + '[subdir]/css',
       options : {
         plumber : {
-          errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+          // errorHandler : function( error ) {
+          //   this.emit( 'end' );
+          // },
         },
         sprite : {
           cssName     : '_mixins_sprite.scss',
@@ -271,6 +299,11 @@ const
       group   : '/img/_sprite_svg',
       watch   : true && ENABLE_WATCH,
       options :  {
+        plumber: {
+          // errorHandler : function( error ) {
+          //   this.emit( 'end' );
+          // },
+        },
         svgSprite : {
           mode  : {
             symbol : {
@@ -326,13 +359,12 @@ const
       },
     },
     'serve' : null, // 別途の設定ファイルにて
-    'setup_watch' : {
-      errorHandler : notify.onError( 'Error: <%= error.message %>' ),
+    'watcher' : {
       options : {
         watch : {
           usePolling : true
         },
-      }
+      },
     },
   }
 ;
@@ -405,7 +437,7 @@ const
       },
     },
     'serve' : null, // 別途の設定ファイルにて
-    'setup_watch' : {},
+    'watcher' : {},
   }
 ;
 

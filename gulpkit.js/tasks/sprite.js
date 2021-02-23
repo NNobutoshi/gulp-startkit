@@ -17,7 +17,7 @@ const
 module.exports = sprite;
 
 function sprite( cb ) {
-  taskForEach( _mainTask, _branchTask, cb );
+  return taskForEach( _mainTask, _branchTask, cb );
 }
 
 function _mainTask() {
@@ -28,9 +28,7 @@ function _mainTask() {
     src( config.src )
       .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( groupSrc( srcCollection, config.group, config.base ) )
-      .on( 'finish', () => {
-        resolve( srcCollection );
-      } )
+      .on( 'finish', () => resolve( srcCollection ) )
     ;
   } );
 }
@@ -51,7 +49,7 @@ function _branchTask( subSrc, baseDir ) {
 function _sprite( newSrc ) {
   return new Promise( ( resolve ) => {
     const spriteData = src( newSrc )
-      .pipe( plumber() )
+      .pipe( plumber( options.plumber ) )
       .pipe( spriteSmith( options.sprite ) )
       .on( 'finish', () => resolve( spriteData ) )
     ;

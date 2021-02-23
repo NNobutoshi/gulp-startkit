@@ -17,7 +17,7 @@ const
 module.exports = sprite_svg;
 
 function sprite_svg( cb ) {
-  taskForEach( _mainTask, _branchTask, cb );
+  return taskForEach( _mainTask, _branchTask, cb );
 }
 
 function _mainTask() {
@@ -28,9 +28,7 @@ function _mainTask() {
     src( config.src )
       .pipe( gulpIf( options.diff, diff( options.diff ) ) )
       .pipe( groupSrc( srcCollection, config.group, config.base ) )
-      .on( 'finish', () => {
-        resolve( srcCollection );
-      } )
+      .on( 'finish', () => resolve( srcCollection ) )
     ;
   } );
 }

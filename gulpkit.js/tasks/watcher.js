@@ -3,7 +3,7 @@ const
 ;
 const
   config   = require( '../config.js' )
-  ,options = config.setup_watch.options.watch
+  ,options = config.watcher.options.watch
 ;
 
 module.exports = function( tasks, reload ) {
