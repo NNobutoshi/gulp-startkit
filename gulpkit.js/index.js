@@ -14,7 +14,7 @@ const
     js_lint      : require( './tasks/js_lint' ),
     clean        : require( './tasks/clean' ),
   }
-  ,watcher = require( './tasks/watch' )
+  ,watcher = require( './tasks/watcher' )
 ;
 const
   args = process.argv.slice( 4 )
@@ -29,8 +29,15 @@ const
   for ( let i = 0; i < args.length; i++ ) {
     watchTasks[ args[ i ] ] = tasks[ args[ i ] ];
     if ( tasks.serve_reload ) {
+      const task = tasks[ args[ i ] ]();
       exports[ args[ i ] ] = () => {
-        return tasks[ args[ i ] ]().on( 'finish', () => tasks.serve_reload() );
+        if ( typeof task.on === 'function' ) {
+          return task.on( 'end', tasks.serve_reload );
+        } else if ( typeof task.then === 'function' ) {
+          return task.then( () => {
+            tasks.serve_reload();
+          } );
+        }
       };
     } else {
       exports[ args[ i ] ] = tasks[ args[ i ] ];
@@ -48,11 +55,10 @@ exports.default = series(
       tasks.icon_font,
       tasks.img_min,
       parallel( tasks.sprite, tasks.sprite_svg ),
-      tasks.css_sass,
       tasks.css_lint,
+      tasks.css_sass,
     ),
-    tasks.js_webpack,
-    tasks.js_lint,
+    series( tasks.js_lint, tasks.js_webpack )
   ),
   tasks.serve_init,
   watcher( tasks, tasks.serve_reload ),
