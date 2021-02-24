@@ -60,7 +60,7 @@ function diff_build( options, map, filter ) {
     }
 
     if ( gitDiffList.length ) {
-      if ( file.path in gitDiffList ) {
+      if ( gitDiffList.includes( file.path ) ) {
         targets.push( file.path );
       }
       _main();
