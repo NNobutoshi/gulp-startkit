@@ -11,11 +11,12 @@ const
     sprite       : require( './tasks/sprite' ),
     sprite_svg   : require( './tasks/sprite_svg' ),
     css_lint     : require( './tasks/css_lint' ),
-    js_lint      : require( './tasks/js_lint' ),
+    js_eslint    : require( './tasks/js_eslint' ),
     clean        : require( './tasks/clean' ),
   }
   ,watcher = require( './tasks/watcher' )
 ;
+
 const
   args = process.argv.slice( 4 )
 ;
@@ -27,24 +28,21 @@ const
   }
   tasks.serve_init();
   for ( let i = 0; i < args.length; i++ ) {
-    watchTasks[ args[ i ] ] = tasks[ args[ i ] ];
+    const taskName = args[ i ];
+    watchTasks[ taskName ] = tasks[ taskName ];
+    exports[ taskName ] = tasks[ taskName ];
     if ( tasks.serve_reload ) {
-      const task = tasks[ args[ i ] ]();
-      exports[ args[ i ] ] = () => {
-        if ( typeof task.on === 'function' ) {
-          return task.on( 'end', tasks.serve_reload );
-        } else if ( typeof task.then === 'function' ) {
-          return task.then( () => {
-            tasks.serve_reload();
-          } );
-        }
+      exports[ taskName ] = () => {
+        let task = tasks[ taskName ];
+        return task().on( 'end', tasks.serve_reload );
       };
     } else {
-      exports[ args[ i ] ] = tasks[ args[ i ] ];
+      exports[ taskName ] = tasks[ taskName ];
     }
   }
   watcher( watchTasks, tasks.serve_reload )();
 } )();
+
 
 /* default tasks */
 exports.default = series(
@@ -58,7 +56,7 @@ exports.default = series(
       tasks.css_lint,
       tasks.css_sass,
     ),
-    series( tasks.js_lint, tasks.js_webpack )
+    series( tasks.js_eslint, tasks.js_webpack )
   ),
   tasks.serve_init,
   watcher( tasks, tasks.serve_reload ),

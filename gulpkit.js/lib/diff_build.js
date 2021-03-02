@@ -11,23 +11,23 @@ const
 ;
 const
   WRITING_DELAY_TIME = 2000
-  ,GIT_DIFF_COMMAND = 'git diff --name-only'
+  ,GIT_DIFF_COMMAND  = 'git diff --name-only'
 ;
 const
   promiseGetGitDiffList = _getGitDiffList( GIT_DIFF_COMMAND )
 ;
 let
   writing_timeoutId = null
-  ,gitDiffList = []
+  ,gitDiffList      = []
 ;
 
 module.exports = diff_build;
 
 function diff_build( options, map, filter ) {
   const
-    allFiles = {}
-    ,collection = {}
-    ,targets = []
+    allFiles         = {}
+    ,collection      = {}
+    ,targets         = []
     ,defaultSettings = {
       hash      : '',
       allForOne : false,
@@ -75,6 +75,7 @@ function diff_build( options, map, filter ) {
     }
 
     function _main() {
+
       if ( !since ||
         ( since && file.stat && (
           file.stat.mtime     >= since ||
@@ -165,8 +166,8 @@ function diff_build( options, map, filter ) {
 
   function _log( hash, total ) {
     if ( hash ) {
-      log( `[${hash}]: detected ${targets.length} files diff` );
-      log( `[${hash}]: thrown ${total} files` );
+      log( chalk.gray( `[${hash}]: detected ${targets.length} files diff` ) );
+      log( chalk.gray( `[${hash}]: thrown ${total} files` ) );
     }
   }
 

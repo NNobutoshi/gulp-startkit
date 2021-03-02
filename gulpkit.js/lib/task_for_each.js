@@ -1,22 +1,30 @@
+
+const
+  through      = require( 'through2' )
+  ,mergeStream = require( 'merge-stream' )
+;
+
 module.exports = taskForEach;
 
-async function taskForEach( mainTask, branchTask, cb ) {
-  const
-    srcCollection = await mainTask()
-    ,asyncArray = []
-  ;
-  for ( let key in srcCollection ) {
-    asyncArray.push(
-      branchTask(
-        srcCollection[ key ].children.map( ( item ) => key + item ),
-        srcCollection[ key ].baseDir.replace( /[/\\]/g, '/' ),
-      )
-    );
-  }
-  return Promise.all( asyncArray ).then( () => {
-    if ( typeof cb === 'function' ) {
-      cb();
+function taskForEach( srcCollection, branchTask ) {
+
+  const streams = [];
+
+  return through.obj( {}, null, _flush );
+
+  function _flush( callBack ) {
+    for ( let key in srcCollection ) {
+      streams.push(
+        branchTask(
+          srcCollection[ key ].children.map( ( item ) => key + item ),
+          srcCollection[ key ].baseDir.replace( /[/\\]/g, '/' ),
+        )
+      );
     }
-    return;
-  } );
+    if ( streams.length > 0 ) {
+      mergeStream( ...streams ).on( 'finish', callBack );
+    } else {
+      callBack();
+    }
+  }
 }

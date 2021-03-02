@@ -94,6 +94,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo yum -y update
     sudo yum -y install httpd
+    sudo yum -y install git-all
     # sudo yum install -y gcc gcc-c++ make
     # apache conf
     cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf

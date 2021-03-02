@@ -13,7 +13,7 @@ function groupSrc( srcCollection, group, base ) {
 
   function _transform( file, enc, callBack ) {
     const
-      splits = file.path.split( group )
+      splits  = file.path.split( group )
       ,parent = splits[ 0 ] + group
       ,child  = splits[ 1 ]
     ;
@@ -24,7 +24,7 @@ function groupSrc( srcCollection, group, base ) {
       };
     }
     srcCollection[ parent ].children.push( child );
-    callBack( null, file );
+    callBack();
   }
 
   function _flush( callBack ) {

@@ -1,7 +1,9 @@
 const
-  fs            = require( 'fs' )
-  ,path         = require( 'path' )
-  ,merge        = require( 'lodash/mergeWith' )
+  fs    = require( 'fs' )
+  ,path = require( 'path' )
+;
+const
+  merge         = require( 'lodash/mergeWith' )
   ,webpack      = require( 'webpack' )
   ,log          = require( 'fancy-log' )
   ,chalk        = require( 'chalk' )
@@ -67,7 +69,7 @@ const
     'css_lint' : {
       src       : [
         ''  + DIR_DEV.src + '/**/*.scss',
-        '!' + DIR_DEV.src + '/**/css/_sprite_vector.scss',
+        '!' + DIR_DEV.src + '/**/css/_sprite_svg.scss',
         '!' + DIR_DEV.src + '/**/_vendor/*.scss',
         '!' + DIR_DEV.src + '/**/_templates/*.scss',
       ],
@@ -114,10 +116,10 @@ const
           firstGlyph : 0xF001,
         },
         plumber : {
-          // errorHandler : function( error ) {
-          //   log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
-          //   this.emit( 'end' );
-          // },
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
         diff : {
           hash      : 'icon_font',
@@ -211,7 +213,7 @@ const
         },
       }
     },
-    'js_lint' : {
+    'js_eslint' : {
       src : [
         ''  + './gulpkit.js/**/*.js',
         ''  + DIR_DEV.src + '/**/*.js',
@@ -229,7 +231,7 @@ const
         eslint : {
           useEslintrc: true,
         },
-        diff : { hash : 'js_lint' },
+        diff : { hash : 'js_eslint' },
       },
     },
     'html_pug' : {
@@ -271,14 +273,15 @@ const
       scssDist : DIR_DEV.src + '[subdir]/css',
       options : {
         plumber : {
-          // errorHandler : function( error ) {
-          //   this.emit( 'end' );
-          // },
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
         sprite : {
           cssName     : '_mixins_sprite.scss',
-          imgName     : 'common_sprite.png',
-          imgPath     : '../img/common_sprite.png',
+          imgName     : 'common_pack.png',
+          imgPath     : '../img/common_pack.png',
           cssFormat   : 'scss',
           padding     : 10,
           cssTemplate : DIR_DEV.src + '/_templates/scss.template.handlebars',
@@ -300,9 +303,10 @@ const
       watch   : true && ENABLE_WATCH,
       options :  {
         plumber: {
-          // errorHandler : function( error ) {
-          //   this.emit( 'end' );
-          // },
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
         svgSprite : {
           mode  : {
@@ -321,7 +325,7 @@ const
               bust       : false,
               render     : {
                 scss : {
-                  dest: path.resolve( process.cwd(), 'css/_sprite_vector.scss' ),
+                  dest: path.resolve( process.cwd(), 'css/_sprite_svg.scss' ),
                 },
               },
               example: {
@@ -406,7 +410,7 @@ const
         ],
       }
     },
-    'js_lint' : {
+    'js_eslint' : {
       options : {
         diff : false,
       },

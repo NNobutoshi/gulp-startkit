@@ -2,19 +2,22 @@ const
   { watch, series } = require( 'gulp' )
 ;
 const
-  config   = require( '../config.js' )
-  ,options = config.watcher.options.watch
+  config        = require( '../config.js' )
+  ,watchOptions = config.watcher.options.watch
 ;
 
 module.exports = function( tasks, reload ) {
   return function watch_init( callBack ) {
     for ( const key in tasks ) {
-      const taskItem = config[ key ];
-      if ( taskItem && taskItem.watch === true && taskItem.src ) {
+      const
+        taskConfig = config[ key ]
+        ,task      = tasks[ key ]
+      ;
+      if ( taskConfig && taskConfig.watch === true && taskConfig.src ) {
         if ( typeof reload === 'function' ) {
-          watch( taskItem.src, options, series( tasks[ key ], reload ) );
+          watch( taskConfig.src, watchOptions, series( task, reload ) );
         } else {
-          watch( taskItem.src, options, tasks[ key ] );
+          watch( taskConfig.src, watchOptions, task );
         }
       }
     }

@@ -16,33 +16,22 @@ const
 
 module.exports = sprite_svg;
 
-function sprite_svg( cb ) {
-  return taskForEach( _mainTask, _branchTask, cb );
-}
-
-function _mainTask() {
-  const
-    srcCollection = {}
+function sprite_svg() {
+  const srcCollection = {};
+  return src( config.src )
+    .pipe( gulpIf( options.diff, diff( options.diff ) ) )
+    .pipe( groupSrc( srcCollection, config.group, config.base ) )
+    .pipe( taskForEach( srcCollection, _branchTask ) )
   ;
-  return new Promise( ( resolve ) => {
-    src( config.src )
-      .pipe( gulpIf( options.diff, diff( options.diff ) ) )
-      .pipe( groupSrc( srcCollection, config.group, config.base ) )
-      .on( 'finish', () => resolve( srcCollection ) )
-    ;
-  } );
 }
 
 function _branchTask( subSrc, baseDir ) {
-  return new Promise( ( resolve ) => {
-    src( subSrc )
-      .pipe( plumber( options.plumber ) )
-      .pipe( svgSprite( options.svgSprite ) )
-      .pipe( gulpIf( /\.svg$/, dest( config.dist + baseDir ) ) )
-      .pipe( gulpIf( /\.css$/, dest( config.dist + baseDir ) ) )
-      .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
-      .pipe( gulpIf( /\.html$/, dest( config.dist + baseDir ) ) )
-      .on( 'finish', resolve )
-    ;
-  } );
+  return src( subSrc )
+    .pipe( plumber( options.plumber ) )
+    .pipe( svgSprite( options.svgSprite ) )
+    .pipe( gulpIf( /\.svg$/, dest( config.dist + baseDir ) ) )
+    .pipe( gulpIf( /\.css$/, dest( config.dist + baseDir ) ) )
+    .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
+    .pipe( gulpIf( /\.html$/, dest( config.dist + baseDir ) ) )
+  ;
 }

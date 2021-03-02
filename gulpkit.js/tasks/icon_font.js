@@ -16,48 +16,36 @@ const
   options = config.options
 ;
 
+options.iconfont.timestamp = 0;
+
 module.exports = icon_font;
 
-function icon_font( cb ) {
-  return taskForEach( _mainTask, _branchTask, cb );
-}
-
-function _mainTask() {
-  const
-    srcCollection = {}
+function icon_font() {
+  const srcCollection = {};
+  return src( config.src )
+    .pipe( gulpIf( options.diff, diff( options.diff ) ) )
+    .pipe( _setTimestampOption( options.iconfont.timestamp ) )
+    .pipe( groupSrc( srcCollection, config.group, config.base ) )
+    .pipe( taskForEach( srcCollection, _branchTask ) )
   ;
-  options.iconfont.timestamp = 0;
-  return new Promise( ( resolve ) => {
-    src( config.src )
-      .pipe( gulpIf( options.diff, diff( options.diff ) ) )
-      .pipe( _setTimestampOption( options.iconfont.timestamp ) )
-      .pipe( groupSrc( srcCollection, config.group, config.base ) )
-      .on( 'finish', () => resolve( srcCollection ) )
-    ;
-  } );
 }
 
 function _branchTask( subSrc, baseDir ) {
-  return new Promise( ( resolve ) => {
-    src( subSrc )
-      .pipe( plumber( options.plumber ) )
-      .pipe( iconfontCss( options.iconfontCss ) )
-      .pipe( iconfont( options.iconfont ) )
-      .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ) ) )
-      .on( 'finish', () => {
-        src( config.fontsCopyFrom.replace( '[subdir]', baseDir ) )
-          .pipe( dest( config.fontsCopyTo.replace( '[subdir]', baseDir )  ) )
-          .on( 'finish', resolve )
-        ;
-      } )
-    ;
-  } );
+  return src( subSrc )
+    .pipe( plumber( options.plumber ) )
+    .pipe( iconfontCss( options.iconfontCss ) )
+    .pipe( iconfont( options.iconfont ) )
+    .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ) ) )
+    .on( 'finish', () => {
+      src( config.fontsCopyFrom.replace( '[subdir]', baseDir ) )
+        .pipe( dest( config.fontsCopyTo.replace( '[subdir]', baseDir )  ) )
+      ;
+    } )
+  ;
 }
 
 function _setTimestampOption() {
-  let
-    newer = new Date( 0 )
-  ;
+  let newer = new Date( 0 );
   return through.obj( ( file, enc, callBack ) => {
     if ( file.stat && file.stat.mtime > newer ) {
       newer = Date.parse( file.stat.mtime ) / 1000;

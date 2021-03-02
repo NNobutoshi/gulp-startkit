@@ -1569,7 +1569,7 @@ template {
 }
 
 .iconList_item--home {
-  background-image: url(../img/common_sprite.png);
+  background-image: url(../img/common_pack.png);
   background-position: 0px 0px;
   width: 87.5px;
   height: 53.5px;
@@ -1577,7 +1577,7 @@ template {
 }
 
 .iconList_item--factory {
-  background-image: url(../img/common_sprite.png);
+  background-image: url(../img/common_pack.png);
   background-position: -80px -58.5px;
   width: 74.5px;
   height: 42px;
@@ -1585,7 +1585,7 @@ template {
 }
 
 .iconList_item--school {
-  background-image: url(../img/common_sprite.png);
+  background-image: url(../img/common_pack.png);
   background-position: 0px -112px;
   width: 74px;
   height: 41px;
