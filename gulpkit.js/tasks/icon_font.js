@@ -47,8 +47,8 @@ function _branchTask( subSrc, baseDir ) {
 function _setTimestampOption() {
   let newer = new Date( 0 );
   return through.obj( ( file, enc, callBack ) => {
-    if ( file.stat && file.stat.mtime > newer ) {
-      newer = Date.parse( file.stat.mtime ) / 1000;
+    if ( file.stat && file.stat.birthtime > newer ) {
+      newer = Date.parse( file.stat.birthtime ) / 1000;
     }
     callBack( null, file );
   }, ( callBack ) => {
