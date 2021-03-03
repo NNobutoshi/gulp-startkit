@@ -6,7 +6,7 @@ const
 ;
 const
   CONFIG = require( '../config.js' )
-  ,WEBPACK_CACHE_PATH = CONFIG .js_webpack.webpackConfig.cache.cacheDirectory
+  ,WEBPACK_CACHE_PATH = CONFIG.js_webpack.webpackConfig.cache.cacheDirectory
 ;
 const
   func = process.argv[ 2 ]

@@ -3,6 +3,9 @@ const
   ,svgSprite    = require( 'gulp-svg-sprite' )
   ,plumber      = require( 'gulp-plumber' )
   ,gulpIf       = require( 'gulp-if' )
+;
+const
+  sVGLint       = require( '../lib/svg_lint.js' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
   ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
@@ -28,6 +31,7 @@ function sprite_svg() {
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
     .pipe( plumber( options.plumber ) )
+    .pipe( sVGLint() )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/, dest( config.dist + baseDir ) ) )
     .pipe( gulpIf( /\.css$/, dest( config.dist + baseDir ) ) )

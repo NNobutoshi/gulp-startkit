@@ -5,6 +5,9 @@ const
   ,plumber      = require( 'gulp-plumber' )
   ,gulpIf       = require( 'gulp-if' )
   ,through      = require( 'through2' )
+;
+const
+  sVGLint       = require( '../lib/svg_lint.js' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
   ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
@@ -33,6 +36,7 @@ function icon_font() {
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
     .pipe( plumber( options.plumber ) )
+    .pipe( sVGLint() )
     .pipe( iconfontCss( options.iconfontCss ) )
     .pipe( iconfont( options.iconfont ) )
     .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ) ) )

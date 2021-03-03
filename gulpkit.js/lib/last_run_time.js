@@ -80,7 +80,7 @@ function _fresh( hash ) {
 
 function _reset( hash ) {
   const map = _getAll();
-  delete map[ hash ];
+  map[ hash ] = ZERO;
   envData = map;
   _write();
 }
