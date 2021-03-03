@@ -28,31 +28,23 @@ const
   }
   tasks.serve_init();
   for ( let i = 0; i < args.length; i++ ) {
-    const taskName = args[ i ];
-    watchTasks[ taskName ] = tasks[ taskName ];
-    exports[ taskName ] = tasks[ taskName ];
-    if ( tasks.serve_reload ) {
-      exports[ taskName ] = () => {
-        let task = tasks[ taskName ];
-        return task().on( 'end', tasks.serve_reload );
-      };
-    } else {
-      exports[ taskName ] = tasks[ taskName ];
-    }
+    const
+      taskName = args[ i ]
+      ,task = watchTasks[ taskName ] = tasks[ taskName ]
+    ;
+    exports[ taskName ] = series( task, tasks.serve_reload );
   }
   watcher( watchTasks, tasks.serve_reload )();
 } )();
-
 
 /* default tasks */
 exports.default = series(
   // tasks.clean,
   parallel(
     tasks.html_pug,
+    tasks.img_min,
     series(
-      tasks.icon_font,
-      tasks.img_min,
-      parallel( tasks.sprite, tasks.sprite_svg ),
+      parallel( tasks.icon_font, tasks.sprite, tasks.sprite_svg ),
       tasks.css_lint,
       tasks.css_sass,
     ),
@@ -61,9 +53,3 @@ exports.default = series(
   tasks.serve_init,
   watcher( tasks, tasks.serve_reload ),
 );
-// process.on( 'SIGINT', () => {
-//   process.exit();
-// } );
-// process.on( 'exit', () => {
-//   console.info( 'exit' );
-// } );
