@@ -23,7 +23,7 @@ let
 
 module.exports = diff_build;
 
-function diff_build( options, map, filter ) {
+function diff_build( options, collect, select ) {
   const
     allFiles         = {}
     ,collection      = {}
@@ -95,8 +95,8 @@ function diff_build( options, map, filter ) {
           file.path.slice( 0, file.path.indexOf( group ) + group.length );
       }
 
-      if ( typeof map === 'function' ) {
-        map.call( null, file, collection );
+      if ( typeof collect === 'function' ) {
+        collect.call( null, file, collection );
       }
 
       callBack();
@@ -135,8 +135,8 @@ function diff_build( options, map, filter ) {
     } else {
       targets.forEach( ( filePath ) => {
         destFiles[ filePath ] = 1;
-        if ( typeof filter === 'function' ) {
-          filter.call( null, filePath, collection, destFiles );
+        if ( typeof select === 'function' ) {
+          select.call( null, filePath, collection, destFiles );
         }
       } );
     }

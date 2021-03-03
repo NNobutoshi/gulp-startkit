@@ -9,7 +9,9 @@ const
   ,through      = require( 'through2' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,log          = require( 'fancy-log' )
-  ,diff         = require( '../lib/diff_build.js' )
+;
+const
+  diff = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).html_pug
@@ -23,38 +25,35 @@ module.exports = html_pug;
 function html_pug() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( gulpIf( options.diff, diff( options.diff ,_map ,_filter ) ) )
+    .pipe( gulpIf( options.diff, diff( options.diff ,_collect ,_select ) ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )
   ;
 }
 
-function _map( file, collection ) {
+function _collect( file, collection ) {
   const
     contents = String( file.contents )
     ,regex = /^.*?(extends|include) *(.+)$/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
-    for ( let i = 0, len = match.length; i < len; i++ ) {
-      let keyFileName;
-      if ( i % 3 === 2 ) { // パス部分
-        if ( /^\//.test( match[ i ] ) ) {
-          keyFileName = path.join( path.resolve( process.cwd(), config.base ), match[ i ] );
-        } else {
-          keyFileName = path.resolve( file.dirname, match[ i ] );
-        }
-        if ( !collection[ keyFileName ] ) {
-          collection[ keyFileName ] = [];
-        }
-        collection[ keyFileName ].push( file.path );
-      }
+    const dependentFilePath = match[ 2 ];
+    let keyFileName;
+    if ( /^\//.test( match[ 2 ] ) ) {
+      keyFileName = path.join( path.resolve( process.cwd(), config.base ), dependentFilePath );
+    } else {
+      keyFileName = path.resolve( file.dirname, dependentFilePath );
     }
+    if ( !collection[ keyFileName ] ) {
+      collection[ keyFileName ] = [];
+    }
+    collection[ keyFileName ].push( file.path );
   }
 }
 
-function _filter( filePath, collection, destFiles ) {
+function _select( filePath, collection, destFiles ) {
   ( function _run_recursive( filePath ) {
     if ( collection[ filePath ] && collection[ filePath ].length ) {
       collection[ filePath ].forEach( ( item ) => {

@@ -32,7 +32,7 @@ function css_sass() {
   }
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
-    .pipe( gulpIf( options.diff, diff( options.diff, null, _filter ) ) )
+    .pipe( gulpIf( options.diff, diff( options.diff, null, _select ) ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( _log() )
@@ -53,7 +53,7 @@ function _log() {
   } );
 }
 
-function _filter( filePath, _collection, destFiles ) {
+function _select( filePath, _collection, destFiles ) {
   graph.visitAncestors( filePath, function( item ) {
     if ( !Object.keys( destFiles ).includes( item ) ) {
       destFiles[ item ] = 1;

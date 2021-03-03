@@ -55,8 +55,8 @@ html(lang=pageData.lang)
         block pageBody
           p foo
       ///.page_body
-      block pageFoot
-        footer.page_foot
+      include _page_foot.pug
+      ///.page_foot
     ///.page#page
     block script_body
       script(src=pageData.jsCommonDir + "/common_body.js")

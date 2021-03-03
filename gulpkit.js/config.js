@@ -362,7 +362,7 @@ const
         },
       },
     },
-    'serve' : null, // 別途の設定ファイルにて
+    'serve' : { enable: false }, // 別途の設定ファイルにて
     'watcher' : {
       options : {
         watch : {
@@ -440,14 +440,14 @@ const
         diff : false,
       },
     },
-    'serve' : null, // 別途の設定ファイルにて
+    'serve' : {}, // 別途の設定ファイルにて
     'watcher' : {},
   }
 ;
 
-// config_serve_orig.js がconfig_serve.js にリネーム、複製されていれば、、
-// config_serve.js 自体はGit でignore されている。
-// 作業者毎でip アドレス等を自由に設定させるため。
+// config_serve.js が存在すれば、設定を上書き。
+// config_serve.js 自体はGit でignore している。
+// 実装者毎で設定を自由にさせるため。
 if ( fs.existsSync( path.resolve( __dirname, './config_serve.js' ) ) ) {
   config_dev.serve = require( './config_serve.js' ).conf_dev;
   config_prod.serve = require( './config_serve.js' ).conf_prod;

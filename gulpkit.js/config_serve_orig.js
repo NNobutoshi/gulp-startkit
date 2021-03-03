@@ -1,4 +1,3 @@
-
 const
   conf_dev = {
     enable : !!JSON.parse( process.env.SERVE_ENV || 'false' ),
@@ -17,7 +16,7 @@ const
   //     open           : false,
   //   },
   // }
-  ,conf_prod = false
+  ,conf_prod = {}
 ;
 
 module.exports = {
