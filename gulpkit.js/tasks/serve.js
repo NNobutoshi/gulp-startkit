@@ -24,7 +24,9 @@ module.exports.serve_init = ( () => {
 
 module.exports.serve_reload = ( () => {
   if ( !server ) {
-    return false;
+    return function no_serve( cb ) {
+      _done( cb );
+    };
   }
   return function serve_reload( cb ) {
     if ( server.active ) {

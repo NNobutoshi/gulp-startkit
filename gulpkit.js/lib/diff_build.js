@@ -3,27 +3,29 @@ const
   ,{ exec } = require( 'child_process' )
 ;
 const
-  through    = require( 'through2' )
-  ,merge     = require( 'lodash/mergeWith' )
-  ,log       = require( 'fancy-log' )
-  ,chalk     = require( 'chalk' )
-  ,lastStamp = require( './last_run_time.js' )
+  through     = require( 'through2' )
+  ,mergeWith  = require( 'lodash/mergeWith' )
+  ,log        = require( 'fancy-log' )
+  ,chalk      = require( 'chalk' )
 ;
 const
-  WRITING_DELAY_TIME = 2000
-  ,GIT_DIFF_COMMAND  = 'git diff --name-only'
+  lastDiff  = require( './last_diff.js' )
 ;
 const
-  promiseGetGitDiffList = _getGitDiffList( GIT_DIFF_COMMAND )
+  GIT_DIFF_COMMAND  = 'git status -s gulpkit.js/ src/'
+  ,WRITING_DELAY_TIME = 2000
 ;
 let
   writing_timeoutId = null
-  ,gitDiffList      = []
+  ,promiseGetGitDiffList
 ;
+
+console.info( process.cwd() );
 
 module.exports = diff_build;
 
 function diff_build( options, collect, select ) {
+
   const
     allFiles         = {}
     ,collection      = {}
@@ -32,13 +34,16 @@ function diff_build( options, collect, select ) {
       hash      : '',
       allForOne : false,
     }
-    ,settings = merge( {}, defaultSettings, options )
-    ,since = ( settings.hash ) ? lastStamp.get( settings.hash ) : false
+    ,settings = mergeWith( {}, defaultSettings, options )
   ;
   let
     group = ''
     ,allForOne
+    ,currentDiffMap
+    ,lastDiffMap = lastDiff.get()
   ;
+
+  promiseGetGitDiffList = promiseGetGitDiffList || _getGitDiffList( GIT_DIFF_COMMAND );
 
   if ( typeof settings.allForOne === 'string' ) {
     group = settings.allForOne.replace( /[/\\]/g, path.sep );
@@ -50,7 +55,8 @@ function diff_build( options, collect, select ) {
 
   function _transform( file, enc, callBack ) {
 
-    if ( file.isnNull ) {
+    if ( file.isNull() ) {
+      console.info( file.isNull, 'null' );
       return callBack( null, file );
     }
 
@@ -59,32 +65,28 @@ function diff_build( options, collect, select ) {
       return callBack();
     }
 
-    if ( gitDiffList.length ) {
-      if ( gitDiffList.includes( file.path ) ) {
+    if ( currentDiffMap ) {
+      if (
+        _has( currentDiffMap, file.path ) ||
+       !_has( currentDiffMap, file.path ) && _has( lastDiffMap, file.path )
+      ) {
         targets.push( file.path );
       }
       _main();
     } else {
-      promiseGetGitDiffList.then( ( list ) => {
-        if ( list.includes( file.path ) ) {
+      promiseGetGitDiffList.then( ( map ) => {
+        if (
+          _has( map, file.path ) ||
+         !_has( map, file.path ) && _has( lastDiffMap, file.path )
+        ) {
           targets.push( file.path );
         }
-        gitDiffList = list;
+        currentDiffMap = map;
         _main();
       } );
     }
 
     function _main() {
-
-      if ( !since ||
-        ( since && file.stat && (
-          file.stat.mtime     >= since ||
-          file.stat.ctime     >= since ||
-          file.stat.birthtime >= since
-        ) )
-      ) {
-        targets.push( file.path );
-      }
 
       allFiles[ file.path ]  = {
         file : file,
@@ -100,7 +102,6 @@ function diff_build( options, collect, select ) {
       }
 
       callBack();
-
     }
 
   }
@@ -117,6 +118,7 @@ function diff_build( options, collect, select ) {
 
     if ( targets.length === 0 ) {
       _log( hash, total );
+      _runLater();
       return callBack();
     }
 
@@ -148,19 +150,24 @@ function diff_build( options, collect, select ) {
 
     _log( hash, total );
 
-    if ( hash ) {
-      self.on( 'finish', () => {
-        lastStamp.set( hash );
-      } );
-    }
+    self.on( 'finish', () => {
+      lastDiffMap =  currentDiffMap;
+      lastDiff.set( currentDiffMap );
+    } );
 
-    clearTimeout( writing_timeoutId );
-    writing_timeoutId = setTimeout( () => {
-      lastStamp.write();
-      clearTimeout( writing_timeoutId );
-    }, WRITING_DELAY_TIME );
+    _runLater();
 
     return callBack();
+
+    function _runLater() {
+      clearTimeout( writing_timeoutId );
+      writing_timeoutId = setTimeout( () => {
+        lastDiff.write();
+        clearTimeout( writing_timeoutId );
+        promiseGetGitDiffList = null;
+        writing_timeoutId  = null;
+      }, WRITING_DELAY_TIME );
+    }
 
   }
 
@@ -173,21 +180,26 @@ function diff_build( options, collect, select ) {
 
 }
 
+function _has( map, filePath ) {
+  filePath =  path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  return Object.keys( map ).includes( filePath );
+}
+
 function _getGitDiffList( comand ) {
   return new Promise( ( resolve ) => {
     exec( comand, ( error, stdout, stderror ) => {
-      let retArray = [];
+      let diffMap = {};
       if ( error || stderror ) {
         log.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
-        retArray.length = 1;
-        resolve( retArray );
+        resolve( diffMap );
       }
       if ( stdout ) {
-        retArray = stdout.trim().split( '\n' ).map( item => path.join( process.cwd(), item ) );
-      } else {
-        retArray.length = 1;
+        const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
+        for ( let item of matchedAll ) {
+          diffMap[ item[ 2 ] ] = { status: item[ 1 ] };
+        }
       }
-      resolve( retArray );
+      resolve( diffMap );
     } );
   } );
 }
