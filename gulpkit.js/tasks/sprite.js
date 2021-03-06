@@ -4,7 +4,6 @@ const
   ,plumber      = require( 'gulp-plumber' )
   ,mergeStream  = require( 'merge-stream' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
-  ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -17,11 +16,9 @@ const
 module.exports = sprite;
 
 function sprite() {
-  const srcCollection = {};
   return src( config.src )
     .pipe( diff( options.diff ) )
-    .pipe( groupSrc( srcCollection, config.group, config.base ) )
-    .pipe( taskForEach( srcCollection, _branchTask ) )
+    .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
 }
 

@@ -7,7 +7,6 @@ const
 const
   sVGLint       = require( '../lib/svg_lint.js' )
   ,taskForEach  = require( '../lib/task_for_each.js' )
-  ,groupSrc     = require( '../lib/group_src.js' )
   ,diff         = require( '../lib/diff_build.js' )
 ;
 const
@@ -20,11 +19,9 @@ const
 module.exports = sprite_svg;
 
 function sprite_svg() {
-  const srcCollection = {};
   return src( config.src )
     .pipe( diff( options.diff ) )
-    .pipe( groupSrc( srcCollection, config.group, config.base ) )
-    .pipe( taskForEach( srcCollection, _branchTask ) )
+    .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
 }
 
