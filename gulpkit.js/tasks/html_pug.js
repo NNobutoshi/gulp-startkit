@@ -3,7 +3,6 @@ const
 ;
 const
   { src, dest } = require( 'gulp' )
-  ,gulpIf       = require( 'gulp-if' )
   ,plumber      = require( 'gulp-plumber' )
   ,pug          = require( 'pug' )
   ,through      = require( 'through2' )
@@ -25,7 +24,7 @@ module.exports = html_pug;
 function html_pug() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( gulpIf( options.diff, diff( options.diff ,_collect ,_select ) ) )
+    .pipe( diff( options.diff ,_collect ,_select ) )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )

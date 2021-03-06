@@ -28,6 +28,10 @@ if ( webpackConfig.optimization ) {
   webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, groups  );
 }
 
+if ( webpackConfig.cache &&  webpackConfig.cache.type === 'filesystem' ) {
+  webpackConfig.cache.cacheDirectory = config.cacheDirectory;
+}
+
 module.exports = js_webpack;
 
 function js_webpack() {

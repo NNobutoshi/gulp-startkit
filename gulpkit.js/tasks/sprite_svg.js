@@ -22,7 +22,7 @@ module.exports = sprite_svg;
 function sprite_svg() {
   const srcCollection = {};
   return src( config.src )
-    .pipe( gulpIf( options.diff, diff( options.diff ) ) )
+    .pipe( diff( options.diff ) )
     .pipe( groupSrc( srcCollection, config.group, config.base ) )
     .pipe( taskForEach( srcCollection, _branchTask ) )
   ;

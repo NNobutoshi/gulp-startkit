@@ -15,19 +15,23 @@ const
 const
   DIR_DEV = {
     dist : 'dist/development/html',
-    src  :  'src',
+    src  : 'src',
   }
   ,DIR_PROD = {
     dist : 'dist/production/html',
-    src  :  'src',
+    src  : 'src',
   }
-  ,DIST = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist // ここで振り分けておく、config_prod で指定が漏れがちな為。
-  ,ENABLE_SOURCEMAP_DEV  = true
-  ,ENABLE_SOURCEMAP_PROD = false
-  ,ENABLE_WATCH          = !!JSON.parse( process.env.WATCH_ENV || 'false' )
-  ,SOURCEMAPS_DIR        = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH    = path.resolve( __dirname, '.webpack_cache' )
-  ,ERROR_COLOR_HEX       = '#FF0000'
+;
+const
+  SRC                 = ( NODE_ENV === 'production' ) ? DIR_PROD.src : DIR_DEV.src
+  ,DIST               = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist
+  ,ENABLE_SOURCEMAP   = ( NODE_ENV === 'production' ) ? false : true
+  ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
+  ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
+  ,SOURCEMAPS_DIR     = 'sourcemaps'
+  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
+  ,ERROR_COLOR_HEX    = '#FF0000'
+  ,GIT_DIFF_COMMAND   = `git status -s gulpkit.js/ ${SRC}/` // タスクごとに違うコマンドは使えない。
 ;
 const
   config_dev = {
@@ -40,12 +44,12 @@ const
       },
     },
     'css_sass' : {
-      src           : [ DIR_DEV.src + '/**/*.scss' ],
+      src           : [ SRC + '/**/*.scss' ],
       dist          : DIST,
-      base          : DIR_DEV.src,
+      base          : SRC,
       watch         : true && ENABLE_WATCH,
       cssMqpack     : false,
-      sourcemap     : true && ENABLE_SOURCEMAP_DEV,
+      sourcemap     : true && ENABLE_SOURCEMAP,
       sourcemap_dir : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
@@ -63,15 +67,19 @@ const
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
         },
-        diff : { hash : 'css_sass' },
+        diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+          hash      : 'css_sass',
+        },
       },
     },
     'css_lint' : {
       src       : [
-        ''  + DIR_DEV.src + '/**/*.scss',
-        '!' + DIR_DEV.src + '/**/css/_sprite_svg.scss',
-        '!' + DIR_DEV.src + '/**/_vendor/*.scss',
-        '!' + DIR_DEV.src + '/**/_templates/*.scss',
+        ''  + SRC + '/**/*.scss',
+        '!' + SRC + '/**/css/_sprite_svg.scss',
+        '!' + SRC + '/**/_vendor/*.scss',
+        '!' + SRC + '/**/_templates/*.scss',
       ],
       dist      : DIST,
       watch     : true && ENABLE_WATCH,
@@ -88,17 +96,21 @@ const
           reporters      : [ { formatter: 'string', console: true } ],
           debug          : true,
         },
-        diff : { hash : 'css_lint' },
+        diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+          hash      : 'css_lint',
+        },
       },
     },
     'icon_font' : {
-      src           : [ DIR_DEV.src + '/**/fonts/icons/*.svg' ],
+      src           : [ SRC + '/**/fonts/icons/*.svg' ],
       dist          : DIST,
       group         : '/fonts/icons',
-      base          : DIR_DEV.src,
+      base          : SRC,
       watch         : true && ENABLE_WATCH,
-      fontsDist     : DIR_DEV.src +  '[subdir]/fonts',
-      fontsCopyFrom : DIR_DEV.src +  '[subdir]/fonts/*.*',
+      fontsDist     : SRC +  '[subdir]/fonts',
+      fontsCopyFrom : SRC +  '[subdir]/fonts/*.*',
       fontsCopyTo   : DIST + '[subdir]/fonts',
       options       : {
         iconfont : {
@@ -110,7 +122,7 @@ const
         },
         iconfontCss : {
           fontName   : 'icons',
-          path       : DIR_DEV.src + '/_templates/_icons.scss',
+          path       : SRC + '/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/',
           firstGlyph : 0xF001,
@@ -122,6 +134,8 @@ const
           },
         },
         diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
           hash      : 'icon_font',
           allForOne : '/fonts/icons',
         },
@@ -129,9 +143,9 @@ const
     },
     'img_min' : {
       src     : [
-        ''  + DIR_DEV.src + '/**/*.{png,jpg,svg}',
-        '!' + DIR_DEV.src + '/**/_sprite*/*.{png,svg}',
-        '!' + DIR_DEV.src + '/**/fonts/icons/*.{png,svg}',
+        ''  + SRC + '/**/*.{png,jpg,svg}',
+        '!' + SRC + '/**/_sprite*/*.{png,svg}',
+        '!' + SRC + '/**/fonts/icons/*.{png,svg}',
       ],
       dist    : DIST,
       watch   : true && ENABLE_WATCH,
@@ -153,18 +167,22 @@ const
             { cleanupIDs : true },
           ],
         },
-        diff : { hash : 'img_min' },
+        diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+          hash      : 'img_min',
+        },
       },
     },
     'js_webpack' : {
-      src           : [ DIR_DEV.src + '/**/*.{js,json}' ],
-      dist          : DIST,
-      targetEntry   : /\.entry\.js$/,
-      shareFileConf : /\.split\.json$/,
-      watch         : true && ENABLE_WATCH,
-      base          : DIR_DEV.src,
-      options       : {
-        del          : {
+      src            : [ SRC + '/**/*.{js,json}' ],
+      dist           : DIST,
+      targetEntry    : /\.entry\.js$/,
+      shareFileConf  : /\.split\.json$/,
+      watch          : true && ENABLE_WATCH,
+      base           : SRC,
+      options        : {
+        del : {
           dist    : [ DIST + '/**/*.js.map' ],
           options : {
             force : true,
@@ -177,10 +195,11 @@ const
           },
         },
       },
-      webpackConfig : {
+      cacheDirectory : WEBPACK_CACHE_PATH,
+      webpackConfig  : {
         mode      : NODE_ENV,
         output    : {},
-        devtool   : ( true && ENABLE_SOURCEMAP_DEV ) ? 'source-map' : false,
+        devtool   : ( true && ENABLE_SOURCEMAP ) ? 'source-map' : false,
         module    : {
           rules : [
             {
@@ -198,8 +217,7 @@ const
           ],
         },
         cache : {
-          type           : 'filesystem',
-          cacheDirectory : WEBPACK_CACHE_PATH,
+          type : ( ENABLE_DIFF ) ? 'filesystem' : 'memory',
         },
         plugins : [
           new webpack.SourceMapDevToolPlugin( {
@@ -216,8 +234,8 @@ const
     'js_eslint' : {
       src : [
         ''  + './gulpkit.js/**/*.js',
-        ''  + DIR_DEV.src + '/**/*.js',
-        '!' + DIR_DEV.src + '/**/_vendor/*.js',
+        ''  + SRC + '/**/*.js',
+        '!' + SRC + '/**/_vendor/*.js',
       ],
       dist    : DIST,
       watch   : true && ENABLE_WATCH,
@@ -231,13 +249,17 @@ const
         eslint : {
           useEslintrc: true,
         },
-        diff : { hash : 'js_eslint' },
+        diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+          hash      : 'js_eslint',
+        },
       },
     },
     'html_pug' : {
-      src     : [ DIR_DEV.src + '/**/*.pug' ],
+      src     : [ SRC + '/**/*.pug' ],
       dist    : DIST,
-      base    : DIR_DEV.src,
+      base    : SRC,
       watch   : true && ENABLE_WATCH,
       options : {
         assistPretty : {
@@ -253,9 +275,13 @@ const
         },
         pug : {
           pretty       : true,
-          basedir      : DIR_DEV.src,
+          basedir      : SRC,
         },
-        diff : { hash : 'html_pug' },
+        diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+          hash      : 'html_pug',
+        },
         plumber : {
           errorHandler : function( error ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
@@ -264,13 +290,13 @@ const
       },
     },
     'sprite' : {
-      src      : [ DIR_DEV.src + '/**/img/_sprite/**/*.png' ],
+      src      : [ SRC + '/**/img/_sprite/**/*.png' ],
       dist     : DIST,
-      base     : DIR_DEV.src,
+      base     : SRC,
       group    : '/img/_sprite',
       watch    : true && ENABLE_WATCH,
       imgDist  : DIST + '[subdir]/img',
-      scssDist : DIR_DEV.src + '[subdir]/css',
+      scssDist : SRC + '[subdir]/css',
       options : {
         plumber : {
           errorHandler : function( error ) {
@@ -284,20 +310,22 @@ const
           imgPath     : '../img/common_pack.png',
           cssFormat   : 'scss',
           padding     : 10,
-          cssTemplate : DIR_DEV.src + '/_templates/scss.template.handlebars',
+          cssTemplate : SRC + '/_templates/scss.template.handlebars',
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
         },
         diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
           hash      : 'sprite',
           allForOne : '/img/_sprite',
         },
       },
     },
     'sprite_svg' : {
-      src     : [ DIR_DEV.src + '/**/img/_sprite_svg/**/*.svg' ],
-      base    : DIR_DEV.src,
+      src     : [ SRC + '/**/img/_sprite_svg/**/*.svg' ],
+      base    : SRC,
       dist    : DIST,
       group   : '/img/_sprite_svg',
       watch   : true && ENABLE_WATCH,
@@ -357,6 +385,8 @@ const
           },
         },
         diff : {
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
           hash      : 'sprite_svg',
           allForOne : '/img/_sprite_svg',
         },
@@ -376,32 +406,19 @@ const
   config_prod = {
     'clean' : {},
     'css_sass' : {
-      sourcemap : false || ENABLE_SOURCEMAP_PROD,
+      sourcemap : false || ENABLE_SOURCEMAP,
       options   : {
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
         },
-        diff : false,
       },
     },
-    'css_lint' : {
-      options : {
-        diff : false,
-      },
-    },
-    'icon_font' : {
-      options : {
-        diff : false,
-      },
-    },
-    'img_min' : {
-      options : {
-        diff : false,
-      },
-    },
+    'css_lint' : {},
+    'icon_font' : {},
+    'img_min' : {},
     'js_webpack' : {
       webpackConfig : {
-        devtool : ( false || ENABLE_SOURCEMAP_PROD ) ? 'source-map' : false,
+        devtool : ( false || ENABLE_SOURCEMAP ) ? 'source-map' : false,
         optimization : {
           minimizer : [ new TerserPlugin( { extractComments : false } ) ],
         },
@@ -410,21 +427,9 @@ const
         ],
       }
     },
-    'js_eslint' : {
-      options : {
-        diff : false,
-      },
-    },
-    'html_pug' : {
-      options : {
-        diff : false,
-      },
-    },
-    'sprite' : {
-      options : {
-        diff : false,
-      },
-    },
+    'js_eslint' : {},
+    'html_pug' : {},
+    'sprite' : {},
     'sprite_svg' : {
       options : {
         svgSprite : {
@@ -437,7 +442,6 @@ const
             },
           },
         },
-        diff : false,
       },
     },
     'serve' : {}, // 別途の設定ファイルにて

@@ -12,20 +12,16 @@ const
   lastDiff  = require( './last_diff.js' )
 ;
 const
-  GIT_DIFF_COMMAND  = 'git status -s gulpkit.js/ src/'
-  ,WRITING_DELAY_TIME = 2000
+  WRITING_DELAY_TIME = 2000
 ;
 let
   writing_timeoutId = null
   ,promiseGetGitDiffList
 ;
 
-console.info( process.cwd() );
-
 module.exports = diff_build;
 
 function diff_build( options, collect, select ) {
-
   const
     allFiles         = {}
     ,collection      = {}
@@ -33,6 +29,8 @@ function diff_build( options, collect, select ) {
     ,defaultSettings = {
       hash      : '',
       allForOne : false,
+      detection : true,
+      command   : 'git status -s',
     }
     ,settings = mergeWith( {}, defaultSettings, options )
   ;
@@ -42,8 +40,11 @@ function diff_build( options, collect, select ) {
     ,currentDiffMap
     ,lastDiffMap = lastDiff.get()
   ;
+  if ( !settings.detection ) {
+    return through.obj();
+  }
 
-  promiseGetGitDiffList = promiseGetGitDiffList || _getGitDiffList( GIT_DIFF_COMMAND );
+  promiseGetGitDiffList = promiseGetGitDiffList || _getGitDiffList( settings.command );
 
   if ( typeof settings.allForOne === 'string' ) {
     group = settings.allForOne.replace( /[/\\]/g, path.sep );
@@ -56,7 +57,6 @@ function diff_build( options, collect, select ) {
   function _transform( file, enc, callBack ) {
 
     if ( file.isNull() ) {
-      console.info( file.isNull, 'null' );
       return callBack( null, file );
     }
 

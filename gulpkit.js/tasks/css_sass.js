@@ -2,7 +2,6 @@ const
   { src, dest } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
   ,sass         = require( 'gulp-sass' )
-  ,gulpIf       = require( 'gulp-if' )
   ,postcss      = require( 'gulp-postcss' )
   ,grapher      = require( 'sass-graph' )
   ,cssMqpacker  = require( 'css-mqpacker' )
@@ -32,7 +31,7 @@ function css_sass() {
   }
   return src( config.src, srcOptions )
     .pipe( plumber( options.plumber ) )
-    .pipe( gulpIf( options.diff, diff( options.diff, null, _select ) ) )
+    .pipe( diff( options.diff, null, _select ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( _log() )

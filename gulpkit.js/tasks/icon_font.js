@@ -3,7 +3,6 @@ const
   ,iconfont     = require( 'gulp-iconfont' )
   ,iconfontCss  = require( 'gulp-iconfont-css' )
   ,plumber      = require( 'gulp-plumber' )
-  ,gulpIf       = require( 'gulp-if' )
   ,through      = require( 'through2' )
 ;
 const
@@ -26,7 +25,7 @@ module.exports = icon_font;
 function icon_font() {
   const srcCollection = {};
   return src( config.src )
-    .pipe( gulpIf( options.diff, diff( options.diff ) ) )
+    .pipe( diff( options.diff ) )
     .pipe( _setTimestampOption( options.iconfont.timestamp ) )
     .pipe( groupSrc( srcCollection, config.group, config.base ) )
     .pipe( taskForEach( srcCollection, _branchTask ) )
