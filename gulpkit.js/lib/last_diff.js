@@ -5,7 +5,7 @@ const
   ,del    = require( 'del' )
 ;
 const
-  FILEPATH  = path.resolve( __dirname, '../.last_diff_log/.diffmap' )
+  FILEPATH  = path.resolve( __dirname, '../.last_diff/.diffmap' )
   ,DIRNAME  = path.dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastDiff'
 ;
