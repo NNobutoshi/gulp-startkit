@@ -17,29 +17,35 @@ const
   ,watcher = require( './tasks/watcher' )
 ;
 
-const
-  args = process.argv.slice( 4 )
-;
-
+/*
+ * コマンドライン上 Gulp <task>
+ * でタスクを個別に実行する際、watch や server も機能させる。
+ */
 ( function _taskOnCommand() {
-  const watchTasks = [];
+  const
+    watchTasks = []
+    ,args = process.argv.slice( process.argv.indexOf( 'gulpkit.js' ) + 1 )
+  ;
   if ( !args.length ) {
     return;
   }
-  tasks.serve_init();
   for ( let i = 0; i < args.length; i++ ) {
     const
       taskName = args[ i ]
       ,task = watchTasks[ taskName ] = tasks[ taskName ]
     ;
-    exports[ taskName ] = series( task, tasks.serve_reload );
+    exports[ taskName ] = task;
   }
-  watcher( watchTasks, tasks.serve_reload )();
+  process.on( 'beforeExit', () => {
+    tasks.serve_init( watcher( watchTasks, tasks.serve_reload ) );
+  } );
 } )();
 
-/* default tasks */
+/*
+ * default
+ */
 exports.default = series(
-  // tasks.clean,
+  tasks.clean,
   parallel(
     tasks.html_pug,
     tasks.img_min,
