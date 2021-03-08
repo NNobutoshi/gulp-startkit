@@ -1,5 +1,11 @@
 const
-  del = require( 'del' )
+  del       = require( 'del' )
+  ,path     = require( 'path' )
+  ,{ exec } = require( 'child_process' )
+;
+const
+  log    = require( 'fancy-log' )
+  ,chalk = require( 'chalk' )
 ;
 const
   config = require( '../config.js' ).clean
@@ -7,6 +13,31 @@ const
 
 module.exports = clean;
 
-function clean() {
-  return del( config.dist, config.options.del );
+/*
+ * Git Command をつかってUntracked fileを、削除。
+ * 戻り値はPromise。
+ */
+async function clean() {
+  const removes = await _getGitUntrackedList( config.command );
+  await del( removes );
+}
+
+function _getGitUntrackedList( comand ) {
+  return new Promise( ( resolve ) => {
+    exec( comand, ( error, stdout, stderror ) => {
+      let removes = [];
+      if ( error || stderror ) {
+        log.error( chalk.hex( '#FF0000' )( 'clean.js \n' + error || stderror ) );
+      }
+      if ( stdout ) {
+        const matchedAll = stdout.matchAll( /^([\s?]{2})\s([^\n]+?)\n/mg );
+        for ( let item of matchedAll ) {
+          removes.push(
+            path.resolve( process.cwd(), item[ 2 ] )
+          );
+        }
+      }
+      resolve( removes );
+    } );
+  } );
 }

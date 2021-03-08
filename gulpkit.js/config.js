@@ -36,7 +36,7 @@ const
 const
   config_dev = {
     'clean' : {
-      dist : DIST,
+      command : `git status -s ${DIST}/`,
       options : {
         del : {
           force : true,
@@ -274,8 +274,8 @@ const
           indent_char : ' ',
         },
         pug : {
-          pretty       : true,
-          basedir      : SRC,
+          pretty  : true,
+          basedir : SRC,
         },
         diff : {
           command   : GIT_DIFF_COMMAND,
