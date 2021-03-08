@@ -109,7 +109,7 @@ function _createEntries() {
       webpackConfig.entry = entries;
       webpackConfig.output.filename = '[name].js';
       webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-      webpackConfig.optimization = groups;
+      webpackConfig.optimization.splitChunks = groups.splitChunks;
       compiler = webpack( webpackConfig );
     }
     callBack();

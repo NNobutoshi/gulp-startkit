@@ -420,7 +420,11 @@ const
       webpackConfig : {
         devtool : ( false || ENABLE_SOURCEMAP ) ? 'source-map' : false,
         optimization : {
-          minimizer : [ new TerserPlugin( { extractComments : false } ) ],
+          minimizer : [
+            new TerserPlugin( {
+              extractComments : false
+            } ),
+          ],
         },
         plugins: [
           function() {},
