@@ -1,5 +1,5 @@
 const
-  path        = require( 'path' )
+  path = require( 'path' )
 ;
 const
   through      = require( 'through2' )

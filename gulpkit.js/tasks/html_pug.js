@@ -34,8 +34,14 @@ function html_pug() {
 /*
  * 依存関係を調べ、まとめる。
  * through2 のtransform の中で実行。
- * chunk のcontentsを調べ、ファイル読み込みのパスをkey、
- * 自分自身のパスを値にしたオブジェクトで収集する。
+ * chunk のcontents から読み込んでいるパスを調べる
+ *
+ * collection
+ * {
+ *   '読み込んでいるパス': [
+ *     'chunk自身のパス'
+ *    ]
+ * }
  */
 function _collect( file, collection ) {
   const
@@ -46,10 +52,10 @@ function _collect( file, collection ) {
   for ( const match of matches ) {
     let dependentFilePath;
     if ( /^\//.test( match[ 2 ] ) ) {
-      // ルートパスなら
+      // ルートパスであれば
       dependentFilePath = path.join( path.resolve( process.cwd(), config.base ), match[ 2 ] );
     } else {
-      // 相対パスなら
+      // 相対パスであれば
       dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
     }
     if ( !collection[ dependentFilePath ] ) {
@@ -60,7 +66,7 @@ function _collect( file, collection ) {
 }
 
 /*
- * tdiff_build.jsの hrough2 flush の中で、Object で集めた通過候補毎に実行。
+ * diff_build.jsの hrough2 flush の中で、Object で集めた通過候補毎に実行される。
  * 候補ファイルに依存するものを最終選択する。
  */
 function _select( filePath, collection, destFiles ) {

@@ -1,10 +1,10 @@
 const
-  del       = require( 'del' )
-  ,path     = require( 'path' )
+  path      = require( 'path' )
   ,{ exec } = require( 'child_process' )
 ;
 const
-  log    = require( 'fancy-log' )
+  del    = require( 'del' )
+  ,log   = require( 'fancy-log' )
   ,chalk = require( 'chalk' )
 ;
 const

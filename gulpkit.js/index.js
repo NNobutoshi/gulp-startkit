@@ -23,19 +23,15 @@ const
  */
 ( function _taskOnCommand() {
   const
-    watchTasks = []
+    watchTasks = {}
     ,args = process.argv.slice( process.argv.indexOf( 'gulpkit.js' ) + 1 )
   ;
   if ( !args.length ) {
     return;
   }
-  for ( let i = 0; i < args.length; i++ ) {
-    const
-      taskName = args[ i ]
-      ,task = watchTasks[ taskName ] = tasks[ taskName ]
-    ;
-    exports[ taskName ] = task;
-  }
+  args.forEach( ( taskName ) => {
+    exports[ taskName ] = watchTasks[ taskName ] = tasks[ taskName ];
+  } );
   process.on( 'beforeExit', () => {
     tasks.serve_init( watcher( watchTasks, tasks.serve_reload ) );
   } );

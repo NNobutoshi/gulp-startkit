@@ -6,7 +6,7 @@ const
   ,through      = require( 'through2' )
 ;
 const
-  sVGLint      = require( '../lib/svg_lint.js' )
+  svgLint      = require( '../lib/svg_lint.js' )
   ,taskForEach = require( '../lib/task_for_each.js' )
   ,diff        = require( '../lib/diff_build.js' )
 ;
@@ -31,7 +31,7 @@ function icon_font() {
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
     .pipe( plumber( options.plumber ) )
-    .pipe( sVGLint() )
+    .pipe( svgLint() )
     .pipe( _setTimestampOption( options.iconfont.timestamp ) )
     .pipe( iconfontCss( options.iconfontCss ) )
     .pipe( iconfont( options.iconfont ) )

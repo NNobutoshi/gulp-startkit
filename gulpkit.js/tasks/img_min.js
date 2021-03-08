@@ -1,5 +1,5 @@
 const
-  { src, dest, lastRun }     = require( 'gulp' )
+  { src, dest, lastRun } = require( 'gulp' )
   ,imagemin         = require( 'gulp-imagemin' )
   ,plumber          = require( 'gulp-plumber' )
   ,imageminMozjpeg  = require( 'imagemin-mozjpeg' )

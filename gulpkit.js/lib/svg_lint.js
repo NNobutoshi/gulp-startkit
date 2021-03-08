@@ -1,5 +1,5 @@
 const
-  SVGLint = require( 'svglint' )
+  svgLint  = require( 'svglint' )
   ,through = require( 'through2' )
 ;
 
@@ -10,12 +10,14 @@ module.exports = svg_lint;
  * エラーが拾いにくいため。
  */
 function svg_lint() {
+
   return through.obj( _transform, _flush );
+
   function _transform( file, enc, callBack ) {
     const
       stream = this
       ,contents = String( file.contents )
-      ,linting = SVGLint.lintSource( contents, { debug: true, config: {} } )
+      ,linting = svgLint.lintSource( contents, { debug: true, config: {} } )
     ;
     linting.on( 'done', () => {
       if ( linting.state === linting.STATES.success ) {
@@ -26,7 +28,9 @@ function svg_lint() {
       }
     } );
   }
+
   function _flush( callBack ) {
     callBack();
   }
+
 }

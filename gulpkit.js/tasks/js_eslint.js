@@ -1,8 +1,8 @@
 const
-  { src, lastRun }  = require( 'gulp' )
+  { src, lastRun } = require( 'gulp' )
   ,eslint  = require( 'gulp-eslint' )
   ,plumber = require( 'gulp-plumber' )
-  ,diff  = require( '../lib/diff_build.js' )
+  ,diff    = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).js_eslint

@@ -7,11 +7,12 @@ const
 ;
 
 module.exports = function( tasks, reload ) {
+
   return function watch_init( cb ) {
-    for ( const key in tasks ) {
+
+    for ( const [ taskName, task ] of Object.entries( tasks ) ) {
       const
-        taskConfig = config[ key ]
-        ,task      = tasks[ key ]
+        taskConfig = config[ taskName ]
       ;
       if ( taskConfig && taskConfig.watch === true && taskConfig.src ) {
         if ( typeof reload === 'function' ) {
@@ -20,9 +21,11 @@ module.exports = function( tasks, reload ) {
           watch( taskConfig.src, watchOptions, task );
         }
       }
-    }
+    } // for
+
     if ( typeof cb === 'function' ) {
       cb();
     }
+
   };
 };

@@ -3,12 +3,8 @@ const
   ,options = config.options
 ;
 let
-  server
+  server = ( config.enable === true ) ? require( 'browser-sync' ) : null
 ;
-
-if ( config.enable === true ) {
-  server = require( 'browser-sync' );
-}
 
 module.exports.serve_init = ( () => {
   if ( !server ) {
@@ -36,8 +32,8 @@ module.exports.serve_reload = ( () => {
   };
 } )();
 
-function _done( done ) {
-  if ( typeof done === 'function' ) {
-    return done();
+function _done( cb ) {
+  if ( typeof cb === 'function' ) {
+    return cb();
   }
 }
