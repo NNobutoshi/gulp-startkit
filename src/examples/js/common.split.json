@@ -1,12 +1,8 @@
 {
-  "splitChunks" : {
-    "cacheGroups" : {
-      "examples" : {
-        "test"    : [ "lodash" ],
-        "name"    : "./examples/js/common_vendor",
-        "chunks"  : "initial",
-        "enforce" : true
-      }
-    }
+  "examples" : {
+    "test"    : [ "lodash" ],
+    "name"    : "./examples/js/common_vendor",
+    "chunks"  : "initial",
+    "enforce" : true
   }
 }

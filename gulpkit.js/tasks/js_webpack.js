@@ -13,15 +13,14 @@ const
   config         = require( '../config.js' ).js_webpack
   ,options       = config.options
   ,webpackConfig = config.webpackConfig
+  ,optimization  = {
+    splitChunks : { cacheGroups : {} }
+  }
 ;
 let
   compiler = null
   ,entries
-  ,groups = {
-    splitChunks : {
-      cacheGroups : {}
-    }
-  }
+  ,catcheGroups
 ;
 
 /*
@@ -35,7 +34,7 @@ let
  * WebpackConfig。既存の設定を上書きしないようにマージ
  */
 if ( webpackConfig.optimization ) {
-  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, groups );
+  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, optimization );
 }
 
 /*
@@ -62,11 +61,8 @@ function _createEntries() {
     ,regexShareFileConf = config.shareFileConf // /\.split\.json$/
   ;
 
-  /*
-   * pipe のたび初期化。
-   */
   entries = {};
-  groups = {};
+  catcheGroups = {};
 
   return through.obj( _transform, _flush );
 
@@ -78,14 +74,14 @@ function _createEntries() {
 
     /*
      * chunk のPath が、splitChunks用のJSON Data であれば、
-     * chunk のコンテンツを webpackConfig で使用可能なデータの形にする。
+     * chunk のcontentsを webpackConfig で使用可能な状態にする。
      */
     if ( regexShareFileConf && regexShareFileConf.test( file.path ) ) {
-      _createSplitChunks( file.contents );
+      catcheGroups = _createSplitChunks( catcheGroups, file.contents );
     }
 
     /*
-     * entry であれば、WebpackConfig で有効な形にする。
+     * entry であれば、webpackConfig で使用可能な状態にする。
      */
     if ( regexTarget.test( file.path ) ) {
       key = path.relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
@@ -98,18 +94,22 @@ function _createEntries() {
 
   /*
    * compiler がまだ無いか、
-   * 新たに作ったentreis や splitChunks が直近のWebpackConfig と内容に相違があれば、
-   * compoler を用意する。
+   * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
+   * compiler を用意する。
    */
   function _flush( callBack ) {
     if ( compiler === null ||
       !isEqual( webpackConfig.entry, entries ) ||
-      !isEqual( webpackConfig.optimization, groups )
+      !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, catcheGroups )
     ) {
       webpackConfig.entry = entries;
       webpackConfig.output.filename = '[name].js';
       webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-      webpackConfig.optimization.splitChunks = groups.splitChunks;
+      webpackConfig.optimization.splitChunks.cacheGroups = mergeWith(
+        {},
+        webpackConfig.optimization.splitChunks.cacheGroups,
+        catcheGroups,
+      );
       compiler = webpack( webpackConfig );
     }
     callBack();
@@ -153,17 +153,16 @@ function _webPackCall( callBack, stream ) {
 }
 
 /*
- * 主にvendorのscript など、ディレクトリで共通で使用するモジュールなどは、
+ * vendor など、ディレクトリで共通で使用するモジュールは、
  * そのディレクトリ毎で設定が行えるようにする。
- * そのためのJSON data をwebpackConfig で使用可能な状態にする
+ * そのためのJSON data をwebpackConfig で使用可能な状態にする。
  */
-function _createSplitChunks( subConfContents ) {
+function _createSplitChunks( groups, subConfContents ) {
   const
     subConfObj = JSON.parse( subConfContents )
-    ,cacheGroups = subConfObj.splitChunks.cacheGroups
   ;
-  for ( let o in cacheGroups ) {
-    cacheGroups[ o ].test = new RegExp( cacheGroups[ o ].test.join( '|' ) );
+  for ( let key in subConfObj ) {
+    subConfObj[ key ].test = new RegExp( subConfObj[ key ].test.join( '|' ) );
   }
-  groups = mergeWith( {}, groups, subConfObj );
+  return mergeWith( {}, groups, subConfObj );
 }

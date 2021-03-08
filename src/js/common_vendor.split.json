@@ -1,12 +1,8 @@
 {
-  "splitChunks" : {
-    "cacheGroups" : {
-      "vendor" : {
-        "test"    : [ "ua-parser-js", "jquery" ],
-        "name"    : "./js/common_vendor",
-        "chunks"  : "initial",
-        "enforce" : true
-      }
-    }
+  "vendor" : {
+    "test"    : [ "ua-parser-js", "jquery" ],
+    "name"    : "./js/common_vendor",
+    "chunks"  : "initial",
+    "enforce" : true
   }
 }
