@@ -5,11 +5,15 @@ const
 
 module.exports = svg_lint;
 
+/*
+ * *.svg をsrc にするタスク用。
+ * エラーが拾いにくいため。
+ */
 function svg_lint() {
   return through.obj( _transform, _flush );
   function _transform( file, enc, callBack ) {
     const
-      that = this
+      stream = this
       ,contents = String( file.contents )
       ,linting = SVGLint.lintSource( contents, { debug: true, config: {} } )
     ;
@@ -17,7 +21,7 @@ function svg_lint() {
       if ( linting.state === linting.STATES.success ) {
         callBack( null, file );
       } else {
-        that.emit( 'error', new Error( `Linting failed (${linting.state})\n${file.path}` ) );
+        stream.emit( 'error', new Error( `Linting failed (${linting.state})\n${file.path}` ) );
         callBack();
       }
     } );

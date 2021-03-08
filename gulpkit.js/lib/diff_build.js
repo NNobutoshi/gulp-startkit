@@ -3,10 +3,10 @@ const
   ,{ exec } = require( 'child_process' )
 ;
 const
-  through     = require( 'through2' )
-  ,mergeWith  = require( 'lodash/mergeWith' )
-  ,log        = require( 'fancy-log' )
-  ,chalk      = require( 'chalk' )
+  through    = require( 'through2' )
+  ,mergeWith = require( 'lodash/mergeWith' )
+  ,log       = require( 'fancy-log' )
+  ,chalk     = require( 'chalk' )
 ;
 const
   lastDiff  = require( './last_diff.js' )
@@ -19,6 +19,11 @@ let
   ,promiseGetGitDiffList // 各読み込み元で共有のため、この位置で
 ;
 
+/*
+ * Git で管理する前提での差分ビルド。
+ * いったんGulp.src を通った後なので
+ * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
+ */
 module.exports = diff_build;
 
 function diff_build( options, collect, select ) {

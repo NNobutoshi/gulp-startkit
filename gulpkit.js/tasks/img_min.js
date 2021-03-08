@@ -15,6 +15,9 @@ const
 
 module.exports = img_min;
 
+/*
+ * 1 src → 1 dist なので diff build はGulp.lastRun と併用する。
+ */
 function img_min() {
   return src( config.src, { since : lastRun( img_min ) } )
     .pipe( plumber( options.plumber ) )

@@ -24,11 +24,25 @@ let
   }
 ;
 
+/*
+ * cache 機能や差分ビルド機能は、Webpack の備えているものを。
+ * watch はGulpのものを使用。
+ * entry や splitChunks は、Gulp.src() 後,chumk が通ってくる毎、作成し。
+ * 既存の webpackConfigと 比較し差異があれば再代入する。
+ */
+
+/*
+ * WebpackConfig。既存の設定を上書きしないようにマージ
+ */
 if ( webpackConfig.optimization ) {
-  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, groups  );
+  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, groups );
 }
 
-if ( webpackConfig.cache &&  webpackConfig.cache.type === 'filesystem' ) {
+/*
+ * config.js 側で'filesystem' の指定があれば、cacheDirectory はここで指定。
+ * 'memory' が指定されているとcacheDirectory をそのままにしておけないため。
+ */
+if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
 }
 
@@ -44,20 +58,35 @@ function js_webpack() {
 
 function _createEntries() {
   let
-    regexTarget = config.targetEntry
-    ,regexShareFileConf = config.shareFileConf
+    regexTarget = config.targetEntry // /\.entry\.js$/
+    ,regexShareFileConf = config.shareFileConf // /\.split\.json$/
   ;
 
+  /*
+   * pipe のたび初期化。
+   */
   entries = {};
   groups = {};
 
   return through.obj( _transform, _flush );
 
+  /*
+   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
+   */
   function _transform( file, enc, callBack ) {
     let key, val;
+
+    /*
+     * chunk のPath が、splitChunks用のJSON Data であれば、
+     * chunk のコンテンツを webpackConfig で使用可能なデータの形にする。
+     */
     if ( regexShareFileConf && regexShareFileConf.test( file.path ) ) {
       _createSplitChunks( file.contents );
     }
+
+    /*
+     * entry であれば、WebpackConfig で有効な形にする。
+     */
     if ( regexTarget.test( file.path ) ) {
       key = path.relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
       val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
@@ -67,6 +96,11 @@ function _createEntries() {
     callBack( null, file );
   }
 
+  /*
+   * compiler がまだ無いか、
+   * 新たに作ったentreis や splitChunks が直近のWebpackConfig と内容に相違があれば、
+   * compoler を用意する。
+   */
   function _flush( callBack ) {
     if ( compiler === null ||
       !isEqual( webpackConfig.entry, entries ) ||
@@ -89,7 +123,6 @@ function _compile() {
     callBack( null, file );
   }
   function _flush( callBack ) {
-    this.resume();
     compiler.run( _webPackCall( callBack, this ) );
   }
 }
@@ -119,6 +152,11 @@ function _webPackCall( callBack, stream ) {
   };
 }
 
+/*
+ * 主にvendorのscript など、ディレクトリで共通で使用するモジュールなどは、
+ * そのディレクトリ毎で設定が行えるようにする。
+ * そのためのJSON data をwebpackConfig で使用可能な状態にする
+ */
 function _createSplitChunks( subConfContents ) {
   const
     subConfObj = JSON.parse( subConfContents )

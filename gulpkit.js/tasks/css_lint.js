@@ -13,6 +13,9 @@ const
 
 module.exports = css_lint;
 
+/*
+ * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
+ */
 function css_lint() {
   return src( config.src, { since : lastRun( css_lint ) } )
     .pipe( plumber( options.plumber ) )

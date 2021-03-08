@@ -7,7 +7,7 @@ const
 ;
 
 module.exports = function( tasks, reload ) {
-  return function watch_init( callBack ) {
+  return function watch_init( cb ) {
     for ( const key in tasks ) {
       const
         taskConfig = config[ key ]
@@ -21,8 +21,8 @@ module.exports = function( tasks, reload ) {
         }
       }
     }
-    if ( typeof callBack === 'function' ) {
-      callBack();
+    if ( typeof cb === 'function' ) {
+      cb();
     }
   };
 };

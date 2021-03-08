@@ -31,6 +31,12 @@ function html_pug() {
   ;
 }
 
+/*
+ * 依存関係を調べ、まとめる。
+ * through2 のtransform の中で実行。
+ * chunk のcontentsを調べ、ファイル読み込みのパスをkey、
+ * 自分自身のパスを値にしたオブジェクトで収集する。
+ */
 function _collect( file, collection ) {
   const
     contents = String( file.contents )
@@ -38,23 +44,28 @@ function _collect( file, collection ) {
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
-    const dependentFilePath = match[ 2 ];
-    let keyFileName;
+    let dependentFilePath;
     if ( /^\//.test( match[ 2 ] ) ) {
-      keyFileName = path.join( path.resolve( process.cwd(), config.base ), dependentFilePath );
+      // ルートパスなら
+      dependentFilePath = path.join( path.resolve( process.cwd(), config.base ), match[ 2 ] );
     } else {
-      keyFileName = path.resolve( file.dirname, dependentFilePath );
+      // 相対パスなら
+      dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
     }
-    if ( !collection[ keyFileName ] ) {
-      collection[ keyFileName ] = [];
+    if ( !collection[ dependentFilePath ] ) {
+      collection[ dependentFilePath ] = [];
     }
-    collection[ keyFileName ].push( file.path );
+    collection[ dependentFilePath ].push( file.path );
   }
 }
 
+/*
+ * tdiff_build.jsの hrough2 flush の中で、Object で集めた通過候補毎に実行。
+ * 候補ファイルに依存するものを最終選択する。
+ */
 function _select( filePath, collection, destFiles ) {
   ( function _run_recursive( filePath ) {
-    if ( collection[ filePath ] && collection[ filePath ].length ) {
+    if ( Array.isArray( collection[ filePath ] ) && collection[ filePath ].length > 0 ) {
       collection[ filePath ].forEach( ( item ) => {
         destFiles[ item ] = 1;
         if ( Object.keys( collection ).includes( item ) ) {
@@ -94,15 +105,29 @@ function _pugRender() {
   return self;
 }
 
+/*
+ * Pug のrender 後実行。
+ * HTML の体裁を整える。
+ */
 function _postPug() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
-    ,endCommentRegEx = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
+    ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
   ;
   return through.obj( ( file, enc, callBack ) => {
     let
       contents = String( file.contents )
     ;
+
+    /*
+     * オプションで指定があれば、
+     * <div> などを内包する<a> の体裁を整える。
+     *
+     * <a>             \ <a>
+     *  <div>          \   <div>
+     *  </div></a>     \   </div>
+     *                 \ </a>
+     */
     if ( options.assistPretty.assistAElement ) {
       contents = contents.replace(
         ugliyAElementRegEx
@@ -115,9 +140,18 @@ function _postPug() {
         } )
       ;
     }
+
+    /*
+     * オプションで指定があれば、
+     * インデントをトル。
+     */
     if ( options.assistPretty.indent === false ) {
       contents = contents.replace( /^([\t ]+)/mg, '' );
     }
+
+    /*
+     * 閉じタグ付近につけるコメントに関する体裁。
+     */
     if ( options.assistPretty.commentPosition ) {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
@@ -128,28 +162,68 @@ function _postPug() {
 
 function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   comment = '<!--' + comment + '-->';
+
+  /*
+   * コメントを閉じタグ内側に付けたい場合。
+   */
   if ( options.assistPretty.commentPosition === 'inside' ) {
+
+    /*
+     * コメントと閉じタグを1行にまとめるか否か。
+     * <!-- --></div>
+     * or
+     * <!-- -->
+     * </div>
+     */
     if ( options.assistPretty.commentOnOneLine === true ) {
+
+      /*
+       * コメントの付いた閉じタグ後に空行をつけるか否か。
+       */
       if ( options.assistPretty.emptyLine === true ) {
         return comment + endTag + lineFeed;
       } else {
         return comment + endTag;
       }
     } else {
+
+      /*
+       * コメントの付いた閉じタグ後に空行をつけるか否か。
+       */
       if ( options.assistPretty.emptyLine === true ) {
         return comment + lineFeed + indent + endTag + lineFeed;
       } else {
         return comment + lineFeed + indent + endTag;
       }
     }
+
+  /*
+   * コメントを閉じタグ外側に付けたい場合。
+   */
   } else {
+
+    /*
+     * コメントと閉じタグを1行にまとめるか否か。
+     * </div><!-- -->
+     * or
+     * </div>
+     * <!-- -->
+     */
     if ( options.assistPretty.commentOnOneLine === true ) {
+
+      /*
+       * コメントの付いた閉じタグ後に空行をつけるか否か。
+       */
       if ( options.assistPretty.emptyLine === true ) {
         return endTag + comment + lineFeed;
       } else {
         return endTag + comment;
       }
     } else {
+
+      /*
+       * コメントの付いた閉じタグ後に空行をつけるか否か。
+       */
       if ( options.assistPretty.emptyLine === true ) {
         return endTag + lineFeed + indent + comment + lineFeed;
       } else {

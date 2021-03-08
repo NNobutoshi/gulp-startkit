@@ -52,6 +52,10 @@ function _log() {
   } );
 }
 
+/*
+ * tdiff_build.jsの hrough2 flush の中で、Object で集めた通過候補毎に実行。
+ * sass-graph をつかって候補ファイルに依存するものを最終選択する。
+ */
 function _select( filePath, _collection, destFiles ) {
   graph.visitAncestors( filePath, function( item ) {
     if ( !Object.keys( destFiles ).includes( item ) ) {

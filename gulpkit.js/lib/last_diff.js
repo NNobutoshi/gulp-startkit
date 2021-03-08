@@ -13,6 +13,10 @@ let
   envData = process.env[ DATANAME ]
 ;
 
+/*
+ * Git コマンドで得たタスク終了時までの差分リストを環境変数に格納、取得、
+ * また、ファイル保存する。
+ */
 module.exports.default = {
   get : _get,
   set : _set,

@@ -6,9 +6,9 @@ const
   ,through      = require( 'through2' )
 ;
 const
-  sVGLint       = require( '../lib/svg_lint.js' )
-  ,taskForEach  = require( '../lib/task_for_each.js' )
-  ,diff         = require( '../lib/diff_build.js' )
+  sVGLint      = require( '../lib/svg_lint.js' )
+  ,taskForEach = require( '../lib/task_for_each.js' )
+  ,diff        = require( '../lib/diff_build.js' )
 ;
 const
   config = require( '../config.js' ).icon_font
@@ -44,6 +44,9 @@ function _branchTask( subSrc, baseDir ) {
   ;
 }
 
+/*
+ * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
+ */
 function _setTimestampOption() {
   let newer = new Date( 0 );
   return through.obj( ( file, enc, callBack ) => {

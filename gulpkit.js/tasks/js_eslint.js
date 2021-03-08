@@ -13,6 +13,9 @@ const
 
 module.exports = js_eslint;
 
+/*
+ * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
+ */
 function js_eslint() {
   return src( config.src, { since : lastRun( js_eslint ) } )
     .pipe( plumber( options.plumber ) )

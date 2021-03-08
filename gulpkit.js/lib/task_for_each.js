@@ -13,6 +13,9 @@ function taskForEach( group, base, branchTask ) {
   return _groupSrc( srcCollection, group, base, branchTask );
 }
 
+/*
+ * 指定のグループに従ってsource を小分けする。
+ */
 function _groupSrc( srcCollection, group, base, branchTask ) {
 
   group = group.replace( /[/\\]/g, path.sep );
@@ -35,12 +38,19 @@ function _groupSrc( srcCollection, group, base, branchTask ) {
     callBack( null, file );
   }
 
+  /*
+   * callBack は後の _forEach に渡し、全部の branchTask を実行後まで保留。
+   */
   function _flush( callBack ) {
     _forEach( srcCollection, branchTask, callBack );
   }
 
 }
 
+/*
+ * branchTask は、小分けしたグループ毎、Gulp.src 用の新しいsourceとdest 用のパスを渡し、
+ * Gulp のストリームを受け取る。
+ */
 function _forEach( srcCollection, branchTask, callBack ) {
   const streams = [];
   for ( let key in srcCollection ) {
@@ -51,6 +61,10 @@ function _forEach( srcCollection, branchTask, callBack ) {
       )
     );
   }
+
+  /*
+   * _groupSrc から渡された基のstream のcallBack をここで実行。
+   */
   if ( streams.length > 0 ) {
     mergeStream( ...streams ).on( 'finish', callBack );
   } else {
