@@ -49,7 +49,6 @@
     "js-beautify": "*",
     "merge-stream": "*",
     "mkdirp": "*",
-    "patch-package": "*",
     "postcss": "*",
     "pug": "*",
     "sass-graph": "*",
