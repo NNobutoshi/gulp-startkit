@@ -3,9 +3,9 @@ const
   ,path = require( 'path' )
 ;
 const
-  nodeX2j   = require( 'xls-to-json' )
-  ,mkdirp   = require( 'mkdirp' )
-  ,log      = require( 'fancy-log' )
+  nodeX2j = require( 'xls-to-json' )
+  ,mkdirp = require( 'mkdirp' )
+  ,log    = require( 'fancy-log' )
 ;
 const
   CHARSET               = 'utf-8'
@@ -29,9 +29,9 @@ const
 ;
 ( async function _run() {
   const
-    jSONData    = await _nodeX2j( settings.x2j )
+    jSONData     = await _nodeX2j( settings.x2j )
     ,confStrings = await _readConfigFile()
-    ,indent     = _getIndent( confStrings, /[\s\S]+?( +)\/\/{{/ )
+    ,indent      = _getIndent( confStrings, /[\s\S]+?( +)\/\/{{/ )
     ,dataStrings = _convertSringsForPug( jSONData, indent )
   ;
   _writePugConfigFile( confStrings, dataStrings, indent );

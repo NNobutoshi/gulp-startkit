@@ -32,7 +32,7 @@ function diff_build( options, collect, select ) {
     ,collection      = {}
     ,targets         = []
     ,defaultSettings = {
-      hash      : '',
+      name      : '',
       allForOne : false,
       detection : true,
       command   : 'git status -s',
@@ -107,7 +107,7 @@ function diff_build( options, collect, select ) {
       };
 
       /*
-       * 複数ファイルを一つのdist にするようなタスク用。
+       * 複数のsrc ファイルを一つのdist にするようなタスク用。
        * 自身のパスをkey に、所属するグループ（設定で指定されたポイントとなるディレクトリ）を値に。
        */
       if ( group ) {
@@ -131,7 +131,7 @@ function diff_build( options, collect, select ) {
     const
       stream     = this
       ,destFiles = {}
-      ,hash      = settings.hash
+      ,name      = settings.name
     ;
     let
       total = 0
@@ -141,7 +141,7 @@ function diff_build( options, collect, select ) {
      * 候補がなければ終了。
      */
     if ( targets.length === 0 ) {
-      _log( hash, total );
+      _log( name, total );
       _runLater();
       return callBack();
     }
@@ -192,7 +192,7 @@ function diff_build( options, collect, select ) {
     } );
     total = Object.keys( destFiles ).length;
 
-    _log( hash, total );
+    _log( name, total );
 
     stream.on( 'finish', () => {
       lastDiffMap = currentDiffMap;
@@ -222,10 +222,10 @@ function diff_build( options, collect, select ) {
   /*
    * 検知数と通過させた数のログ
    */
-  function _log( hash, total ) {
-    if ( hash ) {
-      log( chalk.gray( `[${hash}]: detected ${targets.length} files diff` ) );
-      log( chalk.gray( `[${hash}]: thrown ${total} files` ) );
+  function _log( name, total ) {
+    if ( name ) {
+      log( chalk.gray( `[${name}]: detected ${targets.length} files diff` ) );
+      log( chalk.gray( `[${name}]: thrown ${total} files` ) );
     }
   }
 

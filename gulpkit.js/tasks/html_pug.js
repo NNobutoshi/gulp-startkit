@@ -89,14 +89,14 @@ function _pugRender() {
       files : []
     }
   ;
-  const self = through.obj( ( file, enc, callBack ) => {
+  const stream = through.obj( ( file, enc, callBack ) => {
     if ( partialFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
       return callBack();
     }
     options.pug.filename = file.path;
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        self.emit( 'error', error );
+        stream.emit( 'error', error );
         return callBack();
       }
       file.contents = new Buffer.from( contents );
@@ -108,7 +108,7 @@ function _pugRender() {
     log( `html_pug: rendered ${rendered.files.length } files` );
     callBack();
   } );
-  return self;
+  return stream;
 }
 
 /*
@@ -148,15 +148,14 @@ function _postPug() {
     }
 
     /*
-     * オプションで指定があれば、
-     * インデントをトル。
+     * オプションで指定があれば、インデントをトル。
      */
     if ( options.assistPretty.indent === false ) {
       contents = contents.replace( /^([\t ]+)/mg, '' );
     }
 
     /*
-     * 閉じタグ付近につけるコメントに関する体裁。
+     * 閉じタグ付近に付けるコメントに関する体裁。
      */
     if ( options.assistPretty.commentPosition ) {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
