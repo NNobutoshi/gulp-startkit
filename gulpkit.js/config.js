@@ -36,7 +36,7 @@ const
 const
   config_dev = {
     'clean' : {
-      command : `git status -s ${DIST}/`,
+      command : `git clean -f ${DIST}/`,
       options : {
         del : {
           force : true,
@@ -68,9 +68,9 @@ const
           indentWidth : 2,
         },
         diff : {
+          name      : 'css_sass',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'css_sass',
         },
       },
     },
@@ -97,9 +97,9 @@ const
           debug          : true,
         },
         diff : {
+          name      : 'css_lint',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'css_lint',
         },
       },
     },
@@ -134,9 +134,9 @@ const
           },
         },
         diff : {
+          name      : 'icon_font',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'icon_font',
           allForOne : '/fonts/icons',
         },
       },
@@ -168,9 +168,9 @@ const
           ],
         },
         diff : {
+          name      : 'img_min',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'img_min',
         },
       },
     },
@@ -250,9 +250,9 @@ const
           useEslintrc: true,
         },
         diff : {
+          name      : 'js_eslint',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'js_eslint',
         },
       },
     },
@@ -278,9 +278,9 @@ const
           basedir : SRC,
         },
         diff : {
+          name      : 'html_pug',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'html_pug',
         },
         plumber : {
           errorHandler : function( error ) {
@@ -316,9 +316,9 @@ const
           },
         },
         diff : {
+          name      : 'sprite',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'sprite',
           allForOne : '/img/_sprite',
         },
       },
@@ -385,9 +385,9 @@ const
           },
         },
         diff : {
+          name      : 'sprite_svg',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
-          hash      : 'sprite_svg',
           allForOne : '/img/_sprite_svg',
         },
       },
