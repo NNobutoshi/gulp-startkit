@@ -10,7 +10,7 @@ const
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
-  ,PUG_CONFIG_FILE_PATH = '../../src/_config.pug'
+  ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.js'
   ,SITE_MAP_FILE_PATH   = './sitemap.xlsx'
   ,OUTPUT_JSON_PATH     = './output.json'
   ,settings = {

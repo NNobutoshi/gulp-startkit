@@ -1,20 +1,14 @@
-block vars
-  -
-    let
-      page = "def"
-
 block config
-  include /_config.pug
   -
     pageData = {}
-    for ( var o in siteData._defaults ) {
-      if ( siteData[ page ] && siteData[ page ][ o ] ) {
-        pageData[ o ] = siteData[ page ][ o ]
+    for ( var item in siteData ) {
+      if ( localData && localData[ item ] ) {
+        pageData[ item ] = localData[ item ]
       } else {
-        pageData[ o ] = siteData._defaults[ o ]
+        pageData[ item ] = siteData[ item ]
       }
     }
-
+    pageData.url = pageData.url.replace( '/index.html', '/' );
 doctype html
 html(lang=pageData.lang)
   head(prefix=pageData.ogPrefix)

@@ -14,6 +14,7 @@ const
 ;
 const
   config = require( '../config.js' ).html_pug
+  ,pugData = require( '../../src/_pug_data.js' )
 ;
 const
   options = config.options
@@ -25,6 +26,17 @@ function html_pug() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ,_collect ,_select ) )
+    .on( 'data', ( file ) => {
+      const keyFilePath = '/' + path
+        .relative( path.resolve( process.cwd(), config.base ), file.path )
+        .replace( /\\/g, '/' )
+        .replace( /\.pug$/, '.html' )
+      ;
+      file.data = {
+        siteData  : pugData.defaults,
+        localData : pugData[ keyFilePath ],
+      };
+    } )
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )
@@ -90,20 +102,21 @@ function _pugRender() {
     }
   ;
   const stream = through.obj( ( file, enc, callBack ) => {
+    let contents;
     if ( partialFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
       return callBack();
     }
     options.pug.filename = file.path;
-    pug.render( String( file.contents ), options.pug, ( error, contents ) => {
-      if ( error ) {
-        stream.emit( 'error', error );
-        return callBack();
-      }
+    try {
+      contents = pug.compile( String( file.contents ), options.pug )( file.data );
       file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
       rendered.files.push( file.path );
-      return callBack( null, file );
-    } );
+    } catch ( error ) {
+      stream.emit( 'error', error );
+      return callBack();
+    }
+    return callBack( null, file );
   }, ( callBack ) => {
     log( `html_pug: rendered ${rendered.files.length } files` );
     callBack();

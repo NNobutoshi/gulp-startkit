@@ -1,0 +1,115 @@
+/* eslint-disable quotes */
+module.exports = {
+  defaults : {
+    lang         : "ja",
+    viewport     : "width=device-width, initial-scale=1",
+    siteName     : "starter kit",
+    description  : "ディスクリプション",
+    keywords     : "キーワード",
+    ogPrefix     : "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#",
+    ogType       : "article",
+    ogImg        : "",
+    siteUrl      : "http://localhost",
+    url          : "",
+    title        : "サイト",
+    cssCommonDir : "/css",
+    jsCommonDir  : "/js",
+    favicon      : "",
+    icon         : "/img/chrome-touch-icon-192x192.png",
+    appleIcon    : "/img/apple-touch-icon-114x114.png",
+    foo          : "foo",
+  },
+  //{{
+  "/index.html": {
+    "url": "/index.html",
+    "title": "starter kit",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#",
+    "ogType": "website"
+  },
+  "/examples/accordion.html": {
+    "url": "/examples/accordion.html",
+    "title": "starter kit | accordion",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/hover.html": {
+    "url": "/examples/hover.html",
+    "title": "starter kit | hover",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/inview.html": {
+    "url": "/examples/inview.html",
+    "title": "starter kit | inview",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/locate.html": {
+    "url": "/examples/locate.html",
+    "title": "starter kit | locate",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/rescroll.html": {
+    "url": "/examples/rescroll.html",
+    "title": "starter kit | rescroll",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/resize.html": {
+    "url": "/examples/resize.html",
+    "title": "starter kit | resize",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/sticky.html": {
+    "url": "/examples/sticky.html",
+    "title": "starter kit | sticky",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/tab.html": {
+    "url": "/examples/tab.html",
+    "title": "starter kit | tab",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
+  "/examples/simplevideoplay.html": {
+    "url": "/examples/simplevideoplay.html",
+    "title": "starter kit | simplevideoplay",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  }
+  //}}
+};
+/* eslint-disable quotes */
