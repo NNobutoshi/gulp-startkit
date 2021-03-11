@@ -261,6 +261,7 @@ const
       dist    : DIST,
       base    : SRC,
       watch   : true && ENABLE_WATCH,
+      data    : path.resolve( process.cwd(), `${SRC}/_pug_data.js` ),
       options : {
         assistPretty : {
           assistAElement   : true,

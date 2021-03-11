@@ -11,8 +11,8 @@ const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
   ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.js'
-  ,SITE_MAP_FILE_PATH   = './sitemap.xlsx'
-  ,OUTPUT_JSON_PATH     = './output.json'
+  ,SITE_MAP_FILE_PATH   = '../../src/sitemap.xlsx'
+  // ,OUTPUT_JSON_PATH     = './output.json'
   ,settings = {
     src        : path.resolve( __dirname, SRC_DIR ),
     extension  : /\.pug?$/,
@@ -21,7 +21,7 @@ const
     linefeed   : '\n', // '\r\n'
     x2j        : {
       input  : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
-      output : path.resolve( __dirname, OUTPUT_JSON_PATH ),
+      // output : path.resolve( __dirname, OUTPUT_JSON_PATH ),
       sheet  : 'Sheet1',
     },
   }

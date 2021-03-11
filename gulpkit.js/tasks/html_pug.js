@@ -13,11 +13,11 @@ const
   diff = require( '../lib/diff_build.js' )
 ;
 const
-  config = require( '../config.js' ).html_pug
-  ,pugData = require( '../../src/_pug_data.js' )
+  config   = require( '../config.js' ).html_pug
 ;
 const
   options = config.options
+  ,pugData = require( config.data )
 ;
 
 module.exports = html_pug;
