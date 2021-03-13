@@ -13,7 +13,7 @@ const
   diff = require( '../lib/diff_build.js' )
 ;
 const
-  config   = require( '../config.js' ).html_pug
+  config = require( '../config.js' ).html_pug
 ;
 const
   options = config.options
@@ -33,8 +33,8 @@ function html_pug() {
         .replace( /\.pug$/, '.html' )
       ;
       file.data = {
-        siteData  : pugData.defaults,
-        localData : pugData[ keyFilePath ],
+        siteData : pugData.defaults,
+        pageData : pugData[ keyFilePath ],
       };
     } )
     .pipe( _pugRender() )
@@ -44,7 +44,7 @@ function html_pug() {
 }
 
 /*
- * 依存関係を調べ、まとめる。
+ * 依存関係を調べ、Objectにまとめる。
  * through2 のtransform の中で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
@@ -92,12 +92,13 @@ function _select( filePath, collection, destFiles ) {
       } );
     }
   } )( filePath );
+  console.info( collection, 'collection' );
 }
 
 function _pugRender() {
   const
     partialFileRegEx = /[\\/]_/
-    ,rendered = {
+    ,compiled = {
       files : []
     }
   ;
@@ -111,14 +112,17 @@ function _pugRender() {
       contents = pug.compile( String( file.contents ), options.pug )( file.data );
       file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
-      rendered.files.push( file.path );
+      compiled.files.push( file.path );
     } catch ( error ) {
       stream.emit( 'error', error );
       return callBack();
     }
     return callBack( null, file );
   }, ( callBack ) => {
-    log( `html_pug: rendered ${rendered.files.length } files` );
+    compiled.files.forEach( ( filePath ) => {
+      log( `html_pug: compiled: ${path.relative( process.cwd(), filePath )}` );
+    } );
+    log( `html_pug: compiled ${compiled.files.length } files` );
     callBack();
   } );
   return stream;

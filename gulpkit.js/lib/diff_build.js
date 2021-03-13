@@ -16,7 +16,6 @@ const
 ;
 let
   writing_timeoutId = null
-  ,promiseGetGitDiffList // 各読み込み元で共有のため、この位置で
 ;
 
 /*
@@ -28,14 +27,14 @@ module.exports = diff_build;
 
 function diff_build( options, collect, select ) {
   const
-    allFiles         = {}
-    ,collection      = {}
-    ,targets         = []
+    allFiles         = {} // 全chumk用
+    ,collection      = {} // 依存関係収集用
+    ,targets         = [] // 通過候補
     ,defaultSettings = {
       name      : '',
       allForOne : false,
       detection : true,
-      command   : 'git status -s',
+      command   : 'git status -suall',
     }
     ,settings = mergeWith( {}, defaultSettings, options )
   ;
@@ -43,14 +42,13 @@ function diff_build( options, collect, select ) {
     group = ''
     ,allForOne
     ,currentDiffMap
-    ,lastDiffMap = lastDiff.get() // キャッシュされている差分ファイルリストを取得。
+    ,lastDiffMap = lastDiff.get() // キャッシュの差分ファイルリストを取得。
+    ,promiseGetGitDiffList = _getGitDiffList( settings.command )
   ;
 
   if ( !settings.detection ) {
     return through.obj();
   }
-
-  promiseGetGitDiffList = promiseGetGitDiffList || _getGitDiffList( settings.command );
 
   if ( typeof settings.allForOne === 'string' ) {
     group = settings.allForOne.replace( /[/\\]/g, path.sep );
@@ -83,7 +81,7 @@ function diff_build( options, collect, select ) {
       ) {
         targets.push( file.path );
       }
-      _continue();
+      _next();
     } else { // なければpromise のresolve を待ち、続きの処理を待機させる
       promiseGetGitDiffList.then( ( map ) => {
         if (
@@ -93,11 +91,11 @@ function diff_build( options, collect, select ) {
           targets.push( file.path );
         }
         currentDiffMap = map;
-        _continue();
+        _next();
       } );
     }
 
-    function _continue() {
+    function _next() {
 
       /*
        * すべてのchunk は収集しておく
@@ -193,18 +191,16 @@ function diff_build( options, collect, select ) {
     total = Object.keys( destFiles ).length;
 
     _log( name, total );
-
-    stream.on( 'finish', () => {
-      lastDiffMap = currentDiffMap;
-      lastDiff.set( currentDiffMap );
-    } );
+    lastDiffMap = currentDiffMap;
+    lastDiff.set( currentDiffMap );
+    promiseGetGitDiffList = null;
 
     _runLater();
 
     return callBack();
 
     /*
-     * 差分一覧のファイルへの書き込みと、 promise の破棄。
+     * 差分一覧のファイルへの書き込み。
      * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
      */
     function _runLater() {
@@ -212,7 +208,6 @@ function diff_build( options, collect, select ) {
       writing_timeoutId = setTimeout( () => {
         lastDiff.write();
         clearTimeout( writing_timeoutId );
-        promiseGetGitDiffList = null;
         writing_timeoutId  = null;
       }, WRITING_DELAY_TIME );
     }

@@ -1,14 +1,12 @@
 block config
+  //- pageData と siteData はGulp から渡される。
   -
-    pageData = {}
     for ( var item in siteData ) {
-      if ( localData && localData[ item ] ) {
-        pageData[ item ] = localData[ item ]
-      } else {
+      if ( pageData && !pageData[ item ] ) {
         pageData[ item ] = siteData[ item ]
       }
     }
-    pageData.url = pageData.url.replace( '/index.html', '/' );
+    pageData.url = pageData.url.replace( /\/index\.html$/, '/' )
 doctype html
 html(lang=pageData.lang)
   head(prefix=pageData.ogPrefix)

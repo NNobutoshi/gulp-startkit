@@ -101,6 +101,15 @@ module.exports = {
     "ogPrefix": "",
     "ogType": ""
   },
+  "/examples/videoground.html": {
+    "url": "/examples/videoground.html",
+    "title": "starter kit | videoground",
+    "description": "",
+    "keywords": "",
+    "template": "/_template.pug",
+    "ogPrefix": "",
+    "ogType": ""
+  },
   "/examples/simplevideoplay.html": {
     "url": "/examples/simplevideoplay.html",
     "title": "starter kit | simplevideoplay",

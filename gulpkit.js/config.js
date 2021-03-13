@@ -31,7 +31,7 @@ const
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
-  ,GIT_DIFF_COMMAND   = `git status -s gulpkit.js/ ${SRC}/` // タスクごとに違うコマンドは使えない。
+  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/` // タスクごとに違うコマンドは使えない。
 ;
 const
   config_dev = {
