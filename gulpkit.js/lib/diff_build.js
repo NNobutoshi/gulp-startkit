@@ -5,7 +5,7 @@ const
 const
   through    = require( 'through2' )
   ,mergeWith = require( 'lodash/mergeWith' )
-  ,log       = require( 'fancy-log' )
+  ,fancyLog  = require( 'fancy-log' )
   ,chalk     = require( 'chalk' )
 ;
 const
@@ -49,7 +49,6 @@ function diff_build( options, collect, select ) {
   if ( !settings.detection ) {
     return through.obj();
   }
-
   if ( typeof settings.allForOne === 'string' ) {
     group = settings.allForOne.replace( /[/\\]/g, path.sep );
   } else {
@@ -59,11 +58,9 @@ function diff_build( options, collect, select ) {
   return through.obj( _transform, _flush );
 
   function _transform( file, enc, callBack ) {
-
     if ( file.isNull() ) {
       return callBack( null, file );
     }
-
     if ( file.isStream() ) {
       this.emit( 'error' );
       return callBack();
@@ -119,7 +116,6 @@ function diff_build( options, collect, select ) {
       if ( typeof collect === 'function' ) {
         collect.call( null, file, collection );
       }
-
       callBack();
     }
 
@@ -185,10 +181,10 @@ function diff_build( options, collect, select ) {
      * destFiles （最終候補）のkey をpath に持つchunk をallFiles から取得して、
      * stream にプッシュする。
      */
-    Object.keys( destFiles ).forEach( ( filePath ) => {
+    for ( let filePath in destFiles ) {
       stream.push( allFiles[ filePath ].file );
-    } );
-    total = Object.keys( destFiles ).length;
+      total = total + 1;
+    }
 
     _log( name, total );
     lastDiffMap = currentDiffMap;
@@ -196,7 +192,6 @@ function diff_build( options, collect, select ) {
     promiseGetGitDiffList = null;
 
     _runLater();
-
     return callBack();
 
     /*
@@ -219,8 +214,8 @@ function diff_build( options, collect, select ) {
    */
   function _log( name, total ) {
     if ( name ) {
-      log( chalk.gray( `[${name}]: detected ${targets.length} files diff` ) );
-      log( chalk.gray( `[${name}]: thrown ${total} files` ) );
+      fancyLog( chalk.gray( `[${name}]: detected ${targets.length} files diff` ) );
+      fancyLog( chalk.gray( `[${name}]: thrown ${total} files` ) );
     }
   }
 
@@ -232,7 +227,7 @@ function _includes( map, filePath ) {
 }
 
 /*
- * 'git status -s <dir>'
+ * 'git status -suall <dir>'
  * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
  * oject（差分ファイルリスト） の作成。
  */
@@ -241,7 +236,7 @@ function _getGitDiffList( comand ) {
     exec( comand, ( error, stdout, stderror ) => {
       let diffMap = {};
       if ( error || stderror ) {
-        log.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
+        fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
         resolve( diffMap );
       }
       if ( stdout ) {
