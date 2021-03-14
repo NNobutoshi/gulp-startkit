@@ -6,7 +6,7 @@ const
 module.exports = svg_lint;
 
 /*
- * *.svg をsrc にするタスク用。
+ * svg をsrc にするタスク用。
  * エラーが拾いにくいため。
  */
 function svg_lint() {
