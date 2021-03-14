@@ -1,6 +1,7 @@
 block config
-  //- pageData と siteData はGulp から渡される。
   -
+    siteData = self.siteData
+    pageData = self.pageData
     for ( var item in siteData ) {
       if ( pageData && !pageData[ item ] ) {
         pageData[ item ] = siteData[ item ]
