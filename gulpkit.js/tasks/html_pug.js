@@ -27,8 +27,8 @@ function html_pug() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ,_collect ,_select ) )
     .on( 'data', ( file ) => {
-      const keyFilePath = '/' + path
-        .relative( path.resolve( process.cwd(), config.base ), file.path )
+      const keyFilePath = file.path
+        .replace( path.resolve( process.cwd(), config.base ), '' )
         .replace( /\\/g, '/' )
         .replace( /\.pug$/, '.html' )
       ;

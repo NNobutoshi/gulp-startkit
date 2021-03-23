@@ -5,8 +5,6 @@ node_modules
 .webpack_cache
 npm-debug.log
 *.map
-/.npm-version
-/.node-version
 /.vagrant
 /package-lock.json
 /config.yml
