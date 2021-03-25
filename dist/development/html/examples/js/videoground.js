@@ -26,7 +26,7 @@ var mdls = {
     selectorVideoFrame: '.pl-mainVisual_body',
     classNamePlaying: 'js-mainVisual_video--isPlaying',
     classNameDestroyed: 'js-mainVisual_video--isDestroyed',
-    aspectRatio: 1080 / 2048,
+    aspectRatio: 1080 / 1920,
     onLoad: function onLoad() {
       _assist();
     }

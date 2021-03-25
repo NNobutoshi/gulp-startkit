@@ -1,21 +1,21 @@
 'use strict';
 
 import ScrollManager from '../../js/_modules/scrollmanager.js';
-import Optimizedresize from '../../js/_modules/optimizedresize.js';
+import OptimizedResize from '../../js/_modules/optimizedresize.js';
 import VideoGround from '../../js/_modules/videoground.js';
 
 const
   mdls = {
-    scrollManager: new ScrollManager(),
-    optimizedresize: new Optimizedresize(),
-    videoground : new VideoGround( {
+    scrollManager   : new ScrollManager(),
+    optimizedresize : new OptimizedResize(),
+    videoground     : new VideoGround( {
       src                : '/examples/media/mainvisual.mp4',
       targetClassName    : 'js-mainVisual_video',
       selectorVideoFrame : '.pl-mainVisual_body',
       classNamePlaying   : 'js-mainVisual_video--isPlaying',
       classNameDestroyed : 'js-mainVisual_video--isDestroyed',
-      aspectRatio: 1080 / 2048,
-      onLoad: () => {
+      aspectRatio        : 1080 / 1920,
+      onLoad             : () => {
         _assist();
       }
     } ),
@@ -46,9 +46,9 @@ function _assist() {
     height = elemOffsetItem.offsetHeight;
     parentHeight = window.innerHeight - height;
     elemVideoWrapper.style.marginTop = height + 'px';
-    elemVideoFrame.style.marginTop = height + 'px';
+    elemVideoFrame  .style.marginTop = height + 'px';
     elemVideoWrapper.style.height = parentHeight + 'px';
-    elemVideoFrame.style.height = parentHeight + 'px';
+    elemVideoFrame  .style.height = parentHeight + 'px';
     mdls.videoground.resize();
   }
 }

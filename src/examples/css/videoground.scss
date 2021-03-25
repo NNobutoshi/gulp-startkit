@@ -89,6 +89,21 @@
       margin: 0;
       color: #f00;
     }
+    .pl-mainVisual_foot {
+      @include fs( 14 );
+      box-sizing: border-box;
+      position: fixed;
+      bottom: 10px;
+      text-align: right;
+      padding: 0 10px;
+      width: 100%;
+    }
+    .pl-mainVisual_copyright {
+      color: #fff;
+      a {
+        @include anc( #fff, #fff, #fff, #fff );
+      }
+    }
   }
 }
 

@@ -144,6 +144,51 @@
   color: #f00;
 }
 
+.pl-mainVisual_foot {
+  font-size: 0.875rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  position: fixed;
+  bottom: 10px;
+  text-align: right;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.pl-mainVisual_copyright {
+  color: #fff;
+}
+
+.pl-mainVisual_copyright a:link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.pl-mainVisual_copyright a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+
+.pl-mainVisual_copyright a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.pl-mainVisual_copyright a:visited:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.pl-mainVisual_copyright a:active {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.pl-mainVisual_copyright a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
 .pl-section {
   position: relative;
   z-index: 1;

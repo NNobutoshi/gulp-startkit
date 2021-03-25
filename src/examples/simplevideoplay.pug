@@ -11,4 +11,9 @@ block pageBody
   div.pl-section
     div.pl-videoPlayer_outer
       div.pl-videoPlayer
-        video(src="media/movie.mp4", playslinle, controls, poster="./img/poster.jpg").pl-videoPlayer_video
+        video.pl-videoPlayer_video(src="media/movie.mp4", playslinle, controls, poster="./img/poster.jpg")
+        div.pl-videoPlayer_copyright
+          a(href="https://www.pexels.com/ja-jp/photo/855414/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels") Pexels
+          |の
+          a(href="https://www.pexels.com/ja-jp/@pixabay?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels") Pixabay
+          |による動画
