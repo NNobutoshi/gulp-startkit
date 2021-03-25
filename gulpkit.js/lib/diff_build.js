@@ -29,6 +29,7 @@ let
  * いったんGulp.src を通った後なので
  * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
  */
+
 module.exports = diff_build;
 
 function diff_build( options, collect, select ) {
@@ -37,7 +38,6 @@ function diff_build( options, collect, select ) {
       allFiles        : {}, // 全chumk用
       collection      : {}, // 依存関係収集用
       targets         : {}, // 通過候補
-      removes         : [], // 削除ファイル
       currentDiffMap  : null,
       lastDiffMap     : lastDiff.get(),
       promiseGetGitDiffList : null,
@@ -51,17 +51,14 @@ function diff_build( options, collect, select ) {
   }
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, path.sep );
-  } else {
-    settings.allForOne = settings.allForOne;
   }
-
   return through.obj( _transform( stores, settings, collect ), _flush( stores, settings, select ) );
-
 }
 
 function _transform( stores, settings, collect ) {
 
   return function( file, enc, callBack ) {
+
     if ( file.isNull() ) {
       return callBack( null, file );
     }
@@ -75,28 +72,15 @@ function _transform( stores, settings, collect ) {
      * リストになくても、直近最後の差分としてリストにあればそれも候補にする。
      * そうしないと、git のrevert などが未検知になってしまうため。
      */
-    if ( stores.currentDiffMap ) { //git コマンドで得た差分ファイルリストが既にあれば
+    stores.promiseGetGitDiffList.then( ( map ) => {
+
       if (
-        _includes( stores.currentDiffMap, file.path ) ||
-       !_includes( stores.currentDiffMap, file.path ) && _includes( stores.lastDiffMap, file.path )
+        _includes( map, file.path ) ||
+         !_includes( map, file.path ) && _includes( stores.lastDiffMap, file.path )
       ) {
         stores.targets[ file.path ] = 1;
       }
-      _next();
-    } else { // なければpromise のresolve を待ち、続きの処理を待機させる
-      stores.promiseGetGitDiffList.then( ( map ) => {
-        if (
-          _includes( map, file.path ) ||
-         !_includes( map, file.path ) && _includes( stores.lastDiffMap, file.path )
-        ) {
-          stores.targets[ file.path ] = 1;
-        }
-        stores.currentDiffMap = map;
-        _next();
-      } );
-    }
-
-    function _next() {
+      stores.currentDiffMap = map;
 
       /*
        * すべてのchunk は収集しておく
@@ -121,7 +105,8 @@ function _transform( stores, settings, collect ) {
         collect.call( null, file, stores.collection );
       }
       callBack();
-    }
+    } );
+
   };
 }
 
@@ -131,24 +116,25 @@ function _flush( stores, settings, select ) {
       stream     = this
       ,destFiles = {}
       ,name      = settings.name
-      ,group = settings.group
-    ;
-    let
-      total = 0
+      ,group     = settings.group
     ;
 
+    if ( stores.currentDiffMap === null ) {
+      return callBack();
+    }
+
     /*
-     * 消去されたファイルを収集
+     * 消去されたファイルもtargetに。
      */
     for ( let [ filePath, value ] of Object.entries( stores.currentDiffMap ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
-        stores.removes.push( path.resolve( process.cwd(), filePath ) );
+        stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
 
-    for ( let filePath in stores.lastDiffMap ) {
-      if ( !stores.currentDiffMap[ filePath ] ) {
-        stores.removes.push( path.resolve( process.cwd(), filePath ) );
+    for ( let [ filePath, value ] of Object.entries( stores.lastDiffMap ) ) {
+      if ( !stores.currentDiffMap[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
+        stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
 
@@ -157,29 +143,26 @@ function _flush( stores, settings, select ) {
      * 複数ファイルを一つのdist にするようなタスク用。
      */
     if ( group ) {
+
       for ( let filePath in stores.allFiles ) {
-        stores.removes.forEach( ( removeFilePath ) => {
-          const myGroup = removeFilePath.slice( 0, removeFilePath.indexOf( group ) + group.length );
-          if ( myGroup === stores.allFiles[ filePath ].group ) {
-            destFiles[ filePath ] = 1;
-            stores.targets[ removeFilePath ] = 1;
-          }
-        } );
         for ( let targetFilePath in stores.targets ) {
+          const myGroup = targetFilePath.slice( 0, targetFilePath.indexOf( group ) + group.length );
           if (
-            stores.allFiles[ targetFilePath ] &&
-            stores.allFiles[ targetFilePath ].group &&
-            filePath.indexOf( stores.allFiles[ targetFilePath ].group ) === 0
+            ( stores.allFiles[ targetFilePath ] &&
+              stores.allFiles[ targetFilePath ].group &&
+              filePath.indexOf( stores.allFiles[ targetFilePath ].group ) === 0
+            ) ||
+             myGroup === stores.allFiles[ filePath ].group
           ) {
             destFiles[ filePath ] = 1;
           }
-        }
-      }
+        } // for
+      } // for
 
     /*
      * 全部道連れにする場合。
      */
-    } else if ( stores.allForOne ) {
+    } else if ( settings.allForOne === true ) {
       for ( let filePath in stores.allFiles ) {
         destFiles[ filePath ] = 1;
       }
@@ -189,7 +172,11 @@ function _flush( stores, settings, select ) {
      */
     } else {
       for ( let filePath in stores.targets ) {
-        destFiles[ filePath ] = 1;
+        if ( stores.allFiles[ filePath ] ) {
+          destFiles[ filePath ] = 1;
+        } else {
+          continue;
+        }
 
         /*
          * 収集した依存関係から候補ファイルと関係のあるファイルの最終的な選択。
@@ -197,7 +184,7 @@ function _flush( stores, settings, select ) {
         if ( typeof select === 'function' ) {
           select.call( null, filePath, stores.collection, destFiles );
         }
-      }
+      } //for
     }
 
     /*
@@ -206,15 +193,13 @@ function _flush( stores, settings, select ) {
      */
     for ( let filePath in destFiles ) {
       stream.push( stores.allFiles[ filePath ].file );
-      total = total + 1;
     }
 
-    _log( name, total, Object.keys( stores.targets ).length );
+    _log( name, Object.keys( stores.targets ).length, Object.keys( stores.targets ).length );
     stores.lastDiffMap = stores.currentDiffMap;
     lastDiff.set( stores.currentDiffMap );
     stores.promiseGetGitDiffList = null;
-
-    _runLater();
+    _writeDiffMap();
     return callBack();
 
   };
@@ -224,7 +209,7 @@ function _flush( stores, settings, select ) {
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */
-function _runLater() {
+function _writeDiffMap() {
   clearTimeout( writing_timeoutId );
   writing_timeoutId = setTimeout( () => {
     lastDiff.write();
@@ -242,6 +227,7 @@ function _log( name, total, detected ) {
     fancyLog( chalk.gray( `[${name}]: thrown ${total} files` ) );
   }
 }
+
 function _includes( map, filePath ) {
   filePath = path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
   return Object.keys( map ).includes( filePath );
