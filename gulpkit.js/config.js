@@ -31,7 +31,7 @@ const
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
-  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/` // タスクごとに違うコマンドは使えない。
+  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/`
 ;
 const
   config_dev = {
@@ -40,6 +40,23 @@ const
       options : {
         del : {
           force : true,
+        },
+      },
+    },
+    'copy_to' : {
+      src  : [ SRC + '/**/*.{mp4,webm}' ],
+      dist : DIST,
+      options :{
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
+        },
+        diff : {
+          name      : 'copy_to',
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
         },
       },
     },
@@ -406,6 +423,7 @@ const
 const
   config_prod = {
     'clean' : {},
+    'copy_to' : {},
     'css_sass' : {
       sourcemap : false || ENABLE_SOURCEMAP,
       options   : {

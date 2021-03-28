@@ -1,18 +1,19 @@
 const
   { parallel, series } = require( 'gulp' )
   ,tasks = {
-    html_pug     : require( './tasks/html_pug' ),
-    js_webpack   : require( './tasks/js_webpack' ),
+    clean        : require( './tasks/clean' ),
+    copy_to      : require( './tasks/copy_to' ),
+    css_lint     : require( './tasks/css_lint' ),
     css_sass     : require( './tasks/css_sass' ),
+    html_pug     : require( './tasks/html_pug' ),
     icon_font    : require( './tasks/icon_font' ),
     img_min      : require( './tasks/img_min' ),
+    js_eslint    : require( './tasks/js_eslint' ),
+    js_webpack   : require( './tasks/js_webpack' ),
     serve_init   : require( './tasks/serve' ).serve_init,
     serve_reload : require( './tasks/serve' ).serve_reload,
     sprite       : require( './tasks/sprite' ),
     sprite_svg   : require( './tasks/sprite_svg' ),
-    css_lint     : require( './tasks/css_lint' ),
-    js_eslint    : require( './tasks/js_eslint' ),
-    clean        : require( './tasks/clean' ),
   }
   ,watcher = require( './tasks/watcher' )
 ;
@@ -43,6 +44,7 @@ const
 exports.default = series(
   tasks.clean,
   parallel(
+    tasks.copy_to,
     tasks.html_pug,
     tasks.img_min,
     series(

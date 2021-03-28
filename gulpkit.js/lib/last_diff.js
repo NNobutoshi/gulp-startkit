@@ -55,7 +55,7 @@ function _write() {
   if ( !fs.existsSync( DIRNAME ) ) {
     mkdirp.sync( DIRNAME );
   }
-  fs.writeFileSync( FILEPATH, JSON.stringify( envData ), 'utf-8', ( error ) => {
+  fs.writeFileSync( FILEPATH, JSON.stringify( envData, null, 2 ), 'utf-8', ( error ) => {
     if ( error ) {
       throw error;
     }
