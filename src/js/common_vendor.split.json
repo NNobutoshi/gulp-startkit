@@ -1,8 +1,0 @@
-{
-  "vendor" : {
-    "test"    : [ "/ua-parser-js/", "/jquery/", "./src/js/test1.js" ],
-    "name"    : "./js/common_vendor",
-    "chunks"  : "initial",
-    "enforce" : true
-  }
-}

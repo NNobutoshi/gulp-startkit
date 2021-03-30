@@ -1,4 +1,4 @@
-(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./examples/js/common_vendor"],{
+(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./examples/js/common_units"],{
 
 /***/ "./node_modules/lodash/_Hash.js":
 /*!**************************************!*\
@@ -3380,4 +3380,4 @@ module.exports = toPlainObject;
 /***/ })
 
 }]);
-//# sourceMappingURL=../../sourcemaps/examples/js/common_vendor.js.map
+//# sourceMappingURL=../../sourcemaps/examples/js/common_units.js.map

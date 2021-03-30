@@ -1,4 +1,5 @@
 /******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/examples/js/hover.entry.js":
@@ -7,7 +8,6 @@
   \****************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_adaptivehover_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/adaptivehover.js */ "./src/js/_modules/adaptivehover.js");
 
@@ -22,212 +22,6 @@ mdls.hover.on(function (e, inst) {
 }, function (e, inst) {
   inst.target.classList.remove('js-hover');
 });
-
-/***/ }),
-
-/***/ "./src/js/_modules/adaptivehover.js":
-/*!******************************************!*\
-  !*** ./src/js/_modules/adaptivehover.js ***!
-  \******************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ AdaptiveHover; }
-/* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utilities_closest_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/closest.js */ "./src/js/_modules/utilities/closest.js");
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_3__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-/*!
- * adaptivehover.js
- * Copyright 2019 https://github.com/NNobutoshi/
- * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-
-
-
-
-
-var AdaptiveHover = /*#__PURE__*/function () {
-  function AdaptiveHover(options) {
-    _classCallCheck(this, AdaptiveHover);
-
-    this.defaultSettings = {
-      name: 'adaptiveHover',
-      target: '',
-      timeout: 400,
-      range: 10,
-      eventRoot: document.body
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_3___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.target = null;
-    this.eventRoot = this.settings.eventRoot;
-    this.callBackForEnter = null;
-    this.callBackForLeave = null;
-    this.pageX = null;
-    this.pageY = null;
-    this.timeoutId = null;
-    this.isEntering = false;
-    this.enteringEventName = "touchstart.".concat(this.id, " mouseenter.").concat(this.id);
-    this.leavingEventName = "touchend.".concat(this.id, " mouseleave.").concat(this.id);
-    this.extraEventName = "touchend.".concat(this.id, " click.").concat(this.id);
-  }
-
-  _createClass(AdaptiveHover, [{
-    key: "on",
-    value: function on(callBackForEnter, callBackForLeave) {
-      var _this = this;
-
-      var settings = this.settings,
-          $root = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.eventRoot);
-      this.callBackForEnter = callBackForEnter;
-      this.callBackForLeave = callBackForLeave;
-      this.target = document.querySelector(settings.target);
-      $root.on(this.enteringEventName, settings.target, function (e) {
-        _this.handleForEnter(e);
-      });
-      $root.on(this.leavingEventName, settings.target, function (e) {
-        _this.handleForLeave(e);
-      });
-      $root.on(this.extraEventName, function (e) {
-        if (!_isRelative(settings.target, e.target) && _this.isEntering === true) {
-          _this.clear();
-
-          _this.leave(e, _this.callBackForLeave);
-        }
-      });
-      return this;
-    }
-  }, {
-    key: "off",
-    value: function off() {
-      var $root = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.eventRoot);
-      this.clear();
-      $root.off(".".concat(this.id));
-      return this;
-    }
-  }, {
-    key: "handleForEnter",
-    value: function handleForEnter(e) {
-      this.enter(e);
-    }
-  }, {
-    key: "handleForLeave",
-    value: function handleForLeave(e) {
-      var settings = this.settings,
-          range = settings.range,
-          isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
-
-      if (!isOriginPoint) {
-        this.leave(e, this.callBackForLeave);
-      }
-    }
-  }, {
-    key: "enter",
-    value: function enter(e) {
-      var _this2 = this;
-
-      var eventObj = _getEventObj(e),
-          settings = this.settings;
-
-      if (this.isEntering === false) {
-        clearTimeout(this.timeoutId);
-        this.timeoutId = setTimeout(function () {
-          return _this2.clear();
-        }, settings.timeout);
-        this.pageX = eventObj.pageX;
-        this.pageY = eventObj.pageY;
-        this.isEntering = true;
-        this.callBackForEnter.call(this, e, this);
-      }
-    }
-  }, {
-    key: "leave",
-    value: function leave(e) {
-      if (this.isEntering === true) {
-        clearTimeout(this.timeoutId);
-        this.isEntering = false;
-        this.callBackForLeave.call(this, e, this);
-      }
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      clearTimeout(this.timeoutId);
-      this.timeoutId = null;
-      this.pageX = null;
-      this.pageY = null;
-    }
-  }]);
-
-  return AdaptiveHover;
-}();
-
-
-
-function _isOriginPoint(eventObj, pageX, pageY, range) {
-  return eventObj.pageX > pageX - range && eventObj.pageX < pageX + range && eventObj.pageY > pageY - range && eventObj.pageY < pageY + range;
-}
-
-function _isRelative(ancestor, elem) {
-  return elem.matches(ancestor) || (0,_utilities_closest_js__WEBPACK_IMPORTED_MODULE_2__.default)(elem, ancestor);
-}
-
-function _getEventObj(e) {
-  return e.changedTouches ? e.changedTouches[0] : e;
-}
-
-/***/ }),
-
-/***/ "./src/js/_modules/polyfills/matches.js":
-/*!**********************************************!*\
-  !*** ./src/js/_modules/polyfills/matches.js ***!
-  \**********************************************/
-/***/ (function() {
-
-if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.msMatchesSelector;
-}
-
-/***/ }),
-
-/***/ "./src/js/_modules/utilities/closest.js":
-/*!**********************************************!*\
-  !*** ./src/js/_modules/utilities/closest.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ closest; }
-/* harmony export */ });
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__);
-
-function closest(elem, wrapper) {
-  var closest = elem;
-
-  for (; closest; closest = closest.parentElement) {
-    if (closest.matches(wrapper)) {
-      break;
-    }
-  }
-
-  return closest;
-}
 
 /***/ })
 
@@ -339,7 +133,7 @@ function closest(elem, wrapper) {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/hover.entry.js","./js/common_vendor","./examples/js/common_vendor"]
+/******/ 			["./src/examples/js/hover.entry.js","./js/common_units_body","./examples/js/common_units"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

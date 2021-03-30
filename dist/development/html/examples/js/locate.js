@@ -40,76 +40,6 @@ function _run() {
   });
 }
 
-/***/ }),
-
-/***/ "./src/js/_modules/locate.js":
-/*!***********************************!*\
-  !*** ./src/js/_modules/locate.js ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ Locate; }
-/* harmony export */ });
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-var Locate = /*#__PURE__*/function () {
-  function Locate(options) {
-    _classCallCheck(this, Locate);
-
-    this.defaultSettings = {
-      name: 'locate',
-      target: '',
-      indexRegex: /index\.[^/]+?$/
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.targetSelector = this.settings.target;
-    this.target = document.querySelectorAll(this.targetSelector);
-    this.currentItem = null;
-  }
-
-  _createClass(Locate, [{
-    key: "run",
-    value: function run(callBack) {
-      var hostName = location.host,
-          wPathname = location.pathname.replace(this.settings.indexRegex, ''),
-          targets = this.target;
-
-      for (var i = 0, len = targets.length; i < len; i++) {
-        var self = targets[i],
-            aPathname = self.pathname.replace(this.settings.indexRegex, ''),
-            aHost = self.host;
-
-        if (hostName !== aHost) {
-          continue;
-        } else if (aPathname === wPathname) {
-          this.currentItem = self;
-        }
-      }
-
-      if (typeof callBack === 'function') {
-        callBack.call(this, this);
-      }
-
-      return this;
-    }
-  }]);
-
-  return Locate;
-}();
-
-
-
 /***/ })
 
 /******/ 	});
@@ -220,7 +150,7 @@ var Locate = /*#__PURE__*/function () {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/locate.entry.js","./js/common_vendor","./examples/js/common_vendor"]
+/******/ 			["./src/examples/js/locate.entry.js","./js/common_units_body","./examples/js/common_units"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

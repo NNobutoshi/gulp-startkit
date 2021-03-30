@@ -1,4 +1,5 @@
 /******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/examples/js/simplevideoplay.entry.js":
@@ -7,7 +8,6 @@
   \**************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/simplevideoplay.js */ "./src/js/_modules/simplevideoplay.js");
 
@@ -17,152 +17,6 @@ new _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__.default({
   outerSelector: '.pl-videoPlayer_outer',
   videoSelector: '.pl-videoPlayer_video'
 });
-
-/***/ }),
-
-/***/ "./src/js/_modules/polyfills/matches.js":
-/*!**********************************************!*\
-  !*** ./src/js/_modules/polyfills/matches.js ***!
-  \**********************************************/
-/***/ (function() {
-
-if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.webkitMatchesSelector || Element.prototype.msMatchesSelector;
-}
-
-/***/ }),
-
-/***/ "./src/js/_modules/simplevideoplay.js":
-/*!********************************************!*\
-  !*** ./src/js/_modules/simplevideoplay.js ***!
-  \********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ SimpleVideoPlay; }
-/* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _js_modules_utilities_closest_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../js/_modules/utilities/closest.js */ "./src/js/_modules/utilities/closest.js");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-var SimpleVideoPlay = /*#__PURE__*/function () {
-  function SimpleVideoPlay(options) {
-    _classCallCheck(this, SimpleVideoPlay);
-
-    this.defaultSettings = {
-      name: 'SimpleVideoPlay',
-      videoSelector: '',
-      outerSelector: '',
-      classNameOfCover: 'js-video_cover',
-      classNameOfCanPlay: 'js-video--canPlay',
-      classNameOfPlaying: 'js-video--isPlaying',
-      classNameOfPaused: 'js-video--isPaused',
-      classNameOfEnded: 'js-video--isEnded'
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, this.defaultSettings, options);
-    this.elemVideo = document.querySelector(this.settings.videoSelector);
-    this.elemWrapper = (0,_js_modules_utilities_closest_js__WEBPACK_IMPORTED_MODULE_2__.default)(this.elemVideo, this.settings.outerSelector);
-    this.id = this.settings.name;
-    this.isPlaying = false;
-    this.src = this.elemVideo.src;
-    this.elemCover = document.createElement('div');
-    this.init();
-  }
-
-  _createClass(SimpleVideoPlay, [{
-    key: "init",
-    value: function init() {
-      this.elemCover.classList.add(this.settings.classNameOfCover);
-      this.elemWrapper.appendChild(this.elemCover);
-
-      if (this.elemVideo.poster) {
-        this.elemCover.style.backgroundImage = "url(".concat(this.elemVideo.poster, ")");
-      }
-
-      this.on();
-      this.elemVideo.load();
-    }
-  }, {
-    key: "on",
-    value: function on() {
-      var _this = this;
-
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.elemVideo).on("canplay.".concat(this.id), function () {
-        _this.elemWrapper.classList.add(_this.settings.classNameOfCanPlay);
-
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()(_this.elemCover).on("click.".concat(_this.id, " touchend.").concat(_this.id), function (e) {
-          e.preventDefault();
-
-          if (_this.isPlaying === false) {
-            _this.elemVideo.play();
-          }
-        });
-      });
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.elemVideo).on("play.".concat(this.id), function () {
-        _this.elemWrapper.classList.add(_this.settings.classNameOfPlaying);
-
-        _this.elemWrapper.classList.remove(_this.settings.classNameOfPaused);
-      });
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.elemVideo).on("pause.".concat(this.id), function () {
-        _this.elemWrapper.classList.add(_this.settings.classNameOfPaused);
-
-        _this.elemWrapper.classList.remove(_this.settings.classNameOfPlaying);
-      });
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.elemVideo).on("ended.".concat(this.id), function () {
-        _this.elemWrapper.classList.add(_this.settings.classNameOfEnded);
-
-        _this.elemWrapper.classList.remove(_this.settings.classNameOfPaused);
-
-        _this.elemWrapper.classList.remove(_this.settings.classNameOfPlaying);
-      });
-    }
-  }]);
-
-  return SimpleVideoPlay;
-}();
-
-
-
-/***/ }),
-
-/***/ "./src/js/_modules/utilities/closest.js":
-/*!**********************************************!*\
-  !*** ./src/js/_modules/utilities/closest.js ***!
-  \**********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ closest; }
-/* harmony export */ });
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_polyfills_matches_js__WEBPACK_IMPORTED_MODULE_0__);
-
-function closest(elem, wrapper) {
-  var closest = elem;
-
-  for (; closest; closest = closest.parentElement) {
-    if (closest.matches(wrapper)) {
-      break;
-    }
-  }
-
-  return closest;
-}
 
 /***/ })
 
@@ -274,7 +128,7 @@ function closest(elem, wrapper) {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/simplevideoplay.entry.js","./js/common_vendor","./examples/js/common_vendor"]
+/******/ 			["./src/examples/js/simplevideoplay.entry.js","./js/common_units_body","./examples/js/common_units"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

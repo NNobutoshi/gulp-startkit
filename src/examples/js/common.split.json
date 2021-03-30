@@ -1,7 +1,7 @@
 {
   "examples" : {
     "test"    : [ "/lodash/" ],
-    "name"    : "./examples/js/common_vendor",
+    "name"    : "./examples/js/common_units",
     "chunks"  : "initial",
     "enforce" : true
   }

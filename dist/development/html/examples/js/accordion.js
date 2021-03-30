@@ -37,134 +37,6 @@ mdls.toggle.on(function (e, inst) {
   }
 });
 
-/***/ }),
-
-/***/ "./src/js/_modules/transitiontoggle.js":
-/*!*********************************************!*\
-  !*** ./src/js/_modules/transitiontoggle.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ Toggle; }
-/* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__);
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-/*!
- * transitiontoggle.js
- * Copyright 2019 https://github.com/NNobutoshi/
- * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-
-
-
-var Toggle = /*#__PURE__*/function () {
-  function Toggle(options) {
-    _classCallCheck(this, Toggle);
-
-    this.defaultSettings = {
-      name: 'transitiontoggle',
-      selectorTrigger: '',
-      selectorTarget: '',
-      selectorIndicator: null,
-      selectorEventRoot: 'body'
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.eventRoot = this.settings.selectorEventRoot;
-    this.elemIndicator = document.querySelector(this.settings.selectorIndicator);
-    this.elemTrigger = null;
-    this.elemTarget = null;
-    this.eventName = "click.".concat(this.id);
-    this.callBackForBefore = null;
-    this.callBackForAfter = null;
-    this.isChanged = false;
-  }
-
-  _createClass(Toggle, [{
-    key: "on",
-    value: function on(callBackForBefore, callBackForAfter, callBackForEnd) {
-      var _this = this;
-
-      var settings = this.settings,
-          $root = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.eventRoot);
-      var isChanged = false;
-
-      if (this.elemIndicator === null) {
-        return this;
-      }
-
-      this.elemTrigger = this.elemIndicator.querySelector(settings.selectorTrigger);
-      this.elemTarget = this.elemIndicator.querySelector(settings.selectorTarget);
-      this.callBackForBefore = callBackForBefore;
-      this.callBackForAfter = callBackForAfter;
-      $root.on(this.eventName, settings.selectorTrigger, function (e) {
-        if (_this.isChanged === true) {
-          _this.handleForAfter(e);
-        } else {
-          _this.handleForBefore(e);
-        }
-      });
-      $root.on("transitionend.".concat(this.id), this.target, function (e) {
-        if (isChanged !== _this.isChanged) {
-          if (typeof callBackForEnd === 'function') {
-            callBackForEnd.call(_this, e, _this);
-          }
-
-          isChanged = _this.isChanged;
-        }
-      });
-      return this;
-    }
-  }, {
-    key: "off",
-    value: function off() {
-      this.elemIndicator = null;
-      this.elemTrigger = null;
-      this.elemTarget = null;
-      this.callBackForBefore = null;
-      this.callBackForAfter = null;
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.eventRoot).off(".".concat(this.id), this.target);
-      return this;
-    }
-  }, {
-    key: "handleForBefore",
-    value: function handleForBefore(e) {
-      this.open(e);
-    }
-  }, {
-    key: "handleForAfter",
-    value: function handleForAfter(e) {
-      this.close(e);
-    }
-  }, {
-    key: "open",
-    value: function open(e) {
-      this.isChanged = true;
-      this.callBackForBefore.call(this, e, this);
-    }
-  }, {
-    key: "close",
-    value: function close(e) {
-      this.isChanged = false;
-      this.callBackForAfter.call(this, e, this);
-    }
-  }]);
-
-  return Toggle;
-}();
-
-
-
 /***/ })
 
 /******/ 	});
@@ -275,7 +147,7 @@ var Toggle = /*#__PURE__*/function () {
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/examples/js/accordion.entry.js","./js/common_vendor","./examples/js/common_vendor"]
+/******/ 			["./src/examples/js/accordion.entry.js","./js/common_units_body","./examples/js/common_units"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

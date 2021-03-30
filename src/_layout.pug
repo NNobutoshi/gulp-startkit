@@ -33,7 +33,7 @@ html(lang=pageData.lang)
     block style
       link(rel="stylesheet", href=pageData.cssCommonDir + "/common.css")
     block script_head
-      script(src=pageData.jsCommonDir + "/common_vendor.js")
+      script(src=pageData.jsCommonDir + "/common_units_head.js")
       script(src=pageData.jsCommonDir + "/common_head.js")
   body
     div.page#page
@@ -52,4 +52,5 @@ html(lang=pageData.lang)
       ///.page_foot
     ///.page#page
     block script_body
+      script(src=pageData.jsCommonDir + "/common_units_body.js")
       script(src=pageData.jsCommonDir + "/common_body.js")

@@ -2,25 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/_modules/foo.js":
-/*!********************************!*\
-  !*** ./src/js/_modules/foo.js ***!
-  \********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* export default binding */ __WEBPACK_DEFAULT_EXPORT__; }
-/* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-
-/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(selector) {
-  return jquery__WEBPACK_IMPORTED_MODULE_0___default()(selector).length;
-}
-
-/***/ }),
-
 /***/ "./src/js/common_body.entry.js":
 /*!*************************************!*\
   !*** ./src/js/common_body.entry.js ***!
@@ -120,7 +101,7 @@ console.info((0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__.default)('body'));
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/js/common_body.entry.js","./js/common_vendor"]
+/******/ 			["./src/js/common_body.entry.js","./js/common_units_body"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		
