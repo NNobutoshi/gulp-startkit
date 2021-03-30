@@ -101,7 +101,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		};
 /******/ 		
 /******/ 		var deferredModules = [
-/******/ 			["./src/js/common_head.entry.js","./js/common_units_body","./js/common_units_head.js"]
+/******/ 			["./src/js/common_head.entry.js","./js/common_units_body","./js/common_units_head"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		
