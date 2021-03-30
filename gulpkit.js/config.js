@@ -242,10 +242,6 @@ const
           } ),
         ],
         optimization : {},
-        watchOptions : {
-          aggregateTimeout : 200,
-          poll             : 500,
-        },
       }
     },
     'js_eslint' : {

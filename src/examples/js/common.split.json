@@ -1,6 +1,6 @@
 {
   "examples" : {
-    "test"    : [ "[\\\\/]lodash[\\\\/]" ],
+    "test"    : [ "/lodash/" ],
     "name"    : "./examples/js/common_vendor",
     "chunks"  : "initial",
     "enforce" : true

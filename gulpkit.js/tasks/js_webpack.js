@@ -130,14 +130,14 @@ function _compile() {
 function _webPackCall( callBack, stream ) {
   return ( error, stats ) => {
     let errorMessages = [];
+    if ( error ) {
+      return stream.emit( 'error', error );
+    }
     if ( stats.hasErrors && stats.hasErrors() ) {
       stats.toJson().errors.forEach( ( item ) => {
         errorMessages.push( item.message );
       } );
       stream.emit( 'error', new Error( errorMessages.join( '\n' ) ) );
-    }
-    if ( error ) {
-      stream.emit( 'error', error );
     }
     if ( stats ) {
       log( stats.toString( {
@@ -161,8 +161,9 @@ function _createSplitChunks( groups, subConfContents ) {
   const
     subConfObj = JSON.parse( subConfContents )
   ;
-  for ( let key in subConfObj ) {
-    subConfObj[ key ].test = new RegExp( subConfObj[ key ].test.join( '|' ) );
+  for ( let [ key, value ] of Object.entries( subConfObj ) ) {
+    const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
+    subConfObj[ key ].test = new RegExp( test );
   }
   return mergeWith( {}, groups, subConfObj );
 }
