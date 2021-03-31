@@ -1,6 +1,6 @@
 # gulp_startkit
 
-静的な 中規模Web サイトのGulp による製作用。
+静的な中規模Web サイトのGulp による制作用。
 
 ## 想定
 
@@ -13,13 +13,13 @@
 
 ## 差分ビルド
 
-ほぼ、すべてのタスクで行う。
-依存関係にあるファイルを一緒に通したり、```git diff``` で差異のあるものをだけを通したり。
-ただし、```gulp.src()``` を通った後。
+ほぼ、すべてのタスクで実行。  
+`git diff` コマンドを利用して差異が生じたファイルをビルドの対象にし、 依存関係にあるファイルを一緒に通すなどする。
+ただし、`gulp.src()` を通った後。
 
-src 1ファイル → dist 1ファイル のようなタスクは、```gulp.lastRun()``` と併用する。  
+src 1ファイル → dist 1ファイル のようなタスクは、高速化のため、`gulp.lastRun()` と併用。  
 
-JavaScript 用のタスクだけは、Webpack のcache を利用する。
+※ JavaScript 用のタスクだけは、webpack のcache を利用する。
 
 ## コマンド
 
@@ -27,22 +27,23 @@ JavaScript 用のタスクだけは、Webpack のcache を利用する。
 $ npm run dev
 ```
 
-環境変数に``` NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 DIFF_ENV=1 ```を含むコマンドのエイリアス。  
-source map、```Gulp.watch()```、server（Browsersync）、差分ビルドを有効にする。
+環境変数に` NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 DIFF_ENV=1 `を含むコマンドのエイリアス。  
+source map、`Gulp.watch()`、server（Browsersync）、差分ビルドを有効にする。
 
-※ Browsersync を有効にするには設定ファイル（```/gulpkit.js/config_serve.js```）の用意が必要。```/gulpkit.js/conifig_serve_orig.js```を複製、リネームして利用し、リネーム後のファイル名は、Git でignore されていて、server のIP アドレス等は、実装者各々で設定自由にする。
+※ Browsersync を有効にするには設定ファイル（`/gulpkit.js/config_serve.js`）の用意が必要。`/gulpkit.js/conifig_serve_orig.js`を複製、リネームして利用し、リネーム後のファイル名は、Git でignore されていて、server のIP アドレス等は、実装者各々で設定自由にする。
 ```
 $ npm run one
 ```
-環境変数に```NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 DIFF_ENV=0```を含むコマンドのエイリアス。
+環境変数に`NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 DIFF_ENV=0`を含むコマンドのエイリアス。
 watch はされず、server も差分ビルドも無効。
 
 ```
 $ npm run prod
 ```
-環境変数に```NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 DIFF_ENV=0```を含むコマンドのエイリアス。  
-```NODE_ENV=producrion```により```/gulpkit.js/config.js```の設定でCSS 、JavaScript の圧縮や、dest 先のフォルダの変更などを行う。  
-以上のコマンドは、末尾に半角スペースの後、単体タスク名を入力で、各環境変数に従った実行が可能。例（```npm run dev html_pug```）。
+環境変数に`NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 DIFF_ENV=0`を含むコマンドのエイリアス。  
+`NODE_ENV=producrion`により`/gulpkit.js/config.js`の設定に従ってCSS 、JavaScript の圧縮や、dest 先のフォルダの変更などを行う。  
+
+以上のコマンドは、末尾に半角スペースの後、単体タスク名を入力で、各環境変数に従った実行が可能。例（`npm run dev html_pug`）。
 ```
 $ npm run pug_tmp_engine
 ```
@@ -63,4 +64,9 @@ $ cd myproject
 - Node.js 14.15.4
 - Apache
 
-IP アドレス等は、```/vagrant_config.yml```を用意して実装者各々で設定自由｡
+IP アドレス等は、`/vagrant_config.yml`を用意して実装者各々で設定自由｡
+
+## その他の特長
+
+- iconfont 等は、任意のフォルダ名ルールに従って自動でグループ分けし、タスクを実行し、フォルダ毎に利用可能にする。
+- 中規模静的サイトを想定する事から、webpack の[SplitChunksPlugin](https://webpack.js.org/plugins/split-chunks-plugin/)を活用し、その際、任意のフォルダ毎に利用可能にする。
