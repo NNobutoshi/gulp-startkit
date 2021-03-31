@@ -9,6 +9,8 @@ block config
     }
     pageData.url = pageData.url.replace( /\/index\.html$/, '/' )
 doctype html
+//- ↓差分ビルドに検知させるためのコメント
+//- include /_pug_data.json
 html(lang=pageData.lang)
   head(prefix=pageData.ogPrefix)
     meta(charset="utf-8")

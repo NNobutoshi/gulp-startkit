@@ -10,7 +10,7 @@ const
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
-  ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.js'
+  ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.json'
   ,SITE_MAP_FILE_PATH   = '../../src/sitemap.xlsx'
   // ,OUTPUT_JSON_PATH     = './output.json'
   ,settings = {
@@ -31,8 +31,8 @@ const
   const
     jSONData     = await _nodeX2j( settings.x2j )
     ,confStrings = await _readConfigFile()
-    ,indent      = _getIndent( confStrings, /[\s\S]+?( +)\/\/{{/ )
-    ,dataStrings = _convertSringsForPug( jSONData, indent )
+    ,indent      = _getIndent( confStrings, /[\s\S]+?( +)"{{": "",/ )
+    ,dataStrings = _deleteWrapperParen( jSONData, indent )
   ;
   _writePugConfigFile( confStrings, dataStrings, indent );
   Object.keys( jSONData ).forEach( ( url ) => {
@@ -71,17 +71,17 @@ function _getIndent( configContent, indentRegeX ) {
   return ( matches !== null &&  matches[ 1 ] ) ? matches[ 1 ] : false;
 }
 
-function _convertSringsForPug( jSONData, indent ) {
+function _deleteWrapperParen( jSONData, indent ) {
   return JSON
     .stringify( jSONData, null, 2 )
-    .replace( new RegExp( '^\\{' + '\\' + settings.linefeed, 'g' ), '' )
-    .replace( /\}$/, '' )
+    .replace( new RegExp( `^\\{\\${settings.linefeed}` ), '' )
+    .replace( new RegExp( `\\}\\${settings.linefeed}\\}` ), `},${settings.linefeed}` )
     .replace( /^ {2}/mg, indent )
   ;
 }
 
 function _writePugConfigFile( content, newStrings, indent ) {
-  content = content.replace( /\/\/\{\{[\s\S]*?\/\/\}\}/, `//{{${settings.linefeed + newStrings + indent}//}}` );
+  content = content.replace( /"{{": "",[\s\S]*?"}}": ""/, `"{{": "",${settings.linefeed + newStrings + indent}"}}": ""` );
   fs.writeFile( settings.configFile, content, CHARSET, ( error )  => {
     if ( error ) {
       return console.error( error );

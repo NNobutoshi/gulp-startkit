@@ -1,5 +1,6 @@
 const
   path = require( 'path' )
+  ,fs  = require( 'fs' )
 ;
 const
   { src, dest } = require( 'gulp' )
@@ -17,12 +18,12 @@ const
 ;
 const
   options  = config.options
-  ,pugData = require( config.data )
 ;
 
 module.exports = html_pug;
 
 function html_pug() {
+  const pugData = JSON.parse( fs.readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ,_collect ,_select ) )
@@ -96,13 +97,13 @@ function _select( filePath, collection, destFiles ) {
 
 function _pugRender() {
   const
-    partialFileRegEx = /[\\/]_/
+    excludedFileRegEx = /[\\/]_|_data\.json$/
     ,rendered = {
       files : []
     }
   ;
   const stream = through.obj( ( file, enc, callBack ) => {
-    if ( partialFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
+    if ( excludedFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
       return callBack();
     }
     options.pug.filename = file.path;

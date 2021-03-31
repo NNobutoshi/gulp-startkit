@@ -270,11 +270,14 @@ const
       },
     },
     'html_pug' : {
-      src     : [ SRC + '/**/*.pug' ],
+      src     : [
+        SRC + '/**/*.pug',
+        SRC + '/**/*_data.json',
+      ],
       dist    : DIST,
       base    : SRC,
       watch   : true && ENABLE_WATCH,
-      data    : path.resolve( process.cwd(), `${SRC}/_pug_data.js` ),
+      data    : path.resolve( process.cwd(), `${SRC}/_pug_data.json` ),
       options : {
         assistPretty : {
           assistAElement   : true,

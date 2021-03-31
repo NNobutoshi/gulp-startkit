@@ -249,6 +249,10 @@ function _getGitDiffList( comand ) {
       if ( stdout ) {
         const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
         for ( let item of matchedAll ) {
+          // リネームの際の文字列をリネーム後のパスの形に変換する。
+          if ( item[ 2 ].indexOf( ' -> ' ) > -1 ) {
+            item[ 2 ] = item[ 2 ].split( ' -> ' )[ 1 ];
+          }
           diffMap[ item[ 2 ] ] = { status: item[ 1 ] };
         }
       }
