@@ -1,6 +1,6 @@
 # gulp_startkit
 
-静的な中規模Web サイトのGulp による制作用。
+静的な中規模Web サイトのGulp による製作用。
 
 ## 想定
 
@@ -43,7 +43,8 @@ $ npm run prod
 環境変数に`NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 DIFF_ENV=0`を含むコマンドのエイリアス。  
 `NODE_ENV=producrion`により`/gulpkit.js/config.js`の設定に従ってCSS 、JavaScript の圧縮や、dest 先のフォルダの変更などを行う。  
 
-以上のコマンドは、末尾に半角スペースの後、単体タスク名を入力で、各環境変数に従った実行が可能。例（`npm run dev html_pug`）。
+以上のコマンドは、末尾に半角スペースの後、単体タスク名を入力で、各環境変数に従った実行が可能。例（`npm run dev html_pug`）。  
+
 ```
 $ npm run pug_tmp_engine
 ```
