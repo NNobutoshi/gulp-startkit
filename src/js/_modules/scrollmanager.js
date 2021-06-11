@@ -4,10 +4,10 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
-import offset from './utilities/offset.js';
-import '../_vendor/rAf.js';
+import offset from './utilities/offset';
+import '../_vendor/rAf';
+import Events from './utilities/events';
 
 let
   counter = 0
@@ -32,7 +32,7 @@ export default class ScrollManager {
     this.offsetTop = 0;
     this.offsetBottom = 0;
     this.callBacks = {};
-    this.eventName = `scroll.${this.id}`;
+    this.eventName = 'scroll';
     this.eventRoot = this.settings.eventRoot;
     this.isRunning = false;
     this.lastSctop = 0;
@@ -94,7 +94,7 @@ export default class ScrollManager {
         flag       : false,
         ovserved   : {},
       }
-      ,entry = $.extend( {}, defaultOptions, options )
+      ,entry = merge( {}, defaultOptions, options )
     ;
     entry.callBack = callBack;
     this.setUp();
@@ -117,10 +117,14 @@ export default class ScrollManager {
 
   setUp() {
     if ( !this.callBacks.length ) {
-      $( this.eventRoot ).on( this.eventName, () => {
-        this.handle();
-      } );
+      new Events( this, this.eventRoot );
+      this.eventRoot.on( this.eventName, this.handle );
     }
+    return this;
+  }
+
+  destroy() {
+    this.eventRoot.off( this.eventName, this.handle );
     return this;
   }
 
@@ -128,6 +132,7 @@ export default class ScrollManager {
     const
       that = this
     ;
+    console.info( 'handleOk' );
     if ( !this.isRunning ) {
       this.isRunning = true;
       if ( typeof this.settings.throttle === 'number' && this.settings.throttle > 0 ) {

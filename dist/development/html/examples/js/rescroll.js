@@ -9,23 +9,15 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/rescroll.js */ "./src/js/_modules/rescroll.js");
-
+/* harmony import */ var _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/rescroll.js */ "./src/js/_modules/rescroll.js");
 
 
 
 var mdls = {};
-mdls.rescroll = new _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_1__.default({
+mdls.rescroll = new _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__.default({
   offsetTop: '.pl-localNav'
 });
 mdls.rescroll.on();
-jquery__WEBPACK_IMPORTED_MODULE_0___default()('.pl-localNav_testLink').on('click', function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  window.scrollTo(0, 1000);
-});
 
 /***/ }),
 
@@ -88,7 +80,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.pl-localNav_testLink').on('click
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;

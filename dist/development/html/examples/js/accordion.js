@@ -15,25 +15,25 @@ __webpack_require__.r(__webpack_exports__);
 
 var mdls = {};
 mdls.toggle = new _js_modules_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__.default({
+  selectorParent: '.pl-list',
   selectorTrigger: '.pl-list_btn',
-  selectorTarget: '.pl-list_inner',
-  selectorIndicator: '.pl-list'
+  selectorTarget: '.pl-list_inner'
 });
 mdls.toggle.on(function (e, inst) {
   var height = inst.elemTarget.querySelector('.pl-list_list').getBoundingClientRect().height;
   clearTimeout(inst.timeoutId);
   inst.elemTarget.style.height = height + 'px';
-  inst.elemIndicator.classList.add('js-list--isOpening');
+  inst.elemParent.classList.add('js-list--isOpening');
 }, function (e, inst) {
   inst.elemTarget.style.height = '';
   inst.timeoutId = setTimeout(function () {
-    inst.elemIndicator.classList.remove('js-list--isOpening');
+    inst.elemParent.classList.remove('js-list--isOpening');
   }, 100);
 }, function (e, inst) {
   if (inst.isChanged === true) {
-    inst.elemIndicator.classList.add('js-list--isOpen');
+    inst.elemParent.classList.add('js-list--isOpen');
   } else {
-    inst.elemIndicator.classList.remove('js-list--isOpen');
+    inst.elemParent.classList.remove('js-list--isOpen');
   }
 });
 
@@ -59,7 +59,7 @@ mdls.toggle.on(function (e, inst) {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;

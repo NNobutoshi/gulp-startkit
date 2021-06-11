@@ -2,14 +2,10 @@
  * rescroll.js
  */
 
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
-import offset from './utilities/offset.js';
-import '../_vendor/rAf.js';
-
-const
-  $w = $( window )
-;
+import offset from './utilities/offset';
+import '../_vendor/rAf';
+import Events from './utilities/events';
 
 export default class Rescroll {
 
@@ -24,45 +20,54 @@ export default class Rescroll {
     this.id = this.settings.name;
     this.timeoutId = null;
     this.hash = '';
-    this.eventName = `load.${this.id} hashchange.${this.id}`;
-    this.permit = true;
-    this.locked = false;
+    this.eneble = true;
+    this.locked = true;
+    this.scrollCounter = 0;
+    this.lastCounter = null;
   }
 
   on() {
-    $w.on( `scroll.${this.id}`, () => {
-      this.run();
-    } );
-    $w.on( `hashchange.${this.id}`, () => {
-      this.permit = true;
-    } );
-    $( 'html' ).on( `click.${this.id}`, 'a', () => {
-      this.permit = true;
-    } );
+    new Events( this, window );
+    window.on( 'scroll', this.handleForScroll );
+    window.on( 'DOMContentLoaded hashchange', this.handleForHashChange );
+    window.on( 'click', this.handleForClick );
+  }
+
+  handleForScroll() {
+    this.run();
+  }
+
+  handleForHashChange() {
+    this.unlock();
+  }
+
+  handleForClick( e ) {
+    if ( e.target.tagName.toLowerCase() === 'a' && e.target.hash ) {
+      this.unlock();
+    }
   }
 
   run() {
     const
-      settings = this.settings
-      ,hash = location.hash
+      hash = location.hash
       ,that = this
     ;
-    let
-      startTime = null
-    ;
-    if ( !hash || this.permit === false || this.locked === true ) {
+    if ( !hash || this.locked === true ) {
       return this;
     }
+    this.scrollCounter++;
     this.hash = hash.replace( /^#(.*)/, '#$1' );
     ( function _try() {
-      that.permit = false;
-      requestAnimationFrame( ( timeStamp ) => {
-        startTime = ( startTime === null ) ? timeStamp : startTime;
-        if ( timeStamp - startTime < settings.delay ) {
+      that.eneble = false;
+      that.timeoutId = requestAnimationFrame( () => {
+        if ( that.scrollCounter !== that.lastCounter ) {
           _try();
+          that.lastCounter = that.scrollCounter;
         } else {
-          window.scrollTo( 0, window.pageYoffset );
+          that.lastCounter = null;
+          that.scrollCounter = 0;
           that.scroll();
+          that.lock();
         }
       } );
     } )();
@@ -93,6 +98,7 @@ export default class Rescroll {
   }
 
   lock() {
+    window.scrollTo( 0, window.pageYOffset );
     this.locked = true;
   }
 

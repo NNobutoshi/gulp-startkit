@@ -1,7 +1,7 @@
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
 import 'core-js/modules/es.promise';
 import 'regenerator-runtime/runtime';
+import Events from './utilities/events';
 
 export default class VideoGround {
 
@@ -92,26 +92,30 @@ export default class VideoGround {
   }
 
   on() {
+    new Events( this, this.elemVideo );
+    this.elemVideo.on( 'play', this.handleForPlay );
+    this.elemVideo.on( 'canplay', this.handleForCanPlay );
+    return this;
+  }
+
+  handleForPlay() {
     const
       settings = this.settings
-      ,elemVideo = this.elemVideo
-      ,elemBody = document.querySelector( 'body' )
     ;
+    clearTimeout( this.destroyTimerId );
+    this.destroyTimerId = null;
+    this.isPlaying = true;
+    document.body.classList.add( settings.classNamePlaying );
+    _eventCall( settings.onPlay );
+  }
 
-    $( elemVideo ).on( `play.${this.id}`, () => {
-      clearTimeout( this.destroyTimerId );
-      this.destroyTimerId = null;
-      this.isPlaying = true;
-      elemBody.classList.add( settings.classNamePlaying );
-      _eventCall( settings.onPlay );
-    } );
-
-    $( elemVideo ).one( `canplay.${this.id}`, () => {
-      elemVideo.play();
-      _eventCall( settings.onLoad );
-    } );
-
-    return this;
+  handleForCanPlay( e ) {
+    const
+      settings = this.settings
+    ;
+    this.elemVideo.play();
+    _eventCall( settings.onLoad );
+    this.off( 'canplay', this.handleForCanPlay );
   }
 
   destroy() {

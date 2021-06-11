@@ -1,34 +1,42 @@
 'use strict';
 
-import $ from 'jquery';
-import Locate from '../../js/_modules/locate.js';
+import Locate from '../../js/_modules/locate';
+import parents from '../../js/_modules/utilities/parents';
 
 const
   mdls = {}
   ,TARGETSELECTOR = '.pl-nav_anchor'
+  ,elemTarget = document.querySelectorAll( TARGETSELECTOR )
 ;
 
 mdls.locate = new Locate( {
   target : TARGETSELECTOR
 } );
 
-$( TARGETSELECTOR ).on( 'click', ( e ) => {
-  history.pushState( null ,null, e.currentTarget.href );
-  _run();
-  e.preventDefault();
+Array.prototype.forEach.call( elemTarget, ( elem ) => {
+  elem.addEventListener( 'click', handleForAnchorClick );
 } );
 
-$( window )
-  .on( 'popstate.locate' , _run )
-  .trigger( 'popstate.locate', _run )
-;
+function handleForAnchorClick( e ) {
+  e.preventDefault();
+  history.pushState( null ,null, e.currentTarget.href );
+  _run();
+}
+
+window.addEventListener( 'popstate',  _run );
+_run();
 
 function _run() {
+  Array.prototype.forEach.call( document.querySelectorAll( '.pl-nav_item' ), ( elem ) => {
+    elem.classList.remove( 'js-current' );
+  } );
   mdls.locate.currentItem = null;
-  $( '.pl-nav_item' ).removeClass( 'js-current' );
   mdls.locate.run( inst => {
     if ( inst.currentItem ) {
-      $( inst.currentItem ).parents( '.pl-nav_item' ).addClass( 'js-current' );
+      parents( inst.currentItem, '.pl-nav_item', '.pl-nav' ).forEach( ( elem ) => {
+        console.info( 'parents', elem );
+        elem.classList.add( 'js-current' );
+      } );
     }
   } );
 }

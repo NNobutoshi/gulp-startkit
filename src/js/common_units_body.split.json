@@ -1,6 +1,6 @@
 {
   "common_units_body" : {
-    "test"    : [ "/jquery/", "/js/_modules/" ],
+    "test"    : [ "/js/_modules/" ],
     "name"    : "./js/common_units_body",
     "chunks"  : "initial",
     "enforce" : true

@@ -1592,9 +1592,9 @@ template {
   background-size: 174px 153px;
 }
 
-@media (min-width: 768px) and (max-width: 767px) {
+@media (min-width: 768px) and (max-width: 979px) {
   .and {
-    font-size: 0.875rem;
+    font-size: 0.82353rem;
   }
 }
 

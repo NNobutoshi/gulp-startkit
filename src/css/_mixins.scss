@@ -12,7 +12,6 @@
 
 // メディアクエリ用
 @mixin mq( $queries... ) {
-  $query: "";
   $len: length( $queries );
   $query: "";
   $width: "";
@@ -35,7 +34,7 @@
       $retString: "#{$retString}" + "#{$width} )";
     }
     @if ( $index % 3 == 0 ) {
-      $retString: "#{$retString}" + "#{$item}";
+      $retString: "#{$retString}" + " #{$item}";
     }
   }
   @media #{$retString} {

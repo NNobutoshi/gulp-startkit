@@ -1,6 +1,6 @@
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
-import closest from './utilities/closest.js';
+import closest from './utilities/closest';
+import Events from './utilities/events';
 
 export default class Tab {
 
@@ -26,31 +26,43 @@ export default class Tab {
     this.selectedTarget  = null;
     this.callBackforLoad = this.settings.onLoad;
     this.hash = null;
-    this.windowEventName = `load.${this.id} hashchange.${this.id}`;
-    this.anchorEventName = `click.${this.id}`;
+    this.windowEventName = 'DOMContentLoaded hashchange';
+    this.anchorEventName = 'click';
   }
 
   on() {
-    const
-      $w = $( window )
-    ;
-    $w.on( this.windowEventName, () => {
-      this.hash = location.hash || null;
-      this.runAll();
-      if ( typeof this.callBackforLoad === 'function' ) {
-        this.callBackforLoad.call( this, {
-          trigger : this.selectedTrigger,
-          wrapper : this.selectedWrapper,
-          target  : this.selectedTarget,
-        } );
-      }
+    new Events( this, window );
+    window.on( this.windowEventName, this.handleForWindowEvent );
+    Array.prototype.forEach.call( this, ( elem ) => {
+      new Events( this, elem );
+      elem.on( this.anchorEventName, this.handleForAnchorEvent );
     } );
-    $( this.triggerElemAll ).on( this.anchorEventName, ( e ) => {
-      this.hash = e.currentTarget.hash;
-      e.preventDefault();
-      history.pushState( null, null, location.pathname + this.hash );
-      this.run( e );
+  }
+
+  off() {
+    window.off( this.windowEventName, this.handleForWindowEvent );
+    Array.prototype.forEach.call( this, ( elem ) => {
+      elem.off( this.anchorEventName, this.handleForAnchorEvent );
     } );
+  }
+
+  handleForWindowEvent() {
+    this.hash = location.hash || null;
+    this.runAll();
+    if ( typeof this.callBackforLoad === 'function' ) {
+      this.callBackforLoad.call( this, {
+        trigger : this.selectedTrigger,
+        wrapper : this.selectedWrapper,
+        target  : this.selectedTarget,
+      } );
+    }
+  }
+
+  handleForAnchorEvent( e ) {
+    this.hash = e.currentTarget.hash;
+    e.preventDefault();
+    history.pushState( null, null, location.pathname + this.hash );
+    this.run( e );
   }
 
   run( e, index ) {

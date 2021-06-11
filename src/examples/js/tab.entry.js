@@ -1,7 +1,7 @@
 'use strict';
 
-import Tab from '../../js/_modules/tab.js';
-import Rescroll from '../../js/_modules/rescroll.js';
+import Tab from '../../js/_modules/tab';
+import Rescroll from '../../js/_modules/rescroll';
 
 const
   mdls = {}
@@ -19,7 +19,7 @@ mdls.tab = new Tab( {
   onLoad  : ( prop ) => {
     setTimeout( () => {
       mdls.rescroll.scroll( prop.wrapper );
-    }, 1 );
+    }, 100 );
   }
 } );
 mdls.tab.on();

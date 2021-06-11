@@ -6,9 +6,9 @@ const
   mdls = {}
 ;
 mdls.toggle = new Toggle( {
-  selectorTrigger   : '.pl-list_btn',
-  selectorTarget    : '.pl-list_inner',
-  selectorIndicator : '.pl-list',
+  selectorParent  : '.pl-list',
+  selectorTrigger : '.pl-list_btn',
+  selectorTarget  : '.pl-list_inner',
 } );
 
 mdls.toggle.on(
@@ -18,19 +18,19 @@ mdls.toggle.on(
     ;
     clearTimeout( inst.timeoutId );
     inst.elemTarget.style.height = height + 'px';
-    inst.elemIndicator.classList.add( 'js-list--isOpening' );
+    inst.elemParent.classList.add( 'js-list--isOpening' );
   },
   ( e, inst ) => {
     inst.elemTarget.style.height = '';
     inst.timeoutId = setTimeout( () => {
-      inst.elemIndicator.classList.remove( 'js-list--isOpening' );
+      inst.elemParent.classList.remove( 'js-list--isOpening' );
     }, 100 );
   },
   ( e, inst ) => {
     if ( inst.isChanged === true ) {
-      inst.elemIndicator.classList.add( 'js-list--isOpen' );
+      inst.elemParent.classList.add( 'js-list--isOpen' );
     } else {
-      inst.elemIndicator.classList.remove( 'js-list--isOpen' );
+      inst.elemParent.classList.remove( 'js-list--isOpen' );
     }
   },
 )

@@ -1,6 +1,6 @@
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
-import closest from '../../js/_modules/utilities/closest.js';
+import closest from '../../js/_modules/utilities/closest';
+import Events from './utilities/events';
 
 export default class SimpleVideoPlay {
 
@@ -36,32 +36,48 @@ export default class SimpleVideoPlay {
   }
 
   on() {
+    new Events( this, this.elemVideo );
+    new Events( this, this.elemCover );
+    this.elemVideo.on( 'canplay', this.handleForCanplay );
+    this.elemVideo.on( 'play', this.handleForPlay );
+    this.elemVideo.on( 'pause', this.handleForPause );
+    this.elemVideo.on( 'ended', this.handleForEnded );
+  }
 
-    $( this.elemVideo ).on( `canplay.${this.id}`, () => {
-      this.elemWrapper.classList.add( this.settings.classNameOfCanPlay );
-      $( this.elemCover ).on( `click.${this.id} touchend.${this.id}`, ( e ) => {
-        e.preventDefault();
-        if ( this.isPlaying === false ) {
-          this.elemVideo.play();
-        }
-      } );
-    } );
+  off() {
+    this.elemVideo.off( 'canplay', this.handleForCanplay );
+    this.elemVideo.off( 'play', this.handleForPlay );
+    this.elemVideo.off( 'pause', this.handleForPause );
+    this.elemVideo.off( 'ended', this.handleForEnded );
+    this.elemCover.off( 'click touchend', this.handleForCoverClick );
+  }
 
-    $( this.elemVideo ).on( `play.${this.id}`, () => {
-      this.elemWrapper.classList.add( this.settings.classNameOfPlaying );
-      this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
-    } );
+  handleForCanplay() {
+    this.elemWrapper.classList.add( this.settings.classNameOfCanPlay );
+    this.elemCover.on( 'click touchend', this.handleForCoverClick );
+  }
 
-    $( this.elemVideo ).on( `pause.${this.id}`, () => {
-      this.elemWrapper.classList.add( this.settings.classNameOfPaused );
-      this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
-    } );
+  handleForPlay() {
+    this.elemWrapper.classList.add( this.settings.classNameOfPlaying );
+    this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
+  }
 
-    $( this.elemVideo ).on( `ended.${this.id}`, () => {
-      this.elemWrapper.classList.add( this.settings.classNameOfEnded );
-      this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
-      this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
-    } );
+  handleForPause() {
+    this.elemWrapper.classList.add( this.settings.classNameOfPaused );
+    this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
+  }
+
+  handleForEnded() {
+    this.elemWrapper.classList.add( this.settings.classNameOfEnded );
+    this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
+    this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
+  }
+
+  handleForCoverClick( e ) {
+    e.preventDefault();
+    if ( this.isPlaying === false ) {
+      this.elemVideo.play();
+    }
   }
 
 }

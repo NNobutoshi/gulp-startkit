@@ -4,8 +4,8 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from 'jquery';
 import merge from 'lodash/mergeWith';
+import Events from './utilities/events';
 
 export default class Toggle {
 
@@ -14,80 +14,75 @@ export default class Toggle {
       name              : 'transitiontoggle',
       selectorTrigger   : '',
       selectorTarget    : '',
-      selectorIndicator : null,
+      selectorParent    : null,
       selectorEventRoot : 'body',
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.eventRoot = this.settings.selectorEventRoot;
-    this.elemIndicator = document.querySelector( this.settings.selectorIndicator );
+    this.elemParent = document.querySelector( this.settings.selectorParent );
     this.elemTrigger = null;
     this.elemTarget = null;
-    this.eventName = `click.${this.id}`;
     this.callBackForBefore = null;
     this.callBackForAfter = null;
+    this.callBackForEnd = null;
     this.isChanged = false;
   }
 
   on( callBackForBefore, callBackForAfter, callBackForEnd ) {
     const
       settings = this.settings
-      ,$root = $( this.eventRoot )
     ;
-    let
-      isChanged = false
-    ;
-    if ( this.elemIndicator === null ) {
+    this.elemRoot = document.querySelector( this.eventRoot );
+    if ( this.elemParent === null ) {
       return this;
     }
-    this.elemTrigger = this.elemIndicator.querySelector( settings.selectorTrigger );
-    this.elemTarget = this.elemIndicator.querySelector( settings.selectorTarget );
+    new Events( this, this.elemRoot );
+    this.elemTrigger = this.elemParent.querySelector( settings.selectorTrigger );
+    this.elemTarget = this.elemParent.querySelector( settings.selectorTarget );
     this.callBackForBefore = callBackForBefore;
     this.callBackForAfter = callBackForAfter;
-    $root.on( this.eventName, settings.selectorTrigger, ( e ) => {
-      if ( this.isChanged === true ) {
-        this.handleForAfter( e );
-      } else {
-        this.handleForBefore( e );
-      }
-    } )
-    ;
-    $root.on( `transitionend.${this.id}`, this.target, ( e ) => {
-      if ( isChanged !== this.isChanged ) {
-        if ( typeof callBackForEnd === 'function' ) {
-          callBackForEnd.call( this, e, this );
-        }
-        isChanged = this.isChanged;
-      }
-    } )
-    ;
+    this.callBackForEnd = callBackForEnd;
+    this.elemRoot.on( 'click', this.handleForClick );
+    this.elemRoot.on( 'transitionend', this.handleForTransitionend );
     return this;
   }
 
   off() {
-    this.elemIndicator = null;
+    this.elemParent = null;
     this.elemTrigger = null;
     this.elemTarget = null;
     this.callBackForBefore = null;
     this.callBackForAfter = null;
-    $( this.eventRoot ).off( `.${this.id}`, this.target );
+    this.elemRoot.off( 'click', this.handleForClick );
+    this.elemRoot.off( 'transitionend', this.handleForTransitionend );
     return this;
   }
 
-  handleForBefore( e ) {
-    this.open( e );
+  handleForClick( e ) {
+    if ( this.elemTrigger.isEqualNode( e.target ) )  {
+      if ( this.isChanged === true ) {
+        this.after( e );
+      } else {
+        this.before( e );
+      }
+    }
   }
 
-  handleForAfter( e ) {
-    this.close( e );
+  handleForTransitionend( e ) {
+    if ( this.elemTarget.isEqualNode( e.target ) && this.isChanged === false )  {
+      if ( typeof this.callBackForEnd === 'function' ) {
+        this.callBackForEnd.call( this, e, this );
+      }
+    }
   }
 
-  open( e ) {
+  before( e ) {
     this.isChanged = true;
     this.callBackForBefore.call( this, e, this );
   }
 
-  close( e ) {
+  after( e ) {
     this.isChanged = false;
     this.callBackForAfter.call( this, e, this );
   }

@@ -9,33 +9,44 @@
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/locate.js */ "./src/js/_modules/locate.js");
+/* harmony import */ var _js_modules_locate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/locate */ "./src/js/_modules/locate.js");
+/* harmony import */ var _js_modules_utilities_parents__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/utilities/parents */ "./src/js/_modules/utilities/parents.js");
 
 
 
 
 var mdls = {},
-    TARGETSELECTOR = '.pl-nav_anchor';
-mdls.locate = new _js_modules_locate_js__WEBPACK_IMPORTED_MODULE_1__.default({
+    TARGETSELECTOR = '.pl-nav_anchor',
+    elemTarget = document.querySelectorAll(TARGETSELECTOR);
+mdls.locate = new _js_modules_locate__WEBPACK_IMPORTED_MODULE_0__.default({
   target: TARGETSELECTOR
 });
-jquery__WEBPACK_IMPORTED_MODULE_0___default()(TARGETSELECTOR).on('click', function (e) {
+Array.prototype.forEach.call(elemTarget, function (elem) {
+  elem.addEventListener('click', handleForAnchorClick);
+});
+
+function handleForAnchorClick(e) {
+  e.preventDefault();
   history.pushState(null, null, e.currentTarget.href);
 
   _run();
+}
 
-  e.preventDefault();
-});
-jquery__WEBPACK_IMPORTED_MODULE_0___default()(window).on('popstate.locate', _run).trigger('popstate.locate', _run);
+window.addEventListener('popstate', _run);
+
+_run();
 
 function _run() {
+  Array.prototype.forEach.call(document.querySelectorAll('.pl-nav_item'), function (elem) {
+    elem.classList.remove('js-current');
+  });
   mdls.locate.currentItem = null;
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.pl-nav_item').removeClass('js-current');
   mdls.locate.run(function (inst) {
     if (inst.currentItem) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()(inst.currentItem).parents('.pl-nav_item').addClass('js-current');
+      (0,_js_modules_utilities_parents__WEBPACK_IMPORTED_MODULE_1__.default)(inst.currentItem, '.pl-nav_item', '.pl-nav').forEach(function (elem) {
+        console.info('parents', elem);
+        elem.classList.add('js-current');
+      });
     }
   });
 }
@@ -62,7 +73,7 @@ function _run() {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;

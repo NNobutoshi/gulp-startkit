@@ -4,10 +4,10 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import $ from 'jquery';
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
 import merge from 'lodash/mergeWith';
+import Events from './utilities/events';
 
 export default class AdaptiveHover {
 
@@ -29,45 +29,37 @@ export default class AdaptiveHover {
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.enteringEventName = `touchstart.${this.id} mouseenter.${this.id}`;
-    this.leavingEventName = `touchend.${this.id} mouseleave.${this.id}`;
-    this.extraEventName = `touchend.${this.id} click.${this.id}`;
+    this.enteringEventName = 'touchstart mouseover';
+    this.leavingEventName = 'touchend mouseout';
+    this.outSideEventName = 'touchend click';
   }
 
   on( callBackForEnter, callBackForLeave ) {
     const
       settings = this.settings
-      ,$root = $( this.eventRoot )
     ;
+    new Events( this, this.eventRoot );
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
     this.target = document.querySelector( settings.target );
-    $root.on( this.enteringEventName, settings.target, ( e ) => {
-      this.handleForEnter( e );
-    } );
-    $root.on( this.leavingEventName, settings.target, ( e ) => {
-      this.handleForLeave( e );
-    } );
-    $root.on( this.extraEventName, ( e ) => {
-      if ( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
-        this.clear();
-        this.leave( e, this.callBackForLeave );
-      }
-    } );
+    this.eventRoot.on( this.enteringEventName, this.handleForEnter );
+    this.eventRoot.on( this.leavingEventName, this.handleForLeave );
+    this.eventRoot.on( this.outSideEventName, this.handleForOutSide );
     return this;
   }
 
   off() {
-    const
-      $root = $( this.eventRoot )
-    ;
     this.clear();
-    $root.off( `.${this.id}` );
+    this.eventRoot.off( this.enteringEventName, this.handleForEnter );
+    this.eventRoot.off( this.leavingEventName, this.handleForLeave );
+    this.eventRoot.off( this.outSideEventName, this.handleForOutSide );
     return this;
   }
 
   handleForEnter( e ) {
-    this.enter( e );
+    if ( this.target.isEqualNode( e.target ) )  {
+      this.enter( e );
+    }
   }
 
   handleForLeave( e ) {
@@ -76,7 +68,19 @@ export default class AdaptiveHover {
       ,range = settings.range
       ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, range )
     ;
-    if ( !isOriginPoint ) {
+    if (
+      !isOriginPoint &&
+      this.target === e.target &&
+      this.target.contains( e.relatedTarget ) === false
+    ) {
+      this.leave( e, this.callBackForLeave );
+    }
+  }
+
+  handleForOutSide( e ) {
+    const settings = this.settings;
+    if ( !_isRelative( settings.target, e.target ) && this.isEntering === true ) {
+      this.clear();
       this.leave( e, this.callBackForLeave );
     }
   }

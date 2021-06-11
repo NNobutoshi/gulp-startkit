@@ -11,24 +11,23 @@
   ,"sprite_svg"
 ;
 
-@import
-  "_components/layout"
-  ,"_components/group"
-  ,"_components/nav"
-  ,"_components/sections"
-  ,"_components/headings"
-  ,"_components/paragraphs"
-  ,"_components/links"
-  ,"_components/buttons"
-  ,"_components/banners"
-  ,"_components/lists"
-  ,"_components/tables"
+@import "_components/_layout"
+  ,"_components/_group"
+  ,"_components/_nav"
+  ,"_components/_sections"
+  ,"_components/_headings"
+  ,"_components/_paragraphs"
+  ,"_components/_links"
+  ,"_components/_buttons"
+  ,"_components/_banners"
+  ,"_components/_lists"
+  ,"_components/_tables"
 ;
 
 
 .and {
-  @include mq( min-width, md, and, max-width, md ) {
-    @include fs( 14, 16 );
+  @include mq( min-width, md, and, max-width, lg ) {
+    @include fs( 14, 17 );
   }
 }
 

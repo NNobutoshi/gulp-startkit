@@ -3,9 +3,9 @@
  * Inspired by https://developer.mozilla.org
  */
 
-import $ from 'jquery';
 import '../_vendor/rAf.js';
 import merge from 'lodash/mergeWith';
+import Events from './utilities/events';
 
 let
   uniqueNumber = 0
@@ -21,7 +21,7 @@ export default class OptimizedResize {
     this.id = this.settings.name;
     this.callBacks = {};
     this.isRunning = false;
-    this.eventName = `resize.${this.id}`;
+    this.eventName = 'resize';
   }
 
   runCallBacksAll() {
@@ -138,10 +138,17 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callBacks ).length ) {
-      $( window ).on( this.eventName, () => {
-        this.run();
-      } );
+      new Events( this, window );
+      window.on( this.eventName, this.handleForSetup );
     }
+  }
+
+  destroy() {
+    window.off( this.eventName, this.handleForSetup );
+  }
+
+  handleForSetup() {
+    this.run();
   }
 
   run() {
