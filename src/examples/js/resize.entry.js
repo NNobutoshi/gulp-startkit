@@ -14,20 +14,20 @@ mdls.resize
     if ( inst.counter === undefined ) {
       inst.counter = 0;
     }
-    document.querySelector( '.pl-test_turn' ).textContent = `${inst.query} == ${inst.counter++}`;
+    document.querySelector( '.pl-test_turn' ).textContent = `${inst.query} == ${++inst.counter}`;
   }, '(max-width: 979px)' )
   .on( inst => {
     if ( inst.counter === undefined ) {
       inst.counter = 0;
     }
-    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${inst.counter++}`;
+    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${++inst.counter}`;
   }, '(max-width: 374px)' )
   .cross( inst => {
     if ( inst.counter === undefined ) {
       inst.counter = 0;
     }
     document.querySelector( '.pl-test_cross' ).textContent =
-      `${inst.query} == ${inst.counter++}`;
+      `${inst.query} == ${++inst.counter}`;
   }, '(max-width: 1000px)' )
   .run()
 ;

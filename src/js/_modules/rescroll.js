@@ -5,7 +5,7 @@
 import merge from 'lodash/mergeWith';
 import offset from './utilities/offset';
 import '../_vendor/rAf';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class Rescroll {
 
@@ -24,17 +24,33 @@ export default class Rescroll {
     this.locked = true;
     this.scrollCounter = 0;
     this.lastCounter = null;
+    this.evtRoot = new EM( window );
   }
 
   on() {
-    new Events( this, window );
-    window.on( 'scroll', this.handleForScroll );
-    window.on( 'DOMContentLoaded hashchange', this.handleForHashChange );
-    window.on( 'click', this.handleForClick );
+    this.evtRoot.on( `DOMContentLoaded.${this.id} hashchange.${this.id}`,() => {
+      this.handleForHashChange();
+    } );
+    this.evtRoot.on( `scroll.${this.id}`, () => {
+      this.handleForScroll();
+    } );
+    this.evtRoot.on( `click.${this.id}`, ( e ) => {
+      this.handleForClick( e );
+    } );
+  }
+
+  off() {
+    this.evtRoot.off( `.${this.id}` );
+    this.lastCounter = null;
+    this.scrollCounter = 0;
+    this.lock();
   }
 
   handleForScroll() {
-    this.run();
+    const that = this;
+    setTimeout( () => {
+      that.run();
+    }, 16 );
   }
 
   handleForHashChange() {
@@ -98,7 +114,6 @@ export default class Rescroll {
   }
 
   lock() {
-    window.scrollTo( 0, window.pageYOffset );
     this.locked = true;
   }
 

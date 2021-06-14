@@ -6,7 +6,6 @@ export default function closest( elem, selector, wrapper ) {
   wrapper = wrapper || 'body';
   while ( !parent.matches( wrapper ) ) {
     if ( parent.matches( selector ) ) {
-      console.info( 'matches' );
       parents.push( parent );
     }
     parent = parent.parentElement;

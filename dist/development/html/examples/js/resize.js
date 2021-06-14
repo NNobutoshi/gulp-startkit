@@ -22,19 +22,19 @@ mdls.resize.one(function (inst) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_turn').textContent = "".concat(inst.query, " == ").concat(inst.counter++);
+  document.querySelector('.pl-test_turn').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
 }, '(max-width: 979px)').on(function (inst) {
   if (inst.counter === undefined) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_on').textContent = "".concat(inst.query, " == ").concat(inst.counter++);
+  document.querySelector('.pl-test_on').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
 }, '(max-width: 374px)').cross(function (inst) {
   if (inst.counter === undefined) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_cross').textContent = "".concat(inst.query, " == ").concat(inst.counter++);
+  document.querySelector('.pl-test_cross').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
 }, '(max-width: 1000px)').run();
 
 /***/ }),

@@ -5,7 +5,7 @@
 
 import '../_vendor/rAf.js';
 import merge from 'lodash/mergeWith';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 let
   uniqueNumber = 0
@@ -21,7 +21,8 @@ export default class OptimizedResize {
     this.id = this.settings.name;
     this.callBacks = {};
     this.isRunning = false;
-    this.eventName = 'resize';
+    this.eventName = `resize.${this.id}`;
+    this.evtRoot = new EM( window );
   }
 
   runCallBacksAll() {
@@ -138,13 +139,14 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callBacks ).length ) {
-      new Events( this, window );
-      window.on( this.eventName, this.handleForSetup );
+      this.evtRoot.on( this.eventName, ( e ) => {
+        this.handleForSetup( e );
+      } );
     }
   }
 
   destroy() {
-    window.off( this.eventName, this.handleForSetup );
+    this.evtRoot.off( this.eventName );
   }
 
   handleForSetup() {

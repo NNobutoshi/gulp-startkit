@@ -16,7 +16,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_closest_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/closest.js */ "./src/js/_modules/utilities/closest.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -35,6 +35,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var AdaptiveHover = /*#__PURE__*/function () {
   function AdaptiveHover(options) {
+    var _this = this;
+
     _classCallCheck(this, AdaptiveHover);
 
     this.defaultSettings = {
@@ -42,43 +44,52 @@ var AdaptiveHover = /*#__PURE__*/function () {
       target: '',
       timeout: 400,
       range: 10,
-      eventRoot: document.body
+      elemEventRoot: document.body
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.target = null;
-    this.eventRoot = this.settings.eventRoot;
+    this.elemEventRoot = this.settings.elemEventRoot;
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.enteringEventName = 'touchstart mouseover';
-    this.leavingEventName = 'touchend mouseout';
-    this.outSideEventName = 'touchend click';
+    this.enteringEventName = "touchstart.".concat(this.id, " mouseover.").concat(this.id);
+    this.leavingEventName = "touchend.".concat(this.id, " mouseout.").concat(this.id);
+    this.outSideEventName = "touchend.".concat(this.id, " click.").concat(this.id);
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
+    this.elemEventRoot.addEventListener('click', function () {
+      _this.off();
+    });
   }
 
   _createClass(AdaptiveHover, [{
     key: "on",
     value: function on(callBackForEnter, callBackForLeave) {
+      var _this2 = this;
+
       var settings = this.settings;
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_3__.default(this, this.eventRoot);
       this.callBackForEnter = callBackForEnter;
       this.callBackForLeave = callBackForLeave;
       this.target = document.querySelector(settings.target);
-      this.eventRoot.on(this.enteringEventName, this.handleForEnter);
-      this.eventRoot.on(this.leavingEventName, this.handleForLeave);
-      this.eventRoot.on(this.outSideEventName, this.handleForOutSide);
+      this.evtRoot.on(this.enteringEventName, function (e) {
+        _this2.handleForEnter(e);
+      });
+      this.evtRoot.on(this.leavingEventName, function (e) {
+        _this2.handleForLeave(e);
+      });
+      this.evtRoot.on(this.outSideEventName, function (e) {
+        _this2.handleForOutSide(e);
+      });
       return this;
     }
   }, {
     key: "off",
     value: function off() {
       this.clear();
-      this.eventRoot.off(this.enteringEventName, this.handleForEnter);
-      this.eventRoot.off(this.leavingEventName, this.handleForLeave);
-      this.eventRoot.off(this.outSideEventName, this.handleForOutSide);
+      this.evtRoot.off(".".concat(this.id));
       return this;
     }
   }, {
@@ -112,7 +123,7 @@ var AdaptiveHover = /*#__PURE__*/function () {
   }, {
     key: "enter",
     value: function enter(e) {
-      var _this = this;
+      var _this3 = this;
 
       var eventObj = _getEventObj(e),
           settings = this.settings;
@@ -120,7 +131,7 @@ var AdaptiveHover = /*#__PURE__*/function () {
       if (this.isEntering === false) {
         clearTimeout(this.timeoutId);
         this.timeoutId = setTimeout(function () {
-          return _this.clear();
+          return _this3.clear();
         }, settings.timeout);
         this.pageX = eventObj.pageX;
         this.pageY = eventObj.pageY;
@@ -295,7 +306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vendor_rAf_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_vendor_rAf_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -323,7 +334,8 @@ var OptimizedResize = /*#__PURE__*/function () {
     this.id = this.settings.name;
     this.callBacks = {};
     this.isRunning = false;
-    this.eventName = 'resize';
+    this.eventName = "resize.".concat(this.id);
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
   }
 
   _createClass(OptimizedResize, [{
@@ -433,15 +445,18 @@ var OptimizedResize = /*#__PURE__*/function () {
   }, {
     key: "setUp",
     value: function setUp() {
+      var _this = this;
+
       if (!Object.keys(this.callBacks).length) {
-        new _utilities_events__WEBPACK_IMPORTED_MODULE_2__.default(this, window);
-        window.on(this.eventName, this.handleForSetup);
+        this.evtRoot.on(this.eventName, function (e) {
+          _this.handleForSetup(e);
+        });
       }
     }
   }, {
     key: "destroy",
     value: function destroy() {
-      window.off(this.eventName, this.handleForSetup);
+      this.evtRoot.off(this.eventName);
     }
   }, {
     key: "handleForSetup",
@@ -451,12 +466,12 @@ var OptimizedResize = /*#__PURE__*/function () {
   }, {
     key: "run",
     value: function run() {
-      var _this = this;
+      var _this2 = this;
 
       if (!this.isRunning) {
         this.isRunning = true;
         requestAnimationFrame(function () {
-          _this.runCallBacksAll();
+          _this2.runCallBacksAll();
         });
       }
 
@@ -503,7 +518,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/offset */ "./src/js/_modules/utilities/offset.js");
 /* harmony import */ var _vendor_rAf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_vendor/rAf */ "./src/js/_vendor/rAf.js");
 /* harmony import */ var _vendor_rAf__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_rAf__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -536,20 +551,39 @@ var Rescroll = /*#__PURE__*/function () {
     this.locked = true;
     this.scrollCounter = 0;
     this.lastCounter = null;
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(window);
   }
 
   _createClass(Rescroll, [{
     key: "on",
     value: function on() {
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_3__.default(this, window);
-      window.on('scroll', this.handleForScroll);
-      window.on('DOMContentLoaded hashchange', this.handleForHashChange);
-      window.on('click', this.handleForClick);
+      var _this = this;
+
+      this.evtRoot.on("DOMContentLoaded.".concat(this.id, " hashchange.").concat(this.id), function () {
+        _this.handleForHashChange();
+      });
+      this.evtRoot.on("scroll.".concat(this.id), function () {
+        _this.handleForScroll();
+      });
+      this.evtRoot.on("click.".concat(this.id), function (e) {
+        _this.handleForClick(e);
+      });
+    }
+  }, {
+    key: "off",
+    value: function off() {
+      this.evtRoot.off(".".concat(this.id));
+      this.lastCounter = null;
+      this.scrollCounter = 0;
+      this.lock();
     }
   }, {
     key: "handleForScroll",
     value: function handleForScroll() {
-      this.run();
+      var that = this;
+      setTimeout(function () {
+        that.run();
+      }, 16);
     }
   }, {
     key: "handleForHashChange",
@@ -625,7 +659,6 @@ var Rescroll = /*#__PURE__*/function () {
   }, {
     key: "lock",
     value: function lock() {
-      window.scrollTo(0, window.pageYOffset);
       this.locked = true;
     }
   }, {
@@ -666,7 +699,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/offset */ "./src/js/_modules/utilities/offset.js");
 /* harmony import */ var _vendor_rAf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_vendor/rAf */ "./src/js/_vendor/rAf.js");
 /* harmony import */ var _vendor_rAf__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_rAf__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -695,25 +728,26 @@ var ScrollManager = /*#__PURE__*/function () {
       topOffsetsSelector: '',
       bottomOffsetsSelector: '',
       delay: 32,
-      eventRoot: window,
+      elemEventRoot: window,
       throttle: 0,
       catchPoint: '100%'
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
+    this.elemEventRoot = this.settings.elemEventRoot;
     this.topOffsetsSelector = this.settings.topOffsetsSelector;
     this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
     this.offsetTop = 0;
     this.offsetBottom = 0;
     this.callBacks = {};
-    this.eventName = 'scroll';
-    this.eventRoot = this.settings.eventRoot;
+    this.eventName = "scroll.".concat(this.id);
     this.isRunning = false;
     this.lastSctop = 0;
     this.lastScBottom = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.settings.eventRoot);
   }
 
   _createClass(ScrollManager, [{
@@ -721,7 +755,7 @@ var ScrollManager = /*#__PURE__*/function () {
     value: function runCallBacksAll() {
       var _this = this;
 
-      var scTop = this.scTop = this.eventRoot.pageYOffset,
+      var scTop = this.scTop = this.elemEventRoot.pageYOffset,
           offsetTop = this.offsetTop = _getMaxOffset(this.topOffsetsSelector, 'top'),
           offsetBottom = this.offsetBottom = _getMaxOffset(this.bottomOffsetsSelector, 'bottom'),
           vwTop = this.vwTop = scTop - offsetTop,
@@ -795,9 +829,12 @@ var ScrollManager = /*#__PURE__*/function () {
   }, {
     key: "setUp",
     value: function setUp() {
+      var _this2 = this;
+
       if (!this.callBacks.length) {
-        new _utilities_events__WEBPACK_IMPORTED_MODULE_3__.default(this, this.eventRoot);
-        this.eventRoot.on(this.eventName, this.handle);
+        this.evtRoot.on(this.eventName, function (e) {
+          _this2.handle();
+        });
       }
 
       return this;
@@ -805,16 +842,15 @@ var ScrollManager = /*#__PURE__*/function () {
   }, {
     key: "destroy",
     value: function destroy() {
-      this.eventRoot.off(this.eventName, this.handle);
+      this.evtRoot.off(this.eventName);
       return this;
     }
   }, {
     key: "handle",
     value: function handle() {
-      var _this2 = this;
+      var _this3 = this;
 
       var that = this;
-      console.info('handleOk');
 
       if (!this.isRunning) {
         this.isRunning = true;
@@ -823,7 +859,7 @@ var ScrollManager = /*#__PURE__*/function () {
           _throttle(this.runCallBacksAll);
         } else {
           requestAnimationFrame(function () {
-            _this2.runCallBacksAll();
+            _this3.runCallBacksAll();
           });
         }
       }
@@ -925,7 +961,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _js_modules_utilities_closest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/utilities/closest */ "./src/js/_modules/utilities/closest.js");
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -957,6 +993,8 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
     this.isPlaying = false;
     this.src = this.elemVideo.src;
     this.elemCover = document.createElement('div');
+    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemVideo);
+    this.evtCover = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemCover);
     this.init();
   }
 
@@ -976,27 +1014,36 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on() {
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_2__.default(this, this.elemVideo);
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_2__.default(this, this.elemCover);
-      this.elemVideo.on('canplay', this.handleForCanplay);
-      this.elemVideo.on('play', this.handleForPlay);
-      this.elemVideo.on('pause', this.handleForPause);
-      this.elemVideo.on('ended', this.handleForEnded);
+      var _this = this;
+
+      this.evtVideo.on("canplay.".concat(this.id), function () {
+        _this.handleForCanplay();
+      });
+      this.evtVideo.on("play.".concat(this.id), function () {
+        _this.handleForPlay();
+      });
+      this.evtVideo.on("pause.".concat(this.id), function () {
+        _this.handleForPause();
+      });
+      this.evtVideo.on("ended.".concat(this.id), function () {
+        _this.handleForEnded();
+      });
     }
   }, {
     key: "off",
     value: function off() {
-      this.elemVideo.off('canplay', this.handleForCanplay);
-      this.elemVideo.off('play', this.handleForPlay);
-      this.elemVideo.off('pause', this.handleForPause);
-      this.elemVideo.off('ended', this.handleForEnded);
-      this.elemCover.off('click touchend', this.handleForCoverClick);
+      this.evtVideo.off(".".concat(this.id));
+      this.evtCover.off(".".concat(this.id));
     }
   }, {
     key: "handleForCanplay",
     value: function handleForCanplay() {
+      var _this2 = this;
+
       this.elemWrapper.classList.add(this.settings.classNameOfCanPlay);
-      this.elemCover.on('click touchend', this.handleForCoverClick);
+      this.evtCover.on("click.".concat(this.id, " touchend.").concat(this.id), function (e) {
+        _this2.handleForCoverClick(e);
+      });
     }
   }, {
     key: "handleForPlay",
@@ -1049,7 +1096,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_closest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/closest */ "./src/js/_modules/utilities/closest.js");
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1078,15 +1125,17 @@ var Tab = /*#__PURE__*/function () {
     this.wrapperSelector = this.settings.wrapper;
     this.triggerSelector = this.settings.trigger;
     this.targetSelector = this.settings.target;
-    this.triggerElemAll = document.querySelectorAll(this.triggerSelector);
-    this.wrapperElemAll = document.querySelectorAll(this.wrapperSelector);
+    this.elemTriggerAll = document.querySelectorAll(this.triggerSelector);
+    this.elemWrapperAll = document.querySelectorAll(this.wrapperSelector);
     this.selectedTrigger = null;
     this.selectedWrapper = null;
     this.selectedTarget = null;
     this.callBackforLoad = this.settings.onLoad;
     this.hash = null;
-    this.windowEventName = 'DOMContentLoaded hashchange';
-    this.anchorEventName = 'click';
+    this.windowEventName = "DOMContentLoaded.".concat(this.id, " hashchange.").concat(this.id);
+    this.triggerEventName = "click.".concat(this.id);
+    this.evtTrigger = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemTriggerAll);
+    this.evtWindow = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
   }
 
   _createClass(Tab, [{
@@ -1094,22 +1143,18 @@ var Tab = /*#__PURE__*/function () {
     value: function on() {
       var _this = this;
 
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_2__.default(this, window);
-      window.on(this.windowEventName, this.handleForWindowEvent);
-      Array.prototype.forEach.call(this, function (elem) {
-        new _utilities_events__WEBPACK_IMPORTED_MODULE_2__.default(_this, elem);
-        elem.on(_this.anchorEventName, _this.handleForAnchorEvent);
+      this.evtWindow.on(this.windowEventName, function () {
+        _this.handleForWindowEvent();
+      });
+      this.evtTrigger.on(this.triggerEventName, function (e) {
+        _this.handleForTriggerEvent(e);
       });
     }
   }, {
     key: "off",
     value: function off() {
-      var _this2 = this;
-
-      window.off(this.windowEventName, this.handleForWindowEvent);
-      Array.prototype.forEach.call(this, function (elem) {
-        elem.off(_this2.anchorEventName, _this2.handleForAnchorEvent);
-      });
+      this.evtWindow.off(this.windowEventName);
+      this.evtTrigger.off(this.triggerEventName);
     }
   }, {
     key: "handleForWindowEvent",
@@ -1126,8 +1171,8 @@ var Tab = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "handleForAnchorEvent",
-    value: function handleForAnchorEvent(e) {
+    key: "handleForTriggerEvent",
+    value: function handleForTriggerEvent(e) {
       this.hash = e.currentTarget.hash;
       e.preventDefault();
       history.pushState(null, null, location.pathname + this.hash);
@@ -1139,11 +1184,11 @@ var Tab = /*#__PURE__*/function () {
       var indexNumber = typeof index === 'number' ? index : 0,
           triggerElem = e.currentTarget,
           wrapperElem = (0,_utilities_closest__WEBPACK_IMPORTED_MODULE_1__.default)(triggerElem, this.wrapperSelector),
-          triggerElemAll = wrapperElem.querySelectorAll(this.triggerSelector),
+          elemTriggerAll = wrapperElem.querySelectorAll(this.triggerSelector),
           targetElemAll = wrapperElem.querySelectorAll(this.targetSelector),
           targetElem = wrapperElem.querySelector(this.hash);
       this.display({
-        elements: triggerElemAll,
+        elements: elemTriggerAll,
         targetElem: targetElem,
         key: 'hash',
         indexNumber: indexNumber
@@ -1158,22 +1203,22 @@ var Tab = /*#__PURE__*/function () {
   }, {
     key: "runAll",
     value: function runAll(index) {
-      var _this3 = this;
+      var _this2 = this;
 
       var indexNumber = typeof index === 'number' ? index : 0;
-      Array.prototype.forEach.call(this.wrapperElemAll, function (wrapper) {
-        var targetElemAll = wrapper.querySelectorAll(_this3.targetSelector),
-            triggerElemAll = wrapper.querySelectorAll(_this3.triggerSelector),
-            targetElem = wrapper.querySelector(_this3.hash);
+      Array.prototype.forEach.call(this.elemWrapperAll, function (wrapper) {
+        var targetElemAll = wrapper.querySelectorAll(_this2.targetSelector),
+            elemTriggerAll = wrapper.querySelectorAll(_this2.triggerSelector),
+            targetElem = wrapper.querySelector(_this2.hash);
 
-        _this3.display({
-          elements: triggerElemAll,
+        _this2.display({
+          elements: elemTriggerAll,
           targetElem: targetElem,
           key: 'hash',
           indexNumber: indexNumber
         });
 
-        _this3.display({
+        _this2.display({
           elements: targetElemAll,
           targetElem: targetElem,
           key: 'id',
@@ -1185,27 +1230,27 @@ var Tab = /*#__PURE__*/function () {
   }, {
     key: "display",
     value: function display(arg) {
-      var _this4 = this;
+      var _this3 = this;
 
       var key = arg.key;
       Array.prototype.forEach.call(arg.elements, function (elem, i) {
         if (arg.targetElem === null) {
           if (i === arg.indexNumber) {
-            elem.classList.add(_this4.settings.className);
+            elem.classList.add(_this3.settings.className);
           } else {
-            elem.classList.remove(_this4.settings.className);
+            elem.classList.remove(_this3.settings.className);
           }
         } else {
-          if (_this4.hash === (key === 'id' ? '#' + elem[key] : elem[key])) {
+          if (_this3.hash === (key === 'id' ? '#' + elem[key] : elem[key])) {
             if (key === 'hash') {
-              _this4.selectedTrigger = elem;
-              _this4.selectedTarget = arg.targetElem;
-              _this4.selectedWrapper = (0,_utilities_closest__WEBPACK_IMPORTED_MODULE_1__.default)(arg.targetElem, _this4.wrapperSelector);
+              _this3.selectedTrigger = elem;
+              _this3.selectedTarget = arg.targetElem;
+              _this3.selectedWrapper = (0,_utilities_closest__WEBPACK_IMPORTED_MODULE_1__.default)(arg.targetElem, _this3.wrapperSelector);
             }
 
-            elem.classList.add(_this4.settings.className);
+            elem.classList.add(_this3.settings.className);
           } else {
-            elem.classList.remove(_this4.settings.className);
+            elem.classList.remove(_this3.settings.className);
           }
         }
       });
@@ -1233,7 +1278,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1261,34 +1306,36 @@ var Toggle = /*#__PURE__*/function () {
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.eventRoot = this.settings.selectorEventRoot;
+    this.elemRoot = document.querySelector(this.settings.selectorEventRoot);
     this.elemParent = document.querySelector(this.settings.selectorParent);
-    this.elemTrigger = null;
-    this.elemTarget = null;
+    this.elemTrigger = this.elemParent.querySelector(this.settings.selectorTrigger);
+    this.elemTarget = this.elemParent.querySelector(this.settings.selectorTarget);
     this.callBackForBefore = null;
     this.callBackForAfter = null;
     this.callBackForEnd = null;
     this.isChanged = false;
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemRoot);
+    this.evtTrigger = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemTrigger);
   }
 
   _createClass(Toggle, [{
     key: "on",
     value: function on(callBackForBefore, callBackForAfter, callBackForEnd) {
-      var settings = this.settings;
-      this.elemRoot = document.querySelector(this.eventRoot);
+      var _this = this;
 
       if (this.elemParent === null) {
         return this;
       }
 
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_1__.default(this, this.elemRoot);
-      this.elemTrigger = this.elemParent.querySelector(settings.selectorTrigger);
-      this.elemTarget = this.elemParent.querySelector(settings.selectorTarget);
       this.callBackForBefore = callBackForBefore;
       this.callBackForAfter = callBackForAfter;
       this.callBackForEnd = callBackForEnd;
-      this.elemRoot.on('click', this.handleForClick);
-      this.elemRoot.on('transitionend', this.handleForTransitionend);
+      this.evtRoot.on("click.".concat(this.id), function (e) {
+        _this.handleForClick(e);
+      });
+      this.evtRoot.on("transitionend.".concat(this.id), function (e) {
+        _this.handleForTransitionend(e);
+      });
       return this;
     }
   }, {
@@ -1299,8 +1346,7 @@ var Toggle = /*#__PURE__*/function () {
       this.elemTarget = null;
       this.callBackForBefore = null;
       this.callBackForAfter = null;
-      this.elemRoot.off('click', this.handleForClick);
-      this.elemRoot.off('transitionend', this.handleForTransitionend);
+      this.evtRoot.off("click.".concat(this.id));
       return this;
     }
   }, {
@@ -1372,67 +1418,158 @@ function closest(elem, wrapper) {
 
 /***/ }),
 
-/***/ "./src/js/_modules/utilities/events.js":
-/*!*********************************************!*\
-  !*** ./src/js/_modules/utilities/events.js ***!
-  \*********************************************/
+/***/ "./src/js/_modules/utilities/eventmanager.js":
+/*!***************************************************!*\
+  !*** ./src/js/_modules/utilities/eventmanager.js ***!
+  \***************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ Events; }
+/* harmony export */   "default": function() { return /* binding */ EventManager; }
 /* harmony export */ });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Events = /*#__PURE__*/function () {
-  function Events(obj, target) {
-    _classCallCheck(this, Events);
+var EventManager = /*#__PURE__*/function () {
+  function EventManager(elemEvent) {
+    _classCallCheck(this, EventManager);
 
-    target = target || document;
-    target.on = Element.prototype.on = this.on;
-    target.off = Element.prototype.off = this.off;
-    target._bindObject = obj;
+    this.listeners = {};
+    this.elemEvent = elemEvent || document;
   }
 
-  _createClass(Events, [{
+  _createClass(EventManager, [{
     key: "on",
-    value: function on(eventName, callBack, options) {
-      callBack = callBack.bind(this._bindObject);
-
-      _runOnOff('add', eventName, this, callBack, options);
+    value: function on(strEventName, callBack, options) {
+      this.setEventListener('add', strEventName, callBack, options);
     }
   }, {
     key: "off",
-    value: function off(eventName, callBack) {
-      callBack = callBack.bind(this._bindObject);
+    value: function off(strEventName, callBack) {
+      this.setEventListener('remove', strEventName, callBack);
+    }
+  }, {
+    key: "setEventListener",
+    value: function setEventListener(prefix, strEventName, callBack, options) {
+      var _this = this;
 
-      _runOnOff('remove', eventName, this, callBack);
+      var that = this;
+      var arryEventNames = strEventName.split(' ');
+
+      var _loop = function _loop(i, len) {
+        var strEventName = arryEventNames[i],
+            spritedNames = strEventName.split('.'),
+            eventName = spritedNames[0],
+            nameSpace = spritedNames[1];
+
+        if (prefix === 'add' && eventName) {
+          if (!_this.listeners[strEventName]) {
+            _this.listeners[strEventName] = [];
+          }
+
+          _this.listeners[strEventName].push(callBack);
+
+          _this.eventListener(prefix, eventName, callBack, options);
+        }
+
+        if (prefix === 'remove') {
+          var listeners = {};
+
+          if (eventName && nameSpace) {
+            listeners = _createListeners(function (key) {
+              return key === strEventName;
+            });
+          } else if (eventName) {
+            listeners = _createListeners(function (key) {
+              return key.indexOf(eventName) === 0;
+            });
+          } else {
+            listeners = _createListeners(function (key) {
+              return key.indexOf('.') <= key.lastIndexOf(nameSpace);
+            });
+          }
+
+          for (var _i2 = 0, _Object$entries2 = Object.entries(listeners); _i2 < _Object$entries2.length; _i2++) {
+            var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
+                key = _Object$entries2$_i[0],
+                val = _Object$entries2$_i[1];
+
+            for (var _i3 = 0, _len = val.length; _i3 < _len; _i3++) {
+              if (typeof callBack !== 'function' || val[_i3] === callBack) {
+                _this.eventListener(prefix, key, val[_i3]);
+              }
+            }
+          }
+        } // if ( prefix === 'remove' )
+
+      };
+
+      for (var i = 0, len = arryEventNames.length; i < len; i++) {
+        _loop(i, len);
+      } // for
+
+
+      function _createListeners(condition) {
+        var listeners = {};
+
+        for (var _i = 0, _Object$entries = Object.entries(that.listeners); _i < _Object$entries.length; _i++) {
+          var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+              key = _Object$entries$_i[0],
+              value = _Object$entries$_i[1];
+
+          if (condition.call(null, key, value)) {
+            var splitedKey = key.split('.');
+
+            if (!listeners[splitedKey[0]]) {
+              listeners[splitedKey[0]] = [];
+            }
+
+            listeners[splitedKey[0]] = listeners[splitedKey[0]].concat(value);
+            delete that.listeners[key];
+          }
+        }
+
+        return listeners;
+      }
+    }
+  }, {
+    key: "eventListener",
+    value: function eventListener(prefix, eventName, callBack, options) {
+      var arryElem;
+
+      if (this.elemEvent.length) {
+        arryElem = this.elemEvent;
+      } else {
+        arryElem = [this.elemEvent];
+      }
+
+      Array.prototype.forEach.call(arryElem, function (elem) {
+        elem["".concat(prefix, "EventListener")](eventName, callBack, options);
+      });
     }
   }]);
 
-  return Events;
+  return EventManager;
 }();
 
 
-
-function _runOnOff(state, eventName, eventElem, callBack, options) {
-  var events = [];
-
-  if (eventName.indexOf(' ') > -1) {
-    events = eventName.split(' ');
-  } else {
-    events.push(eventName);
-  }
-
-  for (var i = 0, len = events.length; i < len; i++) {
-    eventElem["".concat(state, "EventListener")](events[i], callBack, options);
-  }
-}
 
 /***/ }),
 
@@ -1480,7 +1617,6 @@ function closest(elem, selector, wrapper) {
 
   while (!parent.matches(wrapper)) {
     if (parent.matches(selector)) {
-      console.info('matches');
       parents.push(parent);
     }
 
@@ -1509,7 +1645,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_events__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/events */ "./src/js/_modules/utilities/events.js");
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1554,6 +1690,7 @@ var VideoGround = /*#__PURE__*/function () {
     this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']);
     this.elemVideoFrame = document.querySelector(this.settings.selectorVideoFrame);
     this.elemParent = this.settings.selectorParent && this.elemVideoFrame !== null ? document.querySelector(this.settings.selectorParent) : this.elemVideoFrame.parentNode;
+    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemVideo);
   }
 
   _createClass(VideoGround, [{
@@ -1640,9 +1777,14 @@ var VideoGround = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on() {
-      new _utilities_events__WEBPACK_IMPORTED_MODULE_3__.default(this, this.elemVideo);
-      this.elemVideo.on('play', this.handleForPlay);
-      this.elemVideo.on('canplay', this.handleForCanPlay);
+      var _this2 = this;
+
+      this.evtVideo.on("play.".concat(this.id), function () {
+        _this2.handleForPlay();
+      });
+      this.evtVideo.on("canplay.".concat(this.id), function (e) {
+        _this2.handleForCanPlay(e);
+      });
       return this;
     }
   }, {
@@ -1664,7 +1806,7 @@ var VideoGround = /*#__PURE__*/function () {
 
       _eventCall(settings.onLoad);
 
-      this.off('canplay', this.handleForCanPlay);
+      this.evtVideo.off("canplay.".concat(this.id));
     }
   }, {
     key: "destroy",
@@ -1681,18 +1823,19 @@ var VideoGround = /*#__PURE__*/function () {
 
       _eventCall(this.settings.onDestroy);
 
+      this.evtVideo.off(".".concat(this.id));
       return this;
     }
   }, {
     key: "autoDestroy",
     value: function autoDestroy() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.destroyTimerId = setTimeout(function () {
-        clearTimeout(_this2.destroyTimerId);
-        _this2.destroyTimerId = null;
+        clearTimeout(_this3.destroyTimerId);
+        _this3.destroyTimerId = null;
 
-        _this2.destroy();
+        _this3.destroy();
       }, this.settings.waitTime);
     }
   }, {

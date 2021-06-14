@@ -19,7 +19,7 @@ mdls.tab = new Tab( {
   onLoad  : ( prop ) => {
     setTimeout( () => {
       mdls.rescroll.scroll( prop.wrapper );
-    }, 100 );
+    }, 200 );
   }
 } );
 mdls.tab.on();

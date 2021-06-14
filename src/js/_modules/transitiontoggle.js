@@ -5,7 +5,7 @@
  */
 
 import merge from 'lodash/mergeWith';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class Toggle {
 
@@ -19,32 +19,31 @@ export default class Toggle {
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.eventRoot = this.settings.selectorEventRoot;
+    this.elemRoot = document.querySelector( this.settings.selectorEventRoot );
     this.elemParent = document.querySelector( this.settings.selectorParent );
-    this.elemTrigger = null;
-    this.elemTarget = null;
+    this.elemTrigger = this.elemParent.querySelector( this.settings.selectorTrigger );
+    this.elemTarget = this.elemParent.querySelector( this.settings.selectorTarget );
     this.callBackForBefore = null;
     this.callBackForAfter = null;
     this.callBackForEnd = null;
     this.isChanged = false;
+    this.evtRoot = new EM( this.elemRoot );
+    this.evtTrigger = new EM( this.elemTrigger );
   }
 
   on( callBackForBefore, callBackForAfter, callBackForEnd ) {
-    const
-      settings = this.settings
-    ;
-    this.elemRoot = document.querySelector( this.eventRoot );
     if ( this.elemParent === null ) {
       return this;
     }
-    new Events( this, this.elemRoot );
-    this.elemTrigger = this.elemParent.querySelector( settings.selectorTrigger );
-    this.elemTarget = this.elemParent.querySelector( settings.selectorTarget );
     this.callBackForBefore = callBackForBefore;
     this.callBackForAfter = callBackForAfter;
     this.callBackForEnd = callBackForEnd;
-    this.elemRoot.on( 'click', this.handleForClick );
-    this.elemRoot.on( 'transitionend', this.handleForTransitionend );
+    this.evtRoot.on( `click.${this.id}`, ( e ) => {
+      this.handleForClick( e );
+    } );
+    this.evtRoot.on( `transitionend.${this.id}`, ( e ) => {
+      this.handleForTransitionend( e );
+    } );
     return this;
   }
 
@@ -54,8 +53,7 @@ export default class Toggle {
     this.elemTarget = null;
     this.callBackForBefore = null;
     this.callBackForAfter = null;
-    this.elemRoot.off( 'click', this.handleForClick );
-    this.elemRoot.off( 'transitionend', this.handleForTransitionend );
+    this.evtRoot.off( `click.${this.id}` );
     return this;
   }
 

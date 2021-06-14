@@ -7,7 +7,7 @@
 import merge from 'lodash/mergeWith';
 import offset from './utilities/offset';
 import '../_vendor/rAf';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 let
   counter = 0
@@ -21,30 +21,31 @@ export default class ScrollManager {
       topOffsetsSelector    : '',
       bottomOffsetsSelector : '',
       delay         : 32,
-      eventRoot     : window,
+      elemEventRoot : window,
       throttle      : 0,
       catchPoint    : '100%',
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
+    this.elemEventRoot = this.settings.elemEventRoot;
     this.topOffsetsSelector = this.settings.topOffsetsSelector;
     this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
     this.offsetTop = 0;
     this.offsetBottom = 0;
     this.callBacks = {};
-    this.eventName = 'scroll';
-    this.eventRoot = this.settings.eventRoot;
+    this.eventName = `scroll.${this.id}`;
     this.isRunning = false;
     this.lastSctop = 0;
     this.lastScBottom = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
+    this.evtRoot = new EM( this.settings.eventRoot );
   }
 
   runCallBacksAll() {
     const
-      scTop         = this.scTop        = this.eventRoot.pageYOffset
+      scTop         = this.scTop        = this.elemEventRoot.pageYOffset
       ,offsetTop    = this.offsetTop    = _getMaxOffset( this.topOffsetsSelector, 'top' )
       ,offsetBottom = this.offsetBottom = _getMaxOffset( this.bottomOffsetsSelector, 'bottom' )
       ,vwTop        = this.vwTop        = scTop - offsetTop
@@ -117,14 +118,15 @@ export default class ScrollManager {
 
   setUp() {
     if ( !this.callBacks.length ) {
-      new Events( this, this.eventRoot );
-      this.eventRoot.on( this.eventName, this.handle );
+      this.evtRoot.on( this.eventName, ( e ) => {
+        this.handle();
+      } );
     }
     return this;
   }
 
   destroy() {
-    this.eventRoot.off( this.eventName, this.handle );
+    this.evtRoot.off( this.eventName );
     return this;
   }
 
@@ -132,7 +134,6 @@ export default class ScrollManager {
     const
       that = this
     ;
-    console.info( 'handleOk' );
     if ( !this.isRunning ) {
       this.isRunning = true;
       if ( typeof this.settings.throttle === 'number' && this.settings.throttle > 0 ) {

@@ -7,7 +7,7 @@
 import './polyfills/matches.js';
 import closest from './utilities/closest.js';
 import merge from 'lodash/mergeWith';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class AdaptiveHover {
 
@@ -17,42 +17,49 @@ export default class AdaptiveHover {
       target    : '',
       timeout   : 400,
       range     : 10,
-      eventRoot : document.body,
+      elemEventRoot : document.body,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.target = null;
-    this.eventRoot = this.settings.eventRoot;
+    this.elemEventRoot = this.settings.elemEventRoot;
     this.callBackForEnter = null;
     this.callBackForLeave = null;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.enteringEventName = 'touchstart mouseover';
-    this.leavingEventName = 'touchend mouseout';
-    this.outSideEventName = 'touchend click';
+    this.enteringEventName = `touchstart.${this.id} mouseover.${this.id}`;
+    this.leavingEventName = `touchend.${this.id} mouseout.${this.id}`;
+    this.outSideEventName = `touchend.${this.id} click.${this.id}`;
+    this.evtRoot = new EM( this.elemEventRoot );
+    this.elemEventRoot.addEventListener( 'click', () => {
+      this.off();
+    } );
   }
 
   on( callBackForEnter, callBackForLeave ) {
     const
       settings = this.settings
     ;
-    new Events( this, this.eventRoot );
     this.callBackForEnter = callBackForEnter;
     this.callBackForLeave = callBackForLeave;
     this.target = document.querySelector( settings.target );
-    this.eventRoot.on( this.enteringEventName, this.handleForEnter );
-    this.eventRoot.on( this.leavingEventName, this.handleForLeave );
-    this.eventRoot.on( this.outSideEventName, this.handleForOutSide );
+    this.evtRoot.on( this.enteringEventName, ( e ) => {
+      this.handleForEnter( e );
+    } );
+    this.evtRoot.on( this.leavingEventName, ( e ) =>{
+      this.handleForLeave( e );
+    } );
+    this.evtRoot.on( this.outSideEventName, ( e )  => {
+      this.handleForOutSide( e );
+    } );
     return this;
   }
 
   off() {
     this.clear();
-    this.eventRoot.off( this.enteringEventName, this.handleForEnter );
-    this.eventRoot.off( this.leavingEventName, this.handleForLeave );
-    this.eventRoot.off( this.outSideEventName, this.handleForOutSide );
+    this.evtRoot.off( `.${this.id}` );
     return this;
   }
 

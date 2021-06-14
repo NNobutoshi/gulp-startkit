@@ -52,7 +52,7 @@
       {
         "beforeLineComment": false
       }
-    ],
+    ]
   },
   "parserOptions": {
     "ecmaVersion": 2018,

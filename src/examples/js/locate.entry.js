@@ -34,7 +34,6 @@ function _run() {
   mdls.locate.run( inst => {
     if ( inst.currentItem ) {
       parents( inst.currentItem, '.pl-nav_item', '.pl-nav' ).forEach( ( elem ) => {
-        console.info( 'parents', elem );
         elem.classList.add( 'js-current' );
       } );
     }

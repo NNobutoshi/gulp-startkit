@@ -1,6 +1,6 @@
 import merge from 'lodash/mergeWith';
 import closest from './utilities/closest';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class Tab {
 
@@ -19,31 +19,31 @@ export default class Tab {
     this.wrapperSelector = this.settings.wrapper;
     this.triggerSelector = this.settings.trigger;
     this.targetSelector = this.settings.target;
-    this.triggerElemAll = document.querySelectorAll( this.triggerSelector );
-    this.wrapperElemAll = document.querySelectorAll( this.wrapperSelector );
+    this.elemTriggerAll = document.querySelectorAll( this.triggerSelector );
+    this.elemWrapperAll = document.querySelectorAll( this.wrapperSelector );
     this.selectedTrigger = null;
     this.selectedWrapper = null;
     this.selectedTarget  = null;
     this.callBackforLoad = this.settings.onLoad;
     this.hash = null;
-    this.windowEventName = 'DOMContentLoaded hashchange';
-    this.anchorEventName = 'click';
+    this.windowEventName = `DOMContentLoaded.${this.id} hashchange.${this.id}`;
+    this.triggerEventName = `click.${this.id}`;
+    this.evtTrigger = new EM( this.elemTriggerAll );
+    this.evtWindow = new EM( window );
   }
 
   on() {
-    new Events( this, window );
-    window.on( this.windowEventName, this.handleForWindowEvent );
-    Array.prototype.forEach.call( this, ( elem ) => {
-      new Events( this, elem );
-      elem.on( this.anchorEventName, this.handleForAnchorEvent );
+    this.evtWindow.on( this.windowEventName, () => {
+      this.handleForWindowEvent();
+    } );
+    this.evtTrigger.on( this.triggerEventName, ( e ) => {
+      this.handleForTriggerEvent( e );
     } );
   }
 
   off() {
-    window.off( this.windowEventName, this.handleForWindowEvent );
-    Array.prototype.forEach.call( this, ( elem ) => {
-      elem.off( this.anchorEventName, this.handleForAnchorEvent );
-    } );
+    this.evtWindow.off( this.windowEventName );
+    this.evtTrigger.off( this.triggerEventName );
   }
 
   handleForWindowEvent() {
@@ -58,7 +58,7 @@ export default class Tab {
     }
   }
 
-  handleForAnchorEvent( e ) {
+  handleForTriggerEvent( e ) {
     this.hash = e.currentTarget.hash;
     e.preventDefault();
     history.pushState( null, null, location.pathname + this.hash );
@@ -70,12 +70,12 @@ export default class Tab {
       indexNumber = ( typeof index === 'number' ) ? index : 0
       ,triggerElem = e.currentTarget
       ,wrapperElem = closest( triggerElem, this.wrapperSelector )
-      ,triggerElemAll = wrapperElem.querySelectorAll( this.triggerSelector )
+      ,elemTriggerAll = wrapperElem.querySelectorAll( this.triggerSelector )
       ,targetElemAll = wrapperElem.querySelectorAll( this.targetSelector )
       ,targetElem = wrapperElem.querySelector( this.hash )
     ;
     this.display( {
-      elements    : triggerElemAll,
+      elements    : elemTriggerAll,
       targetElem  : targetElem,
       key         : 'hash',
       indexNumber : indexNumber,
@@ -92,14 +92,14 @@ export default class Tab {
     const
       indexNumber = ( typeof index === 'number' ) ? index : 0
     ;
-    Array.prototype.forEach.call( this.wrapperElemAll, ( wrapper ) => {
+    Array.prototype.forEach.call( this.elemWrapperAll, ( wrapper ) => {
       const
         targetElemAll = wrapper.querySelectorAll( this.targetSelector )
-        ,triggerElemAll = wrapper.querySelectorAll( this.triggerSelector )
+        ,elemTriggerAll = wrapper.querySelectorAll( this.triggerSelector )
         ,targetElem = wrapper.querySelector( this.hash )
       ;
       this.display( {
-        elements    : triggerElemAll,
+        elements    : elemTriggerAll,
         targetElem  : targetElem,
         key         : 'hash',
         indexNumber : indexNumber,

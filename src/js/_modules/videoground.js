@@ -1,7 +1,7 @@
 import merge from 'lodash/mergeWith';
 import 'core-js/modules/es.promise';
 import 'regenerator-runtime/runtime';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class VideoGround {
 
@@ -34,6 +34,7 @@ export default class VideoGround {
       document.querySelector( this.settings.selectorParent ) :
       this.elemVideoFrame.parentNode
     ;
+    this.evtVideo = new EM( this.elemVideo );
   }
 
   run() {
@@ -92,9 +93,12 @@ export default class VideoGround {
   }
 
   on() {
-    new Events( this, this.elemVideo );
-    this.elemVideo.on( 'play', this.handleForPlay );
-    this.elemVideo.on( 'canplay', this.handleForCanPlay );
+    this.evtVideo.on( `play.${this.id}`, () => {
+      this.handleForPlay();
+    } );
+    this.evtVideo.on( `canplay.${this.id}`, ( e ) => {
+      this.handleForCanPlay( e );
+    } );
     return this;
   }
 
@@ -115,7 +119,7 @@ export default class VideoGround {
     ;
     this.elemVideo.play();
     _eventCall( settings.onLoad );
-    this.off( 'canplay', this.handleForCanPlay );
+    this.evtVideo.off( `canplay.${this.id}` );
   }
 
   destroy() {
@@ -130,6 +134,7 @@ export default class VideoGround {
       this.elemVideoFrame.removeChild( this.elemVideo );
     }
     _eventCall( this.settings.onDestroy );
+    this.evtVideo.off( `.${this.id}` );
     return this;
   }
 

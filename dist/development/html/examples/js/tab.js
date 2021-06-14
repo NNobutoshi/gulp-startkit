@@ -27,7 +27,7 @@ mdls.tab = new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
   onLoad: function onLoad(prop) {
     setTimeout(function () {
       mdls.rescroll.scroll(prop.wrapper);
-    }, 100);
+    }, 200);
   }
 });
 mdls.tab.on();

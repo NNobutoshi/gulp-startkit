@@ -1,6 +1,6 @@
 import merge from 'lodash/mergeWith';
 import closest from '../../js/_modules/utilities/closest';
-import Events from './utilities/events';
+import EM from './utilities/eventmanager';
 
 export default class SimpleVideoPlay {
 
@@ -22,6 +22,8 @@ export default class SimpleVideoPlay {
     this.isPlaying = false;
     this.src = this.elemVideo.src;
     this.elemCover = document.createElement( 'div' );
+    this.evtVideo = new EM( this.elemVideo );
+    this.evtCover = new EM( this.elemCover );
     this.init();
   }
 
@@ -36,25 +38,30 @@ export default class SimpleVideoPlay {
   }
 
   on() {
-    new Events( this, this.elemVideo );
-    new Events( this, this.elemCover );
-    this.elemVideo.on( 'canplay', this.handleForCanplay );
-    this.elemVideo.on( 'play', this.handleForPlay );
-    this.elemVideo.on( 'pause', this.handleForPause );
-    this.elemVideo.on( 'ended', this.handleForEnded );
+    this.evtVideo.on( `canplay.${this.id}`, () => {
+      this.handleForCanplay();
+    } );
+    this.evtVideo.on( `play.${this.id}`,() => {
+      this.handleForPlay();
+    } );
+    this.evtVideo.on( `pause.${this.id}`, () => {
+      this.handleForPause();
+    } );
+    this.evtVideo.on( `ended.${this.id}`, () => {
+      this.handleForEnded();
+    } );
   }
 
   off() {
-    this.elemVideo.off( 'canplay', this.handleForCanplay );
-    this.elemVideo.off( 'play', this.handleForPlay );
-    this.elemVideo.off( 'pause', this.handleForPause );
-    this.elemVideo.off( 'ended', this.handleForEnded );
-    this.elemCover.off( 'click touchend', this.handleForCoverClick );
+    this.evtVideo.off( `.${this.id}` );
+    this.evtCover.off( `.${this.id}` );
   }
 
   handleForCanplay() {
     this.elemWrapper.classList.add( this.settings.classNameOfCanPlay );
-    this.elemCover.on( 'click touchend', this.handleForCoverClick );
+    this.evtCover.on( `click.${this.id} touchend.${this.id}`, ( e ) => {
+      this.handleForCoverClick( e );
+    } );
   }
 
   handleForPlay() {
