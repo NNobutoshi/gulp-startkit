@@ -5,7 +5,7 @@
  */
 
 import merge from 'lodash/mergeWith';
-import EM from './utilities/eventmanager';
+import EM from '../utilities/eventmanager';
 
 export default class Toggle {
 
@@ -23,21 +23,21 @@ export default class Toggle {
     this.elemParent = document.querySelector( this.settings.selectorParent );
     this.elemTrigger = this.elemParent.querySelector( this.settings.selectorTrigger );
     this.elemTarget = this.elemParent.querySelector( this.settings.selectorTarget );
-    this.callBackForBefore = null;
-    this.callBackForAfter = null;
-    this.callBackForEnd = null;
+    this.callbackForBefore = null;
+    this.callbackForAfter = null;
+    this.callbackForEnd = null;
     this.isChanged = false;
     this.evtRoot = new EM( this.elemRoot );
     this.evtTrigger = new EM( this.elemTrigger );
   }
 
-  on( callBackForBefore, callBackForAfter, callBackForEnd ) {
+  on( callbackForBefore, callbackForAfter, callbackForEnd ) {
     if ( this.elemParent === null ) {
       return this;
     }
-    this.callBackForBefore = callBackForBefore;
-    this.callBackForAfter = callBackForAfter;
-    this.callBackForEnd = callBackForEnd;
+    this.callbackForBefore = callbackForBefore;
+    this.callbackForAfter = callbackForAfter;
+    this.callbackForEnd = callbackForEnd;
     this.evtRoot.on( `click.${this.id}`, ( e ) => {
       this.handleForClick( e );
     } );
@@ -51,8 +51,8 @@ export default class Toggle {
     this.elemParent = null;
     this.elemTrigger = null;
     this.elemTarget = null;
-    this.callBackForBefore = null;
-    this.callBackForAfter = null;
+    this.callbackForBefore = null;
+    this.callbackForAfter = null;
     this.evtRoot.off( `click.${this.id}` );
     return this;
   }
@@ -65,23 +65,25 @@ export default class Toggle {
         this.before( e );
       }
     }
+    return false;
   }
 
   handleForTransitionend( e ) {
-    if ( this.elemTarget.isEqualNode( e.target ) && this.isChanged === false )  {
-      if ( typeof this.callBackForEnd === 'function' ) {
-        this.callBackForEnd.call( this, e, this );
+    if ( this.elemTarget.isEqualNode( e.target ) ) {
+      if ( typeof this.callbackForEnd === 'function' ) {
+        this.callbackForEnd.call( this, e, this );
       }
     }
+    return false;
   }
 
   before( e ) {
     this.isChanged = true;
-    this.callBackForBefore.call( this, e, this );
+    this.callbackForBefore.call( this, e, this );
   }
 
   after( e ) {
     this.isChanged = false;
-    this.callBackForAfter.call( this, e, this );
+    this.callbackForAfter.call( this, e, this );
   }
 }

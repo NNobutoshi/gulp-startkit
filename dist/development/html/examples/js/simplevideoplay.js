@@ -14,8 +14,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 new _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  outerSelector: '.pl-videoPlayer_outer',
-  videoSelector: '.pl-videoPlayer_video'
+  selectorOuter: '.pl-videoPlayer_outer',
+  selectorVideo: '.pl-videoPlayer_video'
 });
 
 /***/ })

@@ -1,5 +1,5 @@
 import merge from 'lodash/mergeWith';
-import closest from '../../js/_modules/utilities/closest';
+import './polyfills/closest';
 import EM from './utilities/eventmanager';
 
 export default class SimpleVideoPlay {
@@ -7,8 +7,8 @@ export default class SimpleVideoPlay {
   constructor( options ) {
     this.defaultSettings = {
       name               : 'SimpleVideoPlay',
-      videoSelector      : '',
-      outerSelector      : '',
+      selectorVideo      : '',
+      selectorOuter      : '',
       classNameOfCover   : 'js-video_cover',
       classNameOfCanPlay : 'js-video--canPlay',
       classNameOfPlaying : 'js-video--isPlaying',
@@ -16,12 +16,12 @@ export default class SimpleVideoPlay {
       classNameOfEnded   : 'js-video--isEnded',
     };
     this.settings = merge( {}, this.defaultSettings, options );
-    this.elemVideo = document.querySelector( this.settings.videoSelector );
-    this.elemWrapper = closest( this.elemVideo, this.settings.outerSelector );
     this.id = this.settings.name;
     this.isPlaying = false;
-    this.src = this.elemVideo.src;
+    this.elemVideo = document.querySelector( this.settings.selectorVideo );
+    this.elemWrapper = this.elemVideo.closest( this.settings.selectorOuter );
     this.elemCover = document.createElement( 'div' );
+    this.src = this.elemVideo.src;
     this.evtVideo = new EM( this.elemVideo );
     this.evtCover = new EM( this.elemCover );
     this.init();

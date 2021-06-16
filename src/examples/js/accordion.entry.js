@@ -1,6 +1,6 @@
 'use strict';
 
-import Toggle from '../../js/_modules/transitiontoggle.js';
+import Toggle from '../../js/_modules/libs/transitiontoggle.js';
 
 const
   mdls = {}
@@ -27,6 +27,7 @@ mdls.toggle.on(
     }, 100 );
   },
   ( e, inst ) => {
+    console.info( 'ischanged', inst.isChanged );
     if ( inst.isChanged === true ) {
       inst.elemParent.classList.add( 'js-list--isOpen' );
     } else {

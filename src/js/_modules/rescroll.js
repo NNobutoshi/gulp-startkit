@@ -4,7 +4,7 @@
 
 import merge from 'lodash/mergeWith';
 import offset from './utilities/offset';
-import '../_vendor/rAf';
+import '../_vendor/raf';
 import EM from './utilities/eventmanager';
 
 export default class Rescroll {

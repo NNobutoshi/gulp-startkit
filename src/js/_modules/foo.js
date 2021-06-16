@@ -1,5 +1,5 @@
-export default function( callBack ) {
-  if ( typeof callBack === 'function' ) {
-    callBack();
+export default function( callback ) {
+  if ( typeof callback === 'function' ) {
+    callback();
   }
 }

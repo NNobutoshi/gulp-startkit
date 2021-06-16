@@ -1,21 +1,31 @@
 export default class EventManager {
 
-  constructor( elemEvent ) {
+  constructor( elemEventer ) {
     this.listeners = {};
-    this.elemEvent = elemEvent || document;
+    this.elemEventer = elemEventer || document;
   }
 
-  on( strEventName, callBack, options ) {
-    this.setEventListener( 'add', strEventName, callBack, options );
+  on( strEventName, callback, options ) {
+    this.setUp( 'add', strEventName, callback, options );
+    return this;
   }
 
-  off( strEventName, callBack ) {
-    this.setEventListener( 'remove', strEventName, callBack );
+  off( strEventName, callback ) {
+    this.setUp( 'remove', strEventName, callback );
+    return this;
   }
 
-  setEventListener( prefix, strEventName, callBack, options ) {
-    const that = this;
-    const arryEventNames = strEventName.split( ' ' );
+  trigger( strEventName ) {
+    this.setUp( 'trigger', strEventName );
+    return this;
+  }
+
+  setUp( prefix, strEventName, callback, options ) {
+    const
+      that = this
+      ,arryEventNames = strEventName.split( ' ' )
+    ;
+
     for ( let i = 0, len = arryEventNames.length; i < len; i++ ) {
       const
         strEventName = arryEventNames[ i ]
@@ -28,33 +38,50 @@ export default class EventManager {
         if ( !this.listeners[ strEventName ] ) {
           this.listeners[ strEventName ] = [];
         }
-        this.listeners[ strEventName ].push( callBack );
-        this.eventListener( prefix, eventName, callBack, options );
-      }
+        this.listeners[ strEventName ].push( callback );
+        this.setEventListener( prefix, eventName, callback, options );
+      } // if( prefix == 'add' )
 
       if ( prefix === 'remove' ) {
         let listeners = {};
         if ( eventName && nameSpace ) {
-          listeners = _createListeners( key => key === strEventName );
+          listeners = _collectListeners(
+            key => key === strEventName
+          );
         } else if ( eventName ) {
-          listeners = _createListeners( key => key.indexOf( eventName ) === 0 );
+          listeners = _collectListeners(
+            key => key.indexOf( eventName ) === 0
+          );
         } else {
-          listeners = _createListeners( key => key.indexOf( '.' ) <= key.lastIndexOf( nameSpace ) );
+          listeners = _collectListeners(
+            key => key.indexOf( '.' ) <= key.lastIndexOf( nameSpace )
+          );
         }
 
         for ( const [ key, val ] of Object.entries( listeners ) ) {
           for ( let i = 0, len = val.length; i < len; i++ ) {
-            if ( typeof callBack !== 'function' || val[ i ] === callBack ) {
-              this.eventListener( prefix, key, val[ i ] );
+            if ( typeof callback !== 'function' || val[ i ] === callback ) {
+              this.setEventListener( prefix, key, val[ i ] );
             }
           }
         }
 
       } // if ( prefix === 'remove' )
 
+      if ( prefix === 'trigger' ) {
+        if ( eventName && nameSpace ) {
+          _collectListeners( key => key === strEventName, true );
+        } else if ( eventName ) {
+          _collectListeners( key => key.indexOf( eventName ) === 0, true );
+        } else {
+          _collectListeners( key => key.indexOf( '.' ) <= key.lastIndexOf( nameSpace ), true );
+        }
+
+      } // if ( prefix === 'trigger' )
+
     } // for
 
-    function _createListeners( condition ) {
+    function _collectListeners( condition, calling ) {
       const listeners = {};
       for ( const [ key, value ] of Object.entries( that.listeners ) ) {
         if ( condition.call( null, key, value ) ) {
@@ -66,21 +93,31 @@ export default class EventManager {
           delete that.listeners[ key ];
         }
       }
-      return listeners;
+      if ( calling ) {
+        for ( const value of Object.values( listeners ) ) {
+          const arry = value;
+          Array.prototype.forEach.call( arry, ( func ) => {
+            func( null );
+          } );
+        }
+      } else {
+        return listeners;
+      }
     }
 
   }
 
-  eventListener( prefix, eventName, callBack, options ) {
-    let arryElem;
-    if ( this.elemEvent.length ) {
-      arryElem = this.elemEvent;
+  setEventListener( prefix, eventName, callback, options ) {
+    let arryElements;
+    if ( this.elemEventer.length ) {
+      arryElements = this.elemEventer;
     } else {
-      arryElem = [ this.elemEvent ];
+      arryElements = [ this.elemEventer ];
     }
-    Array.prototype.forEach.call( arryElem, ( elem ) => {
-      elem[ `${prefix}EventListener` ]( eventName, callBack, options );
+    Array.prototype.forEach.call( arryElements, ( elem ) => {
+      elem[ `${prefix}EventListener` ]( eventName, callback, options );
     } );
   }
+
 }
 

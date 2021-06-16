@@ -13,9 +13,9 @@ mdls.rescroll = new Rescroll( {
 mdls.rescroll.on();
 
 mdls.tab = new Tab( {
-  wrapper : '.pl-sectionGroup',
-  trigger : '.pl-tabmenu_anchor',
-  target  : '.pl-section',
+  selectorWrapper : '.pl-sectionGroup',
+  selectorTrigger : '.pl-tabmenu_anchor',
+  selectorTarget  : '.pl-section',
   onLoad  : ( prop ) => {
     setTimeout( () => {
       mdls.rescroll.scroll( prop.wrapper );

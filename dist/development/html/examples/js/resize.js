@@ -9,12 +9,12 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/optimizedresize.js */ "./src/js/_modules/optimizedresize.js");
+/* harmony import */ var _js_modules_libs_optimizedresize__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/optimizedresize */ "./src/js/_modules/libs/optimizedresize.js");
 
 
 
 var mdls = {};
-mdls.resize = new _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_0__.default();
+mdls.resize = new _js_modules_libs_optimizedresize__WEBPACK_IMPORTED_MODULE_0__.default();
 mdls.resize.one(function (inst) {
   document.querySelector('.pl-test_one').textContent = inst.query;
 }, '(min-width: 980px)').turn(function (inst) {
@@ -39,9 +39,9 @@ mdls.resize.one(function (inst) {
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

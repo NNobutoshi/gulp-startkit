@@ -1,30 +1,30 @@
 import merge from 'lodash/mergeWith';
-import closest from './utilities/closest';
+import './polyfills/closest';
 import EM from './utilities/eventmanager';
 
 export default class Tab {
 
   constructor( options ) {
     this.defaultSettings = {
-      name         : 'tab',
-      trigger      : '',
-      target       : '',
-      wrapper      : '',
-      className    : 'js-selected',
-      defaultIndex : 0,
-      onLoad       : null,
+      name            : 'tab',
+      selectorTrigger : '',
+      selectorTarget  : '',
+      selectorWrapper : '',
+      className       : 'js-selected',
+      defaultIndex    : 0,
+      onLoad          : null,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.wrapperSelector = this.settings.wrapper;
-    this.triggerSelector = this.settings.trigger;
-    this.targetSelector = this.settings.target;
-    this.elemTriggerAll = document.querySelectorAll( this.triggerSelector );
-    this.elemWrapperAll = document.querySelectorAll( this.wrapperSelector );
+    this.selectorWrapper = this.settings.selectorWrapper;
+    this.selectorTrigger = this.settings.selectorTrigger;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.elemTriggerAll = document.querySelectorAll( this.selectorTrigger );
+    this.elemWrapperAll = document.querySelectorAll( this.selectorWrapper );
     this.selectedTrigger = null;
     this.selectedWrapper = null;
     this.selectedTarget  = null;
-    this.callBackforLoad = this.settings.onLoad;
+    this.callbackforLoad = this.settings.onLoad;
     this.hash = null;
     this.windowEventName = `DOMContentLoaded.${this.id} hashchange.${this.id}`;
     this.triggerEventName = `click.${this.id}`;
@@ -49,8 +49,8 @@ export default class Tab {
   handleForWindowEvent() {
     this.hash = location.hash || null;
     this.runAll();
-    if ( typeof this.callBackforLoad === 'function' ) {
-      this.callBackforLoad.call( this, {
+    if ( typeof this.callbackforLoad === 'function' ) {
+      this.callbackforLoad.call( this, {
         trigger : this.selectedTrigger,
         wrapper : this.selectedWrapper,
         target  : this.selectedTarget,
@@ -69,20 +69,20 @@ export default class Tab {
     const
       indexNumber = ( typeof index === 'number' ) ? index : 0
       ,triggerElem = e.currentTarget
-      ,wrapperElem = closest( triggerElem, this.wrapperSelector )
-      ,elemTriggerAll = wrapperElem.querySelectorAll( this.triggerSelector )
-      ,targetElemAll = wrapperElem.querySelectorAll( this.targetSelector )
-      ,targetElem = wrapperElem.querySelector( this.hash )
+      ,wrapperElem = triggerElem.closest( this.selectorWrapper )
+      ,elemTriggerAll = wrapperElem.querySelectorAll( this.selectorTrigger )
+      ,elemTargetAll = wrapperElem.querySelectorAll( this.selectorTarget )
+      ,elemTarget = wrapperElem.querySelector( this.hash )
     ;
     this.display( {
       elements    : elemTriggerAll,
-      targetElem  : targetElem,
+      elemTarget  : elemTarget,
       key         : 'hash',
       indexNumber : indexNumber,
     } );
     this.display( {
-      elements    : targetElemAll,
-      targetElem  : targetElem,
+      elements    : elemTargetAll,
+      elemTarget  : elemTarget,
       key         : 'id',
       indexNumber : indexNumber,
     } );
@@ -94,19 +94,19 @@ export default class Tab {
     ;
     Array.prototype.forEach.call( this.elemWrapperAll, ( wrapper ) => {
       const
-        targetElemAll = wrapper.querySelectorAll( this.targetSelector )
-        ,elemTriggerAll = wrapper.querySelectorAll( this.triggerSelector )
-        ,targetElem = wrapper.querySelector( this.hash )
+        elemTargetAll = wrapper.querySelectorAll( this.selectorTarget )
+        ,elemTriggerAll = wrapper.querySelectorAll( this.selectorTrigger )
+        ,elemTarget = wrapper.querySelector( this.hash )
       ;
       this.display( {
         elements    : elemTriggerAll,
-        targetElem  : targetElem,
+        elemTarget  : elemTarget,
         key         : 'hash',
         indexNumber : indexNumber,
       } );
       this.display( {
-        elements    : targetElemAll,
-        targetElem  : targetElem,
+        elements    : elemTargetAll,
+        elemTarget  : elemTarget,
         key         : 'id',
         indexNumber : indexNumber,
       } );
@@ -119,7 +119,7 @@ export default class Tab {
       key = arg.key
     ;
     Array.prototype.forEach.call( arg.elements, ( elem, i ) => {
-      if ( arg.targetElem === null ) {
+      if ( arg.elemTarget === null ) {
         if ( i === arg.indexNumber ) {
           elem.classList.add( this.settings.className );
         } else {
@@ -129,8 +129,8 @@ export default class Tab {
         if ( this.hash === ( ( key === 'id' ) ? '#' + elem[ key ] : elem [ key ] ) ) {
           if ( key === 'hash' ) {
             this.selectedTrigger = elem;
-            this.selectedTarget = arg.targetElem;
-            this.selectedWrapper = closest( arg.targetElem, this.wrapperSelector );
+            this.selectedTarget = arg.elemTarget;
+            this.selectedWrapper = arg.elemTarget.closest( this.selectorWrapper );
           }
           elem.classList.add( this.settings.className );
         } else {

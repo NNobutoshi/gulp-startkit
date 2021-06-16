@@ -1,8 +1,8 @@
 'use strict';
 
-import ScrollManager from '../../js/_modules/scrollmanager.js';
-import OptimizedResize from '../../js/_modules/optimizedresize.js';
-import VideoGround from '../../js/_modules/videoground.js';
+import ScrollManager from '../../js/_modules/libs/scrollmanager';
+import OptimizedResize from '../../js/_modules/libs/optimizedresize';
+import VideoGround from '../../js/_modules/videoground';
 
 const
   mdls = {

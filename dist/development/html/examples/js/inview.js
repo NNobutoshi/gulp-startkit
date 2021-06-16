@@ -9,12 +9,12 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/scrollmanager.js */ "./src/js/_modules/scrollmanager.js");
+/* harmony import */ var _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/scrollmanager */ "./src/js/_modules/libs/scrollmanager.js");
 
 
 
 var mdls = {};
-mdls.scrollManager = new _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__.default({
+mdls.scrollManager = new _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__.default({
   throttle: 0
 });
 mdls.scrollManager.on(function (ovserved) {
@@ -30,9 +30,9 @@ mdls.scrollManager.on(function (ovserved) {
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

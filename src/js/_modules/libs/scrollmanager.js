@@ -5,9 +5,9 @@
  */
 
 import merge from 'lodash/mergeWith';
-import offset from './utilities/offset';
-import '../_vendor/rAf';
-import EM from './utilities/eventmanager';
+import offset from '../utilities/offset';
+import '../../_vendor/raf';
+import EM from '../utilities/eventmanager';
 
 let
   counter = 0
@@ -17,22 +17,22 @@ export default class ScrollManager {
 
   constructor( options ) {
     this.defaultSettings = {
-      name          : 'scrollManager',
-      topOffsetsSelector    : '',
-      bottomOffsetsSelector : '',
-      delay         : 32,
-      elemEventRoot : window,
-      throttle      : 0,
-      catchPoint    : '100%',
+      name                 : 'scrollManager',
+      selectorOffsetTop    : '',
+      selectorOffsetBottom : '',
+      delay                : 32,
+      elemEventRoot        : window,
+      throttle             : 0,
+      catchPoint           : '100%',
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
     this.elemEventRoot = this.settings.elemEventRoot;
-    this.topOffsetsSelector = this.settings.topOffsetsSelector;
-    this.bottomOffsetsSelector = this.settings.bottomOffsetsSelector;
+    this.selectorOffsetTop = this.settings.selectorOffsetTop;
+    this.selectorOffsetBottom = this.settings.selectorOffsetBottom;
     this.offsetTop = 0;
     this.offsetBottom = 0;
-    this.callBacks = {};
+    this.callbacks = {};
     this.eventName = `scroll.${this.id}`;
     this.isRunning = false;
     this.lastSctop = 0;
@@ -43,33 +43,33 @@ export default class ScrollManager {
     this.evtRoot = new EM( this.settings.eventRoot );
   }
 
-  runCallBacksAll() {
+  runCallbacksAll() {
     const
       scTop         = this.scTop        = this.elemEventRoot.pageYOffset
-      ,offsetTop    = this.offsetTop    = _getMaxOffset( this.topOffsetsSelector, 'top' )
-      ,offsetBottom = this.offsetBottom = _getMaxOffset( this.bottomOffsetsSelector, 'bottom' )
+      ,offsetTop    = this.offsetTop    = _getMaxOffset( this.selectorOffsetTop, 'top' )
+      ,offsetBottom = this.offsetBottom = _getMaxOffset( this.selectorOffsetBottom, 'bottom' )
       ,vwTop        = this.vwTop        = scTop - offsetTop
       ,vwHeight     = this.vwHeight     = window.innerHeight - offsetTop - offsetBottom
       ,catchPoint   = this.catchPoint   = _calcPoint( vwHeight, this.settings.catchPoint )
     ;
-    Object.keys( this.callBacks ).forEach( ( key ) => {
+    Object.keys( this.callbacks ).forEach( ( key ) => {
       const
-        entry       = this.callBacks[ key ]
-        ,targetElem = entry.targetElem || document.createElement( 'div' )
-        ,rect       = targetElem.getBoundingClientRect()
+        entry       = this.callbacks[ key ]
+        ,elemTarget = entry.elemTarget || document.createElement( 'div' )
+        ,rect       = elemTarget.getBoundingClientRect()
         ,hookPoint  = _calcPoint( rect.height, entry.hookPoint )
         ,range      = catchPoint + ( rect.height - hookPoint )
-        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + offset( targetElem ).top )
+        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + offset( elemTarget ).top )
         ,ratio      = scrollFrom / range
       ;
       entry.observed = merge( entry.observed, {
         name   : entry.name,
-        target : entry.targetElem,
+        target : entry.elemTarget,
         range  : range,
         scroll : scrollFrom,
         ratio  : ratio,
       } );
-      entry.callBack.call( this, entry.observed, this );
+      entry.callback.call( this, entry.observed, this );
     } );
 
     this.isRunning = false;
@@ -87,29 +87,29 @@ export default class ScrollManager {
     return this;
   }
 
-  add( callBack, targetElem, options ) {
+  add( callback, elemTarget, options ) {
     const
       defaultOptions = {
-        targetElem : targetElem,
+        elemTarget : elemTarget,
         name       : _getUniqueName( this.id ),
         flag       : false,
         ovserved   : {},
       }
       ,entry = merge( {}, defaultOptions, options )
     ;
-    entry.callBack = callBack;
+    entry.callback = callback;
     this.setUp();
-    this.callBacks[ entry.name ] = entry;
+    this.callbacks[ entry.name ] = entry;
     return this;
   }
 
   remove( name ) {
-    delete this.callBacks[ name ];
+    delete this.callbacks[ name ];
     return this;
   }
 
-  on( callBack, targetElem, options ) {
-    return this.add( callBack, targetElem, options );
+  on( callback, elemTarget, options ) {
+    return this.add( callback, elemTarget, options );
   }
 
   off( name ) {
@@ -117,7 +117,7 @@ export default class ScrollManager {
   }
 
   setUp() {
-    if ( !this.callBacks.length ) {
+    if ( !this.callbacks.length ) {
       this.evtRoot.on( this.eventName, ( e ) => {
         this.handle();
       } );
@@ -137,10 +137,10 @@ export default class ScrollManager {
     if ( !this.isRunning ) {
       this.isRunning = true;
       if ( typeof this.settings.throttle === 'number' && this.settings.throttle > 0 ) {
-        _throttle( this.runCallBacksAll );
+        _throttle( this.runCallbacksAll );
       } else {
         requestAnimationFrame( () => {
-          this.runCallBacksAll();
+          this.runCallbacksAll();
         } );
       }
     }

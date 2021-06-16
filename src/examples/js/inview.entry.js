@@ -1,10 +1,8 @@
 'use strict';
 
-import ScrollManager from '../../js/_modules/scrollmanager.js';
+import ScrollManager from '../../js/_modules/libs/scrollmanager';
 
-const
-  mdls = {}
-;
+const mdls = {};
 
 mdls.scrollManager = new ScrollManager( {
   throttle : 0
@@ -19,10 +17,8 @@ mdls.scrollManager
       } else {
         ovserved.target.classList.remove( 'js-isInView' );
       }
-    }
-    ,document.querySelector( '.pl-inviewTarget' ),
-    {
-      hookPoint: 0
-    }
+    },
+    document.querySelector( '.pl-inviewTarget' ),
+    { hookPoint: 0 },
   )
 ;

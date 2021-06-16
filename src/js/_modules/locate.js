@@ -1,40 +1,45 @@
 import merge from 'lodash/mergeWith';
+import parents from './utilities/parents';
 
 export default class Locate {
 
   constructor( options ) {
     this.defaultSettings = {
-      name       : 'locate',
-      target     : '',
-      indexRegex : /index\.[^/]+?$/,
+      name            : 'locate',
+      selectorTarget  : '',
+      selectorParents : '',
+      indexRegex      : /index\.[^/]+?$/,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.targetSelector = this.settings.target;
-    this.target = document.querySelectorAll( this.targetSelector );
-    this.currentItem = null;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.selectorParents = this.settings.selectorParents;
+    this.elemTargets = document.querySelectorAll( this.selectorTarget );
+    this.elemCurrent = null;
+    this.elemParents = null;
   }
 
-  run( callBack ) {
+  run( callback ) {
     const
       hostName = location.host
       ,wPathname = location.pathname.replace( this.settings.indexRegex, '' )
-      ,targets = this.target
+      ,elemTargets = this.elemTargets
     ;
-    for ( let i = 0, len = targets.length; i < len; i++ ) {
+    for ( let i = 0, len = elemTargets.length; i < len; i++ ) {
       const
-        self = targets[ i ]
-        ,aPathname = self.pathname.replace( this.settings.indexRegex, '' )
-        ,aHost = self.host
+        elem = elemTargets[ i ]
+        ,aPathname = elem.pathname.replace( this.settings.indexRegex, '' )
+        ,aHost = elem.host
       ;
       if ( hostName !== aHost ) {
         continue;
       } else if ( aPathname === wPathname ) {
-        this.currentItem = self;
+        this.elemCurrent = elem;
+        this.elemParents = parents( this.elemCurrent, this.selectorParents, 'body' );
       }
     }
-    if ( typeof callBack === 'function' ) {
-      callBack.call( this, this );
+    if ( typeof callback === 'function' ) {
+      callback.call( this, this );
     }
     return this;
   }

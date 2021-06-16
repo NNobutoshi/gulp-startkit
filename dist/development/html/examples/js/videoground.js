@@ -9,18 +9,18 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/scrollmanager.js */ "./src/js/_modules/scrollmanager.js");
-/* harmony import */ var _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/optimizedresize.js */ "./src/js/_modules/optimizedresize.js");
-/* harmony import */ var _js_modules_videoground_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../js/_modules/videoground.js */ "./src/js/_modules/videoground.js");
+/* harmony import */ var _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/scrollmanager */ "./src/js/_modules/libs/scrollmanager.js");
+/* harmony import */ var _js_modules_libs_optimizedresize__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/libs/optimizedresize */ "./src/js/_modules/libs/optimizedresize.js");
+/* harmony import */ var _js_modules_videoground__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../js/_modules/videoground */ "./src/js/_modules/videoground.js");
 
 
 
 
 
 var mdls = {
-  scrollManager: new _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__.default(),
-  optimizedresize: new _js_modules_optimizedresize_js__WEBPACK_IMPORTED_MODULE_1__.default(),
-  videoground: new _js_modules_videoground_js__WEBPACK_IMPORTED_MODULE_2__.default({
+  scrollManager: new _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__.default(),
+  optimizedresize: new _js_modules_libs_optimizedresize__WEBPACK_IMPORTED_MODULE_1__.default(),
+  videoground: new _js_modules_videoground__WEBPACK_IMPORTED_MODULE_2__.default({
     src: '/examples/media/mainvisual.mp4',
     targetClassName: 'js-mainVisual_video',
     selectorVideoFrame: '.pl-mainVisual_body',
@@ -62,9 +62,9 @@ function _assist() {
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

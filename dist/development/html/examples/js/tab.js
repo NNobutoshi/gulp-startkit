@@ -21,9 +21,9 @@ mdls.rescroll = new _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__.default({
 });
 mdls.rescroll.on();
 mdls.tab = new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
-  wrapper: '.pl-sectionGroup',
-  trigger: '.pl-tabmenu_anchor',
-  target: '.pl-section',
+  selectorWrapper: '.pl-sectionGroup',
+  selectorTrigger: '.pl-tabmenu_anchor',
+  selectorTarget: '.pl-section',
   onLoad: function onLoad(prop) {
     setTimeout(function () {
       mdls.rescroll.scroll(prop.wrapper);
@@ -34,9 +34,9 @@ mdls.tab.on();
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

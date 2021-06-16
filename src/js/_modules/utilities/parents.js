@@ -1,6 +1,6 @@
 import '../polyfills/matches.js';
 
-export default function closest( elem, selector, wrapper ) {
+export default function parents( elem, selector, wrapper ) {
   const parents = [];
   let parent = elem.parentElement;
   wrapper = wrapper || 'body';

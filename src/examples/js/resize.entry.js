@@ -1,6 +1,6 @@
 'use strict';
 
-import OptimizedResize from '../../js/_modules/optimizedresize.js';
+import OptimizedResize from '../../js/_modules/libs/optimizedresize';
 
 const
   mdls = {}

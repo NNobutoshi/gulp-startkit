@@ -21,9 +21,9 @@ mdls.rescroll.on();
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

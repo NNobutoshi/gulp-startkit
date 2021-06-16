@@ -9,18 +9,18 @@
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_adaptivehover_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/adaptivehover.js */ "./src/js/_modules/adaptivehover.js");
+/* harmony import */ var _js_modules_libs_adaptivehover__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/adaptivehover */ "./src/js/_modules/libs/adaptivehover.js");
 
 
 
 var mdls = {};
-mdls.hover = new _js_modules_adaptivehover_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  target: '.pl-hoverTarget'
+mdls.hover = new _js_modules_libs_adaptivehover__WEBPACK_IMPORTED_MODULE_0__.default({
+  selectorTarget: '.pl-hoverTarget'
 });
 mdls.hover.on(function (e, inst) {
-  inst.target.classList.add('js-hover');
+  inst.elemTarget.classList.add('js-hover');
 }, function (e, inst) {
-  inst.target.classList.remove('js-hover');
+  inst.elemTarget.classList.remove('js-hover');
 });
 
 /***/ })

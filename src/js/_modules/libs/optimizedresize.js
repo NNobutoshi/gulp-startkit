@@ -3,9 +3,9 @@
  * Inspired by https://developer.mozilla.org
  */
 
-import '../_vendor/rAf.js';
+import '../../_vendor/raf';
 import merge from 'lodash/mergeWith';
-import EM from './utilities/eventmanager';
+import EM from '../utilities/eventmanager';
 
 let
   uniqueNumber = 0
@@ -19,22 +19,22 @@ export default class OptimizedResize {
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.callBacks = {};
+    this.callbacks = {};
     this.isRunning = false;
     this.eventName = `resize.${this.id}`;
     this.evtRoot = new EM( window );
   }
 
-  runCallBacksAll() {
-    for ( const key in this.callBacks ) {
+  runCallbacksAll() {
+    for ( const key in this.callbacks ) {
       const
-        props = this.callBacks[ key ]
+        props = this.callbacks[ key ]
       ;
       let
         query = false
       ;
       if ( !props.query ) {
-        props.callBack.call( this, props );
+        props.callback.call( this, props );
         props.lastQuery = query;
         continue;
       }
@@ -57,7 +57,7 @@ export default class OptimizedResize {
           ( !props.one && !props.turn && !props.cross )
         )
       ) {
-        props.callBack.call( this, props );
+        props.callback.call( this, props );
       }
       props.lastQuery = query;
       if ( props.one === true && query === true ) {
@@ -69,7 +69,7 @@ export default class OptimizedResize {
     return this;
   }
 
-  add( callBack, options ) {
+  add( callback, options ) {
     const
       settings = merge(
         {},
@@ -83,22 +83,22 @@ export default class OptimizedResize {
         options,
       )
     ;
-    settings.callBack = callBack;
+    settings.callback = callback;
     this.setUp();
-    this.callBacks[ settings.name ] = settings;
+    this.callbacks[ settings.name ] = settings;
     return this;
   }
 
   remove( name ) {
-    delete this.callBacks[ name ];
+    delete this.callbacks[ name ];
   }
 
   off( name ) {
     this.remove( name );
   }
 
-  on( callBack, query, name ) {
-    return this.add( callBack, {
+  on( callback, query, name ) {
+    return this.add( callback, {
       name  : name,
       query : query,
       one   : false,
@@ -107,8 +107,8 @@ export default class OptimizedResize {
     } );
   }
 
-  one( callBack, query, name ) {
-    return this.add( callBack, {
+  one( callback, query, name ) {
+    return this.add( callback, {
       name  : name,
       query : query,
       one   : true,
@@ -117,8 +117,8 @@ export default class OptimizedResize {
     } );
   }
 
-  turn( callBack, query, name ) {
-    return this.add( callBack, {
+  turn( callback, query, name ) {
+    return this.add( callback, {
       name  : name,
       query : query,
       one   : false,
@@ -127,8 +127,8 @@ export default class OptimizedResize {
     } );
   }
 
-  cross( callBack, query, name ) {
-    return this.add( callBack, {
+  cross( callback, query, name ) {
+    return this.add( callback, {
       name  : name,
       query : query,
       one   : false,
@@ -138,7 +138,7 @@ export default class OptimizedResize {
   }
 
   setUp() {
-    if ( !Object.keys( this.callBacks ).length ) {
+    if ( !Object.keys( this.callbacks ).length ) {
       this.evtRoot.on( this.eventName, ( e ) => {
         this.handleForSetup( e );
       } );
@@ -157,7 +157,7 @@ export default class OptimizedResize {
     if ( !this.isRunning ) {
       this.isRunning = true;
       requestAnimationFrame( () => {
-        this.runCallBacksAll();
+        this.runCallbacksAll();
       } );
     }
     return this;

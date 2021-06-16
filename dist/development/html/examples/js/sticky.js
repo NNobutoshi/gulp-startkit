@@ -9,23 +9,23 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/scrollmanager.js */ "./src/js/_modules/scrollmanager.js");
+/* harmony import */ var _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/scrollmanager */ "./src/js/_modules/libs/scrollmanager.js");
 
 
 
 var mdls = {},
     pointElementSelector = '.pl-nav',
-    wrapperElem = document.body,
+    elemWrapper = document.body,
     className = 'js-pl-nav--isFixed';
-mdls.scrollManager = new _js_modules_scrollmanager_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  topOffsetsSelector: '.pl-nav_nav',
+mdls.scrollManager = new _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__.default({
+  selectorOffsetTop: '.pl-nav_nav',
   catchPoint: 0
 });
 mdls.scrollManager.on(function (ovserved) {
   if (ovserved.ratio >= 0) {
-    wrapperElem.classList.add(className);
+    elemWrapper.classList.add(className);
   } else {
-    wrapperElem.classList.remove(className);
+    elemWrapper.classList.remove(className);
   }
 }, document.querySelector(pointElementSelector), {
   hookPoint: 0
@@ -33,9 +33,9 @@ mdls.scrollManager.on(function (ovserved) {
 
 /***/ }),
 
-/***/ "./src/js/_vendor/rAf.js":
+/***/ "./src/js/_vendor/raf.js":
 /*!*******************************!*\
-  !*** ./src/js/_vendor/rAf.js ***!
+  !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
 /***/ (function() {
 

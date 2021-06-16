@@ -1,41 +1,42 @@
-'use strict';
-
 import Locate from '../../js/_modules/locate';
-import parents from '../../js/_modules/utilities/parents';
+import EM from '../../js/_modules/utilities/eventmanager';
 
 const
   mdls = {}
   ,TARGETSELECTOR = '.pl-nav_anchor'
   ,elemTarget = document.querySelectorAll( TARGETSELECTOR )
+  ,evtTarget = new EM( elemTarget )
+  ,evtWindow = new EM( window )
 ;
 
 mdls.locate = new Locate( {
-  target : TARGETSELECTOR
+  selectorTarget : TARGETSELECTOR,
+  selectorParents : '.pl-nav_item',
 } );
 
-Array.prototype.forEach.call( elemTarget, ( elem ) => {
-  elem.addEventListener( 'click', handleForAnchorClick );
-} );
-
-function handleForAnchorClick( e ) {
+evtTarget.on( 'click', ( e ) => {
   e.preventDefault();
   history.pushState( null ,null, e.currentTarget.href );
   _run();
-}
+} );
 
-window.addEventListener( 'popstate',  _run );
-_run();
+evtWindow
+  .on( 'popstate', _run )
+  .trigger( 'popstate' )
+;
+
 
 function _run() {
-  Array.prototype.forEach.call( document.querySelectorAll( '.pl-nav_item' ), ( elem ) => {
-    elem.classList.remove( 'js-current' );
-  } );
-  mdls.locate.currentItem = null;
+  if ( mdls.locate.elemParents ) {
+    for ( const elem of mdls.locate.elemParents ) {
+      elem.classList.remove( 'js-current' );
+    }
+  }
   mdls.locate.run( inst => {
-    if ( inst.currentItem ) {
-      parents( inst.currentItem, '.pl-nav_item', '.pl-nav' ).forEach( ( elem ) => {
+    if ( inst.elemParents ) {
+      for ( const elem of inst.elemParents ) {
         elem.classList.add( 'js-current' );
-      } );
+      }
     }
   } );
 }
