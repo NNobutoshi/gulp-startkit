@@ -54,4 +54,16 @@
   top: 0;
   left: 0;
 }
+
+.pl-nav_list {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.pl-nav_item {
+  list-style: none;
+  margin-left: 1em;
+}
 /*# sourceMappingURL=../../sourcemaps/examples/css/sticky.css.map */

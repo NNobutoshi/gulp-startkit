@@ -139,9 +139,7 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callbacks ).length ) {
-      this.evtRoot.on( this.eventName, ( e ) => {
-        this.handleForSetup( e );
-      } );
+      this.evtRoot.on( this.eventName, ( e ) => this.handleForSetup( e ) );
     }
   }
 

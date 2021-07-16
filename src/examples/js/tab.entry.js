@@ -10,16 +10,16 @@ const
 mdls.rescroll = new Rescroll( {
   offsetTop : '.pl-head'
 } );
-mdls.rescroll.on();
+
+mdls.rescroll
+  .on()
+  .addShoulder( '.pl-sectionGroup' )
+;
 
 mdls.tab = new Tab( {
   selectorWrapper : '.pl-sectionGroup',
   selectorTrigger : '.pl-tabmenu_anchor',
   selectorTarget  : '.pl-section',
-  onLoad  : ( prop ) => {
-    setTimeout( () => {
-      mdls.rescroll.scroll( prop.wrapper );
-    }, 200 );
-  }
 } );
+
 mdls.tab.on();

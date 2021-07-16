@@ -45,6 +45,10 @@
   background-color: #fee;
 }
 
+.pl-head a {
+  margin-left: 10px;
+}
+
 .pl-tabmenu_list {
   display: -webkit-box;
   display: -webkit-flex;
@@ -55,10 +59,6 @@
 }
 
 .pl-tabmenu_item {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 0 auto;
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -66,6 +66,10 @@
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
   padding: 0;
   margin: 0;
 }
@@ -111,10 +115,12 @@
 
 .js .pl-section {
   height: 0;
+  width: 100%;
   overflow: hidden;
   opacity: 0;
-  -webkit-transition: opacity .25s ease;
-  transition: opacity .25s ease;
+  background-color: transparent;
+  -webkit-transition: opacity .25s .25s ease;
+  transition: opacity .25s .25s ease;
 }
 
 .pl-section.js-selected {
@@ -124,7 +130,11 @@
 }
 
 .pl-section_body {
-  min-height: 50vh;
   padding: 10px;
+  min-height: 50vh;
+}
+
+.page_body {
+  padding-bottom: 50vh;
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/tab.css.map */

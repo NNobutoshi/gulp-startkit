@@ -5,8 +5,8 @@ const
   mdls = {}
   ,TARGETSELECTOR = '.pl-nav_anchor'
   ,elemTarget = document.querySelectorAll( TARGETSELECTOR )
-  ,evtTarget = new EM( elemTarget )
   ,evtWindow = new EM( window )
+  ,evtTarget = new EM( elemTarget )
 ;
 
 mdls.locate = new Locate( {

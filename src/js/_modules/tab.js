@@ -21,124 +21,109 @@ export default class Tab {
     this.selectorTarget = this.settings.selectorTarget;
     this.elemTriggerAll = document.querySelectorAll( this.selectorTrigger );
     this.elemWrapperAll = document.querySelectorAll( this.selectorWrapper );
-    this.selectedTrigger = null;
-    this.selectedWrapper = null;
-    this.selectedTarget  = null;
-    this.callbackforLoad = this.settings.onLoad;
+    this.callbackForLoad = this.settings.onLoad;
     this.hash = null;
-    this.windowEventName = `DOMContentLoaded.${this.id} hashchange.${this.id}`;
-    this.triggerEventName = `click.${this.id}`;
-    this.evtTrigger = new EM( this.elemTriggerAll );
+    this.eventNameLoad = `DOMContentLoaded.${this.id} load.${this.id} hashchange.${this.id}`;
+    this.eventNameClick = `click.${this.id}`;
     this.evtWindow = new EM( window );
   }
 
   on() {
-    this.evtWindow.on( this.windowEventName, () => {
-      this.handleForWindowEvent();
-    } );
-    this.evtTrigger.on( this.triggerEventName, ( e ) => {
-      this.handleForTriggerEvent( e );
-    } );
+    this.evtWindow
+      .on( this.eventNameLoad, ( e ) => this.handleForLoad( e ) )
+      .on( this.eventNameClick, ( e ) => this.handleForClick( e ) )
+    ;
   }
 
   off() {
-    this.evtWindow.off( this.windowEventName );
-    this.evtTrigger.off( this.triggerEventName );
+    this.evtWindow.off( `.${this.id}` );
   }
 
-  handleForWindowEvent() {
-    this.hash = location.hash || null;
-    this.runAll();
-    if ( typeof this.callbackforLoad === 'function' ) {
-      this.callbackforLoad.call( this, {
-        trigger : this.selectedTrigger,
-        wrapper : this.selectedWrapper,
-        target  : this.selectedTarget,
-      } );
+  handleForLoad( e ) {
+    this.runAll( e );
+  }
+
+  handleForClick( e ) {
+    const hash = e.target && e.target.hash && this.getHash( e.target.hash );
+    let elemCurrentTrigger = null;
+    if ( !hash ) {
+      return;
+    }
+    for ( let elem of this.elemTriggerAll ) {
+      if ( hash === this.getHash( elem.hash ) ) {
+        elemCurrentTrigger = elem;
+      }
+    }
+    if ( elemCurrentTrigger === null ) {
+      return;
+    }
+    e.preventDefault();
+    this.run( elemCurrentTrigger );
+  }
+
+  run( elemCurrentTrigger ) {
+    const
+      elemTrigger = elemCurrentTrigger
+      ,elemTarget = document.querySelector( this.getHash( elemTrigger.hash ) )
+      ,elemWrapper = elemTarget.closest( this.selectorWrapper )
+      ,elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger )
+      ,elemTargetAll = elemWrapper.querySelectorAll( this.selectorTarget )
+    ;
+    for ( let elem of elemTriggerAll ) {
+      if ( elem === elemCurrentTrigger ) {
+        elem.classList.add( this.settings.className );
+      } else {
+        elem.classList.remove( this.settings.className );
+      }
+    }
+    for ( let elem of elemTargetAll ) {
+      if ( elem === elemTarget ) {
+        elem.classList.add( this.settings.className );
+      } else {
+        elem.classList.remove( this.settings.className );
+      }
     }
   }
 
-  handleForTriggerEvent( e ) {
-    this.hash = e.currentTarget.hash;
-    e.preventDefault();
-    history.pushState( null, null, location.pathname + this.hash );
-    this.run( e );
-  }
-
-  run( e, index ) {
+  runAll( e ) {
     const
-      indexNumber = ( typeof index === 'number' ) ? index : 0
-      ,triggerElem = e.currentTarget
-      ,wrapperElem = triggerElem.closest( this.selectorWrapper )
-      ,elemTriggerAll = wrapperElem.querySelectorAll( this.selectorTrigger )
-      ,elemTargetAll = wrapperElem.querySelectorAll( this.selectorTarget )
-      ,elemTarget = wrapperElem.querySelector( this.hash )
+      hash = location.hash
+      ,that = this
     ;
-    this.display( {
-      elements    : elemTriggerAll,
-      elemTarget  : elemTarget,
-      key         : 'hash',
-      indexNumber : indexNumber,
-    } );
-    this.display( {
-      elements    : elemTargetAll,
-      elemTarget  : elemTarget,
-      key         : 'id',
-      indexNumber : indexNumber,
-    } );
-  }
+    let selectedWrapperByHash = null;
+    for ( let elemWrapper of this.elemWrapperAll ) {
+      const elemTriggerAll = elemWrapper.querySelectorAll( that.selectorTrigger );
+      let elemTrigger, elemActived;
 
-  runAll( index ) {
-    const
-      indexNumber = ( typeof index === 'number' ) ? index : 0
-    ;
-    Array.prototype.forEach.call( this.elemWrapperAll, ( wrapper ) => {
-      const
-        elemTargetAll = wrapper.querySelectorAll( this.selectorTarget )
-        ,elemTriggerAll = wrapper.querySelectorAll( this.selectorTrigger )
-        ,elemTarget = wrapper.querySelector( this.hash )
-      ;
-      this.display( {
-        elements    : elemTriggerAll,
-        elemTarget  : elemTarget,
-        key         : 'hash',
-        indexNumber : indexNumber,
-      } );
-      this.display( {
-        elements    : elemTargetAll,
-        elemTarget  : elemTarget,
-        key         : 'id',
-        indexNumber : indexNumber,
-      } );
-    } );
-    return this;
-  }
-
-  display( arg ) {
-    const
-      key = arg.key
-    ;
-    Array.prototype.forEach.call( arg.elements, ( elem, i ) => {
-      if ( arg.elemTarget === null ) {
-        if ( i === arg.indexNumber ) {
-          elem.classList.add( this.settings.className );
-        } else {
-          elem.classList.remove( this.settings.className );
+      for ( let elem of elemTriggerAll ) {
+        if ( elem.hash === hash ) {
+          elemTrigger = elem;
+          selectedWrapperByHash = elemWrapper;
         }
-      } else {
-        if ( this.hash === ( ( key === 'id' ) ? '#' + elem[ key ] : elem [ key ] ) ) {
-          if ( key === 'hash' ) {
-            this.selectedTrigger = elem;
-            this.selectedTarget = arg.elemTarget;
-            this.selectedWrapper = arg.elemTarget.closest( this.selectorWrapper );
-          }
-          elem.classList.add( this.settings.className );
-        } else {
-          elem.classList.remove( this.settings.className );
+        if ( elem.classList.contains( that.settings.className ) ) {
+          elemActived = elem;
         }
       }
-    } );
+
+      if ( !elemTriggerAll.length ) {
+        return true;
+      }
+      if ( elemTrigger || !elemActived ) {
+        that.run( elemTrigger || elemTriggerAll[ 0 ] );
+      }
+
+    }
+    if ( typeof this.callbackForLoad === 'function' ) {
+      this.callbackForLoad.call( null, selectedWrapperByHash, e );
+    }
     return this;
   }
 
+  getHash( string ) {
+    if ( string ) {
+      return string.replace( /^#?(.*)/, '#$1' );
+    } else {
+      return window.location.hash.replace( /^#?(.*)/, '#$1' );
+    }
+  }
 }

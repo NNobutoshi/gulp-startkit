@@ -1,11 +1,11 @@
-export default function offset( elem ) {
+export default function position( elem ) {
   const
-    offset = {}
+    pos = {}
     ,rect = elem.getBoundingClientRect()
     ,scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
     ,scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft
   ;
-  offset.top = rect.top + scTop;
-  offset.left = rect.left + scLeft;
-  return offset;
+  pos.top = rect.top + scTop;
+  pos.left = rect.left + scLeft;
+  return pos;
 }

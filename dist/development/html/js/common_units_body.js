@@ -361,7 +361,7 @@ var OptimizedResize = /*#__PURE__*/function () {
 
       if (!Object.keys(this.callbacks).length) {
         this.evtRoot.on(this.eventName, function (e) {
-          _this.handleForSetup(e);
+          return _this.handleForSetup(e);
         });
       }
     }
@@ -415,7 +415,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utilities_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/offset */ "./src/js/_modules/utilities/offset.js");
+/* harmony import */ var _utilities_position__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/position */ "./src/js/_modules/utilities/position.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../_vendor/raf */ "./src/js/_vendor/raf.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
@@ -487,7 +487,7 @@ var ScrollManager = /*#__PURE__*/function () {
             rect = elemTarget.getBoundingClientRect(),
             hookPoint = _calcPoint(rect.height, entry.hookPoint),
             range = catchPoint + (rect.height - hookPoint),
-            scrollFrom = vwTop + catchPoint - (hookPoint + (0,_utilities_offset__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top),
+            scrollFrom = vwTop + catchPoint - (hookPoint + (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top),
             ratio = scrollFrom / range;
 
         entry.observed = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()(entry.observed, {
@@ -551,8 +551,8 @@ var ScrollManager = /*#__PURE__*/function () {
       var _this2 = this;
 
       if (!this.callbacks.length) {
-        this.evtRoot.on(this.eventName, function (e) {
-          _this2.handle();
+        this.evtRoot.on(this.eventName, function () {
+          return _this2.handle();
         });
       }
 
@@ -732,10 +732,10 @@ var Toggle = /*#__PURE__*/function () {
       this.callbackForAfter = callbackForAfter;
       this.callbackForEnd = callbackForEnd;
       this.evtRoot.on("click.".concat(this.id), function (e) {
-        _this.handleForClick(e);
+        return _this.handleForClick(e);
       });
       this.evtRoot.on("transitionend.".concat(this.id), function (e) {
-        _this.handleForTransitionend(e);
+        return _this.handleForTransitionend(e);
       });
       return this;
     }
@@ -884,10 +884,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _matches_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_matches_js__WEBPACK_IMPORTED_MODULE_0__);
 
 
-if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-}
-
 if (!Element.prototype.closest) {
   Element.prototype.closest = function (s) {
     var el = this;
@@ -931,10 +927,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utilities_offset__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/offset */ "./src/js/_modules/utilities/offset.js");
-/* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_vendor/raf */ "./src/js/_vendor/raf.js");
-/* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _utilities_position__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/position */ "./src/js/_modules/utilities/position.js");
+/* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
+/* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../_vendor/raf */ "./src/js/_vendor/raf.js");
+/* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -949,25 +952,45 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+
 var Rescroll = /*#__PURE__*/function () {
   function Rescroll(options) {
     _classCallCheck(this, Rescroll);
 
     this.defaultSettings = {
       name: 'rescroll',
+      exclude: '',
       offsetTop: 0,
-      delay: 32
+      selectorShoulder: null,
+
+      /* スクロール先を肩代わりする要素 */
+      animation: true,
+
+      /* 所謂スムーススクロール */
+      animeOption: {
+        duration: 1000,
+        easing: function easing(pos) {
+          return 1 - Math.pow(1 - pos, 5);
+        }
+      }
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
     this.timeoutId = null;
     this.hash = '';
-    this.eneble = true;
-    this.locked = true;
-    this.scrollCounter = 0;
-    this.lastCounter = null;
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(window);
+    this.isWorking = false;
+    this.enabled = false;
+    this.lastScrollY = window.pageYOffset;
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_4__.default(window);
+    this.arryShoulderSelector = [];
+    this.addShoulder(this.settings.selectorShoulder);
+    this.eventName = {
+      load: "load.".concat(this.id),
+      hashChange: "hashchange.".concat(this.id),
+      click: "click.".concat(this.id),
+      scroll: "scroll.".concat(this.id)
+    };
   }
 
   _createClass(Rescroll, [{
@@ -975,112 +998,220 @@ var Rescroll = /*#__PURE__*/function () {
     value: function on() {
       var _this = this;
 
-      this.evtRoot.on("DOMContentLoaded.".concat(this.id, " hashchange.").concat(this.id), function () {
-        _this.handleForHashChange();
+      this.evtRoot.on(this.eventName.load, function (e) {
+        return _this.handleForLoad(e);
+      }).on(this.eventName.hashChange, function (e) {
+        return _this.handleForHashChange(e);
+      }).on(this.eventName.click, function (e) {
+        return _this.handleForClick(e);
+      }).on(this.eventName.scroll, function (e) {
+        return _this.handleForScroll(e);
       });
-      this.evtRoot.on("scroll.".concat(this.id), function () {
-        _this.handleForScroll();
-      });
-      this.evtRoot.on("click.".concat(this.id), function (e) {
-        _this.handleForClick(e);
-      });
+      return this;
     }
   }, {
     key: "off",
     value: function off() {
       this.evtRoot.off(".".concat(this.id));
-      this.lastCounter = null;
-      this.scrollCounter = 0;
-      this.lock();
+      this.lastScrollY = null;
+      this.enabled = false;
+      this.isWorking = false;
+      return this;
     }
   }, {
-    key: "handleForScroll",
-    value: function handleForScroll() {
-      var that = this;
-      setTimeout(function () {
-        that.run();
-      }, 16);
+    key: "handleForLoad",
+    value: function handleForLoad(e) {
+      this.enabled = true;
+      this.preprocess(e);
     }
   }, {
     key: "handleForHashChange",
-    value: function handleForHashChange() {
-      this.unlock();
+    value: function handleForHashChange(e) {
+      this.enabled = true;
+      this.preprocess(e);
     }
   }, {
     key: "handleForClick",
     value: function handleForClick(e) {
-      if (e.target.tagName.toLowerCase() === 'a' && e.target.hash) {
-        this.unlock();
+      var hash = e.target && e.target.hash && this.getHash(e.target.hash);
+
+      if (!hash && !document.querySelector(hash)) {
+        return;
       }
+
+      this.enabled = true;
+      this.lastScrollY = window.pageYOffset;
+      e.preventDefault();
+      window.history.pushState(null, null, e.target.href);
+      this.preprocess(e);
+    }
+    /**
+     * スクロールの起点になるポイントを常に取得しておく。
+     */
+
+  }, {
+    key: "handleForScroll",
+    value: function handleForScroll(e) {
+      var that = this;
+      requestAnimationFrame(function () {
+        if (that.enabled === false) {
+          that.lastScrollY = window.pageYOffset;
+        }
+      });
     }
   }, {
-    key: "run",
-    value: function run() {
-      var hash = location.hash,
-          that = this;
+    key: "preprocess",
+    value: function preprocess(e) {
+      var that = this;
 
-      if (!hash || this.locked === true) {
+      var hash = this.getHash(),
+          arryShoulder = this.arryShoulderSelector,
+          elemByHash = hash ? document.querySelector(hash) : null,
+          elemShoulder = arryShoulder.length && elemByHash && _getShoulderElement(elemByHash);
+
+      var lastScrollY = this.lastScrollY,
+          currentScrollY = window.pageYOffset;
+      /**
+       * クリックされたA要素とジャンプ先を肩代わりする要素のY座標が同一であれば、
+       * or すでに実行中であれば、
+       * or 実行が許可されていなければ、
+       * or ジャンプ先を肩代わりする要素も、hash をセレクターにして得られた要素も、どちらもなければ、
+       * return
+       */
+
+      if (e.type === 'click' && e.target && e.target.hash && elemShoulder && (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(e.target).top === (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemShoulder).top || this.isWorking === true || this.enabled === false || !elemByHash && !elemShoulder) {
+        this.isWorking = false;
         return this;
       }
+      /**
+       * デフォルトのスクロールを終えるのを待って改めてスクロールさせる
+       * hashchange やload のevent でキャンセルできないため。
+       */
 
-      this.scrollCounter++;
-      this.hash = hash.replace(/^#(.*)/, '#$1');
 
-      (function _try() {
-        that.eneble = false;
-        that.timeoutId = requestAnimationFrame(function () {
-          if (that.scrollCounter !== that.lastCounter) {
-            _try();
+      (function _retry() {
+        requestAnimationFrame(function () {
+          if (currentScrollY !== lastScrollY) {
+            lastScrollY = currentScrollY;
 
-            that.lastCounter = that.scrollCounter;
+            _retry();
           } else {
-            that.lastCounter = null;
-            that.scrollCounter = 0;
-            that.scroll();
-            that.lock();
+            that.isWorking = true;
+            lastScrollY = null;
+
+            if (that.settings.animation) {
+              that.animatedScroll(elemShoulder || elemByHash);
+            } else {
+              that.scroll(elemShoulder || elemByHash);
+            }
           }
         });
       })();
 
       return this;
+      /**
+       * スクロール先を肩代わりする要素を取得する。
+       * 先祖の要素でなければならない。
+       */
+
+      function _getShoulderElement(elemTarget) {
+        var arry = that.arryShoulderSelector;
+        var elemClosest = null;
+
+        if (!elemTarget) {
+          return elemClosest;
+        }
+
+        for (var i = 0, len = arry.length; i < len; i++) {
+          elemClosest = elemTarget.closest(arry[i]);
+
+          if (elemClosest) {
+            break;
+          }
+        }
+
+        return elemClosest;
+      }
     }
+    /**
+     * 通常のスクロール
+     */
+
   }, {
     key: "scroll",
-    value: function scroll(target) {
-      var offsetTop = 0,
-          targetElem;
+    value: function scroll(elemTarget) {
+      var finishPoint = (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top - this.offset();
+      window.scrollTo(0, this.lastScrollY);
+      window.scrollTo(0, finishPoint);
+      this.isWorking = false;
+      this.enabled = false;
+      this.lastScrollY = finishPoint;
+    }
+    /**
+     * スムーススクロール
+     */
 
-      if (!target && !this.hash) {
-        return this;
+  }, {
+    key: "animatedScroll",
+    value: function animatedScroll(elemTarget) {
+      var that = this;
+      var duration = this.settings.animeOption.duration,
+          easing = this.settings.animeOption.easing,
+          startPoint = this.lastScrollY,
+          finishPoint = (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top - this.offset(),
+          range = finishPoint - startPoint;
+      var currentPoint = 0,
+          startTime = null;
+      window.scrollTo(0, startPoint);
+      requestAnimationFrame(_scrollStep);
+
+      function _scrollStep(time) {
+        startTime = startTime || time;
+        currentPoint = startPoint + range * easing.call(null, (time - startTime) / duration);
+        window.scrollTo(0, currentPoint);
+
+        if (time - startTime < duration) {
+          requestAnimationFrame(_scrollStep);
+        } else {
+          that.isWorking = false;
+          that.enabled = false;
+          that.lastScrollY = window.pageYOffset;
+        }
       }
 
-      targetElem = target ? target : document.querySelector(this.hash);
+      return this;
+    }
+    /**
+     * ビューポート上部でfixed されている要素等の、スクロール量から差し引かなければならないオフセットを取得する
+     */
 
-      if (targetElem === null) {
-        return this;
-      }
-
-      cancelAnimationFrame(this.timeoutId);
+  }, {
+    key: "offset",
+    value: function offset() {
+      var offsetTop = 0;
 
       if (typeof this.offsetTop === 'number') {
         offsetTop = this.offsetTop;
       } else if (typeof this.offsetTop === 'string') {
-        offsetTop = _getTotalHeight(document.querySelectorAll(this.offsetTop));
+        offsetTop = _getMaxOffset(document.querySelectorAll(this.offsetTop));
       } else if (typeof this.offsetTop === 'function') {
-        offsetTop = this.offsetTop.call(this, targetElem);
+        offsetTop = this.offsetTop.call(this, this);
       }
 
-      window.scrollTo(0, (0,_utilities_offset__WEBPACK_IMPORTED_MODULE_1__.default)(targetElem).top - offsetTop);
+      return offsetTop;
     }
   }, {
-    key: "lock",
-    value: function lock() {
-      this.locked = true;
+    key: "getHash",
+    value: function getHash(string) {
+      var hash = string || window.location.hash || null;
+      return hash && hash.replace(/^#?(.*)/, '#$1');
     }
   }, {
-    key: "unlock",
-    value: function unlock() {
-      this.locked = false;
+    key: "addShoulder",
+    value: function addShoulder(selector) {
+      if (selector && typeof selector === 'string') {
+        this.arryShoulderSelector.push(selector);
+      }
     }
   }]);
 
@@ -1089,11 +1220,23 @@ var Rescroll = /*#__PURE__*/function () {
 
 
 
-function _getTotalHeight(elems) {
+function _getMaxOffset(elems) {
   var bottoms = [];
-  Array.prototype.forEach.call(elems, function (self) {
-    bottoms.push(self.getBoundingClientRect().bottom);
-  });
+
+  var _iterator = _createForOfIteratorHelper(elems),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var elem = _step.value;
+      bottoms.push(elem.getBoundingClientRect().bottom);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+
   return Math.max.apply(null, bottoms);
 }
 
@@ -1249,6 +1392,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
 /* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -1279,14 +1428,10 @@ var Tab = /*#__PURE__*/function () {
     this.selectorTarget = this.settings.selectorTarget;
     this.elemTriggerAll = document.querySelectorAll(this.selectorTrigger);
     this.elemWrapperAll = document.querySelectorAll(this.selectorWrapper);
-    this.selectedTrigger = null;
-    this.selectedWrapper = null;
-    this.selectedTarget = null;
-    this.callbackforLoad = this.settings.onLoad;
+    this.callbackForLoad = this.settings.onLoad;
     this.hash = null;
-    this.windowEventName = "DOMContentLoaded.".concat(this.id, " hashchange.").concat(this.id);
-    this.triggerEventName = "click.".concat(this.id);
-    this.evtTrigger = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemTriggerAll);
+    this.eventNameLoad = "DOMContentLoaded.".concat(this.id, " load.").concat(this.id, " hashchange.").concat(this.id);
+    this.eventNameClick = "click.".concat(this.id);
     this.evtWindow = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
   }
 
@@ -1295,118 +1440,170 @@ var Tab = /*#__PURE__*/function () {
     value: function on() {
       var _this = this;
 
-      this.evtWindow.on(this.windowEventName, function () {
-        _this.handleForWindowEvent();
-      });
-      this.evtTrigger.on(this.triggerEventName, function (e) {
-        _this.handleForTriggerEvent(e);
+      this.evtWindow.on(this.eventNameLoad, function (e) {
+        return _this.handleForLoad(e);
+      }).on(this.eventNameClick, function (e) {
+        return _this.handleForClick(e);
       });
     }
   }, {
     key: "off",
     value: function off() {
-      this.evtWindow.off(this.windowEventName);
-      this.evtTrigger.off(this.triggerEventName);
+      this.evtWindow.off(".".concat(this.id));
     }
   }, {
-    key: "handleForWindowEvent",
-    value: function handleForWindowEvent() {
-      this.hash = location.hash || null;
-      this.runAll();
+    key: "handleForLoad",
+    value: function handleForLoad(e) {
+      this.runAll(e);
+    }
+  }, {
+    key: "handleForClick",
+    value: function handleForClick(e) {
+      var hash = e.target && e.target.hash && this.getHash(e.target.hash);
+      var elemCurrentTrigger = null;
 
-      if (typeof this.callbackforLoad === 'function') {
-        this.callbackforLoad.call(this, {
-          trigger: this.selectedTrigger,
-          wrapper: this.selectedWrapper,
-          target: this.selectedTarget
-        });
+      if (!hash) {
+        return;
       }
-    }
-  }, {
-    key: "handleForTriggerEvent",
-    value: function handleForTriggerEvent(e) {
-      this.hash = e.currentTarget.hash;
+
+      var _iterator = _createForOfIteratorHelper(this.elemTriggerAll),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var elem = _step.value;
+
+          if (hash === this.getHash(elem.hash)) {
+            elemCurrentTrigger = elem;
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      if (elemCurrentTrigger === null) {
+        return;
+      }
+
       e.preventDefault();
-      history.pushState(null, null, location.pathname + this.hash);
-      this.run(e);
+      this.run(elemCurrentTrigger);
     }
   }, {
     key: "run",
-    value: function run(e, index) {
-      var indexNumber = typeof index === 'number' ? index : 0,
-          triggerElem = e.currentTarget,
-          wrapperElem = triggerElem.closest(this.selectorWrapper),
-          elemTriggerAll = wrapperElem.querySelectorAll(this.selectorTrigger),
-          elemTargetAll = wrapperElem.querySelectorAll(this.selectorTarget),
-          elemTarget = wrapperElem.querySelector(this.hash);
-      this.display({
-        elements: elemTriggerAll,
-        elemTarget: elemTarget,
-        key: 'hash',
-        indexNumber: indexNumber
-      });
-      this.display({
-        elements: elemTargetAll,
-        elemTarget: elemTarget,
-        key: 'id',
-        indexNumber: indexNumber
-      });
+    value: function run(elemCurrentTrigger) {
+      var elemTrigger = elemCurrentTrigger,
+          elemTarget = document.querySelector(this.getHash(elemTrigger.hash)),
+          elemWrapper = elemTarget.closest(this.selectorWrapper),
+          elemTriggerAll = elemWrapper.querySelectorAll(this.selectorTrigger),
+          elemTargetAll = elemWrapper.querySelectorAll(this.selectorTarget);
+
+      var _iterator2 = _createForOfIteratorHelper(elemTriggerAll),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var elem = _step2.value;
+
+          if (elem === elemCurrentTrigger) {
+            elem.classList.add(this.settings.className);
+          } else {
+            elem.classList.remove(this.settings.className);
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      var _iterator3 = _createForOfIteratorHelper(elemTargetAll),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _elem = _step3.value;
+
+          if (_elem === elemTarget) {
+            _elem.classList.add(this.settings.className);
+          } else {
+            _elem.classList.remove(this.settings.className);
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
     }
   }, {
     key: "runAll",
-    value: function runAll(index) {
-      var _this2 = this;
+    value: function runAll(e) {
+      var hash = location.hash,
+          that = this;
+      var selectedWrapperByHash = null;
 
-      var indexNumber = typeof index === 'number' ? index : 0;
-      Array.prototype.forEach.call(this.elemWrapperAll, function (wrapper) {
-        var elemTargetAll = wrapper.querySelectorAll(_this2.selectorTarget),
-            elemTriggerAll = wrapper.querySelectorAll(_this2.selectorTrigger),
-            elemTarget = wrapper.querySelector(_this2.hash);
+      var _iterator4 = _createForOfIteratorHelper(this.elemWrapperAll),
+          _step4;
 
-        _this2.display({
-          elements: elemTriggerAll,
-          elemTarget: elemTarget,
-          key: 'hash',
-          indexNumber: indexNumber
-        });
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var elemWrapper = _step4.value;
+          var elemTriggerAll = elemWrapper.querySelectorAll(that.selectorTrigger);
+          var elemTrigger = void 0,
+              elemActived = void 0;
 
-        _this2.display({
-          elements: elemTargetAll,
-          elemTarget: elemTarget,
-          key: 'id',
-          indexNumber: indexNumber
-        });
-      });
+          var _iterator5 = _createForOfIteratorHelper(elemTriggerAll),
+              _step5;
+
+          try {
+            for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+              var elem = _step5.value;
+
+              if (elem.hash === hash) {
+                elemTrigger = elem;
+                selectedWrapperByHash = elemWrapper;
+              }
+
+              if (elem.classList.contains(that.settings.className)) {
+                elemActived = elem;
+              }
+            }
+          } catch (err) {
+            _iterator5.e(err);
+          } finally {
+            _iterator5.f();
+          }
+
+          if (!elemTriggerAll.length) {
+            return true;
+          }
+
+          if (elemTrigger || !elemActived) {
+            that.run(elemTrigger || elemTriggerAll[0]);
+          }
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+
+      if (typeof this.callbackForLoad === 'function') {
+        this.callbackForLoad.call(null, selectedWrapperByHash, e);
+      }
+
       return this;
     }
   }, {
-    key: "display",
-    value: function display(arg) {
-      var _this3 = this;
-
-      var key = arg.key;
-      Array.prototype.forEach.call(arg.elements, function (elem, i) {
-        if (arg.elemTarget === null) {
-          if (i === arg.indexNumber) {
-            elem.classList.add(_this3.settings.className);
-          } else {
-            elem.classList.remove(_this3.settings.className);
-          }
-        } else {
-          if (_this3.hash === (key === 'id' ? '#' + elem[key] : elem[key])) {
-            if (key === 'hash') {
-              _this3.selectedTrigger = elem;
-              _this3.selectedTarget = arg.elemTarget;
-              _this3.selectedWrapper = arg.elemTarget.closest(_this3.selectorWrapper);
-            }
-
-            elem.classList.add(_this3.settings.className);
-          } else {
-            elem.classList.remove(_this3.settings.className);
-          }
-        }
-      });
-      return this;
+    key: "getHash",
+    value: function getHash(string) {
+      if (string) {
+        return string.replace(/^#?(.*)/, '#$1');
+      } else {
+        return window.location.hash.replace(/^#?(.*)/, '#$1');
+      }
     }
   }]);
 
@@ -1494,7 +1691,7 @@ var EventManager = /*#__PURE__*/function () {
           _this.listeners[strEventName].push(callback);
 
           _this.setEventListener(prefix, eventName, callback, options);
-        } // if( prefix == 'add' )
+        } // if( prefix === 'add' )
 
 
         if (prefix === 'remove') {
@@ -1514,14 +1711,14 @@ var EventManager = /*#__PURE__*/function () {
             });
           }
 
-          for (var _i3 = 0, _Object$entries2 = Object.entries(listeners); _i3 < _Object$entries2.length; _i3++) {
-            var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2),
+          for (var _i2 = 0, _Object$entries2 = Object.entries(listeners); _i2 < _Object$entries2.length; _i2++) {
+            var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
                 key = _Object$entries2$_i[0],
                 val = _Object$entries2$_i[1];
 
-            for (var _i4 = 0, _len = val.length; _i4 < _len; _i4++) {
-              if (typeof callback !== 'function' || val[_i4] === callback) {
-                _this.setEventListener(prefix, key, val[_i4]);
+            for (var _i3 = 0, _len = val.length; _i3 < _len; _i3++) {
+              if (typeof callback !== 'function' || val[_i3] === callback) {
+                _this.setEventListener(prefix, key, val[_i3]);
               }
             }
           }
@@ -1572,10 +1769,9 @@ var EventManager = /*#__PURE__*/function () {
         }
 
         if (calling) {
-          for (var _i2 = 0, _Object$values = Object.values(listeners); _i2 < _Object$values.length; _i2++) {
-            var _value = _Object$values[_i2];
-            var arry = _value;
-            Array.prototype.forEach.call(arry, function (func) {
+          for (var _key in listeners) {
+            var arry = listeners[_key];
+            arry.forEach(function (func) {
               func(null);
             });
           }
@@ -1587,14 +1783,7 @@ var EventManager = /*#__PURE__*/function () {
   }, {
     key: "setEventListener",
     value: function setEventListener(prefix, eventName, callback, options) {
-      var arryElements;
-
-      if (this.elemEventer.length) {
-        arryElements = this.elemEventer;
-      } else {
-        arryElements = [this.elemEventer];
-      }
-
+      var arryElements = this.elemEventer.length ? this.elemEventer : [this.elemEventer];
       Array.prototype.forEach.call(arryElements, function (elem) {
         elem["".concat(prefix, "EventListener")](eventName, callback, options);
       });
@@ -1605,29 +1794,6 @@ var EventManager = /*#__PURE__*/function () {
 }();
 
 
-
-/***/ }),
-
-/***/ "./src/js/_modules/utilities/offset.js":
-/*!*********************************************!*\
-  !*** ./src/js/_modules/utilities/offset.js ***!
-  \*********************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ offset; }
-/* harmony export */ });
-function offset(elem) {
-  var offset = {},
-      rect = elem.getBoundingClientRect(),
-      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
-      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
-  offset.top = rect.top + scTop;
-  offset.left = rect.left + scLeft;
-  return offset;
-}
 
 /***/ }),
 
@@ -1663,6 +1829,29 @@ function parents(elem, selector, wrapper) {
 
 /***/ }),
 
+/***/ "./src/js/_modules/utilities/position.js":
+/*!***********************************************!*\
+  !*** ./src/js/_modules/utilities/position.js ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ position; }
+/* harmony export */ });
+function position(elem) {
+  var pos = {},
+      rect = elem.getBoundingClientRect(),
+      scTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop,
+      scLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+  pos.top = rect.top + scTop;
+  pos.left = rect.left + scLeft;
+  return pos;
+}
+
+/***/ }),
+
 /***/ "./src/js/_modules/videoground.js":
 /*!****************************************!*\
   !*** ./src/js/_modules/videoground.js ***!
@@ -1676,11 +1865,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.promise */ "./node_modules/core-js/modules/es.promise.js");
-/* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1690,7 +1877,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 
@@ -1725,7 +1911,7 @@ var VideoGround = /*#__PURE__*/function () {
     this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']);
     this.elemVideoFrame = document.querySelector(this.settings.selectorVideoFrame);
     this.elemParent = this.settings.selectorParent && this.elemVideoFrame !== null ? document.querySelector(this.settings.selectorParent) : this.elemVideoFrame.parentNode;
-    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemVideo);
+    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemVideo);
   }
 
   _createClass(VideoGround, [{

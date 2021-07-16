@@ -5,7 +5,7 @@
  */
 
 import merge from 'lodash/mergeWith';
-import offset from '../utilities/offset';
+import position from '../utilities/position';
 import '../../_vendor/raf';
 import EM from '../utilities/eventmanager';
 
@@ -59,7 +59,7 @@ export default class ScrollManager {
         ,rect       = elemTarget.getBoundingClientRect()
         ,hookPoint  = _calcPoint( rect.height, entry.hookPoint )
         ,range      = catchPoint + ( rect.height - hookPoint )
-        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + offset( elemTarget ).top )
+        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
         ,ratio      = scrollFrom / range
       ;
       entry.observed = merge( entry.observed, {
@@ -118,9 +118,7 @@ export default class ScrollManager {
 
   setUp() {
     if ( !this.callbacks.length ) {
-      this.evtRoot.on( this.eventName, ( e ) => {
-        this.handle();
-      } );
+      this.evtRoot.on( this.eventName, () => this.handle() );
     }
     return this;
   }

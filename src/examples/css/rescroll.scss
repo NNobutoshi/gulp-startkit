@@ -9,11 +9,13 @@
 
 
 .pl-localNav {
+  box-sizing: border-box;
+  width: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  background-color: #fff;
+  padding: 0 10px;
+  background-color: rgba(255,255,255,.6);
   @at-root {
     .pl-localNav_list {
       list-style: none;
@@ -31,11 +33,17 @@
   img {
     width: 100%;
   }
-  &:nth-child(odd) {
+  &:nth-child(2n) {
     background-color: #fcc;
   }
-  &:nth-child(even) {
+  &:nth-child(3n) {
     background-color: #c7c7e7;
+  }
+  &:nth-child(4n) {
+    background-color: #ccffcc;
+  }
+  &:nth-child(5n) {
+    background-color: #ccffff;
   }
 }
 

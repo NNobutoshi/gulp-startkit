@@ -22,8 +22,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 var mdls = {},
     TARGETSELECTOR = '.pl-nav_anchor',
     elemTarget = document.querySelectorAll(TARGETSELECTOR),
-    evtTarget = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(elemTarget),
-    evtWindow = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(window);
+    evtWindow = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(window),
+    evtTarget = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(elemTarget);
 mdls.locate = new _js_modules_locate__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorTarget: TARGETSELECTOR,
   selectorParents: '.pl-nav_item'

@@ -1,7 +1,6 @@
 import merge from 'lodash/mergeWith';
-import 'core-js/modules/es.promise';
-import 'regenerator-runtime/runtime';
 import EM from './utilities/eventmanager';
+import 'regenerator-runtime/runtime';
 
 export default class VideoGround {
 

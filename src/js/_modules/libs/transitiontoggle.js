@@ -38,12 +38,8 @@ export default class Toggle {
     this.callbackForBefore = callbackForBefore;
     this.callbackForAfter = callbackForAfter;
     this.callbackForEnd = callbackForEnd;
-    this.evtRoot.on( `click.${this.id}`, ( e ) => {
-      this.handleForClick( e );
-    } );
-    this.evtRoot.on( `transitionend.${this.id}`, ( e ) => {
-      this.handleForTransitionend( e );
-    } );
+    this.evtRoot.on( `click.${this.id}`, ( e ) => this.handleForClick( e ) );
+    this.evtRoot.on( `transitionend.${this.id}`, ( e ) => this.handleForTransitionend( e ) );
     return this;
   }
 

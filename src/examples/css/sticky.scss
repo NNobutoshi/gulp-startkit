@@ -11,7 +11,7 @@
 .pl-nav {
   height: 50px;
   @at-root {
-    .pl-nav_nav {
+    &_nav {
       height: inherit;
       border: solid 1px #f00;
       box-sizing: border-box;
@@ -22,6 +22,13 @@
         top: 0;
         left: 0;
       }
+    }
+    &_list {
+      display: flex;
+    }
+    &_item {
+      list-style: none;
+      margin-left: 1em;
     }
   }
 }

@@ -40,7 +40,7 @@ export default class EventManager {
         }
         this.listeners[ strEventName ].push( callback );
         this.setEventListener( prefix, eventName, callback, options );
-      } // if( prefix == 'add' )
+      } // if( prefix === 'add' )
 
       if ( prefix === 'remove' ) {
         let listeners = {};
@@ -94,9 +94,9 @@ export default class EventManager {
         }
       }
       if ( calling ) {
-        for ( const value of Object.values( listeners ) ) {
-          const arry = value;
-          Array.prototype.forEach.call( arry, ( func ) => {
+        for ( const key in listeners ) {
+          const arry = listeners[ key ];
+          arry.forEach( ( func ) => {
             func( null );
           } );
         }
@@ -108,12 +108,7 @@ export default class EventManager {
   }
 
   setEventListener( prefix, eventName, callback, options ) {
-    let arryElements;
-    if ( this.elemEventer.length ) {
-      arryElements = this.elemEventer;
-    } else {
-      arryElements = [ this.elemEventer ];
-    }
+    const arryElements = ( this.elemEventer.length ) ? this.elemEventer : [ this.elemEventer ];
     Array.prototype.forEach.call( arryElements, ( elem ) => {
       elem[ `${prefix}EventListener` ]( eventName, callback, options );
     } );

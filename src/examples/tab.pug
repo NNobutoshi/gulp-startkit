@@ -9,7 +9,15 @@ append script_body
 
 block pageBody
   div.pl-head fixed
-  section.pl-sectionGroup.pl-sectionGroup--1
+    a(href="#section-A") section-A
+    a(href="#section-B") section-B
+    a(href="#section-C") section-C
+    a(href="#section-D") section-D
+    a(href="#section-E") section-E
+    a(href="#section-F") section-F
+    a(href="#section-G") section-G
+
+  section.pl-sectionGroup.pl-sectionGroup--1#group-1
     div.pl-sectionGroup_head
       div.pl-tabmenu
         ul.pl-tabmenu_list
@@ -26,7 +34,8 @@ block pageBody
         div.pl-section_body section-B
       section.pl-section.pl-section-C#section-C
         div.pl-section_body section-C
-  section.pl-sectionGroup.pl-sectionGroup--2
+
+  section.pl-sectionGroup.pl-sectionGroup--2#group-2
     div.pl-sectionGroup_head
       div.pl-tabmenu
         ul.pl-tabmenu_list
@@ -39,3 +48,19 @@ block pageBody
         div.pl-section_body section-D
       section.pl-section.pl-section-E#section-E
         div.pl-section_body section-E
+
+  section.pl-sectionGroup.pl-sectionGroup--3#group-3
+    div.pl-sectionGroup_head
+      div.pl-tabmenu
+        ul.pl-tabmenu_list
+          li.pl-tabmenu_item
+            a.pl-tabmenu_anchor(href="#section-F") section-F
+          li.pl-tabmenu_item
+            a.pl-tabmenu_anchor(href="#section-G") section-G
+    div.pl-sectionGroup_body
+      section.pl-section.pl-section-F#section-F
+        div.pl-section_body section-F
+      section.pl-section.pl-section-G#section-G
+        div.pl-section_body section-G
+  section.pl-sectionGroup.pl-sectionGroup--3
+    section.pl-section-F#section-H section-H

@@ -24,7 +24,6 @@
   ,"_components/_tables"
 ;
 
-
 .and {
   @include mq( min-width, md, and, max-width, lg ) {
     @include fs( 14, 17 );

@@ -15,6 +15,9 @@
   top: 0;
   left: 0;
   background-color: #fee;
+  a {
+    margin-left: 10px;
+  }
 }
 .pl-tabmenu {
   @at-root {
@@ -24,9 +27,9 @@
       margin: 0;
     }
     .pl-tabmenu_item {
-      flex: 1 0 auto;
       display: flex;
       flex-wrap: wrap;
+      flex: 1 0 auto;
       padding: 0;
       margin: 0;
     }
@@ -54,9 +57,11 @@
   box-sizing: border-box;
   .js & {
     height: 0;
+    width: 100%;
     overflow: hidden;
     opacity: 0;
-    transition: opacity .25s ease;
+    background-color: transparent;
+    transition: opacity .25s .25s ease;
   }
   &.js-selected {
     background-color: #f77;
@@ -65,8 +70,11 @@
   }
   @at-root {
     .pl-section_body {
-      min-height: 50vh;
       padding: 10px;
+      min-height: 50vh;
     }
   }
+}
+.page_body {
+  padding-bottom: 50vh;
 }

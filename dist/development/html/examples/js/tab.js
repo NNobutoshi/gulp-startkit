@@ -19,16 +19,11 @@ var mdls = {};
 mdls.rescroll = new _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__.default({
   offsetTop: '.pl-head'
 });
-mdls.rescroll.on();
+mdls.rescroll.on().addShoulder('.pl-sectionGroup');
 mdls.tab = new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorWrapper: '.pl-sectionGroup',
   selectorTrigger: '.pl-tabmenu_anchor',
-  selectorTarget: '.pl-section',
-  onLoad: function onLoad(prop) {
-    setTimeout(function () {
-      mdls.rescroll.scroll(prop.wrapper);
-    }, 200);
-  }
+  selectorTarget: '.pl-section'
 });
 mdls.tab.on();
 
