@@ -2,40 +2,44 @@ import merge from 'lodash/mergeWith';
 import EM from './utilities/eventmanager';
 import 'regenerator-runtime/runtime';
 
+const doc = document;
+
 export default class VideoGround {
 
   constructor( options ) {
     this.defaultSettings = {
       name               : 'videoGround',
       src                : '',
-      selectorVideoFrame : '',
-      selectorParent     : '',
       waitTime           : 10000,
       aspectRatio        : 720 / 1280,
       actualHeightRatio  : 1 / 1,
-      targetClassName    : 'js--video',
-      classNamePlaying   : 'js--isPlaying',
-      classNameDestroyed : 'js--isDestroyed',
-      onDestroy          : null,
+      selectorParent     : '',
+      selectorVideoFrame : '',
+      attrVideo          : [ 'muted', 'playsinline', 'loop' ],
       onPlay             : null,
-      onBefore           : null,
+      onPlayBefore       : null,
       onLoad             : null,
+      onDestroy          : null,
     };
     this.settings = merge( {}, this.defaultSettings, options );
-    this.elemVideo = null;
-    this.elemVideoFrame = null;
     this.id = this.settings.name;
+    this.selectorParent = this.settings.selectorParent;
+    this.selectorVideoFrame = this.settings.selectorVideoFrame;
+    this.elemVideo = _createVideo( this.settings.attrVideo );
+    this.elemVideoFrame = doc.querySelector( this.selectorVideoFrame );
+    this.elemParent = this.selectorParent && doc.querySelector( this.selectorParent );
+    this.elemParent = this.elemParent || this.elemVideoFrame.parentNode;
+    this.evtNamePlay = `play.${this.id}`;
+    this.evtNameCanPlay = `canplay.${this.id}`;
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.elemVideo = _createVideo( [ 'muted', 'playsinline', 'loop' ] );
-    this.elemVideoFrame = document.querySelector( this.settings.selectorVideoFrame );
-    this.elemParent = ( this.settings.selectorParent && this.elemVideoFrame !== null ) ?
-      document.querySelector( this.settings.selectorParent ) :
-      this.elemVideoFrame.parentNode
-    ;
     this.evtVideo = new EM( this.elemVideo );
   }
 
+  /**
+   * play()が可能か事前に調べ、結果を待って各種設定、実行。
+   * 無効の場合 this.destroy() 。
+   */
   run() {
     const
       settings = this.settings
@@ -43,14 +47,9 @@ export default class VideoGround {
       ,elemVideoFrame = this.elemVideoFrame
     ;
 
-    if ( elemVideoFrame === null ) {
-      return this;
-    }
-
     this.autoDestroy();
     this.on();
-
-    _eventCall( settings.onBefore );
+    this.eventCall( settings.onBefore );
 
     /* eslint space-before-function-paren: 0 */
     ( async () => {
@@ -58,18 +57,21 @@ export default class VideoGround {
         return this.destroy();
       }
       elemVideo.src = settings.src;
-      elemVideo.classList.add( settings.targetClassName );
       elemVideoFrame.appendChild( elemVideo );
+      this.eventCall( settings.onPlayBefore );
       elemVideo.load();
     } )();
     return this;
   }
 
+  /**
+   * play()で再生が可能かどうか、ダミーのvideo を作成し、結果を返す
+   */
   testPlay() {
     return new Promise( ( resolve ) => {
       const
-        retries = 3
-        ,testVideo = _createVideo( [ 'muted', 'playsinline' ] )
+        retries    = 3
+        ,testVideo = _createVideo( this.settings.attrVideo )
       ;
       let
         timeoutId = null
@@ -77,66 +79,59 @@ export default class VideoGround {
       ;
       testVideo.play();
       ( function _try() {
-        currentTry = currentTry + 1;
+        currentTry += 1;
         clearTimeout( timeoutId );
         timeoutId = null;
         if ( testVideo.paused === false || currentTry > retries ) {
           resolve( !testVideo.paused );
           return;
         }
-        timeoutId = setTimeout( () => {
-          _try();
-        }, 160 );
+        timeoutId = setTimeout( _try, 160 );
       } )();
     } );
   }
 
   on() {
-    this.evtVideo.on( `play.${this.id}`, () => {
-      this.handleForPlay();
-    } );
-    this.evtVideo.on( `canplay.${this.id}`, ( e ) => {
-      this.handleForCanPlay( e );
-    } );
+    this.evtVideo.on( this.evtNamePlay,  this.handlePlay.bind( this ) );
+    this.evtVideo.on( this.evtNameCanPlay, this.handleCanPlay.bind( this )  );
     return this;
   }
 
-  handleForPlay() {
+  handlePlay( e ) {
     const
       settings = this.settings
     ;
     clearTimeout( this.destroyTimerId );
     this.destroyTimerId = null;
     this.isPlaying = true;
-    document.body.classList.add( settings.classNamePlaying );
-    _eventCall( settings.onPlay );
+    this.eventCall( settings.onPlay );
+    this.evtVideo.off( this.evtNameCanPlay );
   }
 
-  handleForCanPlay( e ) {
+  handleCanPlay( e ) {
     const
       settings = this.settings
     ;
     this.elemVideo.play();
-    _eventCall( settings.onLoad );
-    this.evtVideo.off( `canplay.${this.id}` );
+    this.eventCall( settings.onLoad );
   }
 
   destroy() {
     const
       settings = this.settings
-      ,elemBody = document.querySelector( 'body' )
     ;
     clearTimeout( this.destroyTimerId );
-    elemBody.classList.remove( settings.classNamePlaying );
-    elemBody.classList.add( settings.classNameDestroyed );
-    if ( this.elemVideoFrame.querySelector( settings.targetClassName ) !== null ) {
+    if ( this.elemVideoFrame.querySelector( settings.classNameTarget ) !== null ) {
       this.elemVideoFrame.removeChild( this.elemVideo );
     }
-    _eventCall( this.settings.onDestroy );
+    this.eventCall( settings.onDestroy );
     this.evtVideo.off( `.${this.id}` );
     return this;
   }
 
+  /**
+   * 待機時間を過ぎれば、this.destroy() 。
+   */
   autoDestroy() {
     this.destroyTimerId = setTimeout( () => {
       clearTimeout( this.destroyTimerId );
@@ -145,6 +140,9 @@ export default class VideoGround {
     }, this.settings.waitTime );
   }
 
+  /**
+   * ojbect-fit の代替。
+   */
   resize() {
     const
       settings = this.settings
@@ -159,18 +157,19 @@ export default class VideoGround {
       this.elemVideo.style.width = 100 + '%';
       this.elemVideo.style.height = 'auto';
     }
+    return this;
   }
 
-}
-
-function _eventCall( f ) {
-  if ( typeof f === 'function' ) {
-    f.call( this );
+  eventCall( func ) {
+    if ( typeof func === 'function' ) {
+      func.call( this, this );
+    }
   }
+
 }
 
 function _createVideo( props ) {
-  const elemVideo = document.createElement( 'video' );
+  const elemVideo = doc.createElement( 'video' );
   for ( let i = 0, len = props.length; i < len; i++ ) {
     elemVideo.setAttribute( props[ i ], '' );
     elemVideo[ props[ i ] ] = true;

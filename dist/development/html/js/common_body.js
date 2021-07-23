@@ -14,8 +14,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
 
 
-
-
 (0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_1__.default)(function () {
   console.info('ok');
 });

@@ -8,6 +8,22 @@ append script_body
   script(src="/examples/js/inview.js")
 
 block pageBody
-  div.pl-inviewTarget
+  div.pl-line.pl-line--50 50%
+  div.pl-offsetElement.pl-offsetElement--start
+    span chatch point
+    input( type="text", value="100" ).pl-input.pl-input--catchPoint
+    span %
+  div.pl-inviewTarget.pl-inviewTarget--1
     div.pl-inviewTarget_inner
       h1 in view
+      span hook point
+      input( type="text", value="0").pl-input.pl-input--hookPoint
+      span %
+  div.pl-inviewTarget.pl-inviewTarget--2
+    div.pl-inviewTarget_inner
+      h1 in view
+      span hook point
+      input( type="text", value="0").pl-input.pl-input--hookPoint
+      span %
+  div.pl-offsetElement.pl-offsetElement--end
+    span offset bottom

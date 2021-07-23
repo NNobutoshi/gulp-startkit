@@ -11,8 +11,6 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_libs_adaptivehover__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/adaptivehover */ "./src/js/_modules/libs/adaptivehover.js");
 
-
-
 var mdls = {};
 mdls.hover = new _js_modules_libs_adaptivehover__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorTarget: '.pl-hoverTarget'

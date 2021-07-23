@@ -13,7 +13,42 @@
   height: 80vh;
   background-color: #ddd;
   transition: background .25s ease-in;
+  padding: 15px 30px;
   &.js-isInView {
-    background: #f00;
+    background: rgb(253, 88, 88);
+  }
+}
+
+.pl-offsetElement {
+  position: fixed;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255,255,255,.6);
+  border: solid 1px #f00;
+  padding: 15px 10px;
+  @at-root {
+    &--start {
+      top: 0;
+    }
+    &--end {
+      bottom: 0;
+    }
+  }
+}
+
+.pl-input {
+  width: 3em;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.pl-line {
+  position: fixed;
+  border-top: solid 1px #000;
+  width: 100%;
+  @at-root {
+    &--50 {
+      top: 50%;
+    }
   }
 }

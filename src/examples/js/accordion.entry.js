@@ -1,38 +1,31 @@
-'use strict';
-
 import Toggle from '../../js/_modules/libs/transitiontoggle.js';
 
 const
   mdls = {}
 ;
 mdls.toggle = new Toggle( {
-  selectorParent  : '.pl-list',
+  // selectorParent  : '.pl-list',
   selectorTrigger : '.pl-list_btn',
   selectorTarget  : '.pl-list_inner',
 } );
 
-mdls.toggle.on(
-  ( e, inst ) => {
+mdls.toggle.on( {
+  before: function() {
     const
-      height = inst.elemTarget.querySelector( '.pl-list_list' ).getBoundingClientRect().height
+      height = this.elemTarget.querySelector( '.pl-list_list' ).getBoundingClientRect().height
     ;
-    clearTimeout( inst.timeoutId );
-    inst.elemTarget.style.height = height + 'px';
-    inst.elemParent.classList.add( 'js-list--isOpening' );
+    this.elemTarget.style.height = height + 'px';
+    this.elemParent.classList.add( 'js-list--isOpening' );
   },
-  ( e, inst ) => {
-    inst.elemTarget.style.height = '';
-    inst.timeoutId = setTimeout( () => {
-      inst.elemParent.classList.remove( 'js-list--isOpening' );
-    }, 100 );
+  after: function() {
+    this.elemTarget.style.height = '';
+    this.elemParent.classList.remove( 'js-list--isOpening' );
   },
-  ( e, inst ) => {
-    console.info( 'ischanged', inst.isChanged );
-    if ( inst.isChanged === true ) {
-      inst.elemParent.classList.add( 'js-list--isOpen' );
+  finish: function() {
+    if ( this.isChanged === true ) {
+      this.elemParent.classList.add( 'js-list--isOpen' );
     } else {
-      inst.elemParent.classList.remove( 'js-list--isOpen' );
+      this.elemParent.classList.remove( 'js-list--isOpen' );
     }
-  },
-)
-;
+  }
+} );

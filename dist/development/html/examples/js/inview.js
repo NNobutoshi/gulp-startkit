@@ -11,22 +11,36 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/scrollmanager */ "./src/js/_modules/libs/scrollmanager.js");
 
-
-
 var mdls = {};
+var elemInputCatch = document.querySelector('.pl-input--catchPoint');
+var catchPoint = 0;
 mdls.scrollManager = new _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__.default({
-  throttle: 0
+  catchPoint: '100%',
+  selectorOffsetTop: '.pl-offsetElement--start',
+  selectorOffsetBottom: '.pl-offsetElement--end'
 });
-mdls.scrollManager.on(function (ovserved) {
-  if (ovserved.ratio > 0 && ovserved.ratio <= 1) {
-    ovserved.inView = true;
-    ovserved.target.classList.add('js-isInView');
-  } else {
-    ovserved.target.classList.remove('js-isInView');
-  }
-}, document.querySelector('.pl-inviewTarget'), {
+mdls.scrollManager.on(_handle, document.querySelector('.pl-inviewTarget--1'), {
   hookPoint: 0
-});
+}).on(_handle, document.querySelector('.pl-inviewTarget--2'), {
+  hookPoint: 0
+}).runCallbacksAll();
+
+function _handle(observed) {
+  var elemInputHook = observed.elemInput || observed.target.querySelector('.pl-input--hookPoint'),
+      hookPoint = parseInt(elemInputHook.value);
+  observed.elemInput = elemInputHook;
+  catchPoint = parseInt(elemInputCatch.value);
+  catchPoint = typeof catchPoint === 'number' && catchPoint >= 0 ? catchPoint + '%' : '100%';
+  observed.hookPoint = typeof hookPoint === 'number' && hookPoint >= 0 ? hookPoint + '%' : 0;
+  this.catchPoint = catchPoint;
+
+  if (observed.catched) {
+    observed.inView = true;
+    observed.target.classList.add('js-isInView');
+  } else {
+    observed.target.classList.remove('js-isInView');
+  }
+}
 
 /***/ }),
 

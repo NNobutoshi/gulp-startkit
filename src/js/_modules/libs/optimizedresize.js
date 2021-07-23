@@ -14,8 +14,8 @@ export default class OptimizedResize {
 
   constructor( options ) {
     this.defaultSettings = {
-      name  : 'optimizedresize',
-      delay : 16,
+      name      : 'optimizedresize',
+      delayTime : 100,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
@@ -97,7 +97,10 @@ export default class OptimizedResize {
     this.remove( name );
   }
 
-  on( callback, query, name ) {
+  on( query, callback, name ) {
+    if ( typeof query === 'function' ) {
+      [ callback, name, query ] = [ query , callback, '' ];
+    }
     return this.add( callback, {
       name  : name,
       query : query,
@@ -107,7 +110,7 @@ export default class OptimizedResize {
     } );
   }
 
-  one( callback, query, name ) {
+  one( query, callback, name ) {
     return this.add( callback, {
       name  : name,
       query : query,
@@ -117,7 +120,7 @@ export default class OptimizedResize {
     } );
   }
 
-  turn( callback, query, name ) {
+  turn( query, callback, name ) {
     return this.add( callback, {
       name  : name,
       query : query,
@@ -127,7 +130,7 @@ export default class OptimizedResize {
     } );
   }
 
-  cross( callback, query, name ) {
+  cross( query, callback, name ) {
     return this.add( callback, {
       name  : name,
       query : query,
@@ -139,7 +142,7 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callbacks ).length ) {
-      this.evtRoot.on( this.eventName, ( e ) => this.handleForSetup( e ) );
+      this.evtRoot.on( this.eventName, ( e ) => this.handleSetup( e ) );
     }
   }
 
@@ -147,18 +150,39 @@ export default class OptimizedResize {
     this.evtRoot.off( this.eventName );
   }
 
-  handleForSetup() {
+  handleSetup() {
     this.run();
   }
 
   run() {
-    if ( !this.isRunning ) {
-      this.isRunning = true;
-      requestAnimationFrame( () => {
-        this.runCallbacksAll();
-      } );
+    const
+      delayTime = this.settings.delayTime
+      ,func = this.runCallbacksAll.bind( this )
+    ;
+    let startTime = null;
+    if ( this.isRunning === true ) {
+      return this;
     }
+    this.isRunning = true;
+    if ( typeof delayTime === 'number' && delayTime > 0 ) {
+      requestAnimationFrame( _throttle );
+    } else {
+      requestAnimationFrame( func );
+    }
+
     return this;
+
+    function _throttle( timeStamp ) {
+      if ( startTime === null ) {
+        startTime = timeStamp;
+      }
+      if ( timeStamp - startTime >= delayTime ) {
+        func();
+      } else {
+        requestAnimationFrame( _throttle );
+      }
+    }
+
   }
 
 }

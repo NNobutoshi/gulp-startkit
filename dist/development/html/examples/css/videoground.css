@@ -69,8 +69,7 @@
           animation: spin 1s linear 0s infinite;
 }
 
-.js-mainVisual_video--isDestroyed .pl-mainVisual::after,
-.js-mainVisual_video--isPlaying .pl-mainVisual::after {
+.pl-mainVisual.js-pl-mainVisual_video--isDestroyed::after, .pl-mainVisual.js-pl-mainVisual_video--isPlaying::after {
   display: none;
 }
 
@@ -123,11 +122,11 @@
   transition: opacity 3s ease-in;
 }
 
-.js-mainVisual_video--isPlaying .pl-mainVisual_body {
+.js-pl-mainVisual_video--isPlaying .pl-mainVisual_body {
   opacity: 1;
 }
 
-.js-mainVisual_video {
+.js-pl-mainVisual_video {
   position: absolute;
   top: 50%;
   left: 50%;

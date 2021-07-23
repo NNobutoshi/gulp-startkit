@@ -1,5 +1,3 @@
-'use strict';
-
 import Adaptivehover from '../../js/_modules/libs/adaptivehover';
 
 const mdls = {};

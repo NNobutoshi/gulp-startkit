@@ -1,4 +1,3 @@
-'use strict';
 import 'core-js/stable';
 import foo from './_modules/foo.js';
 

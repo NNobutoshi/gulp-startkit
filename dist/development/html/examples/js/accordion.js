@@ -11,31 +11,28 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/transitiontoggle.js */ "./src/js/_modules/libs/transitiontoggle.js");
 
-
-
 var mdls = {};
 mdls.toggle = new _js_modules_libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  selectorParent: '.pl-list',
+  // selectorParent  : '.pl-list',
   selectorTrigger: '.pl-list_btn',
   selectorTarget: '.pl-list_inner'
 });
-mdls.toggle.on(function (e, inst) {
-  var height = inst.elemTarget.querySelector('.pl-list_list').getBoundingClientRect().height;
-  clearTimeout(inst.timeoutId);
-  inst.elemTarget.style.height = height + 'px';
-  inst.elemParent.classList.add('js-list--isOpening');
-}, function (e, inst) {
-  inst.elemTarget.style.height = '';
-  inst.timeoutId = setTimeout(function () {
-    inst.elemParent.classList.remove('js-list--isOpening');
-  }, 100);
-}, function (e, inst) {
-  console.info('ischanged', inst.isChanged);
-
-  if (inst.isChanged === true) {
-    inst.elemParent.classList.add('js-list--isOpen');
-  } else {
-    inst.elemParent.classList.remove('js-list--isOpen');
+mdls.toggle.on({
+  before: function before() {
+    var height = this.elemTarget.querySelector('.pl-list_list').getBoundingClientRect().height;
+    this.elemTarget.style.height = height + 'px';
+    this.elemParent.classList.add('js-list--isOpening');
+  },
+  after: function after() {
+    this.elemTarget.style.height = '';
+    this.elemParent.classList.remove('js-list--isOpening');
+  },
+  finish: function finish() {
+    if (this.isChanged === true) {
+      this.elemParent.classList.add('js-list--isOpen');
+    } else {
+      this.elemParent.classList.remove('js-list--isOpen');
+    }
   }
 });
 

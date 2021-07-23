@@ -2,13 +2,13 @@ import './matches.js';
 
 if ( !Element.prototype.closest ) {
   Element.prototype.closest = function( s ) {
-    var el = this;
+    var elem = this;
     do {
-      if ( Element.prototype.matches.call( el, s ) ) {
-        return el;
+      if ( Element.prototype.matches.call( elem, s ) ) {
+        return elem;
       }
-      el = el.parentElement || el.parentNode;
-    } while ( el !== null && el.nodeType === 1 );
+      elem = elem.parentElement || elem.parentNode;
+    } while ( elem !== null && elem.nodeType === 1 );
     return null;
   };
 }

@@ -2,33 +2,42 @@ import merge from 'lodash/mergeWith';
 import './polyfills/closest';
 import EM from './utilities/eventmanager';
 
+const doc = document;
+
 export default class SimpleVideoPlay {
 
   constructor( options ) {
     this.defaultSettings = {
-      name               : 'SimpleVideoPlay',
-      selectorVideo      : '',
-      selectorOuter      : '',
-      classNameOfCover   : 'js-video_cover',
-      classNameOfCanPlay : 'js-video--canPlay',
-      classNameOfPlaying : 'js-video--isPlaying',
-      classNameOfPaused  : 'js-video--isPaused',
-      classNameOfEnded   : 'js-video--isEnded',
+      name          : 'SimpleVideoPlay',
+      selectorVideo : '',
+      selectorOuter : '',
+      onBefore      : null,
+      onPlayBefore  : null,
+      onPlay        : null,
+      onPause       : null,
+      onEnd         : null,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.isPlaying = false;
-    this.elemVideo = document.querySelector( this.settings.selectorVideo );
-    this.elemWrapper = this.elemVideo.closest( this.settings.selectorOuter );
-    this.elemCover = document.createElement( 'div' );
+    this.selectorVideo = this.settings.selectorVideo;
+    this.selectorOuter = this.settings.selectorOuter;
+    this.elemVideo = doc.querySelector( this.selectorVideo );
+    this.elemWrapper = this.elemVideo.closest( this.selectorOuter );
+    this.elemCover = doc.createElement( 'div' );
+    this.evtNamecanPlay = `canplay.${this.id}`;
+    this.evtNamePlay = `play.${this.id}`;
+    this.evtNamePause = `pause.${this.id}`;
+    this.evtNameEnded = `ended.${this.id}`;
+    this.evtNameCoverClick = `click.${this.id} touchend.${this.id}`;
     this.src = this.elemVideo.src;
+    this.isPlaying = false;
     this.evtVideo = new EM( this.elemVideo );
     this.evtCover = new EM( this.elemCover );
     this.init();
   }
 
   init() {
-    this.elemCover.classList.add( this.settings.classNameOfCover );
+    this.eventCall( this.settings.onBefore );
     this.elemWrapper.appendChild( this.elemCover );
     if ( this.elemVideo.poster ) {
       this.elemCover.style.backgroundImage = `url(${this.elemVideo.poster})`;
@@ -38,18 +47,10 @@ export default class SimpleVideoPlay {
   }
 
   on() {
-    this.evtVideo.on( `canplay.${this.id}`, () => {
-      this.handleForCanplay();
-    } );
-    this.evtVideo.on( `play.${this.id}`,() => {
-      this.handleForPlay();
-    } );
-    this.evtVideo.on( `pause.${this.id}`, () => {
-      this.handleForPause();
-    } );
-    this.evtVideo.on( `ended.${this.id}`, () => {
-      this.handleForEnded();
-    } );
+    this.evtVideo.on( this.evtNamecanPlay, this.handleCanplay.bind( this ) );
+    this.evtVideo.on( this.evtNamePlay, this.handlePlay.bind( this ) );
+    this.evtVideo.on( this.evtNamePause, this.handlePause.bind( this ) );
+    this.evtVideo.on( this.evtNameEnded, this.handleEnded.bind( this ) );
   }
 
   off() {
@@ -57,33 +58,33 @@ export default class SimpleVideoPlay {
     this.evtCover.off( `.${this.id}` );
   }
 
-  handleForCanplay() {
-    this.elemWrapper.classList.add( this.settings.classNameOfCanPlay );
-    this.evtCover.on( `click.${this.id} touchend.${this.id}`, ( e ) => {
-      this.handleForCoverClick( e );
-    } );
+  handleCanplay() {
+    this.eventCall( this.settings.onPlayBefore );
+    this.evtCover.on( this.evtNameCoverClick, this.handleCoverClick.bind( this ) );
   }
 
-  handleForPlay() {
-    this.elemWrapper.classList.add( this.settings.classNameOfPlaying );
-    this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
+  handlePlay() {
+    this.eventCall( this.settings.onPlay );
   }
 
-  handleForPause() {
-    this.elemWrapper.classList.add( this.settings.classNameOfPaused );
-    this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
+  handlePause() {
+    this.eventCall( this.settings.onPause );
   }
 
-  handleForEnded() {
-    this.elemWrapper.classList.add( this.settings.classNameOfEnded );
-    this.elemWrapper.classList.remove( this.settings.classNameOfPaused );
-    this.elemWrapper.classList.remove( this.settings.classNameOfPlaying );
+  handleEnded() {
+    this.eventCall( this.settings.onEnd );
   }
 
-  handleForCoverClick( e ) {
+  handleCoverClick( e ) {
     e.preventDefault();
     if ( this.isPlaying === false ) {
       this.elemVideo.play();
+    }
+  }
+
+  eventCall( func ) {
+    if ( typeof func === 'function' ) {
+      func.call( this, this );
     }
   }
 

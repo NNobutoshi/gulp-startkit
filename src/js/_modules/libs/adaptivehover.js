@@ -9,39 +9,42 @@ import '../polyfills/closest';
 import merge from 'lodash/mergeWith';
 import EM from '../utilities/eventmanager';
 
+const doc = document;
 export default class AdaptiveHover {
 
   constructor( options ) {
     this.defaultSettings = {
-      name            : 'adaptiveHover',
-      selectorTarget : '',
-      elemEventRoot   : document.body,
-      timeout         : 400,
-      range           : 10,
+      name              : 'adaptiveHover',
+      selectorTarget    : '',
+      selectorEventRoot : 'body',
+      delayTime         : 400,
+      range             : 10,
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.elemTarget = document.querySelector( this.settings.selectorTarget );
-    this.elemEventRoot = this.settings.elemEventRoot;
-    this.callbackForEnter = null;
-    this.callbackForLeave = null;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.selectorEvetnRoot = this.settings.selectorEventRoot;
+    this.elemTarget = doc.querySelector( this.selectorTarget );
+    this.elemEventRoot = doc.querySelector( this.selectorEventRoot );
+    this.callbackEnter = null;
+    this.callbackLeave = null;
+    this.eventNameEnter = `touchstart.${this.id} mouseover.${this.id}`;
+    this.eventNameLeave = `touchend.${this.id} mouseout.${this.id}`;
+    this.eventNameOutside = `touchend.${this.id} click.${this.id}`;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.enteringEventName = `touchstart.${this.id} mouseover.${this.id}`;
-    this.leavingEventName = `touchend.${this.id} mouseout.${this.id}`;
-    this.outSideEventName = `touchend.${this.id} click.${this.id}`;
     this.evtRoot = new EM( this.elemEventRoot );
   }
 
-  on( callbackForEnter, callbackForLeave ) {
-    this.callbackForEnter = callbackForEnter;
-    this.callbackForLeave = callbackForLeave;
+  on( callbackEnter, callbackLeave ) {
+    this.callbackEnter = callbackEnter;
+    this.callbackLeave = callbackLeave;
     this.evtRoot
-      .on( this.enteringEventName,this.handleForEnter.bind( this ) )
-      .on( this.leavingEventName, this.handleForLeave.bind( this ) )
-      .on( this.outSideEventName, this.handleForOutSide.bind( this ) )
+      .on( this.eventNameEnter, this.selectorTarget, this.handleEnter.bind( this ) )
+      .on( this.eventNameLeave, this.selectorTarget, this.handleLeave.bind( this ) )
+      .on( this.eventNameOutside, this.handleOutSide.bind( this ) )
     ;
     return this;
   }
@@ -52,13 +55,11 @@ export default class AdaptiveHover {
     return this;
   }
 
-  handleForEnter( e ) {
-    if ( this.elemTarget.isEqualNode( e.target ) )  {
-      this.enter( e );
-    }
+  handleEnter( e ) {
+    this.enter( e );
   }
 
-  handleForLeave( e ) {
+  handleLeave( e, target ) {
     const
       settings = this.settings
       ,range = settings.range
@@ -66,18 +67,18 @@ export default class AdaptiveHover {
     ;
     if (
       !isOriginPoint &&
-      this.elemTarget === e.target &&
+      this.elemTarget === target &&
       this.elemTarget.contains( e.relatedTarget ) === false
     ) {
-      this.leave( e, this.callbackForLeave );
+      this.leave( e, this.callbackLeave );
     }
   }
 
-  handleForOutSide( e ) {
+  handleOutSide( e ) {
     const settings = this.settings;
     if ( !_isRelative( e.target, settings.selectorTarget ) && this.isEntering === true ) {
       this.clear();
-      this.leave( e, this.callbackForLeave );
+      this.leave( e, this.callbackLeave );
     }
   }
 
@@ -88,11 +89,11 @@ export default class AdaptiveHover {
     ;
     if ( this.isEntering === false ) {
       clearTimeout( this.timeoutId );
-      this.timeoutId = setTimeout( () => this.clear(), settings.timeout );
+      this.timeoutId = setTimeout( () => this.clear(), settings.delayTime );
       this.pageX = eventObj.pageX;
       this.pageY = eventObj.pageY;
       this.isEntering = true;
-      this.callbackForEnter.call( this, e, this );
+      this.callbackEnter.call( this, e, this );
     }
   }
 
@@ -100,7 +101,7 @@ export default class AdaptiveHover {
     if ( this.isEntering === true ) {
       clearTimeout( this.timeoutId );
       this.isEntering = false;
-      this.callbackForLeave.call( this, e, this );
+      this.callbackLeave.call( this, e, this );
     }
   }
 

@@ -47,7 +47,11 @@
 
 .pl-hoverTarget a {
   display: inline-block;
-  padding: 4px;
+}
+
+.pl-hoverTarget a span {
+  display: block;
+  padding: 10px;
 }
 
 .pl-hoverTarget.js-hover {

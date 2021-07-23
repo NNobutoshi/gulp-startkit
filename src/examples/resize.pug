@@ -9,11 +9,19 @@ append script_body
 
 block pageBody
   div.pl-test resize
-    h1.pl-test_heading one
-    p.pl-test_one
-    h1.pl-test_heading turn
-    p.pl-test_turn
-    h1.pl-test_heading on
-    p.pl-test_on
-    h1.pl-test_heading cross
-    p.pl-test_cross
+    div.pl-test_box
+      h1.pl-test_heading one
+      p.pl-test_text.pl-test_text--one
+    div.pl-test_box
+      h1.pl-test_heading turn
+      p.pl-test_text.pl-test_text--turn
+    div.pl-test_box
+      h1.pl-test_heading cross
+      p.pl-test_text.pl-test_text--cross
+    div.pl-test_box
+      h1.pl-test_heading on
+      p.pl-test_text.pl-test_text--on
+    div.pl-test_inner.pl-test_inner--1200 width 1200px
+      div.pl-test_inner.pl-test_inner--980 width: 980px
+        div.pl-test_inner.pl-test_inner--768 width: 768px
+

@@ -75,6 +75,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var doc = document;
 
 var AdaptiveHover = /*#__PURE__*/function () {
   function AdaptiveHover(options) {
@@ -83,32 +84,34 @@ var AdaptiveHover = /*#__PURE__*/function () {
     this.defaultSettings = {
       name: 'adaptiveHover',
       selectorTarget: '',
-      elemEventRoot: document.body,
-      timeout: 400,
+      selectorEventRoot: 'body',
+      delayTime: 400,
       range: 10
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.elemTarget = document.querySelector(this.settings.selectorTarget);
-    this.elemEventRoot = this.settings.elemEventRoot;
-    this.callbackForEnter = null;
-    this.callbackForLeave = null;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.selectorEvetnRoot = this.settings.selectorEventRoot;
+    this.elemTarget = doc.querySelector(this.selectorTarget);
+    this.elemEventRoot = doc.querySelector(this.selectorEventRoot);
+    this.callbackEnter = null;
+    this.callbackLeave = null;
+    this.eventNameEnter = "touchstart.".concat(this.id, " mouseover.").concat(this.id);
+    this.eventNameLeave = "touchend.".concat(this.id, " mouseout.").concat(this.id);
+    this.eventNameOutside = "touchend.".concat(this.id, " click.").concat(this.id);
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.enteringEventName = "touchstart.".concat(this.id, " mouseover.").concat(this.id);
-    this.leavingEventName = "touchend.".concat(this.id, " mouseout.").concat(this.id);
-    this.outSideEventName = "touchend.".concat(this.id, " click.").concat(this.id);
     this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
   }
 
   _createClass(AdaptiveHover, [{
     key: "on",
-    value: function on(callbackForEnter, callbackForLeave) {
-      this.callbackForEnter = callbackForEnter;
-      this.callbackForLeave = callbackForLeave;
-      this.evtRoot.on(this.enteringEventName, this.handleForEnter.bind(this)).on(this.leavingEventName, this.handleForLeave.bind(this)).on(this.outSideEventName, this.handleForOutSide.bind(this));
+    value: function on(callbackEnter, callbackLeave) {
+      this.callbackEnter = callbackEnter;
+      this.callbackLeave = callbackLeave;
+      this.evtRoot.on(this.eventNameEnter, this.selectorTarget, this.handleEnter.bind(this)).on(this.eventNameLeave, this.selectorTarget, this.handleLeave.bind(this)).on(this.eventNameOutside, this.handleOutSide.bind(this));
       return this;
     }
   }, {
@@ -119,31 +122,29 @@ var AdaptiveHover = /*#__PURE__*/function () {
       return this;
     }
   }, {
-    key: "handleForEnter",
-    value: function handleForEnter(e) {
-      if (this.elemTarget.isEqualNode(e.target)) {
-        this.enter(e);
-      }
+    key: "handleEnter",
+    value: function handleEnter(e) {
+      this.enter(e);
     }
   }, {
-    key: "handleForLeave",
-    value: function handleForLeave(e) {
+    key: "handleLeave",
+    value: function handleLeave(e, target) {
       var settings = this.settings,
           range = settings.range,
           isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
 
-      if (!isOriginPoint && this.elemTarget === e.target && this.elemTarget.contains(e.relatedTarget) === false) {
-        this.leave(e, this.callbackForLeave);
+      if (!isOriginPoint && this.elemTarget === target && this.elemTarget.contains(e.relatedTarget) === false) {
+        this.leave(e, this.callbackLeave);
       }
     }
   }, {
-    key: "handleForOutSide",
-    value: function handleForOutSide(e) {
+    key: "handleOutSide",
+    value: function handleOutSide(e) {
       var settings = this.settings;
 
       if (!_isRelative(e.target, settings.selectorTarget) && this.isEntering === true) {
         this.clear();
-        this.leave(e, this.callbackForLeave);
+        this.leave(e, this.callbackLeave);
       }
     }
   }, {
@@ -158,11 +159,11 @@ var AdaptiveHover = /*#__PURE__*/function () {
         clearTimeout(this.timeoutId);
         this.timeoutId = setTimeout(function () {
           return _this.clear();
-        }, settings.timeout);
+        }, settings.delayTime);
         this.pageX = eventObj.pageX;
         this.pageY = eventObj.pageY;
         this.isEntering = true;
-        this.callbackForEnter.call(this, e, this);
+        this.callbackEnter.call(this, e, this);
       }
     }
   }, {
@@ -171,7 +172,7 @@ var AdaptiveHover = /*#__PURE__*/function () {
       if (this.isEntering === true) {
         clearTimeout(this.timeoutId);
         this.isEntering = false;
-        this.callbackForLeave.call(this, e, this);
+        this.callbackLeave.call(this, e, this);
       }
     }
   }, {
@@ -240,7 +241,7 @@ var OptimizedResize = /*#__PURE__*/function () {
 
     this.defaultSettings = {
       name: 'optimizedresize',
-      delay: 16
+      delayTime: 100
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
@@ -312,7 +313,14 @@ var OptimizedResize = /*#__PURE__*/function () {
     }
   }, {
     key: "on",
-    value: function on(callback, query, name) {
+    value: function on(query, callback, name) {
+      if (typeof query === 'function') {
+        var _ref = [query, callback, ''];
+        callback = _ref[0];
+        name = _ref[1];
+        query = _ref[2];
+      }
+
       return this.add(callback, {
         name: name,
         query: query,
@@ -323,7 +331,7 @@ var OptimizedResize = /*#__PURE__*/function () {
     }
   }, {
     key: "one",
-    value: function one(callback, query, name) {
+    value: function one(query, callback, name) {
       return this.add(callback, {
         name: name,
         query: query,
@@ -334,7 +342,7 @@ var OptimizedResize = /*#__PURE__*/function () {
     }
   }, {
     key: "turn",
-    value: function turn(callback, query, name) {
+    value: function turn(query, callback, name) {
       return this.add(callback, {
         name: name,
         query: query,
@@ -345,7 +353,7 @@ var OptimizedResize = /*#__PURE__*/function () {
     }
   }, {
     key: "cross",
-    value: function cross(callback, query, name) {
+    value: function cross(query, callback, name) {
       return this.add(callback, {
         name: name,
         query: query,
@@ -361,7 +369,7 @@ var OptimizedResize = /*#__PURE__*/function () {
 
       if (!Object.keys(this.callbacks).length) {
         this.evtRoot.on(this.eventName, function (e) {
-          return _this.handleForSetup(e);
+          return _this.handleSetup(e);
         });
       }
     }
@@ -371,23 +379,42 @@ var OptimizedResize = /*#__PURE__*/function () {
       this.evtRoot.off(this.eventName);
     }
   }, {
-    key: "handleForSetup",
-    value: function handleForSetup() {
+    key: "handleSetup",
+    value: function handleSetup() {
       this.run();
     }
   }, {
     key: "run",
     value: function run() {
-      var _this2 = this;
+      var delayTime = this.settings.delayTime,
+          func = this.runCallbacksAll.bind(this);
+      var startTime = null;
 
-      if (!this.isRunning) {
-        this.isRunning = true;
-        requestAnimationFrame(function () {
-          _this2.runCallbacksAll();
-        });
+      if (this.isRunning === true) {
+        return this;
+      }
+
+      this.isRunning = true;
+
+      if (typeof delayTime === 'number' && delayTime > 0) {
+        requestAnimationFrame(_throttle);
+      } else {
+        requestAnimationFrame(func);
       }
 
       return this;
+
+      function _throttle(timeStamp) {
+        if (startTime === null) {
+          startTime = timeStamp;
+        }
+
+        if (timeStamp - startTime >= delayTime) {
+          func();
+        } else {
+          requestAnimationFrame(_throttle);
+        }
+      }
     }
   }]);
 
@@ -419,7 +446,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../_vendor/raf */ "./src/js/_vendor/raf.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
-function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -436,6 +475,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var doc = document;
 var counter = 0;
 
 var ScrollManager = /*#__PURE__*/function () {
@@ -446,46 +486,45 @@ var ScrollManager = /*#__PURE__*/function () {
       name: 'scrollManager',
       selectorOffsetTop: '',
       selectorOffsetBottom: '',
-      delay: 32,
-      elemEventRoot: window,
-      throttle: 0,
+      selectorEventRoot: '',
+      delayTime: 0,
       catchPoint: '100%'
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.elemEventRoot = this.settings.elemEventRoot;
+    this.selectorEventRoot = this.settings.selectorEventRoot;
     this.selectorOffsetTop = this.settings.selectorOffsetTop;
     this.selectorOffsetBottom = this.settings.selectorOffsetBottom;
-    this.offsetTop = 0;
-    this.offsetBottom = 0;
+    this.elemEventRoot = this.selectorEventRoot && doc.querySelector(this.selectorEventRoot) || window;
     this.callbacks = {};
     this.eventName = "scroll.".concat(this.id);
     this.isRunning = false;
     this.lastSctop = 0;
-    this.lastScBottom = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.settings.eventRoot);
+    this.catchPoint = this.settings.catchPoint;
+    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
   }
 
   _createClass(ScrollManager, [{
     key: "runCallbacksAll",
     value: function runCallbacksAll() {
-      var _this = this;
+      var scTop = this.elemEventRoot.pageYOffset,
+          vwHeight = this.elemEventRoot.innerHeight;
 
-      var scTop = this.scTop = this.elemEventRoot.pageYOffset,
-          offsetTop = this.offsetTop = _getMaxOffset(this.selectorOffsetTop, 'top'),
-          offsetBottom = this.offsetBottom = _getMaxOffset(this.selectorOffsetBottom, 'bottom'),
-          vwTop = this.vwTop = scTop - offsetTop,
-          vwHeight = this.vwHeight = window.innerHeight - offsetTop - offsetBottom,
-          catchPoint = this.catchPoint = _calcPoint(vwHeight, this.settings.catchPoint);
-
-      Object.keys(this.callbacks).forEach(function (key) {
-        var entry = _this.callbacks[key],
+      for (var key in this.callbacks) {
+        var entry = this.callbacks[key],
+            selectorOffsetTop = entry.selectorOffsetTop || this.selectorOffsetTop,
+            selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom,
+            offsetTop = _getMaxOffset(selectorOffsetTop, vwHeight, 'top'),
+            offsetBottom = _getMaxOffset(selectorOffsetBottom, vwHeight, 'bottom'),
+            vwTop = scTop + offsetTop,
+            vwBottom = vwHeight - offsetTop - offsetBottom,
+            catchPoint = _calcPoint(vwBottom, this.catchPoint),
             elemTarget = entry.elemTarget || document.createElement('div'),
             rect = elemTarget.getBoundingClientRect(),
-            hookPoint = _calcPoint(rect.height, entry.hookPoint),
+            hookPoint = _calcPoint(rect.height, entry.observed.hookPoint || entry.hookPoint),
             range = catchPoint + (rect.height - hookPoint),
             scrollFrom = vwTop + catchPoint - (hookPoint + (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top),
             ratio = scrollFrom / range;
@@ -495,13 +534,16 @@ var ScrollManager = /*#__PURE__*/function () {
           target: entry.elemTarget,
           range: range,
           scroll: scrollFrom,
-          ratio: ratio
+          ratio: ratio,
+          catched: ratio >= 0 && ratio <= 1
         });
-        entry.callback.call(_this, entry.observed, _this);
-      });
+        entry.callback.call(this, entry.observed, this);
+      } // for
+
+
       this.isRunning = false;
 
-      if (this.scTop > this.lastSctop) {
+      if (scTop > this.lastSctop) {
         this.scrollDown = true;
         this.scrollUp = false;
       } else {
@@ -510,18 +552,17 @@ var ScrollManager = /*#__PURE__*/function () {
       }
 
       this.isRunning = false;
-      this.lastSctop = this.scTop;
-      this.lastScBottom = this.scBottom;
+      this.lastSctop = scTop;
       return this;
     }
   }, {
     key: "add",
     value: function add(callback, elemTarget, options) {
       var defaultOptions = {
-        elemTarget: elemTarget,
         name: _getUniqueName(this.id),
+        elemTarget: elemTarget,
         flag: false,
-        ovserved: {}
+        observed: {}
       },
           entry = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultOptions, options);
       entry.callback = callback;
@@ -548,11 +589,11 @@ var ScrollManager = /*#__PURE__*/function () {
   }, {
     key: "setUp",
     value: function setUp() {
-      var _this2 = this;
+      var _this = this;
 
       if (!this.callbacks.length) {
         this.evtRoot.on(this.eventName, function () {
-          return _this2.handle();
+          return _this.handle();
         });
       }
 
@@ -567,37 +608,34 @@ var ScrollManager = /*#__PURE__*/function () {
   }, {
     key: "handle",
     value: function handle() {
-      var _this3 = this;
+      var func = this.runCallbacksAll.bind(this),
+          delayTime = this.settings.delayTime;
+      var startTime = null;
 
-      var that = this;
+      if (this.isRunning === true) {
+        return;
+      }
 
-      if (!this.isRunning) {
-        this.isRunning = true;
+      this.isRunning = true;
 
-        if (typeof this.settings.throttle === 'number' && this.settings.throttle > 0) {
-          _throttle(this.runCallbacksAll);
-        } else {
-          requestAnimationFrame(function () {
-            _this3.runCallbacksAll();
-          });
-        }
+      if (typeof delayTime === 'number' && delayTime > 0) {
+        requestAnimationFrame(_throttle);
+      } else {
+        requestAnimationFrame(func);
       }
 
       return this;
 
-      function _throttle(func) {
-        requestAnimationFrame(function (timeStamp) {
-          if (that.startTime === null) {
-            that.startTime = timeStamp;
-          }
+      function _throttle(timeStamp) {
+        if (startTime === null) {
+          startTime = timeStamp;
+        }
 
-          if (timeStamp - that.startTime > that.settings.throttle) {
-            that.startTime = null;
-            func.call(that);
-          } else {
-            _throttle(func);
-          }
-        });
+        if (timeStamp - startTime >= delayTime) {
+          func();
+        } else {
+          requestAnimationFrame(_throttle);
+        }
       }
     }
   }]);
@@ -607,41 +645,40 @@ var ScrollManager = /*#__PURE__*/function () {
 
 
 
-function _getMaxOffset(selector, pos) {
+function _getMaxOffset(selector, vwHeight, pos) {
+  var elems = selector && document.querySelectorAll(selector),
+      _ref = pos === 'top' ? ['bottom', 'max'] : ['top', 'min'],
+      _ref2 = _slicedToArray(_ref, 2),
+      base = _ref2[0],
+      maxOrMin = _ref2[1];
+
   var ret = 0,
-      arry = [];
-  var elements;
+      arryPositionNumber = [];
 
-  if (typeof selector === 'number') {
-    ret = (_readOnlyError("ret"), selector);
-  } else if (selector && typeof selector === 'string') {
-    elements = document.querySelectorAll(selector);
-    Array.prototype.forEach.call(elements, function (self) {
-      var style;
-
-      if (!self) {
-        return;
-      }
-
-      style = window.getComputedStyle(self);
-
-      if (style.position !== 'fixed') {
-        return;
-      }
-
-      if (pos === 'bottom') {
-        arry.push(self.getBoundingClientRect().top);
-      } else {
-        arry.push(self.getBoundingClientRect().bottom);
-      }
-    });
+  if (!elems) {
+    return ret;
   }
 
-  if (ret.length) {
-    ret = (_readOnlyError("ret"), Math.max.apply(null, ret));
+  var _iterator = _createForOfIteratorHelper(elems),
+      _step;
+
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var elem = _step.value;
+
+      if (window.getComputedStyle(elem).position === 'fixed') {
+        arryPositionNumber.push(elem.getBoundingClientRect()[base]);
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
   }
 
-  return ret;
+  ret = Math[maxOrMin].apply(null, arryPositionNumber);
+  ret = pos === 'bottom' ? vwHeight - ret : ret;
+  return ret < 0 ? 0 : ret;
 }
 
 function _getUniqueName(base) {
@@ -693,6 +730,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  */
 
 
+var doc = document;
 
 var Toggle = /*#__PURE__*/function () {
   function Toggle(options) {
@@ -702,41 +740,35 @@ var Toggle = /*#__PURE__*/function () {
       name: 'transitiontoggle',
       selectorTrigger: '',
       selectorTarget: '',
-      selectorParent: null,
+      selectorParent: '',
       selectorEventRoot: 'body'
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.elemRoot = document.querySelector(this.settings.selectorEventRoot);
-    this.elemParent = document.querySelector(this.settings.selectorParent);
-    this.elemTrigger = this.elemParent.querySelector(this.settings.selectorTrigger);
-    this.elemTarget = this.elemParent.querySelector(this.settings.selectorTarget);
-    this.callbackForBefore = null;
-    this.callbackForAfter = null;
-    this.callbackForEnd = null;
+    this.selectorTrigger = this.settings.selectorTrigger;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.selectorParent = this.settings.selectorParent;
+    this.elemRoot = doc.querySelector(this.settings.selectorEventRoot);
+    this.elemTrigger = doc.querySelector(this.selectorTrigger);
+    this.elemTarget = doc.querySelector(this.selectorTarget);
+    this.elemParent = this.selectorParent && doc.querySelector(this.selectorParent);
+    this.elemParent = this.elemParent || this.elemTrigger.parentNode;
+    this.callbackBefore = null;
+    this.callbackAfter = null;
+    this.callbackFinish = null;
     this.isChanged = false;
+    this.eventNameStart = "click.".concat(this.id);
+    this.eventNameFinish = "transitionend.".concat(this.id);
     this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemRoot);
-    this.evtTrigger = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemTrigger);
   }
 
   _createClass(Toggle, [{
     key: "on",
-    value: function on(callbackForBefore, callbackForAfter, callbackForEnd) {
-      var _this = this;
-
-      if (this.elemParent === null) {
-        return this;
-      }
-
-      this.callbackForBefore = callbackForBefore;
-      this.callbackForAfter = callbackForAfter;
-      this.callbackForEnd = callbackForEnd;
-      this.evtRoot.on("click.".concat(this.id), function (e) {
-        return _this.handleForClick(e);
-      });
-      this.evtRoot.on("transitionend.".concat(this.id), function (e) {
-        return _this.handleForTransitionend(e);
-      });
+    value: function on(callbacks) {
+      this.callbackBefore = callbacks.before.bind(this);
+      this.callbackAfter = callbacks.after.bind(this);
+      this.callbackFinish = callbacks.finish.bind(this);
+      this.evtRoot.on(this.eventNameStart, this.selectorTrigger, this.handleStart.bind(this)).on(this.eventNameFinish, this.selectorTarget, this.handleFinish.bind(this));
       return this;
     }
   }, {
@@ -745,31 +777,28 @@ var Toggle = /*#__PURE__*/function () {
       this.elemParent = null;
       this.elemTrigger = null;
       this.elemTarget = null;
-      this.callbackForBefore = null;
-      this.callbackForAfter = null;
-      this.evtRoot.off("click.".concat(this.id));
+      this.callbackBefore = null;
+      this.callbackAfter = null;
+      this.callbackFinish = null;
+      this.evtRoot.off('.' + this.id);
       return this;
     }
   }, {
-    key: "handleForClick",
-    value: function handleForClick(e) {
-      if (this.elemTrigger.isEqualNode(e.target)) {
-        if (this.isChanged === true) {
-          this.after(e);
-        } else {
-          this.before(e);
-        }
+    key: "handleStart",
+    value: function handleStart(e) {
+      if (this.isChanged === true) {
+        this.after(e);
+      } else {
+        this.before(e);
       }
 
       return false;
     }
   }, {
-    key: "handleForTransitionend",
-    value: function handleForTransitionend(e) {
-      if (this.elemTarget.isEqualNode(e.target)) {
-        if (typeof this.callbackForEnd === 'function') {
-          this.callbackForEnd.call(this, e, this);
-        }
+    key: "handleFinish",
+    value: function handleFinish(e) {
+      if (typeof this.callbackFinish === 'function') {
+        this.callbackFinish.call(this, e, this);
       }
 
       return false;
@@ -778,13 +807,13 @@ var Toggle = /*#__PURE__*/function () {
     key: "before",
     value: function before(e) {
       this.isChanged = true;
-      this.callbackForBefore.call(this, e, this);
+      this.callbackBefore.call(this, e, this);
     }
   }, {
     key: "after",
     value: function after(e) {
       this.isChanged = false;
-      this.callbackForAfter.call(this, e, this);
+      this.callbackAfter.call(this, e, this);
     }
   }]);
 
@@ -886,15 +915,15 @@ __webpack_require__.r(__webpack_exports__);
 
 if (!Element.prototype.closest) {
   Element.prototype.closest = function (s) {
-    var el = this;
+    var elem = this;
 
     do {
-      if (Element.prototype.matches.call(el, s)) {
-        return el;
+      if (Element.prototype.matches.call(elem, s)) {
+        return elem;
       }
 
-      el = el.parentElement || el.parentNode;
-    } while (el !== null && el.nodeType === 1);
+      elem = elem.parentElement || elem.parentNode;
+    } while (elem !== null && elem.nodeType === 1);
 
     return null;
   };
@@ -977,36 +1006,22 @@ var Rescroll = /*#__PURE__*/function () {
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
-    this.timeoutId = null;
-    this.hash = '';
     this.isWorking = false;
     this.enabled = false;
     this.lastScrollY = window.pageYOffset;
     this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_4__.default(window);
     this.arryShoulderSelector = [];
     this.addShoulder(this.settings.selectorShoulder);
-    this.eventName = {
-      load: "load.".concat(this.id),
-      hashChange: "hashchange.".concat(this.id),
-      click: "click.".concat(this.id),
-      scroll: "scroll.".concat(this.id)
-    };
+    this.eventNameLoad = "load.".concat(this.id);
+    this.eventNameHashChange = "hashchange.".concat(this.id);
+    this.eventNameClick = "click.".concat(this.id);
+    this.eventNameScroll = "scroll.".concat(this.id);
   }
 
   _createClass(Rescroll, [{
     key: "on",
     value: function on() {
-      var _this = this;
-
-      this.evtRoot.on(this.eventName.load, function (e) {
-        return _this.handleForLoad(e);
-      }).on(this.eventName.hashChange, function (e) {
-        return _this.handleForHashChange(e);
-      }).on(this.eventName.click, function (e) {
-        return _this.handleForClick(e);
-      }).on(this.eventName.scroll, function (e) {
-        return _this.handleForScroll(e);
-      });
+      this.evtRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameHashChange, this.handleHashChange.bind(this)).on(this.eventNameClick, 'a', this.handleClick.bind(this)).on(this.eventNameScroll, this.handleScroll.bind(this));
       return this;
     }
   }, {
@@ -1019,21 +1034,21 @@ var Rescroll = /*#__PURE__*/function () {
       return this;
     }
   }, {
-    key: "handleForLoad",
-    value: function handleForLoad(e) {
+    key: "handleLoad",
+    value: function handleLoad(e) {
       this.enabled = true;
       this.preprocess(e);
     }
   }, {
-    key: "handleForHashChange",
-    value: function handleForHashChange(e) {
+    key: "handleHashChange",
+    value: function handleHashChange(e) {
       this.enabled = true;
       this.preprocess(e);
     }
   }, {
-    key: "handleForClick",
-    value: function handleForClick(e) {
-      var hash = e.target && e.target.hash && this.getHash(e.target.hash);
+    key: "handleClick",
+    value: function handleClick(e, target) {
+      var hash = target && target.hash && this.getHash(target.hash);
 
       if (!hash && !document.querySelector(hash)) {
         return;
@@ -1042,16 +1057,16 @@ var Rescroll = /*#__PURE__*/function () {
       this.enabled = true;
       this.lastScrollY = window.pageYOffset;
       e.preventDefault();
-      window.history.pushState(null, null, e.target.href);
-      this.preprocess(e);
+      window.history.pushState(null, null, target.href);
+      this.preprocess(e, target);
     }
     /**
      * スクロールの起点になるポイントを常に取得しておく。
      */
 
   }, {
-    key: "handleForScroll",
-    value: function handleForScroll(e) {
+    key: "handleScroll",
+    value: function handleScroll(e) {
       var that = this;
       requestAnimationFrame(function () {
         if (that.enabled === false) {
@@ -1061,7 +1076,7 @@ var Rescroll = /*#__PURE__*/function () {
     }
   }, {
     key: "preprocess",
-    value: function preprocess(e) {
+    value: function preprocess(e, target) {
       var that = this;
 
       var hash = this.getHash(),
@@ -1079,7 +1094,7 @@ var Rescroll = /*#__PURE__*/function () {
        * return
        */
 
-      if (e.type === 'click' && e.target && e.target.hash && elemShoulder && (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(e.target).top === (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemShoulder).top || this.isWorking === true || this.enabled === false || !elemByHash && !elemShoulder) {
+      if (e.type === 'click' && target && target.hash && elemShoulder && (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(target).top === (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemShoulder).top || this.isWorking === true || this.enabled === false || !elemByHash && !elemShoulder) {
         this.isWorking = false;
         return this;
       }
@@ -1111,7 +1126,7 @@ var Rescroll = /*#__PURE__*/function () {
       return this;
       /**
        * スクロール先を肩代わりする要素を取得する。
-       * 先祖の要素でなければならない。
+       * 先祖の要素で限定。
        */
 
       function _getShoulderElement(elemTarget) {
@@ -1175,7 +1190,8 @@ var Rescroll = /*#__PURE__*/function () {
         } else {
           that.isWorking = false;
           that.enabled = false;
-          that.lastScrollY = window.pageYOffset;
+          that.lastScrollY = finishPoint;
+          window.scrollTo(0, finishPoint);
         }
       }
 
@@ -1203,7 +1219,7 @@ var Rescroll = /*#__PURE__*/function () {
   }, {
     key: "getHash",
     value: function getHash(string) {
-      var hash = string || window.location.hash || null;
+      var hash = string || window.location.hash;
       return hash && hash.replace(/^#?(.*)/, '#$1');
     }
   }, {
@@ -1266,6 +1282,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var doc = document;
 
 var SimpleVideoPlay = /*#__PURE__*/function () {
   function SimpleVideoPlay(options) {
@@ -1275,19 +1292,26 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
       name: 'SimpleVideoPlay',
       selectorVideo: '',
       selectorOuter: '',
-      classNameOfCover: 'js-video_cover',
-      classNameOfCanPlay: 'js-video--canPlay',
-      classNameOfPlaying: 'js-video--isPlaying',
-      classNameOfPaused: 'js-video--isPaused',
-      classNameOfEnded: 'js-video--isEnded'
+      onBefore: null,
+      onPlayBefore: null,
+      onPlay: null,
+      onPause: null,
+      onEnd: null
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
-    this.isPlaying = false;
-    this.elemVideo = document.querySelector(this.settings.selectorVideo);
-    this.elemWrapper = this.elemVideo.closest(this.settings.selectorOuter);
-    this.elemCover = document.createElement('div');
+    this.selectorVideo = this.settings.selectorVideo;
+    this.selectorOuter = this.settings.selectorOuter;
+    this.elemVideo = doc.querySelector(this.selectorVideo);
+    this.elemWrapper = this.elemVideo.closest(this.selectorOuter);
+    this.elemCover = doc.createElement('div');
+    this.evtNamecanPlay = "canplay.".concat(this.id);
+    this.evtNamePlay = "play.".concat(this.id);
+    this.evtNamePause = "pause.".concat(this.id);
+    this.evtNameEnded = "ended.".concat(this.id);
+    this.evtNameCoverClick = "click.".concat(this.id, " touchend.").concat(this.id);
     this.src = this.elemVideo.src;
+    this.isPlaying = false;
     this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemVideo);
     this.evtCover = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemCover);
     this.init();
@@ -1296,7 +1320,7 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
   _createClass(SimpleVideoPlay, [{
     key: "init",
     value: function init() {
-      this.elemCover.classList.add(this.settings.classNameOfCover);
+      this.eventCall(this.settings.onBefore);
       this.elemWrapper.appendChild(this.elemCover);
 
       if (this.elemVideo.poster) {
@@ -1309,20 +1333,10 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on() {
-      var _this = this;
-
-      this.evtVideo.on("canplay.".concat(this.id), function () {
-        _this.handleForCanplay();
-      });
-      this.evtVideo.on("play.".concat(this.id), function () {
-        _this.handleForPlay();
-      });
-      this.evtVideo.on("pause.".concat(this.id), function () {
-        _this.handleForPause();
-      });
-      this.evtVideo.on("ended.".concat(this.id), function () {
-        _this.handleForEnded();
-      });
+      this.evtVideo.on(this.evtNamecanPlay, this.handleCanplay.bind(this));
+      this.evtVideo.on(this.evtNamePlay, this.handlePlay.bind(this));
+      this.evtVideo.on(this.evtNamePause, this.handlePause.bind(this));
+      this.evtVideo.on(this.evtNameEnded, this.handleEnded.bind(this));
     }
   }, {
     key: "off",
@@ -1331,41 +1345,40 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
       this.evtCover.off(".".concat(this.id));
     }
   }, {
-    key: "handleForCanplay",
-    value: function handleForCanplay() {
-      var _this2 = this;
-
-      this.elemWrapper.classList.add(this.settings.classNameOfCanPlay);
-      this.evtCover.on("click.".concat(this.id, " touchend.").concat(this.id), function (e) {
-        _this2.handleForCoverClick(e);
-      });
+    key: "handleCanplay",
+    value: function handleCanplay() {
+      this.eventCall(this.settings.onPlayBefore);
+      this.evtCover.on(this.evtNameCoverClick, this.handleCoverClick.bind(this));
     }
   }, {
-    key: "handleForPlay",
-    value: function handleForPlay() {
-      this.elemWrapper.classList.add(this.settings.classNameOfPlaying);
-      this.elemWrapper.classList.remove(this.settings.classNameOfPaused);
+    key: "handlePlay",
+    value: function handlePlay() {
+      this.eventCall(this.settings.onPlay);
     }
   }, {
-    key: "handleForPause",
-    value: function handleForPause() {
-      this.elemWrapper.classList.add(this.settings.classNameOfPaused);
-      this.elemWrapper.classList.remove(this.settings.classNameOfPlaying);
+    key: "handlePause",
+    value: function handlePause() {
+      this.eventCall(this.settings.onPause);
     }
   }, {
-    key: "handleForEnded",
-    value: function handleForEnded() {
-      this.elemWrapper.classList.add(this.settings.classNameOfEnded);
-      this.elemWrapper.classList.remove(this.settings.classNameOfPaused);
-      this.elemWrapper.classList.remove(this.settings.classNameOfPlaying);
+    key: "handleEnded",
+    value: function handleEnded() {
+      this.eventCall(this.settings.onEnd);
     }
   }, {
-    key: "handleForCoverClick",
-    value: function handleForCoverClick(e) {
+    key: "handleCoverClick",
+    value: function handleCoverClick(e) {
       e.preventDefault();
 
       if (this.isPlaying === false) {
         this.elemVideo.play();
+      }
+    }
+  }, {
+    key: "eventCall",
+    value: function eventCall(func) {
+      if (typeof func === 'function') {
+        func.call(this, this);
       }
     }
   }]);
@@ -1392,6 +1405,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
 /* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+
+
 function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -1407,6 +1422,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var doc = document;
 
 var Tab = /*#__PURE__*/function () {
   function Tab(options) {
@@ -1419,31 +1435,37 @@ var Tab = /*#__PURE__*/function () {
       selectorWrapper: '',
       className: 'js-selected',
       defaultIndex: 0,
-      onLoad: null
+      onAllChange: null,
+      onChange: null
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
     this.id = this.settings.name;
     this.selectorWrapper = this.settings.selectorWrapper;
     this.selectorTrigger = this.settings.selectorTrigger;
     this.selectorTarget = this.settings.selectorTarget;
-    this.elemTriggerAll = document.querySelectorAll(this.selectorTrigger);
-    this.elemWrapperAll = document.querySelectorAll(this.selectorWrapper);
-    this.callbackForLoad = this.settings.onLoad;
-    this.hash = null;
+    this.elemTriggerAll = doc.querySelectorAll(this.selectorTrigger);
+    this.elemWrapperAll = doc.querySelectorAll(this.selectorWrapper);
+    this.callbackAllChange = this.settings.onAllChange;
+    this.callbackChange = this.settings.onChange;
     this.eventNameLoad = "DOMContentLoaded.".concat(this.id, " load.").concat(this.id, " hashchange.").concat(this.id);
     this.eventNameClick = "click.".concat(this.id);
     this.evtWindow = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
   }
+  /**
+   * click event はwindow に登録
+   * trigger( タブメニュー ) 以外で、ページ内に該当のリンクが有る可能性を想定。
+   */
+
 
   _createClass(Tab, [{
     key: "on",
     value: function on() {
       var _this = this;
 
-      this.evtWindow.on(this.eventNameLoad, function (e) {
-        return _this.handleForLoad(e);
-      }).on(this.eventNameClick, function (e) {
-        return _this.handleForClick(e);
+      this.evtWindow.on(this.eventNameLoad, function (e, target) {
+        return _this.handleLoad(e, target);
+      }).on(this.eventNameClick, 'a', function (e, target) {
+        return _this.handleClick(e, target);
       });
     }
   }, {
@@ -1452,15 +1474,21 @@ var Tab = /*#__PURE__*/function () {
       this.evtWindow.off(".".concat(this.id));
     }
   }, {
-    key: "handleForLoad",
-    value: function handleForLoad(e) {
+    key: "handleLoad",
+    value: function handleLoad(e) {
       this.runAll(e);
     }
+    /**
+     * click された要素のhash と同じ値をもつtrigger をthis.elemTriggerAll から選出し、
+     * this.run に引数として渡して実行。
+     */
+
   }, {
-    key: "handleForClick",
-    value: function handleForClick(e) {
-      var hash = e.target && e.target.hash && this.getHash(e.target.hash);
+    key: "handleClick",
+    value: function handleClick(e, target) {
+      var hash = target && target.hash && this.getHash(target.hash);
       var elemCurrentTrigger = null;
+      e.preventDefault();
 
       if (!hash) {
         return;
@@ -1487,111 +1515,119 @@ var Tab = /*#__PURE__*/function () {
         return;
       }
 
-      e.preventDefault();
       this.run(elemCurrentTrigger);
     }
+    /**
+     * trigger と target を内包するwrapper 単位の実行。
+     */
+
   }, {
     key: "run",
     value: function run(elemCurrentTrigger) {
-      var elemTrigger = elemCurrentTrigger,
-          elemTarget = document.querySelector(this.getHash(elemTrigger.hash)),
+      var elemTarget = doc.querySelector(this.getHash(elemCurrentTrigger.hash)),
           elemWrapper = elemTarget.closest(this.selectorWrapper),
           elemTriggerAll = elemWrapper.querySelectorAll(this.selectorTrigger),
           elemTargetAll = elemWrapper.querySelectorAll(this.selectorTarget);
 
-      var _iterator2 = _createForOfIteratorHelper(elemTriggerAll),
-          _step2;
+      _setClassName(elemTriggerAll, elemCurrentTrigger, this.settings.className);
 
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var elem = _step2.value;
+      _setClassName(elemTargetAll, elemTarget, this.settings.className);
 
-          if (elem === elemCurrentTrigger) {
-            elem.classList.add(this.settings.className);
-          } else {
-            elem.classList.remove(this.settings.className);
-          }
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
+      if (typeof this.callbackChange === 'function') {
+        this.callbackChange.call(this, elemWrapper, this);
       }
 
-      var _iterator3 = _createForOfIteratorHelper(elemTargetAll),
+      return this;
+
+      function _setClassName(elemAll, elemTarget, className) {
+        var _iterator2 = _createForOfIteratorHelper(elemAll),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var elem = _step2.value;
+
+            if (elem === elemTarget) {
+              elem.classList.add(className);
+            } else {
+              elem.classList.remove(className);
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      }
+    }
+    /**
+     * 全wrapper 要素毎の実行
+     */
+
+  }, {
+    key: "runAll",
+    value: function runAll() {
+      var hash = this.getHash() // location.href のハッシュを取得
+      ;
+      var selectedWrapperByHash = null;
+
+      var _iterator3 = _createForOfIteratorHelper(this.elemWrapperAll),
           _step3;
 
       try {
         for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var _elem = _step3.value;
+          var elemWrapper = _step3.value;
+          var elemTriggerAll = elemWrapper.querySelectorAll(this.selectorTrigger);
+          var elemCurrentTrigger = void 0,
+              elemActived = void 0;
 
-          if (_elem === elemTarget) {
-            _elem.classList.add(this.settings.className);
-          } else {
-            _elem.classList.remove(this.settings.className);
+          if (!elemTriggerAll.length) {
+            continue;
           }
-        }
+
+          var _iterator4 = _createForOfIteratorHelper(elemTriggerAll),
+              _step4;
+
+          try {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+              var elem = _step4.value;
+
+              if (this.getHash(elem.hash) === hash) {
+                elemCurrentTrigger = elem;
+                selectedWrapperByHash = elemWrapper;
+              }
+
+              if (elem.classList.contains(this.settings.className)) {
+                elemActived = elem;
+              }
+            } // for
+
+            /**
+             * location.href のhash を持つtrigger が無く、かつすでに選択済みのtrigger があれば、
+             * ループの頭から
+             */
+
+          } catch (err) {
+            _iterator4.e(err);
+          } finally {
+            _iterator4.f();
+          }
+
+          if (!elemCurrentTrigger && elemActived) {
+            continue;
+          }
+
+          this.run(elemCurrentTrigger || elemTriggerAll[this.settings.defaultIndex]);
+        } // for
+
       } catch (err) {
         _iterator3.e(err);
       } finally {
         _iterator3.f();
       }
-    }
-  }, {
-    key: "runAll",
-    value: function runAll(e) {
-      var hash = location.hash,
-          that = this;
-      var selectedWrapperByHash = null;
 
-      var _iterator4 = _createForOfIteratorHelper(this.elemWrapperAll),
-          _step4;
-
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var elemWrapper = _step4.value;
-          var elemTriggerAll = elemWrapper.querySelectorAll(that.selectorTrigger);
-          var elemTrigger = void 0,
-              elemActived = void 0;
-
-          var _iterator5 = _createForOfIteratorHelper(elemTriggerAll),
-              _step5;
-
-          try {
-            for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-              var elem = _step5.value;
-
-              if (elem.hash === hash) {
-                elemTrigger = elem;
-                selectedWrapperByHash = elemWrapper;
-              }
-
-              if (elem.classList.contains(that.settings.className)) {
-                elemActived = elem;
-              }
-            }
-          } catch (err) {
-            _iterator5.e(err);
-          } finally {
-            _iterator5.f();
-          }
-
-          if (!elemTriggerAll.length) {
-            return true;
-          }
-
-          if (elemTrigger || !elemActived) {
-            that.run(elemTrigger || elemTriggerAll[0]);
-          }
-        }
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-
-      if (typeof this.callbackForLoad === 'function') {
-        this.callbackForLoad.call(null, selectedWrapperByHash, e);
+      if (typeof this.callbackAllChange === 'function') {
+        this.callbackAllChange.call(this, selectedWrapperByHash, this);
       }
 
       return this;
@@ -1599,11 +1635,8 @@ var Tab = /*#__PURE__*/function () {
   }, {
     key: "getHash",
     value: function getHash(string) {
-      if (string) {
-        return string.replace(/^#?(.*)/, '#$1');
-      } else {
-        return window.location.hash.replace(/^#?(.*)/, '#$1');
-      }
+      var hash = string || window.location.hash;
+      return hash && hash.replace(/^#?(.*)/, '#$1');
     }
   }]);
 
@@ -1625,6 +1658,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ EventManager; }
 /* harmony export */ });
+/* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1643,6 +1677,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+
+
 var EventManager = /*#__PURE__*/function () {
   function EventManager(elemEventer) {
     _classCallCheck(this, EventManager);
@@ -1653,139 +1689,150 @@ var EventManager = /*#__PURE__*/function () {
 
   _createClass(EventManager, [{
     key: "on",
-    value: function on(strEventName, callback, options) {
-      this.setUp('add', strEventName, callback, options);
+    value: function on(fullEventTypeNames, selectorTarget, listener, options) {
+      if (typeof selectorTarget === 'function') {
+        var _ref = [listener, selectorTarget, null];
+        options = _ref[0];
+        listener = _ref[1];
+        selectorTarget = _ref[2];
+      }
+
+      this.setUp('add', fullEventTypeNames, selectorTarget, listener, options);
       return this;
     }
   }, {
     key: "off",
-    value: function off(strEventName, callback) {
-      this.setUp('remove', strEventName, callback);
+    value: function off(fullEventTypeNames, listener) {
+      this.setUp('remove', fullEventTypeNames, null, listener);
       return this;
     }
   }, {
     key: "trigger",
-    value: function trigger(strEventName) {
-      this.setUp('trigger', strEventName);
+    value: function trigger(fullEventTypeNames) {
+      this.setUp('trigger', fullEventTypeNames);
       return this;
     }
+    /**
+     * 半角スペースで区切られた、複数分の、name space を含むfull のtype name 毎に処理。
+     * "add"、"remove"、"trigger"と、渡されたprefix 引数で処理を分ける。
+     */
+
   }, {
     key: "setUp",
-    value: function setUp(prefix, strEventName, callback, options) {
+    value: function setUp(prefix, fullEventTypeNames, selectorTarget, listener, options) {
       var _this = this;
 
-      var that = this,
-          arryEventNames = strEventName.split(' ');
+      var that = this;
+      fullEventTypeNames.split(' ').forEach(function (fullEventTypeName) {
+        var _fullEventTypeName$sp = fullEventTypeName.split('.'),
+            _fullEventTypeName$sp2 = _slicedToArray(_fullEventTypeName$sp, 2),
+            eventType = _fullEventTypeName$sp2[0],
+            nameSpace = _fullEventTypeName$sp2[1];
 
-      var _loop = function _loop(i, len) {
-        var strEventName = arryEventNames[i],
-            spritedNames = strEventName.split('.'),
-            eventName = spritedNames[0],
-            nameSpace = spritedNames[1];
+        var objListeners, mapListener, target;
+        /**
+         *  name space を含めたfull のevent type 名をキーに、
+         *  listener を配列に格納したものを値にしたオブジェクトをthis.listeners に格納。
+         *  同時にname space を取り除いたevent type 名でaddEventListnerに登録。
+         */
 
-        if (prefix === 'add' && eventName) {
-          if (!_this.listeners[strEventName]) {
-            _this.listeners[strEventName] = [];
-          }
+        if (prefix === 'add' && eventType && typeof listener === 'function') {
+          mapListener = new Map();
+          mapListener.set(listener, function (e) {
+            if (selectorTarget && typeof selectorTarget === 'string') {
+              target = e.target.closest(selectorTarget);
 
-          _this.listeners[strEventName].push(callback);
-
-          _this.setEventListener(prefix, eventName, callback, options);
-        } // if( prefix === 'add' )
-
-
-        if (prefix === 'remove') {
-          var listeners = {};
-
-          if (eventName && nameSpace) {
-            listeners = _collectListeners(function (key) {
-              return key === strEventName;
-            });
-          } else if (eventName) {
-            listeners = _collectListeners(function (key) {
-              return key.indexOf(eventName) === 0;
-            });
-          } else {
-            listeners = _collectListeners(function (key) {
-              return key.indexOf('.') <= key.lastIndexOf(nameSpace);
-            });
-          }
-
-          for (var _i2 = 0, _Object$entries2 = Object.entries(listeners); _i2 < _Object$entries2.length; _i2++) {
-            var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
-                key = _Object$entries2$_i[0],
-                val = _Object$entries2$_i[1];
-
-            for (var _i3 = 0, _len = val.length; _i3 < _len; _i3++) {
-              if (typeof callback !== 'function' || val[_i3] === callback) {
-                _this.setEventListener(prefix, key, val[_i3]);
+              if (!target) {
+                return;
               }
             }
+
+            listener(e, target);
+          });
+
+          if (!_this.listeners[fullEventTypeName]) {
+            _this.listeners[fullEventTypeName] = [];
           }
-        } // if ( prefix === 'remove' )
+
+          _this.listeners[fullEventTypeName].push(mapListener);
+
+          _this.setEventListener(prefix, eventType, mapListener.get(listener), options);
+        } // if( prefix === 'add' )
+
+        /**
+         * this.listeners の中からそのkeyに、渡された引数fullEventTypeNames がフルで一致するもの、
+         * event type 名だけが渡され、それが部分的に含まれるもの、
+         * name space だけが渡され、それが部分的に含まれるものを収集。
+         */
 
 
-        if (prefix === 'trigger') {
-          if (eventName && nameSpace) {
-            _collectListeners(function (key) {
-              return key === strEventName;
-            }, true);
-          } else if (eventName) {
-            _collectListeners(function (key) {
-              return key.indexOf(eventName) === 0;
-            }, true);
-          } else {
-            _collectListeners(function (key) {
-              return key.indexOf('.') <= key.lastIndexOf(nameSpace);
-            }, true);
-          }
-        } // if ( prefix === 'trigger' )
+        if (prefix === 'remove' || prefix === 'trigger') {
+          objListeners = _collectListeners(function (key) {
+            return eventType && nameSpace && key === fullEventTypeName || eventType && key.indexOf(eventType) === 0 || nameSpace && !eventType && key.indexOf(".".concat(nameSpace)) >= 0;
+          });
+          /**
+           * 収集したobject の中からprefix 引数に応じて、"remove" で、removeEventListener"の登録。
+           * "trigger"でそのままlistner を実行。
+           */
 
-      };
+          var _loop = function _loop() {
+            var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+                typeName = _Object$entries$_i[0],
+                arrListeners = _Object$entries$_i[1];
 
-      for (var i = 0, len = arryEventNames.length; i < len; i++) {
-        _loop(i, len);
-      } // for
-
-
-      function _collectListeners(condition, calling) {
-        var listeners = {};
-
-        for (var _i = 0, _Object$entries = Object.entries(that.listeners); _i < _Object$entries.length; _i++) {
-          var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-              key = _Object$entries$_i[0],
-              value = _Object$entries$_i[1];
-
-          if (condition.call(null, key, value)) {
-            var splitedKey = key.split('.');
-
-            if (!listeners[splitedKey[0]]) {
-              listeners[splitedKey[0]] = [];
+            if (prefix === 'remove') {
+              delete that.listeners[typeName];
             }
 
-            listeners[splitedKey[0]] = listeners[splitedKey[0]].concat(value);
-            delete that.listeners[key];
+            arrListeners.forEach(function (mapListener) {
+              if (prefix === 'remove' && (!listener || mapListener.has(listener))) {
+                _this.setEventListener(prefix, typeName, mapListener.values().next().value);
+              } else if (prefix === 'trigger') {
+                mapListener.values().next().value();
+              }
+            });
+          };
+
+          for (var _i2 = 0, _Object$entries = Object.entries(objListeners); _i2 < _Object$entries.length; _i2++) {
+            _loop();
+          }
+        } // if ( prefix === 'remove' || prefix === 'trigger' )
+
+      });
+      /**
+       * this.listeners の中から渡されたcondition 関数でtrue を返すkey と値を格納したobject を返す。
+       */
+
+      function _collectListeners(condition) {
+        var objListeners = {};
+
+        for (var _i3 = 0, _Object$entries2 = Object.entries(that.listeners); _i3 < _Object$entries2.length; _i3++) {
+          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2),
+              fullTypeName = _Object$entries2$_i[0],
+              arrListeners = _Object$entries2$_i[1];
+
+          if (condition.call(null, fullTypeName, arrListeners)) {
+            var _fullTypeName$split = fullTypeName.split('.'),
+                _fullTypeName$split2 = _slicedToArray(_fullTypeName$split, 1),
+                typeName = _fullTypeName$split2[0];
+
+            if (!objListeners[typeName]) {
+              objListeners[typeName] = [];
+            }
+
+            objListeners[typeName] = objListeners[typeName].concat(arrListeners);
           }
         }
 
-        if (calling) {
-          for (var _key in listeners) {
-            var arry = listeners[_key];
-            arry.forEach(function (func) {
-              func(null);
-            });
-          }
-        } else {
-          return listeners;
-        }
+        return objListeners;
       }
     }
   }, {
     key: "setEventListener",
-    value: function setEventListener(prefix, eventName, callback, options) {
-      var arryElements = this.elemEventer.length ? this.elemEventer : [this.elemEventer];
-      Array.prototype.forEach.call(arryElements, function (elem) {
-        elem["".concat(prefix, "EventListener")](eventName, callback, options);
+    value: function setEventListener(prefix, eventType, listener, options) {
+      var arrElements = this.elemEventer.length ? Array.from(this.elemEventer) : [this.elemEventer];
+      arrElements.forEach(function (elem) {
+        elem["".concat(prefix, "EventListener")](eventType, listener, options);
       });
     }
   }]);
@@ -1881,6 +1928,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var doc = document;
 
 var VideoGround = /*#__PURE__*/function () {
   function VideoGround(options) {
@@ -1889,30 +1937,36 @@ var VideoGround = /*#__PURE__*/function () {
     this.defaultSettings = {
       name: 'videoGround',
       src: '',
-      selectorVideoFrame: '',
-      selectorParent: '',
       waitTime: 10000,
       aspectRatio: 720 / 1280,
       actualHeightRatio: 1 / 1,
-      targetClassName: 'js--video',
-      classNamePlaying: 'js--isPlaying',
-      classNameDestroyed: 'js--isDestroyed',
-      onDestroy: null,
+      selectorParent: '',
+      selectorVideoFrame: '',
+      attrVideo: ['muted', 'playsinline', 'loop'],
       onPlay: null,
-      onBefore: null,
-      onLoad: null
+      onPlayBefore: null,
+      onLoad: null,
+      onDestroy: null
     };
     this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.elemVideo = null;
-    this.elemVideoFrame = null;
     this.id = this.settings.name;
+    this.selectorParent = this.settings.selectorParent;
+    this.selectorVideoFrame = this.settings.selectorVideoFrame;
+    this.elemVideo = _createVideo(this.settings.attrVideo);
+    this.elemVideoFrame = doc.querySelector(this.selectorVideoFrame);
+    this.elemParent = this.selectorParent && doc.querySelector(this.selectorParent);
+    this.elemParent = this.elemParent || this.elemVideoFrame.parentNode;
+    this.evtNamePlay = "play.".concat(this.id);
+    this.evtNameCanPlay = "canplay.".concat(this.id);
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.elemVideo = _createVideo(['muted', 'playsinline', 'loop']);
-    this.elemVideoFrame = document.querySelector(this.settings.selectorVideoFrame);
-    this.elemParent = this.settings.selectorParent && this.elemVideoFrame !== null ? document.querySelector(this.settings.selectorParent) : this.elemVideoFrame.parentNode;
     this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemVideo);
   }
+  /**
+   * play()が可能か事前に調べ、結果を待って各種設定、実行。
+   * 無効の場合 this.destroy() 。
+   */
+
 
   _createClass(VideoGround, [{
     key: "run",
@@ -1922,17 +1976,10 @@ var VideoGround = /*#__PURE__*/function () {
       var settings = this.settings,
           elemVideo = this.elemVideo,
           elemVideoFrame = this.elemVideoFrame;
-
-      if (elemVideoFrame === null) {
-        return this;
-      }
-
       this.autoDestroy();
       this.on();
-
-      _eventCall(settings.onBefore);
+      this.eventCall(settings.onBefore);
       /* eslint space-before-function-paren: 0 */
-
 
       _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -1954,8 +2001,10 @@ var VideoGround = /*#__PURE__*/function () {
 
               case 5:
                 elemVideo.src = settings.src;
-                elemVideo.classList.add(settings.targetClassName);
                 elemVideoFrame.appendChild(elemVideo);
+
+                _this.eventCall(settings.onPlayBefore);
+
                 elemVideo.load();
 
               case 9:
@@ -1968,19 +2017,25 @@ var VideoGround = /*#__PURE__*/function () {
 
       return this;
     }
+    /**
+     * play()で再生が可能かどうか、ダミーのvideo を作成し、結果を返す
+     */
+
   }, {
     key: "testPlay",
     value: function testPlay() {
+      var _this2 = this;
+
       return new Promise(function (resolve) {
         var retries = 3,
-            testVideo = _createVideo(['muted', 'playsinline']);
+            testVideo = _createVideo(_this2.settings.attrVideo);
 
         var timeoutId = null,
             currentTry = 0;
         testVideo.play();
 
         (function _try() {
-          currentTry = currentTry + 1;
+          currentTry += 1;
           clearTimeout(timeoutId);
           timeoutId = null;
 
@@ -1989,64 +2044,52 @@ var VideoGround = /*#__PURE__*/function () {
             return;
           }
 
-          timeoutId = setTimeout(function () {
-            _try();
-          }, 160);
+          timeoutId = setTimeout(_try, 160);
         })();
       });
     }
   }, {
     key: "on",
     value: function on() {
-      var _this2 = this;
-
-      this.evtVideo.on("play.".concat(this.id), function () {
-        _this2.handleForPlay();
-      });
-      this.evtVideo.on("canplay.".concat(this.id), function (e) {
-        _this2.handleForCanPlay(e);
-      });
+      this.evtVideo.on(this.evtNamePlay, this.handlePlay.bind(this));
+      this.evtVideo.on(this.evtNameCanPlay, this.handleCanPlay.bind(this));
       return this;
     }
   }, {
-    key: "handleForPlay",
-    value: function handleForPlay() {
+    key: "handlePlay",
+    value: function handlePlay(e) {
       var settings = this.settings;
       clearTimeout(this.destroyTimerId);
       this.destroyTimerId = null;
       this.isPlaying = true;
-      document.body.classList.add(settings.classNamePlaying);
-
-      _eventCall(settings.onPlay);
+      this.eventCall(settings.onPlay);
+      this.evtVideo.off(this.evtNameCanPlay);
     }
   }, {
-    key: "handleForCanPlay",
-    value: function handleForCanPlay(e) {
+    key: "handleCanPlay",
+    value: function handleCanPlay(e) {
       var settings = this.settings;
       this.elemVideo.play();
-
-      _eventCall(settings.onLoad);
-
-      this.evtVideo.off("canplay.".concat(this.id));
+      this.eventCall(settings.onLoad);
     }
   }, {
     key: "destroy",
     value: function destroy() {
-      var settings = this.settings,
-          elemBody = document.querySelector('body');
+      var settings = this.settings;
       clearTimeout(this.destroyTimerId);
-      elemBody.classList.remove(settings.classNamePlaying);
-      elemBody.classList.add(settings.classNameDestroyed);
 
-      if (this.elemVideoFrame.querySelector(settings.targetClassName) !== null) {
+      if (this.elemVideoFrame.querySelector(settings.classNameTarget) !== null) {
         this.elemVideoFrame.removeChild(this.elemVideo);
       }
 
-      _eventCall(this.settings.onDestroy);
-
+      this.eventCall(settings.onDestroy);
       this.evtVideo.off(".".concat(this.id));
       return this;
     }
+    /**
+     * 待機時間を過ぎれば、this.destroy() 。
+     */
+
   }, {
     key: "autoDestroy",
     value: function autoDestroy() {
@@ -2059,6 +2102,10 @@ var VideoGround = /*#__PURE__*/function () {
         _this3.destroy();
       }, this.settings.waitTime);
     }
+    /**
+     * ojbect-fit の代替。
+     */
+
   }, {
     key: "resize",
     value: function resize() {
@@ -2074,6 +2121,15 @@ var VideoGround = /*#__PURE__*/function () {
         this.elemVideo.style.width = 100 + '%';
         this.elemVideo.style.height = 'auto';
       }
+
+      return this;
+    }
+  }, {
+    key: "eventCall",
+    value: function eventCall(func) {
+      if (typeof func === 'function') {
+        func.call(this, this);
+      }
     }
   }]);
 
@@ -2082,14 +2138,8 @@ var VideoGround = /*#__PURE__*/function () {
 
 
 
-function _eventCall(f) {
-  if (typeof f === 'function') {
-    f.call(this);
-  }
-}
-
 function _createVideo(props) {
-  var elemVideo = document.createElement('video');
+  var elemVideo = doc.createElement('video');
 
   for (var i = 0, len = props.length; i < len; i++) {
     elemVideo.setAttribute(props[i], '');

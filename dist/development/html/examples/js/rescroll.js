@@ -11,8 +11,6 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/rescroll.js */ "./src/js/_modules/rescroll.js");
 
-
-
 var mdls = {};
 mdls.rescroll = new _js_modules_rescroll_js__WEBPACK_IMPORTED_MODULE_0__.default({
   offsetTop: '.pl-localNav'

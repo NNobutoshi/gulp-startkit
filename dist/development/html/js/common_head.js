@@ -11,8 +11,6 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_adjust_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/adjust.js */ "./src/js/_modules/adjust.js");
 
-
-
 (0,_modules_adjust_js__WEBPACK_IMPORTED_MODULE_0__.default)('js');
 
 /***/ })

@@ -11,11 +11,34 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/simplevideoplay.js */ "./src/js/_modules/simplevideoplay.js");
 
-
-
+var CLASSNAME_COVER = 'js-video_cover',
+    CLASSNAME_CANPLAY = 'js-video--canPlay',
+    CLASSNAME_PLAY = 'js-video--isPlaying',
+    CLASSNAME_PAUSED = 'js-video--isPaused',
+    CLASSNAME_ENDED = 'js-video--isEnded';
 new _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorOuter: '.pl-videoPlayer_outer',
-  selectorVideo: '.pl-videoPlayer_video'
+  selectorVideo: '.pl-videoPlayer_video',
+  onBefore: function onBefore() {
+    this.elemCover.classList.add(CLASSNAME_COVER);
+  },
+  onPlayBefore: function onPlayBefore() {
+    this.elemWrapper.classList.add(CLASSNAME_CANPLAY);
+  },
+  onPlay: function onPlay() {
+    this.elemWrapper.classList.add(CLASSNAME_PLAY);
+    this.elemWrapper.classList.remove(CLASSNAME_PAUSED);
+    this.elemWrapper.classList.remove(CLASSNAME_ENDED);
+  },
+  onPause: function onPause() {
+    this.elemWrapper.classList.add(CLASSNAME_PAUSED);
+    this.elemWrapper.classList.remove(CLASSNAME_PLAY);
+  },
+  onEnd: function onEnd() {
+    this.elemWrapper.classList.add(CLASSNAME_ENDED);
+    this.elemWrapper.classList.remove(CLASSNAME_PLAY);
+    this.elemWrapper.classList.remove(CLASSNAME_PAUSED);
+  }
 });
 
 /***/ })

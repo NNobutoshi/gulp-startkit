@@ -43,9 +43,44 @@
   background-color: #ddd;
   -webkit-transition: background .25s ease-in;
   transition: background .25s ease-in;
+  padding: 15px 30px;
 }
 
 .pl-inviewTarget.js-isInView {
-  background: #f00;
+  background: #fd5858;
+}
+
+.pl-offsetElement {
+  position: fixed;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: solid 1px #f00;
+  padding: 15px 10px;
+}
+
+.pl-offsetElement--start {
+  top: 0;
+}
+
+.pl-offsetElement--end {
+  bottom: 0;
+}
+
+.pl-input {
+  width: 3em;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.pl-line {
+  position: fixed;
+  border-top: solid 1px #000;
+  width: 100%;
+}
+
+.pl-line--50 {
+  top: 50%;
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/inview.css.map */

@@ -11,24 +11,47 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/scrollmanager */ "./src/js/_modules/libs/scrollmanager.js");
 
-
-
 var mdls = {},
-    pointElementSelector = '.pl-nav',
-    elemWrapper = document.body,
+    elemPointer1 = document.querySelector('.pl-nav_outer--1'),
+    elemPointer2 = document.querySelector('.pl-nav_outer--2'),
+    elemPointer3 = document.querySelector('.pl-nav_outer--3'),
+    elemFloatNav1 = document.querySelector('.pl-nav--1'),
+    elemFloatNav2 = document.querySelector('.pl-nav--2'),
+    elemFloatNav3 = document.querySelector('.pl-nav--3'),
     className = 'js-pl-nav--isFixed';
 mdls.scrollManager = new _js_modules_libs_scrollmanager__WEBPACK_IMPORTED_MODULE_0__.default({
-  selectorOffsetTop: '.pl-nav_nav',
   catchPoint: 0
 });
-mdls.scrollManager.on(function (ovserved) {
-  if (ovserved.ratio >= 0) {
-    elemWrapper.classList.add(className);
+mdls.scrollManager.on(function (observed) {
+  if (observed.ratio >= 0) {
+    elemPointer1.classList.add(className);
   } else {
-    elemWrapper.classList.remove(className);
+    elemPointer1.classList.remove(className);
   }
-}, document.querySelector(pointElementSelector), {
+}, elemPointer1, {
   hookPoint: 0
+}).on(function (observed) {
+  if (observed.ratio >= 0) {
+    elemPointer2.classList.add(className);
+    elemFloatNav2.style.top = elemFloatNav1.clientHeight + 'px';
+  } else {
+    elemPointer2.classList.remove(className);
+    elemFloatNav2.style.top = 0;
+  }
+}, elemPointer2, {
+  hookPoint: 0,
+  selectorOffsetTop: '.pl-nav'
+}).on(function (observed) {
+  if (observed.ratio >= 0) {
+    elemPointer3.classList.add(className);
+    elemFloatNav3.style.top = elemFloatNav2.clientHeight + elemFloatNav3.clientHeight + 'px';
+  } else {
+    elemPointer3.classList.remove(className);
+    elemFloatNav3.style.top = 0;
+  }
+}, elemPointer3, {
+  hookPoint: 0,
+  selectorOffsetTop: '.pl-nav'
 });
 
 /***/ }),

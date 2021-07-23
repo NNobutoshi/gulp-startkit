@@ -1,5 +1,3 @@
-'use strict';
-
 import OptimizedResize from '../../js/_modules/libs/optimizedresize';
 
 const
@@ -7,27 +5,37 @@ const
 ;
 mdls.resize = new OptimizedResize();
 mdls.resize
-  .one( inst => {
-    document.querySelector( '.pl-test_one' ).textContent = inst.query;
-  }, '(min-width: 980px)' )
-  .turn( inst => {
-    if ( inst.counter === undefined ) {
-      inst.counter = 0;
-    }
-    document.querySelector( '.pl-test_turn' ).textContent = `${inst.query} == ${++inst.counter}`;
-  }, '(max-width: 979px)' )
-  .on( inst => {
-    if ( inst.counter === undefined ) {
-      inst.counter = 0;
-    }
-    document.querySelector( '.pl-test_on' ).textContent = `${inst.query} == ${++inst.counter}`;
-  }, '(max-width: 374px)' )
-  .cross( inst => {
-    if ( inst.counter === undefined ) {
-      inst.counter = 0;
-    }
-    document.querySelector( '.pl-test_cross' ).textContent =
-      `${inst.query} == ${++inst.counter}`;
-  }, '(max-width: 1000px)' )
+  .on( '(max-width: 767px)',
+    ( inst ) => {
+      if ( inst.counter === undefined ) {
+        inst.counter = 0;
+      }
+      document.querySelector( '.pl-test_text--on' )
+        .textContent = `${inst.query} == ${++inst.counter}`;
+    } )
+  .turn( '(max-width: 979px)',
+    ( inst ) => {
+      if ( inst.counter === undefined ) {
+        inst.counter = 0;
+      }
+      document.querySelector( '.pl-test_text--turn' )
+        .textContent = `${inst.query} == ${++inst.counter}`;
+    } )
+  .cross( '(min-width: 980px)',
+    ( inst ) => {
+      if ( inst.counter === undefined ) {
+        inst.counter = 0;
+      }
+      document.querySelector( '.pl-test_text--cross' )
+        .textContent = `${inst.query} == ${++inst.counter}`;
+    } )
+  .one( '(max-width: 1200px)',
+    ( inst ) => {
+      if ( inst.counter === undefined ) {
+        inst.counter = 0;
+      }
+      document.querySelector( '.pl-test_text--one' )
+        .textContent = `${inst.query} == ${++inst.counter}`;
+    } )
   .run()
 ;

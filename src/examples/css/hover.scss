@@ -15,7 +15,10 @@
   margin-top: 50vh;
   a {
     display: inline-block;
-    padding: 4px;
+    span {
+      display: block;
+      padding: 10px;
+    }
   }
   &.js-hover {
     line-height: 5;

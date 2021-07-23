@@ -7,6 +7,8 @@
 import merge from 'lodash/mergeWith';
 import EM from '../utilities/eventmanager';
 
+const doc = document;
+
 export default class Toggle {
 
   constructor( options ) {
@@ -14,32 +16,37 @@ export default class Toggle {
       name              : 'transitiontoggle',
       selectorTrigger   : '',
       selectorTarget    : '',
-      selectorParent    : null,
+      selectorParent    : '',
       selectorEventRoot : 'body',
     };
+
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.elemRoot = document.querySelector( this.settings.selectorEventRoot );
-    this.elemParent = document.querySelector( this.settings.selectorParent );
-    this.elemTrigger = this.elemParent.querySelector( this.settings.selectorTrigger );
-    this.elemTarget = this.elemParent.querySelector( this.settings.selectorTarget );
-    this.callbackForBefore = null;
-    this.callbackForAfter = null;
-    this.callbackForEnd = null;
+    this.selectorTrigger = this.settings.selectorTrigger;
+    this.selectorTarget = this.settings.selectorTarget;
+    this.selectorParent = this.settings.selectorParent;
+    this.elemRoot = doc.querySelector( this.settings.selectorEventRoot );
+    this.elemTrigger = doc.querySelector( this.selectorTrigger );
+    this.elemTarget = doc.querySelector( this.selectorTarget );
+    this.elemParent = this.selectorParent && doc.querySelector( this.selectorParent );
+    this.elemParent = this.elemParent || this.elemTrigger.parentNode;
+    this.callbackBefore = null;
+    this.callbackAfter = null;
+    this.callbackFinish = null;
     this.isChanged = false;
+    this.eventNameStart = `click.${this.id}`;
+    this.eventNameFinish = `transitionend.${this.id}`;
     this.evtRoot = new EM( this.elemRoot );
-    this.evtTrigger = new EM( this.elemTrigger );
   }
 
-  on( callbackForBefore, callbackForAfter, callbackForEnd ) {
-    if ( this.elemParent === null ) {
-      return this;
-    }
-    this.callbackForBefore = callbackForBefore;
-    this.callbackForAfter = callbackForAfter;
-    this.callbackForEnd = callbackForEnd;
-    this.evtRoot.on( `click.${this.id}`, ( e ) => this.handleForClick( e ) );
-    this.evtRoot.on( `transitionend.${this.id}`, ( e ) => this.handleForTransitionend( e ) );
+  on( callbacks ) {
+    this.callbackBefore = callbacks.before.bind( this );
+    this.callbackAfter = callbacks.after.bind( this );
+    this.callbackFinish = callbacks.finish.bind( this );
+    this.evtRoot
+      .on( this.eventNameStart, this.selectorTrigger, this.handleStart.bind( this ) )
+      .on( this.eventNameFinish, this.selectorTarget, this.handleFinish.bind( this ) )
+    ;
     return this;
   }
 
@@ -47,39 +54,37 @@ export default class Toggle {
     this.elemParent = null;
     this.elemTrigger = null;
     this.elemTarget = null;
-    this.callbackForBefore = null;
-    this.callbackForAfter = null;
-    this.evtRoot.off( `click.${this.id}` );
+    this.callbackBefore = null;
+    this.callbackAfter = null;
+    this.callbackFinish = null;
+    this.evtRoot.off( '.' + this.id );
     return this;
   }
 
-  handleForClick( e ) {
-    if ( this.elemTrigger.isEqualNode( e.target ) )  {
-      if ( this.isChanged === true ) {
-        this.after( e );
-      } else {
-        this.before( e );
-      }
+  handleStart( e ) {
+    if ( this.isChanged === true ) {
+      this.after( e );
+    } else {
+      this.before( e );
     }
     return false;
   }
 
-  handleForTransitionend( e ) {
-    if ( this.elemTarget.isEqualNode( e.target ) ) {
-      if ( typeof this.callbackForEnd === 'function' ) {
-        this.callbackForEnd.call( this, e, this );
-      }
+  handleFinish( e ) {
+    if ( typeof this.callbackFinish === 'function' ) {
+      this.callbackFinish.call( this, e, this );
     }
     return false;
   }
 
   before( e ) {
     this.isChanged = true;
-    this.callbackForBefore.call( this, e, this );
+    this.callbackBefore.call( this, e, this );
   }
 
   after( e ) {
     this.isChanged = false;
-    this.callbackForAfter.call( this, e, this );
+    this.callbackAfter.call( this, e, this );
   }
+
 }

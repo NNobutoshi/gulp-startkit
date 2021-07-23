@@ -8,8 +8,20 @@ append script_body
   script(src="/examples/js/sticky.js")
 
 block pageBody
-  div.pl-nav
-    nav.pl-nav_nav
+  div.pl-nav_outer.pl-nav_outer--1
+    nav.pl-nav.pl-nav--1
       ul.pl-nav_list
         li.pl-nav_item
           a.pl-nav_anchor(href="#") nav1
+
+  div.pl-nav_outer.pl-nav_outer--2
+    nav.pl-nav.pl-nav--2
+      ul.pl-nav_list
+        li.pl-nav_item
+          a.pl-nav_anchor(href="#") nav2
+
+  div.pl-nav_outer.pl-nav_outer--3
+    nav.pl-nav.pl-nav--3
+      ul.pl-nav_list
+        li.pl-nav_item
+          a.pl-nav_anchor(href="#") nav3

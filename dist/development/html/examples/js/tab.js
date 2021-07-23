@@ -13,19 +13,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/rescroll */ "./src/js/_modules/rescroll.js");
 
 
-
-
-var mdls = {};
-mdls.rescroll = new _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__.default({
+new _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__.default({
   offsetTop: '.pl-head'
-});
-mdls.rescroll.on().addShoulder('.pl-sectionGroup');
-mdls.tab = new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
+}).on().addShoulder('.pl-sectionGroup');
+new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorWrapper: '.pl-sectionGroup',
   selectorTrigger: '.pl-tabmenu_anchor',
   selectorTarget: '.pl-section'
-});
-mdls.tab.on();
+}).on();
 
 /***/ }),
 

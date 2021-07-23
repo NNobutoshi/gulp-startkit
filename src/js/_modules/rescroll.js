@@ -27,28 +27,24 @@ export default class Rescroll {
     this.settings = merge( {}, this.defaultSettings, options );
     this.offsetTop = this.settings.offsetTop;
     this.id = this.settings.name;
-    this.timeoutId = null;
-    this.hash = '';
     this.isWorking = false;
     this.enabled = false;
     this.lastScrollY = window.pageYOffset;
     this.evtRoot = new EM( window );
     this.arryShoulderSelector = [];
     this.addShoulder( this.settings.selectorShoulder );
-    this.eventName = {
-      load : `load.${this.id}`,
-      hashChange : `hashchange.${this.id}`,
-      click: `click.${this.id}`,
-      scroll: `scroll.${this.id}`,
-    };
+    this.eventNameLoad  = `load.${this.id}`;
+    this.eventNameHashChange  = `hashchange.${this.id}`;
+    this.eventNameClick = `click.${this.id}`;
+    this.eventNameScroll = `scroll.${this.id}`;
   }
 
   on() {
     this.evtRoot
-      .on( this.eventName.load, ( e ) => this.handleForLoad( e ) )
-      .on( this.eventName.hashChange, ( e ) => this.handleForHashChange( e ) )
-      .on( this.eventName.click, ( e ) => this.handleForClick( e ) )
-      .on( this.eventName.scroll, ( e ) => this.handleForScroll( e ) )
+      .on( this.eventNameLoad, this.handleLoad.bind( this ) )
+      .on( this.eventNameHashChange, this.handleHashChange.bind( this ) )
+      .on( this.eventNameClick, 'a', this.handleClick.bind( this ) )
+      .on( this.eventNameScroll, this.handleScroll.bind( this ) )
     ;
     return this;
   }
@@ -61,32 +57,32 @@ export default class Rescroll {
     return this;
   }
 
-  handleForLoad( e ) {
+  handleLoad( e ) {
     this.enabled = true;
     this.preprocess( e );
   }
 
-  handleForHashChange( e ) {
+  handleHashChange( e ) {
     this.enabled = true;
     this.preprocess( e );
   }
 
-  handleForClick( e ) {
-    const hash = e.target && e.target.hash && this.getHash( e.target.hash );
+  handleClick( e, target ) {
+    const hash = target && target.hash && this.getHash( target.hash );
     if ( !hash && !document.querySelector( hash ) ) {
       return;
     }
     this.enabled = true;
     this.lastScrollY = window.pageYOffset;
     e.preventDefault();
-    window.history.pushState( null ,null, e.target.href );
-    this.preprocess( e );
+    window.history.pushState( null ,null, target.href );
+    this.preprocess( e, target );
   }
 
   /**
    * スクロールの起点になるポイントを常に取得しておく。
    */
-  handleForScroll( e ) {
+  handleScroll( e ) {
     const that = this;
     requestAnimationFrame( () => {
       if ( that.enabled === false ) {
@@ -95,7 +91,7 @@ export default class Rescroll {
     } );
   }
 
-  preprocess( e ) {
+  preprocess( e, target ) {
     const
       that = this
     ;
@@ -120,10 +116,10 @@ export default class Rescroll {
     if (
       (
         e.type === 'click' &&
-        e.target &&
-        e.target.hash &&
+        target &&
+        target.hash &&
         elemShoulder &&
-        position( e.target ).top === position( elemShoulder ).top
+        position( target ).top === position( elemShoulder ).top
       ) ||
       this.isWorking === true ||
       this.enabled === false ||
@@ -157,7 +153,7 @@ export default class Rescroll {
 
     /**
      * スクロール先を肩代わりする要素を取得する。
-     * 先祖の要素でなければならない。
+     * 先祖の要素で限定。
      */
     function _getShoulderElement( elemTarget ) {
       const arry = that.arryShoulderSelector;
@@ -218,7 +214,8 @@ export default class Rescroll {
       } else {
         that.isWorking = false;
         that.enabled = false;
-        that.lastScrollY = window.pageYOffset;
+        that.lastScrollY = finishPoint;
+        window.scrollTo( 0, finishPoint );
       }
     }
 
@@ -242,7 +239,7 @@ export default class Rescroll {
   }
 
   getHash( string ) {
-    const hash = string || window.location.hash || null;
+    const hash = string || window.location.hash;
     return hash && hash.replace( /^#?(.*)/, '#$1' );
   }
 

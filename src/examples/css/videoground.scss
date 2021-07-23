@@ -36,10 +36,10 @@
     border-radius: 50%;
     transform: translate3d(-50%, -50%, 0);
     animation: spin 1s linear 0s infinite;
-    .js-mainVisual_video--isDestroyed &,
-    .js-mainVisual_video--isPlaying & {
-      display: none;
-    }
+  }
+  &.js-pl-mainVisual_video--isDestroyed::after,
+  &.js-pl-mainVisual_video--isPlaying::after {
+    display: none;
   }
   @keyframes spin {
     0% {
@@ -71,11 +71,11 @@
         opacity: 0;
         transition: opacity 3s ease-in;
       }
-      .js-mainVisual_video--isPlaying & {
+      .js-pl-mainVisual_video--isPlaying & {
         opacity: 1;
       }
     }
-    .js-mainVisual_video {
+    .js-pl-mainVisual_video {
       position: absolute;
       top: 50%;
       left: 50%;

@@ -9,6 +9,9 @@ import position from '../utilities/position';
 import '../../_vendor/raf';
 import EM from '../utilities/eventmanager';
 
+const
+  doc = document
+;
 let
   counter = 0
 ;
@@ -20,61 +23,67 @@ export default class ScrollManager {
       name                 : 'scrollManager',
       selectorOffsetTop    : '',
       selectorOffsetBottom : '',
-      delay                : 32,
-      elemEventRoot        : window,
-      throttle             : 0,
+      selectorEventRoot    : '',
+      delayTime            : 0,
       catchPoint           : '100%',
     };
     this.settings = merge( {}, this.defaultSettings, options );
     this.id = this.settings.name;
-    this.elemEventRoot = this.settings.elemEventRoot;
+    this.selectorEventRoot = this.settings.selectorEventRoot;
     this.selectorOffsetTop = this.settings.selectorOffsetTop;
     this.selectorOffsetBottom = this.settings.selectorOffsetBottom;
-    this.offsetTop = 0;
-    this.offsetBottom = 0;
+    this.elemEventRoot = this.selectorEventRoot && doc.querySelector( this.selectorEventRoot ) ||
+      window
+    ;
     this.callbacks = {};
     this.eventName = `scroll.${this.id}`;
     this.isRunning = false;
     this.lastSctop = 0;
-    this.lastScBottom = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
-    this.evtRoot = new EM( this.settings.eventRoot );
+    this.catchPoint = this.settings.catchPoint;
+    this.evtRoot = new EM( this.elemEventRoot );
   }
 
   runCallbacksAll() {
     const
-      scTop         = this.scTop        = this.elemEventRoot.pageYOffset
-      ,offsetTop    = this.offsetTop    = _getMaxOffset( this.selectorOffsetTop, 'top' )
-      ,offsetBottom = this.offsetBottom = _getMaxOffset( this.selectorOffsetBottom, 'bottom' )
-      ,vwTop        = this.vwTop        = scTop - offsetTop
-      ,vwHeight     = this.vwHeight     = window.innerHeight - offsetTop - offsetBottom
-      ,catchPoint   = this.catchPoint   = _calcPoint( vwHeight, this.settings.catchPoint )
+      scTop     = this.elemEventRoot.pageYOffset
+      ,vwHeight = this.elemEventRoot.innerHeight
     ;
-    Object.keys( this.callbacks ).forEach( ( key ) => {
+    for ( let key in this.callbacks ) {
       const
-        entry       = this.callbacks[ key ]
-        ,elemTarget = entry.elemTarget || document.createElement( 'div' )
-        ,rect       = elemTarget.getBoundingClientRect()
-        ,hookPoint  = _calcPoint( rect.height, entry.hookPoint )
-        ,range      = catchPoint + ( rect.height - hookPoint )
-        ,scrollFrom = ( vwTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
-        ,ratio      = scrollFrom / range
+        entry = this.callbacks[ key ]
+        ,selectorOffsetTop     = entry.selectorOffsetTop || this.selectorOffsetTop
+        ,selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom
+        ,offsetTop    = _getMaxOffset( selectorOffsetTop, vwHeight, 'top' )
+        ,offsetBottom = _getMaxOffset( selectorOffsetBottom, vwHeight, 'bottom' )
+        ,vwTop        = scTop + offsetTop
+        ,vwBottom     = vwHeight - offsetTop - offsetBottom
+        ,catchPoint   =  _calcPoint( vwBottom, this.catchPoint )
+        ,elemTarget   = entry.elemTarget || document.createElement( 'div' )
+        ,rect         = elemTarget.getBoundingClientRect()
+        ,hookPoint    = _calcPoint( rect.height, entry.observed.hookPoint || entry.hookPoint )
+        ,range        = catchPoint + ( rect.height - hookPoint )
+        ,scrollFrom   = ( vwTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
+        ,ratio        = scrollFrom / range
       ;
+
       entry.observed = merge( entry.observed, {
-        name   : entry.name,
-        target : entry.elemTarget,
-        range  : range,
-        scroll : scrollFrom,
-        ratio  : ratio,
+        name    : entry.name,
+        target  : entry.elemTarget,
+        range   : range,
+        scroll  : scrollFrom,
+        ratio   : ratio,
+        catched : ratio >= 0 && ratio <= 1
       } );
       entry.callback.call( this, entry.observed, this );
-    } );
+
+    } // for
 
     this.isRunning = false;
 
-    if ( this.scTop > this.lastSctop ) {
+    if ( scTop > this.lastSctop ) {
       this.scrollDown = true;
       this.scrollUp = false;
     } else {
@@ -82,18 +91,17 @@ export default class ScrollManager {
       this.scrollUp = true;
     }
     this.isRunning = false;
-    this.lastSctop = this.scTop;
-    this.lastScBottom = this.scBottom;
+    this.lastSctop = scTop;
     return this;
   }
 
   add( callback, elemTarget, options ) {
     const
       defaultOptions = {
-        elemTarget : elemTarget,
         name       : _getUniqueName( this.id ),
+        elemTarget : elemTarget,
         flag       : false,
-        ovserved   : {},
+        observed   : {},
       }
       ,entry = merge( {}, defaultOptions, options )
     ;
@@ -130,71 +138,56 @@ export default class ScrollManager {
 
   handle() {
     const
-      that = this
+      func = this.runCallbacksAll.bind( this )
+      ,delayTime = this.settings.delayTime
     ;
-    if ( !this.isRunning ) {
-      this.isRunning = true;
-      if ( typeof this.settings.throttle === 'number' && this.settings.throttle > 0 ) {
-        _throttle( this.runCallbacksAll );
-      } else {
-        requestAnimationFrame( () => {
-          this.runCallbacksAll();
-        } );
-      }
+    let startTime = null;
+    if ( this.isRunning === true ) {
+      return;
+    }
+    this.isRunning = true;
+    if ( typeof delayTime === 'number' && delayTime > 0 ) {
+      requestAnimationFrame( _throttle );
+    } else {
+      requestAnimationFrame( func );
     }
     return this;
 
-    function _throttle( func ) {
-      requestAnimationFrame( ( timeStamp ) => {
-        if ( that.startTime === null ) {
-          that.startTime = timeStamp;
-        }
-        if ( timeStamp - that.startTime > that.settings.throttle ) {
-          that.startTime = null;
-          func.call( that );
-        } else {
-          _throttle( func );
-        }
-      } );
+    function _throttle( timeStamp ) {
+      if ( startTime === null ) {
+        startTime = timeStamp;
+      }
+      if ( timeStamp - startTime >= delayTime ) {
+        func();
+      } else {
+        requestAnimationFrame( _throttle );
+      }
     }
+
   }
 
 }
 
-function _getMaxOffset( selector , pos ) {
+function _getMaxOffset( selector, vwHeight, pos ) {
   const
-    ret = 0
-    ,arry = []
-  ;
+    elems = selector && document.querySelectorAll( selector )
+    ,[ base, maxOrMin ] = ( pos === 'top' ) ? [ 'bottom', 'max' ] : [ 'top','min' ]
+    ;
   let
-    elements
-  ;
-  if ( typeof selector === 'number' ) {
-    ret = selector;
-  } else if ( selector && typeof selector === 'string' ) {
-    elements = document.querySelectorAll( selector );
-    Array.prototype.forEach.call( elements, ( self ) => {
-      let
-        style
-      ;
-      if ( !self ) {
-        return;
-      }
-      style = window.getComputedStyle( self );
-      if ( style.position !== 'fixed' ) {
-        return;
-      }
-      if ( pos === 'bottom' ) {
-        arry.push( self.getBoundingClientRect().top );
-      } else {
-        arry.push( self.getBoundingClientRect().bottom );
-      }
-    } );
+    ret = 0
+    ,arryPositionNumber = []
+    ;
+  if ( !elems ) {
+    return ret;
   }
-  if ( ret.length ) {
-    ret = Math.max.apply( null, ret );
+  for ( let elem of elems ) {
+    if ( window.getComputedStyle( elem ).position === 'fixed' ) {
+      arryPositionNumber.push( elem.getBoundingClientRect()[ base ] );
+    }
   }
-  return ret;
+  ret = Math[ maxOrMin ].apply( null, arryPositionNumber );
+  ret = ( pos === 'bottom' ) ? vwHeight - ret : ret;
+  return ( ret < 0 ) ? 0 : ret;
 }
 
 function _getUniqueName( base ) {

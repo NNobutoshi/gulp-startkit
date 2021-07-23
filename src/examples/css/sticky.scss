@@ -9,19 +9,20 @@
 
 
 .pl-nav {
-  height: 50px;
+  height: inherit;
+  border: solid 1px #f00;
+  box-sizing: border-box;
+  background-color: #fff;
+  .js-pl-nav--isFixed & {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
   @at-root {
-    &_nav {
-      height: inherit;
-      border: solid 1px #f00;
-      box-sizing: border-box;
-      background-color: #fff;
-      .js-pl-nav--isFixed & {
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-      }
+    &_outer {
+      height: 50px;
+      margin-top: 50vh;
     }
     &_list {
       display: flex;
