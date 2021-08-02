@@ -15,10 +15,10 @@ var mdls = {};
 mdls.hover = new _js_modules_libs_adaptivehover__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorTarget: '.pl-hoverTarget'
 });
-mdls.hover.on(function (e, inst) {
-  inst.elemTarget.classList.add('js-hover');
-}, function (e, inst) {
-  inst.elemTarget.classList.remove('js-hover');
+mdls.hover.on(function (e, _inst, target) {
+  target.classList.add('js-hover');
+}, function (e, _inst, target) {
+  target.classList.remove('js-hover');
 });
 
 /***/ })

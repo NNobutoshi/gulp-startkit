@@ -6,15 +6,24 @@
   ,"../icons"
   ,"../mixins_sprite"
 ;
-
-.page {
+.sg-page {
   overflow: hidden;
   @at-root {
-    .page_siteId {
-      padding: 20px;
+    .sg-page_head {
+      position: relative;
+      z-index: 1;
+      padding: 10px 0;
     }
-    .page_body {
+    .sg-page_siteId {
+      box-sizing: border-box;
+      width: 60px;
+    }
+    .sg-page_body {
       min-height: 2000px;
+    }
+    .sg-page_core {
+      padding-right: 10px;
+      padding-left: 10px;
     }
   }
 }

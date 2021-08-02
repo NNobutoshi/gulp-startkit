@@ -9,39 +9,49 @@ import '../polyfills/closest';
 import merge from 'lodash/mergeWith';
 import EM from '../utilities/eventmanager';
 
-const doc = document;
+const d = document;
+
 export default class AdaptiveHover {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name              : 'adaptiveHover',
-      selectorTarget    : '',
-      selectorEventRoot : 'body',
-      delayTime         : 400,
-      range             : 10,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.selectorEvetnRoot = this.settings.selectorEventRoot;
-    this.elemTarget = doc.querySelector( this.selectorTarget );
-    this.elemEventRoot = doc.querySelector( this.selectorEventRoot );
+    const
+      defaultSettings = this.defaultSettings = {
+        name              : 'adaptiveHover',
+        selectorTarget    : '',
+        selectorEventRoot : 'body',
+        elemTarget        : null,
+        elemActive        : null,
+        elemEventRoot     : window,
+        eventNameEnter    : 'touchstart.{name} mouseover.{name}',
+        eventNameLeave    : 'touchend.{name} mouseout.{name}',
+        eventNameOutside  : 'touchend.{name} click.{name}',
+        delayTime         : 500,
+        coverage          : 20,
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorEvetnRoot = settings.selectorEventRoot;
+    this.elemTarget = settings.elemTarget || d.querySelector( this.selectorTarget );
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector( this.selectorEventRoot );
+    this.eventNameEnter = settings.eventNameEnter.replaceAll( '{name}', this.id );
+    this.eventNameLeave = settings.eventNameLeave.replaceAll( '{name}', this.id );
+    this.eventNameOutside = settings.eventNameOutside.replaceAll( '{name}', this.id );
     this.callbackEnter = null;
     this.callbackLeave = null;
-    this.eventNameEnter = `touchstart.${this.id} mouseover.${this.id}`;
-    this.eventNameLeave = `touchend.${this.id} mouseout.${this.id}`;
-    this.eventNameOutside = `touchend.${this.id} click.${this.id}`;
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.evtRoot = new EM( this.elemEventRoot );
+    this.eventRoot = null;
   }
 
   on( callbackEnter, callbackLeave ) {
+    this.eventRoot = new EM( this.elemEventRoot );
     this.callbackEnter = callbackEnter;
     this.callbackLeave = callbackLeave;
-    this.evtRoot
+    this.eventRoot
       .on( this.eventNameEnter, this.selectorTarget, this.handleEnter.bind( this ) )
       .on( this.eventNameLeave, this.selectorTarget, this.handleLeave.bind( this ) )
       .on( this.eventNameOutside, this.handleOutSide.bind( this ) )
@@ -55,53 +65,55 @@ export default class AdaptiveHover {
     return this;
   }
 
-  handleEnter( e ) {
-    this.enter( e );
+  handleEnter( e, target ) {
+    this.enter( e, target );
   }
 
   handleLeave( e, target ) {
     const
-      settings = this.settings
-      ,range = settings.range
-      ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, range )
+      coverage = this.settings.coverage
+      ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, coverage )
     ;
     if (
       !isOriginPoint &&
-      this.elemTarget === target &&
-      this.elemTarget.contains( e.relatedTarget ) === false
+      this.elemActive === target &&
+      this.elemActive.contains( e.relatedTarget ) === false &&
+      target.contains( e.relatedTarget ) === false
     ) {
-      this.leave( e, this.callbackLeave );
+      this.leave( e, target );
     }
   }
 
   handleOutSide( e ) {
-    const settings = this.settings;
-    if ( !_isRelative( e.target, settings.selectorTarget ) && this.isEntering === true ) {
+    if ( !_isRelative( e.target, this.settings.selectorTarget ) && this.isEntering === true ) {
       this.clear();
-      this.leave( e, this.callbackLeave );
+      this.leave( e, this.elemActive );
     }
   }
 
-  enter( e ) {
+  enter( e, target ) {
     const
       eventObj = _getEventObj( e )
-      ,settings = this.settings
     ;
+    if ( this.isEntering === true && this.elemActive !== target ) {
+      this.leave( e, this.elemActive );
+    }
     if ( this.isEntering === false ) {
       clearTimeout( this.timeoutId );
-      this.timeoutId = setTimeout( () => this.clear(), settings.delayTime );
+      this.elemActive = target;
+      this.timeoutId = setTimeout( () => this.clear(), this.settings.delayTime );
       this.pageX = eventObj.pageX;
       this.pageY = eventObj.pageY;
       this.isEntering = true;
-      this.callbackEnter.call( this, e, this );
+      this.callbackEnter.call( this, e, this, target );
     }
   }
 
-  leave( e ) {
+  leave( e ,target ) {
     if ( this.isEntering === true ) {
       clearTimeout( this.timeoutId );
       this.isEntering = false;
-      this.callbackLeave.call( this, e, this );
+      this.callbackLeave.call( this, e, this, target );
     }
   }
 

@@ -1,31 +1,39 @@
-import Toggle from '../../js/_modules/libs/transitiontoggle.js';
+import Accordion from '../../js/_modules/accordion';
+import EM from '../../js/_modules/utilities/eventmanager';
 
-const
-  mdls = {}
-;
-mdls.toggle = new Toggle( {
-  // selectorParent  : '.pl-list',
-  selectorTrigger : '.pl-list_btn',
-  selectorTarget  : '.pl-list_inner',
-} );
+const evtController = new EM( document.querySelector( '.pl-controller' ) );
 
-mdls.toggle.on( {
-  before: function() {
-    const
-      height = this.elemTarget.querySelector( '.pl-list_list' ).getBoundingClientRect().height
-    ;
-    this.elemTarget.style.height = height + 'px';
-    this.elemParent.classList.add( 'js-list--isOpening' );
-  },
-  after: function() {
-    this.elemTarget.style.height = '';
-    this.elemParent.classList.remove( 'js-list--isOpening' );
-  },
-  finish: function() {
-    if ( this.isChanged === true ) {
-      this.elemParent.classList.add( 'js-list--isOpen' );
-    } else {
-      this.elemParent.classList.remove( 'js-list--isOpen' );
+const accordion = new Accordion( {
+  selectorParent  : '.pl-list_item',
+  selectorTrigger : '.pl-list_heading',
+  selectorTarget  : '.pl-list_body',
+  toggleHeight    : true,
+} )
+  .on( {
+    before: function() {
+      this.elemParent.classList.add( 'js-pl-accordion--isOpening' );
+    },
+    after: function() {
+      this.elemParent.classList.remove( 'js-pl-accordion--isOpening' );
+    },
+    finish: function( e ) {
+      if ( this.isChanged === true ) {
+        this.elemParent.classList.add( 'js-pl-accordion--isOpen' );
+      } else {
+        this.elemParent.classList.remove( 'js-pl-accordion--isOpen' );
+      }
     }
-  }
-} );
+  } )
+;
+
+evtController
+  .on( 'click', '.pl-controller_button--open', () => {
+    accordion.handleAllBefore();
+  } )
+  .on( 'click', '.pl-controller_button--close', () => {
+    accordion.handleAllafter();
+  } )
+  .on( 'click', '.pl-controller_input--checkbox', ( e, target ) => {
+    accordion.settings.otherClosing = target.checked;
+  } )
+;

@@ -7,22 +7,29 @@ import '../../_vendor/raf';
 import merge from 'lodash/mergeWith';
 import EM from '../utilities/eventmanager';
 
-let
-  uniqueNumber = 0
-;
+const d = document;
+let uniqueNumber = 0;
+
 export default class OptimizedResize {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name      : 'optimizedresize',
-      delayTime : 100,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
+    const
+      defaultSettings = this.defaultSettings = {
+        name              : 'optimizedresize',
+        selectorEventRoot : '',
+        elemEventRoot     : window,
+        eventName         : 'resize.{name}',
+        delayTime         : 10,
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector( this.selectorEventRoot );
     this.callbacks = {};
     this.isRunning = false;
-    this.eventName = `resize.${this.id}`;
-    this.evtRoot = new EM( window );
+    this.eventName = settings.eventName.replaceAll( '{name}', this.id );
+    this.eventRoot = null;
   }
 
   runCallbacksAll() {
@@ -142,7 +149,8 @@ export default class OptimizedResize {
 
   setUp() {
     if ( !Object.keys( this.callbacks ).length ) {
-      this.evtRoot.on( this.eventName, ( e ) => this.handleSetup( e ) );
+      this.eventRoot = new EM( this.elemEventRoot );
+      this.eventRoot.on( this.eventName, ( e ) => this.handleSetup( e ) );
     }
   }
 

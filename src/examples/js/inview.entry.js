@@ -36,8 +36,7 @@ function _handle( observed ) {
   catchPoint = ( typeof catchPoint === 'number' && catchPoint >= 0 ) ? catchPoint + '%' : '100%';
   observed.hookPoint = ( typeof hookPoint === 'number' && hookPoint >= 0 ) ? hookPoint + '%' : 0;
   this.catchPoint = catchPoint;
-  if ( observed.catched ) {
-    observed.inView = true;
+  if ( observed.catched === true ) {
     observed.target.classList.add( 'js-isInView' );
   } else {
     observed.target.classList.remove( 'js-isInView' );

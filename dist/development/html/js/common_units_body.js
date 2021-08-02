@@ -1,5 +1,163 @@
 (self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_units_body"],{
 
+/***/ "./src/js/_modules/accordion.js":
+/*!**************************************!*\
+  !*** ./src/js/_modules/accordion.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ Accordion; }
+/* harmony export */ });
+/* harmony import */ var _libs_transitiontoggle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./libs/transitiontoggle */ "./src/js/_modules/libs/transitiontoggle.js");
+/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+var d = document;
+
+var Accordion = /*#__PURE__*/function () {
+  function Accordion(options) {
+    _classCallCheck(this, Accordion);
+
+    var defaultSettings = this.defaultSettings = {
+      name: 'accordion',
+      selectorParent: '',
+      selectorTrigger: '',
+      selectorTarget: '',
+      selectorCloser: '',
+      selectorOpener: '',
+      selectorEventRoot: 'body',
+      elemParentAll: null,
+      elemEventRoot: null,
+      eventNameStart: 'touchend.{name} click.{name}',
+      eventNameFinish: 'transitionend.{name}',
+      toggleHeihgt: true,
+      otherClosing: false,
+      propertyTargetTransition: 'height'
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorParentAll = settings.selectorParent;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.selectorCloser = settings.selectorCloser;
+    this.selectorOpener = settings.selectorOpener;
+    this.elemParentAll = settings.elemParentAll || d.querySelectorAll(this.selectorParentAll);
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
+    this.eventRoot = null;
+    this.eventNameStart = settings.eventNameStart.replaceAll('{name}', this.id);
+    this.eventNameFinish = settings.eventNameFinish.replaceAll('{name}', this.id);
+    this.toggles = [];
+    this.setUp();
+  }
+
+  _createClass(Accordion, [{
+    key: "setUp",
+    value: function setUp() {
+      var _this = this;
+
+      Array.prototype.forEach.call(this.elemParentAll, function (elemParent, index) {
+        var toggle = new _libs_transitiontoggle__WEBPACK_IMPORTED_MODULE_0__.default({
+          name: _this.id + index,
+          elemParent: elemParent,
+          elemTrigger: elemParent.querySelector(_this.selectorTrigger),
+          elemTarget: elemParent.querySelector(_this.selectorTarget),
+          toggleHeight: _this.settings.toggleHeight,
+          propertyTargetTransition: _this.settings.propertyTargetTransition
+        });
+
+        _this.toggles.push(toggle);
+      });
+    }
+  }, {
+    key: "on",
+    value: function on(callbacks) {
+      var _this2 = this;
+
+      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemEventRoot);
+      this.callbackBefore = callbacks.before;
+      this.callbackAfter = callbacks.after;
+      this.callbackFinish = callbacks.finish;
+      this.eventRoot.on(this.eventNameStart, this.selectorTrigger, this.handleStart.bind(this)).on(this.eventNameFinish, this.selectorTarget, this.handleFinish.bind(this));
+
+      if (this.selectorCloser) {
+        this.eventRoot.on(this.eventNameStart, this.selectorCloser, this.handleAllafter.bind(this));
+      }
+
+      if (this.selectorOpener) {
+        this.eventRoot.on(this.eventNameStart, this.selectorOpener, this.handleAllBefore.bind(this));
+      }
+
+      this.toggles.forEach(function (toggle, index) {
+        toggle.callbackBefore = _this2.callbackBefore.bind(toggle);
+        toggle.callbackAfter = _this2.callbackAfter.bind(toggle);
+        toggle.callbackFinish = _this2.callbackFinish.bind(toggle);
+      });
+      return this;
+    }
+  }, {
+    key: "handleStart",
+    value: function handleStart(e, elemEventTarget) {
+      var _this3 = this;
+
+      this.toggles.forEach(function (toggle) {
+        if (toggle.elemTrigger === elemEventTarget) {
+          toggle.handleStart(e);
+          return false;
+        } else if (_this3.settings.otherClosing === true && toggle.isChanged === true) {
+          toggle.after(e);
+        }
+      });
+    }
+  }, {
+    key: "handleFinish",
+    value: function handleFinish(e, elemEventTarget) {
+      this.toggles.forEach(function (toggle) {
+        if (toggle.elemTarget === elemEventTarget) {
+          toggle.handleFinish(e);
+          return false;
+        }
+      });
+    }
+  }, {
+    key: "handleAllafter",
+    value: function handleAllafter() {
+      this.toggles.forEach(function (toggle) {
+        if (toggle.isChanged === true) {
+          toggle.after();
+        }
+      });
+    }
+  }, {
+    key: "handleAllBefore",
+    value: function handleAllBefore() {
+      this.toggles.forEach(function (toggle) {
+        if (toggle.isChanged === false) {
+          toggle.before();
+        }
+      });
+    }
+  }]);
+
+  return Accordion;
+}();
+
+
+
+/***/ }),
+
 /***/ "./src/js/_modules/adjust.js":
 /*!***********************************!*\
   !*** ./src/js/_modules/adjust.js ***!
@@ -75,43 +233,50 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-var doc = document;
+var d = document;
 
 var AdaptiveHover = /*#__PURE__*/function () {
   function AdaptiveHover(options) {
     _classCallCheck(this, AdaptiveHover);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'adaptiveHover',
       selectorTarget: '',
       selectorEventRoot: 'body',
-      delayTime: 400,
-      range: 10
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.selectorEvetnRoot = this.settings.selectorEventRoot;
-    this.elemTarget = doc.querySelector(this.selectorTarget);
-    this.elemEventRoot = doc.querySelector(this.selectorEventRoot);
+      elemTarget: null,
+      elemActive: null,
+      elemEventRoot: window,
+      eventNameEnter: 'touchstart.{name} mouseover.{name}',
+      eventNameLeave: 'touchend.{name} mouseout.{name}',
+      eventNameOutside: 'touchend.{name} click.{name}',
+      delayTime: 500,
+      coverage: 20
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_2___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorEvetnRoot = settings.selectorEventRoot;
+    this.elemTarget = settings.elemTarget || d.querySelector(this.selectorTarget);
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
+    this.eventNameEnter = settings.eventNameEnter.replaceAll('{name}', this.id);
+    this.eventNameLeave = settings.eventNameLeave.replaceAll('{name}', this.id);
+    this.eventNameOutside = settings.eventNameOutside.replaceAll('{name}', this.id);
     this.callbackEnter = null;
     this.callbackLeave = null;
-    this.eventNameEnter = "touchstart.".concat(this.id, " mouseover.").concat(this.id);
-    this.eventNameLeave = "touchend.".concat(this.id, " mouseout.").concat(this.id);
-    this.eventNameOutside = "touchend.".concat(this.id, " click.").concat(this.id);
     this.pageX = null;
     this.pageY = null;
     this.timeoutId = null;
     this.isEntering = false;
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
+    this.eventRoot = null;
   }
 
   _createClass(AdaptiveHover, [{
     key: "on",
     value: function on(callbackEnter, callbackLeave) {
+      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
       this.callbackEnter = callbackEnter;
       this.callbackLeave = callbackLeave;
-      this.evtRoot.on(this.eventNameEnter, this.selectorTarget, this.handleEnter.bind(this)).on(this.eventNameLeave, this.selectorTarget, this.handleLeave.bind(this)).on(this.eventNameOutside, this.handleOutSide.bind(this));
+      this.eventRoot.on(this.eventNameEnter, this.selectorTarget, this.handleEnter.bind(this)).on(this.eventNameLeave, this.selectorTarget, this.handleLeave.bind(this)).on(this.eventNameOutside, this.handleOutSide.bind(this));
       return this;
     }
   }, {
@@ -123,56 +288,57 @@ var AdaptiveHover = /*#__PURE__*/function () {
     }
   }, {
     key: "handleEnter",
-    value: function handleEnter(e) {
-      this.enter(e);
+    value: function handleEnter(e, target) {
+      this.enter(e, target);
     }
   }, {
     key: "handleLeave",
     value: function handleLeave(e, target) {
-      var settings = this.settings,
-          range = settings.range,
-          isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, range);
+      var coverage = this.settings.coverage,
+          isOriginPoint = _isOriginPoint(_getEventObj(e), this.pageX, this.pageY, coverage);
 
-      if (!isOriginPoint && this.elemTarget === target && this.elemTarget.contains(e.relatedTarget) === false) {
-        this.leave(e, this.callbackLeave);
+      if (!isOriginPoint && this.elemActive === target && this.elemActive.contains(e.relatedTarget) === false && target.contains(e.relatedTarget) === false) {
+        this.leave(e, target);
       }
     }
   }, {
     key: "handleOutSide",
     value: function handleOutSide(e) {
-      var settings = this.settings;
-
-      if (!_isRelative(e.target, settings.selectorTarget) && this.isEntering === true) {
+      if (!_isRelative(e.target, this.settings.selectorTarget) && this.isEntering === true) {
         this.clear();
-        this.leave(e, this.callbackLeave);
+        this.leave(e, this.elemActive);
       }
     }
   }, {
     key: "enter",
-    value: function enter(e) {
+    value: function enter(e, target) {
       var _this = this;
 
-      var eventObj = _getEventObj(e),
-          settings = this.settings;
+      var eventObj = _getEventObj(e);
+
+      if (this.isEntering === true && this.elemActive !== target) {
+        this.leave(e, this.elemActive);
+      }
 
       if (this.isEntering === false) {
         clearTimeout(this.timeoutId);
+        this.elemActive = target;
         this.timeoutId = setTimeout(function () {
           return _this.clear();
-        }, settings.delayTime);
+        }, this.settings.delayTime);
         this.pageX = eventObj.pageX;
         this.pageY = eventObj.pageY;
         this.isEntering = true;
-        this.callbackEnter.call(this, e, this);
+        this.callbackEnter.call(this, e, this, target);
       }
     }
   }, {
     key: "leave",
-    value: function leave(e) {
+    value: function leave(e, target) {
       if (this.isEntering === true) {
         clearTimeout(this.timeoutId);
         this.isEntering = false;
-        this.callbackLeave.call(this, e, this);
+        this.callbackLeave.call(this, e, this, target);
       }
     }
   }, {
@@ -233,22 +399,28 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var d = document;
 var uniqueNumber = 0;
 
 var OptimizedResize = /*#__PURE__*/function () {
   function OptimizedResize(options) {
     _classCallCheck(this, OptimizedResize);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'optimizedresize',
-      delayTime: 100
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
+      selectorEventRoot: '',
+      elemEventRoot: window,
+      eventName: 'resize.{name}',
+      delayTime: 10
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_1___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
     this.callbacks = {};
     this.isRunning = false;
-    this.eventName = "resize.".concat(this.id);
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
+    this.eventName = settings.eventName.replaceAll('{name}', this.id);
+    this.eventRoot = null;
   }
 
   _createClass(OptimizedResize, [{
@@ -368,7 +540,8 @@ var OptimizedResize = /*#__PURE__*/function () {
       var _this = this;
 
       if (!Object.keys(this.callbacks).length) {
-        this.evtRoot.on(this.eventName, function (e) {
+        this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemEventRoot);
+        this.eventRoot.on(this.eventName, function (e) {
           return _this.handleSetup(e);
         });
       }
@@ -482,51 +655,55 @@ var ScrollManager = /*#__PURE__*/function () {
   function ScrollManager(options) {
     _classCallCheck(this, ScrollManager);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'scrollManager',
       selectorOffsetTop: '',
       selectorOffsetBottom: '',
       selectorEventRoot: '',
+      elemOffsetTop: null,
+      elemOffsetBottom: null,
+      elemEventRoot: window,
+      eventName: 'scroll.{name}',
       delayTime: 0,
       catchPoint: '100%'
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorEventRoot = this.settings.selectorEventRoot;
-    this.selectorOffsetTop = this.settings.selectorOffsetTop;
-    this.selectorOffsetBottom = this.settings.selectorOffsetBottom;
-    this.elemEventRoot = this.selectorEventRoot && doc.querySelector(this.selectorEventRoot) || window;
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.selectorOffsetTop = settings.selectorOffsetTop;
+    this.selectorOffsetBottom = settings.selectorOffsetBottom;
+    this.elemEventRoot = settings.elemEventRoot || doc.querySelector(this.selectorEventRoot);
     this.callbacks = {};
-    this.eventName = "scroll.".concat(this.id);
+    this.eventName = settings.eventName.replaceAll('{name}', this.id);
     this.isRunning = false;
     this.lastSctop = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
-    this.catchPoint = this.settings.catchPoint;
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
+    this.catchPoint = settings.catchPoint;
+    this.eventRoot = null;
   }
 
   _createClass(ScrollManager, [{
     key: "runCallbacksAll",
     value: function runCallbacksAll() {
       var scTop = this.elemEventRoot.pageYOffset,
-          vwHeight = this.elemEventRoot.innerHeight;
+          innerHeight = this.elemEventRoot.innerHeight;
 
       for (var key in this.callbacks) {
         var entry = this.callbacks[key],
             selectorOffsetTop = entry.selectorOffsetTop || this.selectorOffsetTop,
             selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom,
-            offsetTop = _getMaxOffset(selectorOffsetTop, vwHeight, 'top'),
-            offsetBottom = _getMaxOffset(selectorOffsetBottom, vwHeight, 'bottom'),
-            vwTop = scTop + offsetTop,
-            vwBottom = vwHeight - offsetTop - offsetBottom,
-            catchPoint = _calcPoint(vwBottom, this.catchPoint),
+            offsetTop = _getMaxOffset(selectorOffsetTop, innerHeight, 'top'),
+            offsetBottom = _getMaxOffset(selectorOffsetBottom, innerHeight, 'bottom'),
+            viewTop = scTop + offsetTop,
+            viewHeight = innerHeight - offsetTop - offsetBottom,
+            catchPoint = _calcPoint(viewHeight, this.catchPoint),
             elemTarget = entry.elemTarget || document.createElement('div'),
             rect = elemTarget.getBoundingClientRect(),
             hookPoint = _calcPoint(rect.height, entry.observed.hookPoint || entry.hookPoint),
             range = catchPoint + (rect.height - hookPoint),
-            scrollFrom = vwTop + catchPoint - (hookPoint + (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top),
+            scrollFrom = viewTop + catchPoint - (hookPoint + (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top),
             ratio = scrollFrom / range;
 
         entry.observed = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()(entry.observed, {
@@ -535,6 +712,10 @@ var ScrollManager = /*#__PURE__*/function () {
           range: range,
           scroll: scrollFrom,
           ratio: ratio,
+          catchPoint: catchPoint,
+          hookPoint: hookPoint,
+          viewTop: viewTop,
+          viewHeight: viewHeight,
           catched: ratio >= 0 && ratio <= 1
         });
         entry.callback.call(this, entry.observed, this);
@@ -592,7 +773,8 @@ var ScrollManager = /*#__PURE__*/function () {
       var _this = this;
 
       if (!this.callbacks.length) {
-        this.evtRoot.on(this.eventName, function () {
+        this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_3__.default(this.elemEventRoot);
+        this.eventRoot.on(this.eventName, function () {
           return _this.handle();
         });
       }
@@ -602,7 +784,7 @@ var ScrollManager = /*#__PURE__*/function () {
   }, {
     key: "destroy",
     value: function destroy() {
-      this.evtRoot.off(this.eventName);
+      this.eventRoot.off(this.eventName);
       return this;
     }
   }, {
@@ -712,7 +894,7 @@ function _calcPoint(base, val) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ Toggle; }
+/* harmony export */   "default": function() { return /* binding */ TtransitionToggle; }
 /* harmony export */ });
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
@@ -730,45 +912,56 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  */
 
 
-var doc = document;
+var d = document;
 
-var Toggle = /*#__PURE__*/function () {
-  function Toggle(options) {
-    _classCallCheck(this, Toggle);
+var TtransitionToggle = /*#__PURE__*/function () {
+  function TtransitionToggle(options) {
+    _classCallCheck(this, TtransitionToggle);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'transitiontoggle',
+      selectorParent: '',
       selectorTrigger: '',
       selectorTarget: '',
-      selectorParent: '',
-      selectorEventRoot: 'body'
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorTrigger = this.settings.selectorTrigger;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.selectorParent = this.settings.selectorParent;
-    this.elemRoot = doc.querySelector(this.settings.selectorEventRoot);
-    this.elemTrigger = doc.querySelector(this.selectorTrigger);
-    this.elemTarget = doc.querySelector(this.selectorTarget);
-    this.elemParent = this.selectorParent && doc.querySelector(this.selectorParent);
-    this.elemParent = this.elemParent || this.elemTrigger.parentNode;
+      selectorEventRoot: 'body',
+      elemTrigger: null,
+      elemTarget: null,
+      elemParent: null,
+      elemEventRoot: null,
+      eventNameStart: 'touchend.{name} click.{name}',
+      eventNameFinish: 'transitionend.{name}',
+      toggleHeight: false,
+      propertyTargetTransition: ''
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorParent = settings.selectorParent;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemTrigger = settings.elemTrigger || d.querySelector(this.selectorTrigger);
+    this.elemParent = settings.elemParent || this.selectorParent && d.querySelector(this.selectorParent) || this.elemTrigger.parentNode;
+    this.elemTarget = settings.elemTarget || this.elemParent.querySelector(this.selectorTarget);
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
+    this.callbackSetUp = null;
     this.callbackBefore = null;
     this.callbackAfter = null;
     this.callbackFinish = null;
+    this.eventRoot = null;
     this.isChanged = false;
-    this.eventNameStart = "click.".concat(this.id);
-    this.eventNameFinish = "transitionend.".concat(this.id);
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemRoot);
+    this.isWorking = false;
+    this.eventNameStart = settings.eventNameStart.replaceAll('{name}', this.id);
+    this.eventNameFinish = settings.eventNameFinish.replaceAll('{name}', this.id);
   }
 
-  _createClass(Toggle, [{
+  _createClass(TtransitionToggle, [{
     key: "on",
     value: function on(callbacks) {
+      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemEvtRoot);
       this.callbackBefore = callbacks.before.bind(this);
       this.callbackAfter = callbacks.after.bind(this);
       this.callbackFinish = callbacks.finish.bind(this);
-      this.evtRoot.on(this.eventNameStart, this.selectorTrigger, this.handleStart.bind(this)).on(this.eventNameFinish, this.selectorTarget, this.handleFinish.bind(this));
+      this.eventRoot.on(this.eventNameStart, this.selectorTrigger, this.handleStart.bind(this)).on(this.eventNameFinish, this.selectorTarget, this.handleFinish.bind(this));
       return this;
     }
   }, {
@@ -780,44 +973,85 @@ var Toggle = /*#__PURE__*/function () {
       this.callbackBefore = null;
       this.callbackAfter = null;
       this.callbackFinish = null;
-      this.evtRoot.off('.' + this.id);
+      this.eventRoot.off('.' + this.id);
       return this;
     }
   }, {
     key: "handleStart",
     value: function handleStart(e) {
+      if (this.isWorking === true) {
+        return true;
+      }
+
+      this.isWorking = true;
+
       if (this.isChanged === true) {
         this.after(e);
       } else {
         this.before(e);
       }
-
-      return false;
     }
   }, {
     key: "handleFinish",
     value: function handleFinish(e) {
-      if (typeof this.callbackFinish === 'function') {
-        this.callbackFinish.call(this, e, this);
+      var targetProperty = this.settings.propertyTargetTransition;
+
+      if (targetProperty && e.propertyName && targetProperty !== e.propertyName) {
+        return;
       }
 
-      return false;
+      this.isWorking = false;
+      this.callbackFinish.call(this, e, this);
     }
   }, {
     key: "before",
     value: function before(e) {
+      var that = this,
+          styleDefaultTransition = window.getComputedStyle(this.elemTarget).transition,
+          style = this.elemTarget.style;
+      var height,
+          startTime = null;
+
+      if (this.settings.toggleHeight === true) {
+        var _setHeight = function _setHeight(timeStamp) {
+          if (startTime === null) {
+            startTime = timeStamp;
+          }
+
+          if (timeStamp - startTime > 100) {
+            style.transition = styleDefaultTransition;
+            style.height = height + 'px';
+            that.callbackBefore.call(this, e, this);
+          } else {
+            requestAnimationFrame(_setHeight);
+          }
+        };
+
+        style.transitionProperty = 'none';
+        style.display = 'block';
+        style.height = 'auto';
+        height = this.elemTarget.getBoundingClientRect().height;
+        style.height = 0;
+        requestAnimationFrame(_setHeight);
+      } else {
+        this.callbackBefore.call(this, e, this);
+      }
+
       this.isChanged = true;
-      this.callbackBefore.call(this, e, this);
     }
   }, {
     key: "after",
     value: function after(e) {
+      if (this.settings.toggleHeight === true) {
+        this.elemTarget.style.height = 0;
+      }
+
       this.isChanged = false;
       this.callbackAfter.call(this, e, this);
     }
   }]);
 
-  return Toggle;
+  return TtransitionToggle;
 }();
 
 
@@ -838,6 +1072,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_parents__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/parents */ "./src/js/_modules/utilities/parents.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -851,39 +1091,51 @@ var Locate = /*#__PURE__*/function () {
   function Locate(options) {
     _classCallCheck(this, Locate);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'locate',
       selectorTarget: '',
-      selectorParents: '',
+      selectorParent: '',
+      elemTargetAll: null,
       indexRegex: /index\.[^/]+?$/
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.selectorParents = this.settings.selectorParents;
-    this.elemTargets = document.querySelectorAll(this.selectorTarget);
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorParent = settings.selectorParent;
+    this.elemTargetAll = settings.elemTargetAll || document.querySelectorAll(this.selectorTarget);
     this.elemCurrent = null;
-    this.elemParents = null;
+    this.elemParentAll = null;
   }
 
   _createClass(Locate, [{
     key: "run",
     value: function run(callback) {
-      var hostName = location.host,
-          wPathname = location.pathname.replace(this.settings.indexRegex, ''),
-          elemTargets = this.elemTargets;
+      var hostNameByLocal = location.host,
+          pathnameByLocal = location.pathname.replace(this.settings.indexRegex, '');
+      this.elemCurrent = null;
+      this.elemParentAll = null;
 
-      for (var i = 0, len = elemTargets.length; i < len; i++) {
-        var elem = elemTargets[i],
-            aPathname = elem.pathname.replace(this.settings.indexRegex, ''),
-            aHost = elem.host;
+      var _iterator = _createForOfIteratorHelper(this.elemTargetAll),
+          _step;
 
-        if (hostName !== aHost) {
-          continue;
-        } else if (aPathname === wPathname) {
-          this.elemCurrent = elem;
-          this.elemParents = (0,_utilities_parents__WEBPACK_IMPORTED_MODULE_1__.default)(this.elemCurrent, this.selectorParents, 'body');
-        }
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var elemTarget = _step.value;
+          var pathNameByElement = elemTarget.pathname.replace(this.settings.indexRegex, ''),
+              hostNameByElement = elemTarget.host;
+
+          if (hostNameByLocal !== hostNameByElement) {
+            continue;
+          } else if (pathNameByElement === pathnameByLocal) {
+            this.elemCurrent = elemTarget;
+            this.elemParentAll = (0,_utilities_parents__WEBPACK_IMPORTED_MODULE_1__.default)(this.elemCurrent, this.selectorParent, 'body');
+          }
+        } // for
+
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
       }
 
       if (typeof callback === 'function') {
@@ -981,18 +1233,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var d = document;
 
 var Rescroll = /*#__PURE__*/function () {
   function Rescroll(options) {
     _classCallCheck(this, Rescroll);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'rescroll',
-      exclude: '',
-      offsetTop: 0,
-      selectorShoulder: null,
+      selectorTrigger: 'a',
+      selectorShoulder: '',
 
       /* スクロール先を肩代わりする要素 */
+      selectorEventRoot: '',
+      elemEventRoot: window,
+      elemShoudler: null,
+      eventNameLoad: 'load.{name}',
+      eventNameHashChange: 'hashchange.{name}',
+      eventNameClick: 'click.{name}',
+      eventNameScroll: 'scroll.{name}',
+      exclude: '',
+      offsetTop: 0,
       animation: true,
 
       /* 所謂スムーススクロール */
@@ -1002,26 +1263,31 @@ var Rescroll = /*#__PURE__*/function () {
           return 1 - Math.pow(1 - pos, 5);
         }
       }
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.offsetTop = this.settings.offsetTop;
-    this.id = this.settings.name;
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorShoulder = settings.selectorShoulder;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(settings.selectorEventRoot);
+    this.offsetTop = settings.offsetTop;
     this.isWorking = false;
     this.enabled = false;
-    this.lastScrollY = window.pageYOffset;
-    this.evtRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_4__.default(window);
+    this.lastScrollY = this.elemEventRoot.pageYOffset;
     this.arryShoulderSelector = [];
-    this.addShoulder(this.settings.selectorShoulder);
-    this.eventNameLoad = "load.".concat(this.id);
-    this.eventNameHashChange = "hashchange.".concat(this.id);
-    this.eventNameClick = "click.".concat(this.id);
-    this.eventNameScroll = "scroll.".concat(this.id);
+    this.eventNameLoad = settings.eventNameLoad.replaceAll('{name}', this.id);
+    this.eventNameHashChange = settings.eventNameHashChange.replaceAll('{name}', this.id);
+    this.eventNameClick = settings.eventNameClick.replaceAll('{name}', this.id);
+    this.eventNameScroll = settings.eventNameScroll.replaceAll('{name}', this.id);
+    this.addShoulder(this.selectorShoulder);
+    this.eventRoot = null;
   }
 
   _createClass(Rescroll, [{
     key: "on",
     value: function on() {
-      this.evtRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameHashChange, this.handleHashChange.bind(this)).on(this.eventNameClick, 'a', this.handleClick.bind(this)).on(this.eventNameScroll, this.handleScroll.bind(this));
+      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_4__.default(this.elemEventRoot);
+      this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameHashChange, this.handleHashChange.bind(this)).on(this.eventNameClick, this.selectorTrigger, this.handleClick.bind(this)).on(this.eventNameScroll, this.handleScroll.bind(this));
       return this;
     }
   }, {
@@ -1055,7 +1321,7 @@ var Rescroll = /*#__PURE__*/function () {
       }
 
       this.enabled = true;
-      this.lastScrollY = window.pageYOffset;
+      this.lastScrollY = this.elemEventRoot.pageYOffset;
       e.preventDefault();
       window.history.pushState(null, null, target.href);
       this.preprocess(e, target);
@@ -1067,25 +1333,24 @@ var Rescroll = /*#__PURE__*/function () {
   }, {
     key: "handleScroll",
     value: function handleScroll(e) {
-      var that = this;
+      var _this = this;
+
       requestAnimationFrame(function () {
-        if (that.enabled === false) {
-          that.lastScrollY = window.pageYOffset;
+        if (_this.enabled === false) {
+          _this.lastScrollY = _this.elemEventRoot.pageYOffset;
         }
       });
     }
   }, {
     key: "preprocess",
     value: function preprocess(e, target) {
-      var that = this;
-
       var hash = this.getHash(),
           arryShoulder = this.arryShoulderSelector,
           elemByHash = hash ? document.querySelector(hash) : null,
-          elemShoulder = arryShoulder.length && elemByHash && _getShoulderElement(elemByHash);
+          elemShoulder = arryShoulder.length && elemByHash && _getShoulderElement.bind(this)(elemByHash);
 
       var lastScrollY = this.lastScrollY,
-          currentScrollY = window.pageYOffset;
+          currentScrollY = this.elemEventRoot.pageYOffset;
       /**
        * クリックされたA要素とジャンプ先を肩代わりする要素のY座標が同一であれば、
        * or すでに実行中であれば、
@@ -1104,33 +1369,32 @@ var Rescroll = /*#__PURE__*/function () {
        */
 
 
-      (function _retry() {
-        requestAnimationFrame(function () {
-          if (currentScrollY !== lastScrollY) {
-            lastScrollY = currentScrollY;
-
-            _retry();
-          } else {
-            that.isWorking = true;
-            lastScrollY = null;
-
-            if (that.settings.animation) {
-              that.animatedScroll(elemShoulder || elemByHash);
-            } else {
-              that.scroll(elemShoulder || elemByHash);
-            }
-          }
-        });
-      })();
-
+      requestAnimationFrame(_retry.bind(this));
       return this;
+
+      function _retry() {
+        if (currentScrollY !== lastScrollY) {
+          lastScrollY = currentScrollY;
+          requestAnimationFrame(_retry.bind(this));
+        } else {
+          this.isWorking = true;
+          lastScrollY = null;
+
+          if (this.settings.animation) {
+            this.animatedScroll(elemShoulder || elemByHash);
+          } else {
+            this.scroll(elemShoulder || elemByHash);
+          }
+        }
+      }
       /**
        * スクロール先を肩代わりする要素を取得する。
        * 先祖の要素で限定。
        */
 
+
       function _getShoulderElement(elemTarget) {
-        var arry = that.arryShoulderSelector;
+        var arry = this.arryShoulderSelector;
         var elemClosest = null;
 
         if (!elemTarget) {
@@ -1156,8 +1420,8 @@ var Rescroll = /*#__PURE__*/function () {
     key: "scroll",
     value: function scroll(elemTarget) {
       var finishPoint = (0,_utilities_position__WEBPACK_IMPORTED_MODULE_1__.default)(elemTarget).top - this.offset();
-      window.scrollTo(0, this.lastScrollY);
-      window.scrollTo(0, finishPoint);
+      this.elemEventRoot.scrollTo(0, this.lastScrollY);
+      this.elemEventRoot.scrollTo(0, finishPoint);
       this.isWorking = false;
       this.enabled = false;
       this.lastScrollY = finishPoint;
@@ -1169,7 +1433,6 @@ var Rescroll = /*#__PURE__*/function () {
   }, {
     key: "animatedScroll",
     value: function animatedScroll(elemTarget) {
-      var that = this;
       var duration = this.settings.animeOption.duration,
           easing = this.settings.animeOption.easing,
           startPoint = this.lastScrollY,
@@ -1177,25 +1440,24 @@ var Rescroll = /*#__PURE__*/function () {
           range = finishPoint - startPoint;
       var currentPoint = 0,
           startTime = null;
-      window.scrollTo(0, startPoint);
-      requestAnimationFrame(_scrollStep);
+      this.elemEventRoot.scrollTo(0, startPoint);
+      requestAnimationFrame(_scrollStep.bind(this));
+      return this;
 
       function _scrollStep(time) {
         startTime = startTime || time;
         currentPoint = startPoint + range * easing.call(null, (time - startTime) / duration);
-        window.scrollTo(0, currentPoint);
+        this.elemEventRoot.scrollTo(0, currentPoint);
 
         if (time - startTime < duration) {
-          requestAnimationFrame(_scrollStep);
+          requestAnimationFrame(_scrollStep.bind(this));
         } else {
-          that.isWorking = false;
-          that.enabled = false;
-          that.lastScrollY = finishPoint;
-          window.scrollTo(0, finishPoint);
+          this.isWorking = false;
+          this.enabled = false;
+          this.lastScrollY = finishPoint;
+          this.elemEventRoot.scrollTo(0, finishPoint);
         }
       }
-
-      return this;
     }
     /**
      * ビューポート上部でfixed されている要素等の、スクロール量から差し引かなければならないオフセットを取得する
@@ -1282,88 +1544,107 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-var doc = document;
+var d = document;
 
 var SimpleVideoPlay = /*#__PURE__*/function () {
   function SimpleVideoPlay(options) {
     _classCallCheck(this, SimpleVideoPlay);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'SimpleVideoPlay',
       selectorVideo: '',
-      selectorOuter: '',
+      selectorWrapper: '',
+      elemVideo: null,
+      elemWrapper: null,
+      eventNameCanPlay: 'canplay.{name}',
+      eventNamePlay: 'play.{name}',
+      eventNamePause: 'pause.{name}',
+      eventNameEnded: 'ended.{name}',
+      eventNameCoverClick: 'click.{name} touchend.{name}',
       onBefore: null,
       onPlayBefore: null,
       onPlay: null,
       onPause: null,
       onEnd: null
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorVideo = this.settings.selectorVideo;
-    this.selectorOuter = this.settings.selectorOuter;
-    this.elemVideo = doc.querySelector(this.selectorVideo);
-    this.elemWrapper = this.elemVideo.closest(this.selectorOuter);
-    this.elemCover = doc.createElement('div');
-    this.evtNamecanPlay = "canplay.".concat(this.id);
-    this.evtNamePlay = "play.".concat(this.id);
-    this.evtNamePause = "pause.".concat(this.id);
-    this.evtNameEnded = "ended.".concat(this.id);
-    this.evtNameCoverClick = "click.".concat(this.id, " touchend.").concat(this.id);
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorVideo = settings.selectorVideo;
+    this.selectorWrapper = settings.selectorWrapper;
+    this.elemVideo = settings.elemVideo || d.querySelector(this.selectorVideo);
+    this.elemWrapper = settings.elemWrapper || this.elemVideo.closest(this.selectorWrapper);
+    this.elemCover = d.createElement('div');
+    this.eventNameCanPlay = settings.eventNameCanPlay.replaceAll('{name}', this.id);
+    this.eventNamePlay = settings.eventNamePlay.replaceAll('{name}', this.id);
+    this.eventNamePause = settings.eventNamePause.replaceAll('{name}', this.id);
+    this.eventNameEnded = settings.eventNameEnded.replaceAll('{name}', this.id);
+    this.eventNameCoverClick = settings.eventNameCoverClick.replaceAll('{name}', this.id);
     this.src = this.elemVideo.src;
     this.isPlaying = false;
-    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemVideo);
-    this.evtCover = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemCover);
+    this.eventVideo = null;
+    this.eventCover = null;
     this.init();
   }
 
   _createClass(SimpleVideoPlay, [{
     key: "init",
     value: function init() {
-      this.eventCall(this.settings.onBefore);
       this.elemWrapper.appendChild(this.elemCover);
 
       if (this.elemVideo.poster) {
         this.elemCover.style.backgroundImage = "url(".concat(this.elemVideo.poster, ")");
       }
 
-      this.on();
       this.elemVideo.load();
     }
   }, {
     key: "on",
-    value: function on() {
-      this.evtVideo.on(this.evtNamecanPlay, this.handleCanplay.bind(this));
-      this.evtVideo.on(this.evtNamePlay, this.handlePlay.bind(this));
-      this.evtVideo.on(this.evtNamePause, this.handlePause.bind(this));
-      this.evtVideo.on(this.evtNameEnded, this.handleEnded.bind(this));
+    value: function on(callbacks) {
+      this.eventVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemVideo);
+      this.eventCover = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemCover);
+      this.callbackBefore = callbacks.before.bind(this);
+      this.callbackPlayBefore = callbacks.playBefore.bind(this);
+      this.callbackPlay = callbacks.play.bind(this);
+      this.callbackPause = callbacks.pause.bind(this);
+      this.callbackEnd = callbacks.end.bind(this);
+      this.eventCall(this.callbackBefore);
+      this.eventVideo.on(this.eventNameCanPlay, this.handleCanplay.bind(this)).on(this.eventNamePlay, this.handlePlay.bind(this)).on(this.eventNamePause, this.handlePause.bind(this)).on(this.eventNameEnded, this.handleEnded.bind(this));
     }
   }, {
     key: "off",
     value: function off() {
-      this.evtVideo.off(".".concat(this.id));
-      this.evtCover.off(".".concat(this.id));
+      this.eventVideo.off(".".concat(this.id));
+      this.eventCover.off(".".concat(this.id));
     }
   }, {
     key: "handleCanplay",
-    value: function handleCanplay() {
-      this.eventCall(this.settings.onPlayBefore);
-      this.evtCover.on(this.evtNameCoverClick, this.handleCoverClick.bind(this));
+    value: function handleCanplay(e) {
+      this.eventCall(this.callbackPlayBefore, e);
+      this.eventCover.on(this.eventNameCoverClick, this.handleCoverClick.bind(this));
     }
   }, {
     key: "handlePlay",
-    value: function handlePlay() {
-      this.eventCall(this.settings.onPlay);
+    value: function handlePlay(e) {
+      this.isPlaying = true;
+      this.eventCall(this.callbackPlay, e);
     }
   }, {
     key: "handlePause",
-    value: function handlePause() {
-      this.eventCall(this.settings.onPause);
+    value: function handlePause(e) {
+      this.isPlaying = false;
+      this.eventCall(this.callbackPause, e);
     }
   }, {
     key: "handleEnded",
-    value: function handleEnded() {
-      this.eventCall(this.settings.onEnd);
+    value: function handleEnded(e) {
+      this.isPlaying = false;
+      this.eventCall(this.callbackEnd, e);
+      /**
+       * IE 11 で確認。
+       * 再生終了後にvideo.load() しておかないと再度のvideo.play()を許してくれない。
+       */
+
+      this.elemVideo.load();
     }
   }, {
     key: "handleCoverClick",
@@ -1376,9 +1657,9 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
     }
   }, {
     key: "eventCall",
-    value: function eventCall(func) {
+    value: function eventCall(func, e) {
       if (typeof func === 'function') {
-        func.call(this, this);
+        func.call(this, e, this);
       }
     }
   }]);
@@ -1422,34 +1703,43 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-var doc = document;
+var d = document;
 
 var Tab = /*#__PURE__*/function () {
   function Tab(options) {
     _classCallCheck(this, Tab);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'tab',
       selectorTrigger: '',
       selectorTarget: '',
       selectorWrapper: '',
+      selectorAnchor: 'a',
+      selectorEventRoot: '',
+      elemTriggerAll: null,
+      elemTargetAll: null,
+      elemWrapperAll: null,
+      elemEventRoot: window,
+      eventNameLoad: 'DOMContentLoaded.{name} load.{name} hashchange.{name}',
+      eventNameClick: 'click.{name}',
       className: 'js-selected',
       defaultIndex: 0,
       onAllChange: null,
       onChange: null
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorWrapper = this.settings.selectorWrapper;
-    this.selectorTrigger = this.settings.selectorTrigger;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.elemTriggerAll = doc.querySelectorAll(this.selectorTrigger);
-    this.elemWrapperAll = doc.querySelectorAll(this.selectorWrapper);
-    this.callbackAllChange = this.settings.onAllChange;
-    this.callbackChange = this.settings.onChange;
-    this.eventNameLoad = "DOMContentLoaded.".concat(this.id, " load.").concat(this.id, " hashchange.").concat(this.id);
-    this.eventNameClick = "click.".concat(this.id);
-    this.evtWindow = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(window);
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorWrapper = settings.selectorWrapper;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorAnchor = settings.selectorAnchor;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemTriggerAll = settings.elemTriggerAll || d.querySelectorAll(this.selectorTrigger);
+    this.elemWrapperAll = settings.elemWrapperAll || d.querySelectorAll(this.selectorWrapper);
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
+    this.eventNameLoad = settings.eventNameLoad.replaceAll('{name}', this.id);
+    this.eventNameClick = settings.eventNameClick.replaceAll('{name}', this.id);
+    this.eventRoot = null;
   }
   /**
    * click event はwindow に登録
@@ -1459,19 +1749,16 @@ var Tab = /*#__PURE__*/function () {
 
   _createClass(Tab, [{
     key: "on",
-    value: function on() {
-      var _this = this;
-
-      this.evtWindow.on(this.eventNameLoad, function (e, target) {
-        return _this.handleLoad(e, target);
-      }).on(this.eventNameClick, 'a', function (e, target) {
-        return _this.handleClick(e, target);
-      });
+    value: function on(callbacks) {
+      this.callbackAllChange = callbacks && callbacks.allChange;
+      this.callbackChange = callbacks && callbacks.change;
+      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_2__.default(this.elemEventRoot);
+      this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameClick, this.selectorAnchor, this.handleClick.bind(this));
     }
   }, {
     key: "off",
     value: function off() {
-      this.evtWindow.off(".".concat(this.id));
+      this.eventRoot.off(".".concat(this.id));
     }
   }, {
     key: "handleLoad",
@@ -1488,11 +1775,12 @@ var Tab = /*#__PURE__*/function () {
     value: function handleClick(e, target) {
       var hash = target && target.hash && this.getHash(target.hash);
       var elemCurrentTrigger = null;
-      e.preventDefault();
 
       if (!hash) {
         return;
       }
+
+      e.preventDefault();
 
       var _iterator = _createForOfIteratorHelper(this.elemTriggerAll),
           _step;
@@ -1515,7 +1803,7 @@ var Tab = /*#__PURE__*/function () {
         return;
       }
 
-      this.run(elemCurrentTrigger);
+      this.run(elemCurrentTrigger, e);
     }
     /**
      * trigger と target を内包するwrapper 単位の実行。
@@ -1523,8 +1811,8 @@ var Tab = /*#__PURE__*/function () {
 
   }, {
     key: "run",
-    value: function run(elemCurrentTrigger) {
-      var elemTarget = doc.querySelector(this.getHash(elemCurrentTrigger.hash)),
+    value: function run(elemCurrentTrigger, e) {
+      var elemTarget = d.querySelector(this.getHash(elemCurrentTrigger.hash)),
           elemWrapper = elemTarget.closest(this.selectorWrapper),
           elemTriggerAll = elemWrapper.querySelectorAll(this.selectorTrigger),
           elemTargetAll = elemWrapper.querySelectorAll(this.selectorTarget);
@@ -1534,7 +1822,7 @@ var Tab = /*#__PURE__*/function () {
       _setClassName(elemTargetAll, elemTarget, this.settings.className);
 
       if (typeof this.callbackChange === 'function') {
-        this.callbackChange.call(this, elemWrapper, this);
+        this.callbackChange.call(this, elemWrapper, e, this);
       }
 
       return this;
@@ -1566,7 +1854,7 @@ var Tab = /*#__PURE__*/function () {
 
   }, {
     key: "runAll",
-    value: function runAll() {
+    value: function runAll(e) {
       var hash = this.getHash() // location.href のハッシュを取得
       ;
       var selectedWrapperByHash = null;
@@ -1617,7 +1905,7 @@ var Tab = /*#__PURE__*/function () {
             continue;
           }
 
-          this.run(elemCurrentTrigger || elemTriggerAll[this.settings.defaultIndex]);
+          this.run(elemCurrentTrigger || elemTriggerAll[this.settings.defaultIndex], e);
         } // for
 
       } catch (err) {
@@ -1627,7 +1915,7 @@ var Tab = /*#__PURE__*/function () {
       }
 
       if (typeof this.callbackAllChange === 'function') {
-        this.callbackAllChange.call(this, selectedWrapperByHash, this);
+        this.callbackAllChange.call(this, selectedWrapperByHash, e, this);
       }
 
       return this;
@@ -1768,7 +2056,7 @@ var EventManager = /*#__PURE__*/function () {
 
         if (prefix === 'remove' || prefix === 'trigger') {
           objListeners = _collectListeners(function (key) {
-            return eventType && nameSpace && key === fullEventTypeName || eventType && key.indexOf(eventType) === 0 || nameSpace && !eventType && key.indexOf(".".concat(nameSpace)) >= 0;
+            return eventType && nameSpace && fullEventTypeName === key || eventType && !nameSpace && key.indexOf(eventType) === 0 || !eventType && nameSpace && key.indexOf(".".concat(nameSpace)) >= 0;
           });
           /**
            * 収集したobject の中からprefix 引数に応じて、"remove" で、removeEventListener"の登録。
@@ -1915,6 +2203,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1928,39 +2218,38 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-var doc = document;
+var d = document;
 
 var VideoGround = /*#__PURE__*/function () {
   function VideoGround(options) {
     _classCallCheck(this, VideoGround);
 
-    this.defaultSettings = {
+    var defaultSettings = this.defaultSettings = {
       name: 'videoGround',
-      src: '',
-      waitTime: 10000,
-      aspectRatio: 720 / 1280,
-      actualHeightRatio: 1 / 1,
       selectorParent: '',
       selectorVideoFrame: '',
-      attrVideo: ['muted', 'playsinline', 'loop'],
-      onPlay: null,
-      onPlayBefore: null,
-      onLoad: null,
-      onDestroy: null
-    };
-    this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, this.defaultSettings, options);
-    this.id = this.settings.name;
-    this.selectorParent = this.settings.selectorParent;
-    this.selectorVideoFrame = this.settings.selectorVideoFrame;
-    this.elemVideo = _createVideo(this.settings.attrVideo);
-    this.elemVideoFrame = doc.querySelector(this.selectorVideoFrame);
-    this.elemParent = this.selectorParent && doc.querySelector(this.selectorParent);
-    this.elemParent = this.elemParent || this.elemVideoFrame.parentNode;
-    this.evtNamePlay = "play.".concat(this.id);
-    this.evtNameCanPlay = "canplay.".concat(this.id);
+      elemParent: null,
+      elemVideoFrame: null,
+      eventNamePlay: 'play.{name}',
+      eventNameCanPlay: 'canplay.{name}',
+      src: '',
+      waitTime: 6000,
+      aspectRatio: 720 / 1280,
+      actualHeightRatio: 1 / 1,
+      attrVideo: ['muted', 'playsinline', 'loop']
+    },
+        settings = this.settings = lodash_mergeWith__WEBPACK_IMPORTED_MODULE_0___default()({}, defaultSettings, options);
+    this.id = settings.name;
+    this.selectorParent = settings.selectorParent;
+    this.selectorVideoFrame = settings.selectorVideoFrame;
+    this.elemVideo = _createVideo(settings.attrVideo);
+    this.elemVideoFrame = d.querySelector(this.selectorVideoFrame);
+    this.elemParent = settings.elemParent || this.selectorParent && d.querySelector(this.selectorParent) || this.elemVideoFrame.parentNode;
+    this.eventNamePlay = settings.eventNamePlay.replaceAll('{name}', this.id);
+    this.eventNameCanPlay = settings.eventNameCanPlay.replaceAll('{name}', this.id);
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.evtVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemVideo);
+    this.eventVideo = null;
   }
   /**
    * play()が可能か事前に調べ、結果を待って各種設定、実行。
@@ -1977,8 +2266,6 @@ var VideoGround = /*#__PURE__*/function () {
           elemVideo = this.elemVideo,
           elemVideoFrame = this.elemVideoFrame;
       this.autoDestroy();
-      this.on();
-      this.eventCall(settings.onBefore);
       /* eslint space-before-function-paren: 0 */
 
       _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2050,40 +2337,45 @@ var VideoGround = /*#__PURE__*/function () {
     }
   }, {
     key: "on",
-    value: function on() {
-      this.evtVideo.on(this.evtNamePlay, this.handlePlay.bind(this));
-      this.evtVideo.on(this.evtNameCanPlay, this.handleCanPlay.bind(this));
+    value: function on(callbacks) {
+      if (_typeof(callbacks) === 'object') {
+        this.callbackPlay = callbacks.play;
+        this.callbackBefore = callbacks.before;
+        this.callbackLoad = callbacks.load;
+        this.callbackDestroy = callbacks.destroy;
+      }
+
+      this.eventVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(this.elemVideo);
+      this.eventVideo.on(this.eventNamePlay, this.handlePlay.bind(this)).on(this.eventNameCanPlay, this.handleCanPlay.bind(this));
+      this.eventCall(this.callbackBefore);
       return this;
     }
   }, {
     key: "handlePlay",
     value: function handlePlay(e) {
-      var settings = this.settings;
       clearTimeout(this.destroyTimerId);
       this.destroyTimerId = null;
       this.isPlaying = true;
-      this.eventCall(settings.onPlay);
-      this.evtVideo.off(this.evtNameCanPlay);
+      this.eventCall(this.callbackPlay);
+      this.eventVideo.off(this.eventNameCanPlay);
     }
   }, {
     key: "handleCanPlay",
     value: function handleCanPlay(e) {
-      var settings = this.settings;
       this.elemVideo.play();
-      this.eventCall(settings.onLoad);
+      this.eventCall(this.callbackLoad);
     }
   }, {
     key: "destroy",
     value: function destroy() {
-      var settings = this.settings;
       clearTimeout(this.destroyTimerId);
 
-      if (this.elemVideoFrame.querySelector(settings.classNameTarget) !== null) {
+      if (this.elemVideoFrame.querySelector(this.settings.classNameTarget) !== null) {
         this.elemVideoFrame.removeChild(this.elemVideo);
       }
 
-      this.eventCall(settings.onDestroy);
-      this.evtVideo.off(".".concat(this.id));
+      this.eventCall(this.callbackDestroy);
+      this.eventVideo.off(".".concat(this.id));
       return this;
     }
     /**
@@ -2139,7 +2431,7 @@ var VideoGround = /*#__PURE__*/function () {
 
 
 function _createVideo(props) {
-  var elemVideo = doc.createElement('video');
+  var elemVideo = d.createElement('video');
 
   for (var i = 0, len = props.length; i < len; i++) {
     elemVideo.setAttribute(props[i], '');

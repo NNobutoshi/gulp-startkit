@@ -4,48 +4,62 @@ import merge from 'lodash/mergeWith';
 import './polyfills/closest';
 import EM from './utilities/eventmanager';
 
-const doc = document;
+const d = document;
 
 export default class Tab {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name            : 'tab',
-      selectorTrigger : '',
-      selectorTarget  : '',
-      selectorWrapper : '',
-      className       : 'js-selected',
-      defaultIndex    : 0,
-      onAllChange     : null,
-      onChange        : null,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorWrapper = this.settings.selectorWrapper;
-    this.selectorTrigger = this.settings.selectorTrigger;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.elemTriggerAll = doc.querySelectorAll( this.selectorTrigger );
-    this.elemWrapperAll = doc.querySelectorAll( this.selectorWrapper );
-    this.callbackAllChange = this.settings.onAllChange;
-    this.callbackChange = this.settings.onChange;
-    this.eventNameLoad = `DOMContentLoaded.${this.id} load.${this.id} hashchange.${this.id}`;
-    this.eventNameClick = `click.${this.id}`;
-    this.evtWindow = new EM( window );
+    const
+      defaultSettings = this.defaultSettings = {
+        name              : 'tab',
+        selectorTrigger   : '',
+        selectorTarget    : '',
+        selectorWrapper   : '',
+        selectorAnchor    : 'a',
+        selectorEventRoot : '',
+        elemTriggerAll    : null,
+        elemTargetAll     : null,
+        elemWrapperAll    : null,
+        elemEventRoot     : window,
+        eventNameLoad     : 'DOMContentLoaded.{name} load.{name} hashchange.{name}',
+        eventNameClick    : 'click.{name}',
+        className         : 'js-selected',
+        defaultIndex      : 0,
+        onAllChange       : null,
+        onChange          : null,
+      }
+      ,settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorWrapper = settings.selectorWrapper;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorAnchor = settings.selectorAnchor;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemTriggerAll = settings.elemTriggerAll || d.querySelectorAll( this.selectorTrigger );
+    this.elemWrapperAll = settings.elemWrapperAll || d.querySelectorAll( this.selectorWrapper );
+    this.elemEventRoot  = settings.elemEventRoot || d.querySelector( this.selectorEventRoot );
+    this.eventNameLoad = settings.eventNameLoad.replaceAll( '{name}', this.id );
+    this.eventNameClick = settings.eventNameClick.replaceAll( '{name}', this.id );
+    this.eventRoot = null;
   }
 
   /**
    * click event はwindow に登録
    * trigger( タブメニュー ) 以外で、ページ内に該当のリンクが有る可能性を想定。
    */
-  on() {
-    this.evtWindow
-      .on( this.eventNameLoad, ( e, target ) => this.handleLoad( e, target ) )
-      .on( this.eventNameClick, 'a', ( e, target ) => this.handleClick( e, target ) )
+  on( callbacks ) {
+    this.callbackAllChange = callbacks && callbacks.allChange;
+    this.callbackChange = callbacks && callbacks.change;
+    this.eventRoot = new EM( this.elemEventRoot );
+    this.eventRoot
+      .on( this.eventNameLoad, this.handleLoad.bind( this ) )
+      .on( this.eventNameClick, this.selectorAnchor, this.handleClick.bind( this ) )
     ;
   }
 
   off() {
-    this.evtWindow.off( `.${this.id}` );
+    this.eventRoot.off( `.${this.id}` );
   }
 
   handleLoad( e ) {
@@ -59,10 +73,10 @@ export default class Tab {
   handleClick( e ,target ) {
     const hash = target && target.hash && this.getHash( target.hash );
     let elemCurrentTrigger = null;
-    e.preventDefault();
     if ( !hash ) {
       return;
     }
+    e.preventDefault();
     for ( let elem of this.elemTriggerAll ) {
       if ( hash === this.getHash( elem.hash ) ) {
         elemCurrentTrigger = elem;
@@ -71,16 +85,16 @@ export default class Tab {
     if ( elemCurrentTrigger === null ) {
       return;
     }
-    this.run( elemCurrentTrigger );
+    this.run( elemCurrentTrigger, e );
   }
 
   /**
    * trigger と target を内包するwrapper 単位の実行。
    */
-  run( elemCurrentTrigger ) {
+  run( elemCurrentTrigger, e ) {
 
     const
-      elemTarget = doc.querySelector( this.getHash( elemCurrentTrigger.hash ) )
+      elemTarget = d.querySelector( this.getHash( elemCurrentTrigger.hash ) )
       ,elemWrapper = elemTarget.closest( this.selectorWrapper )
       ,elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger )
       ,elemTargetAll = elemWrapper.querySelectorAll( this.selectorTarget )
@@ -90,7 +104,7 @@ export default class Tab {
     _setClassName( elemTargetAll, elemTarget, this.settings.className );
 
     if ( typeof this.callbackChange === 'function' ) {
-      this.callbackChange.call( this, elemWrapper, this );
+      this.callbackChange.call( this, elemWrapper, e, this );
     }
     return this;
 
@@ -109,16 +123,14 @@ export default class Tab {
   /**
    * 全wrapper 要素毎の実行
    */
-  runAll() {
+  runAll( e ) {
     const
       hash = this.getHash() // location.href のハッシュを取得
     ;
     let selectedWrapperByHash = null;
 
     for ( let elemWrapper of this.elemWrapperAll ) {
-      const
-        elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger )
-      ;
+      const elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger );
       let elemCurrentTrigger, elemActived;
 
       if ( !elemTriggerAll.length ) {
@@ -143,12 +155,12 @@ export default class Tab {
         continue;
       }
 
-      this.run( elemCurrentTrigger || elemTriggerAll[ this.settings.defaultIndex ] );
+      this.run( elemCurrentTrigger || elemTriggerAll[ this.settings.defaultIndex ], e );
 
     } // for
 
     if ( typeof this.callbackAllChange === 'function' ) {
-      this.callbackAllChange.call( this, selectedWrapperByHash, this );
+      this.callbackAllChange.call( this, selectedWrapperByHash, e, this );
     }
 
     return this;

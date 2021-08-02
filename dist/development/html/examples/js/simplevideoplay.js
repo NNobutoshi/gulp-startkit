@@ -17,24 +17,25 @@ var CLASSNAME_COVER = 'js-video_cover',
     CLASSNAME_PAUSED = 'js-video--isPaused',
     CLASSNAME_ENDED = 'js-video--isEnded';
 new _js_modules_simplevideoplay_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  selectorOuter: '.pl-videoPlayer_outer',
-  selectorVideo: '.pl-videoPlayer_video',
-  onBefore: function onBefore() {
+  selectorWrapper: '.pl-videoPlayer_outer',
+  selectorVideo: '.pl-videoPlayer_video'
+}).on({
+  before: function before() {
     this.elemCover.classList.add(CLASSNAME_COVER);
   },
-  onPlayBefore: function onPlayBefore() {
+  playBefore: function playBefore() {
     this.elemWrapper.classList.add(CLASSNAME_CANPLAY);
   },
-  onPlay: function onPlay() {
+  play: function play() {
     this.elemWrapper.classList.add(CLASSNAME_PLAY);
     this.elemWrapper.classList.remove(CLASSNAME_PAUSED);
     this.elemWrapper.classList.remove(CLASSNAME_ENDED);
   },
-  onPause: function onPause() {
+  pause: function pause() {
     this.elemWrapper.classList.add(CLASSNAME_PAUSED);
     this.elemWrapper.classList.remove(CLASSNAME_PLAY);
   },
-  onEnd: function onEnd() {
+  end: function end() {
     this.elemWrapper.classList.add(CLASSNAME_ENDED);
     this.elemWrapper.classList.remove(CLASSNAME_PLAY);
     this.elemWrapper.classList.remove(CLASSNAME_PAUSED);

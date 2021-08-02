@@ -9,28 +9,33 @@
 
 .pl-test {
   @at-root {
-    &_box {
+    .pl-test_section {
       display: flex;
       align-items: center;
+      &--display {
+        margin-left: -10px;
+        margin-right: -10px;
+        display: block;
+      }
     }
-    &_inner {
+    .pl-test_display {
       box-sizing: border-box;
       border-style: solid;
       border-width: 1px 1px 1px 0;
       border-color: #f00;
       margin-top: 25px;
-      padding: 10px;
+      padding: 10px 0;
       &--1200 {
-        width: 1200px;
+        max-width: 1200px;
       }
       &--980 {
-        width: 980px;
+        max-width: 980px;
       }
       &--768 {
-        width: 768px;
+        max-width: 768px;
       }
     }
-    &_text {
+    .pl-test_p {
       font-size: 1.5em;
     }
   }

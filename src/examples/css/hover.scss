@@ -7,20 +7,36 @@
   ,"../../css/mixins_sprite"
  ;
 
+.pl-section {
+  margin-top: 20vh;
+}
 .pl-hoverTarget {
   width: 100%;
-  line-height: 3;
-  transition: line-height .25s ease-in-out;
-  background-color: rgba(255, 0, 0, .2);
-  margin-top: 50vh;
-  a {
-    display: inline-block;
-    span {
-      display: block;
-      padding: 10px;
-    }
+  box-sizing: border-box;
+  line-height: 1;
+  transition: padding .25s ease-in-out;
+  background-color:#FFCCCC;
+  padding: 20px;
+  border : solid 1px #f00;
+  transform: translate3d();
+  & > & {
+    background-color: #FFA3A3;
+  }
+  & > & > & {
+    background-color:#FF8383;
+  }
+  & + & {
+    margin-top: 20px;
+  }
+  span, a {
+    display: block;
+  }
+  span {
+    padding: 10px;
   }
   &.js-hover {
-    line-height: 5;
+    padding: 40px;
   }
 }
+
+

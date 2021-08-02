@@ -38,20 +38,16 @@ html(lang=pageData.lang)
       script(src=pageData.jsCommonDir + "/common_units_head.js")
       script(src=pageData.jsCommonDir + "/common_head.js")
   body
-    div.page#page
-      block pageHead
-        |#{"\n"}
-        header.page_head
-          div.page_core
-            div.siteId.page_siteId
-              a.siteId_anchor(href="/") site
-        ///.page_head
-      main.page_body
-        block pageBody
-          p foo
-      ///.page_body
+    div.sg-page#page
+      include _page_head.pug
+      ///.sg-page_head
+      main.sg-page_body
+        div.sg-page_core.sg-page_core--body
+          block pageBody
+            p foo
+      ///.sg-page_body
       include _page_foot.pug
-      ///.page_foot
+      ///.sg-page_foot
     ///.page#page
     block script_body
       script(src=pageData.jsCommonDir + "/common_units_body.js")

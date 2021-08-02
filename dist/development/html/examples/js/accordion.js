@@ -9,31 +9,37 @@
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _js_modules_libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/libs/transitiontoggle.js */ "./src/js/_modules/libs/transitiontoggle.js");
+/* harmony import */ var _js_modules_accordion__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/accordion */ "./src/js/_modules/accordion.js");
+/* harmony import */ var _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
 
-var mdls = {};
-mdls.toggle = new _js_modules_libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_0__.default({
-  // selectorParent  : '.pl-list',
-  selectorTrigger: '.pl-list_btn',
-  selectorTarget: '.pl-list_inner'
-});
-mdls.toggle.on({
+
+var evtController = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(document.querySelector('.pl-controller'));
+var accordion = new _js_modules_accordion__WEBPACK_IMPORTED_MODULE_0__.default({
+  selectorParent: '.pl-list_item',
+  selectorTrigger: '.pl-list_heading',
+  selectorTarget: '.pl-list_body',
+  toggleHeight: true
+}).on({
   before: function before() {
-    var height = this.elemTarget.querySelector('.pl-list_list').getBoundingClientRect().height;
-    this.elemTarget.style.height = height + 'px';
-    this.elemParent.classList.add('js-list--isOpening');
+    this.elemParent.classList.add('js-pl-accordion--isOpening');
   },
   after: function after() {
-    this.elemTarget.style.height = '';
-    this.elemParent.classList.remove('js-list--isOpening');
+    this.elemParent.classList.remove('js-pl-accordion--isOpening');
   },
-  finish: function finish() {
+  finish: function finish(e) {
     if (this.isChanged === true) {
-      this.elemParent.classList.add('js-list--isOpen');
+      this.elemParent.classList.add('js-pl-accordion--isOpen');
     } else {
-      this.elemParent.classList.remove('js-list--isOpen');
+      this.elemParent.classList.remove('js-pl-accordion--isOpen');
     }
   }
+});
+evtController.on('click', '.pl-controller_button--open', function () {
+  accordion.handleAllBefore();
+}).on('click', '.pl-controller_button--close', function () {
+  accordion.handleAllafter();
+}).on('click', '.pl-controller_input--checkbox', function (e, target) {
+  accordion.settings.otherClosing = target.checked;
 });
 
 /***/ })

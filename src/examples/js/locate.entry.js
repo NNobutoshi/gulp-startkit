@@ -3,38 +3,38 @@ import EM from '../../js/_modules/utilities/eventmanager';
 
 const
   mdls = {}
-  ,TARGETSELECTOR = '.pl-nav_anchor'
-  ,elemTarget = document.querySelectorAll( TARGETSELECTOR )
+  ,SELECTORTARGET = '.pl-nav_anchor'
+  ,SELECTORPARENT = '.pl-nav_item'
+  ,elemTarget = document.querySelectorAll( SELECTORTARGET )
   ,evtWindow = new EM( window )
   ,evtTarget = new EM( elemTarget )
 ;
 
 mdls.locate = new Locate( {
-  selectorTarget : TARGETSELECTOR,
-  selectorParents : '.pl-nav_item',
+  selectorTarget : SELECTORTARGET,
+  selectorParent : SELECTORPARENT,
 } );
 
 evtTarget.on( 'click', ( e ) => {
   e.preventDefault();
   history.pushState( null ,null, e.currentTarget.href );
-  _run();
+  _locate();
 } );
 
 evtWindow
-  .on( 'popstate', _run )
+  .on( 'popstate', _locate )
   .trigger( 'popstate' )
 ;
 
-
-function _run() {
-  if ( mdls.locate.elemParents ) {
-    for ( const elem of mdls.locate.elemParents ) {
+function _locate() {
+  if ( mdls.locate.elemParentAll ) {
+    for ( const elem of mdls.locate.elemParentAll ) {
       elem.classList.remove( 'js-current' );
     }
   }
   mdls.locate.run( inst => {
-    if ( inst.elemParents ) {
-      for ( const elem of inst.elemParents ) {
+    if ( inst.elemParentAll ) {
+      for ( const elem of inst.elemParentAll ) {
         elem.classList.add( 'js-current' );
       }
     }

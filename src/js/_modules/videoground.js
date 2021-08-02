@@ -2,38 +2,42 @@ import merge from 'lodash/mergeWith';
 import EM from './utilities/eventmanager';
 import 'regenerator-runtime/runtime';
 
-const doc = document;
+const d = document;
 
 export default class VideoGround {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name               : 'videoGround',
-      src                : '',
-      waitTime           : 10000,
-      aspectRatio        : 720 / 1280,
-      actualHeightRatio  : 1 / 1,
-      selectorParent     : '',
-      selectorVideoFrame : '',
-      attrVideo          : [ 'muted', 'playsinline', 'loop' ],
-      onPlay             : null,
-      onPlayBefore       : null,
-      onLoad             : null,
-      onDestroy          : null,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorParent = this.settings.selectorParent;
-    this.selectorVideoFrame = this.settings.selectorVideoFrame;
-    this.elemVideo = _createVideo( this.settings.attrVideo );
-    this.elemVideoFrame = doc.querySelector( this.selectorVideoFrame );
-    this.elemParent = this.selectorParent && doc.querySelector( this.selectorParent );
-    this.elemParent = this.elemParent || this.elemVideoFrame.parentNode;
-    this.evtNamePlay = `play.${this.id}`;
-    this.evtNameCanPlay = `canplay.${this.id}`;
+    const
+      defaultSettings = this.defaultSettings = {
+        name               : 'videoGround',
+        selectorParent     : '',
+        selectorVideoFrame : '',
+        elemParent         : null,
+        elemVideoFrame     : null,
+        eventNamePlay      : 'play.{name}',
+        eventNameCanPlay   : 'canplay.{name}',
+        src                : '',
+        waitTime           : 6000,
+        aspectRatio        : 720 / 1280,
+        actualHeightRatio  : 1 / 1,
+        attrVideo          : [ 'muted', 'playsinline', 'loop' ],
+      }
+      ,settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorParent = settings.selectorParent;
+    this.selectorVideoFrame = settings.selectorVideoFrame;
+    this.elemVideo = _createVideo( settings.attrVideo );
+    this.elemVideoFrame = d.querySelector( this.selectorVideoFrame );
+    this.elemParent = settings.elemParent ||
+                      this.selectorParent && d.querySelector( this.selectorParent ) ||
+                      this.elemVideoFrame.parentNode
+    ;
+    this.eventNamePlay = settings.eventNamePlay.replaceAll( '{name}', this.id );
+    this.eventNameCanPlay = settings.eventNameCanPlay.replaceAll( '{name}', this.id );
     this.isPlaying = false;
     this.destroyTimerId = null;
-    this.evtVideo = new EM( this.elemVideo );
+    this.eventVideo = null;
   }
 
   /**
@@ -48,8 +52,6 @@ export default class VideoGround {
     ;
 
     this.autoDestroy();
-    this.on();
-    this.eventCall( settings.onBefore );
 
     /* eslint space-before-function-paren: 0 */
     ( async () => {
@@ -91,41 +93,42 @@ export default class VideoGround {
     } );
   }
 
-  on() {
-    this.evtVideo.on( this.evtNamePlay,  this.handlePlay.bind( this ) );
-    this.evtVideo.on( this.evtNameCanPlay, this.handleCanPlay.bind( this )  );
+  on( callbacks ) {
+    if ( typeof callbacks === 'object' ) {
+      this.callbackPlay = callbacks.play;
+      this.callbackBefore = callbacks.before;
+      this.callbackLoad = callbacks.load;
+      this.callbackDestroy = callbacks.destroy;
+    }
+    this.eventVideo = new EM( this.elemVideo );
+    this.eventVideo
+      .on( this.eventNamePlay,  this.handlePlay.bind( this ) )
+      .on( this.eventNameCanPlay, this.handleCanPlay.bind( this ) )
+    ;
+    this.eventCall( this.callbackBefore );
     return this;
   }
 
   handlePlay( e ) {
-    const
-      settings = this.settings
-    ;
     clearTimeout( this.destroyTimerId );
     this.destroyTimerId = null;
     this.isPlaying = true;
-    this.eventCall( settings.onPlay );
-    this.evtVideo.off( this.evtNameCanPlay );
+    this.eventCall( this.callbackPlay );
+    this.eventVideo.off( this.eventNameCanPlay );
   }
 
   handleCanPlay( e ) {
-    const
-      settings = this.settings
-    ;
     this.elemVideo.play();
-    this.eventCall( settings.onLoad );
+    this.eventCall( this.callbackLoad );
   }
 
   destroy() {
-    const
-      settings = this.settings
-    ;
     clearTimeout( this.destroyTimerId );
-    if ( this.elemVideoFrame.querySelector( settings.classNameTarget ) !== null ) {
+    if ( this.elemVideoFrame.querySelector( this.settings.classNameTarget ) !== null ) {
       this.elemVideoFrame.removeChild( this.elemVideo );
     }
-    this.eventCall( settings.onDestroy );
-    this.evtVideo.off( `.${this.id}` );
+    this.eventCall( this.callbackDestroy );
+    this.eventVideo.off( `.${this.id}` );
     return this;
   }
 
@@ -169,7 +172,7 @@ export default class VideoGround {
 }
 
 function _createVideo( props ) {
-  const elemVideo = doc.createElement( 'video' );
+  const elemVideo = d.createElement( 'video' );
   for ( let i = 0, len = props.length; i < len; i++ ) {
     elemVideo.setAttribute( props[ i ], '' );
     elemVideo[ props[ i ] ] = true;

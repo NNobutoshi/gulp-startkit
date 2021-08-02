@@ -13,8 +13,12 @@
   border: solid 1px #f00;
   box-sizing: border-box;
   background-color: #fff;
+  margin-left: -10px;
+  margin-right: -10px;
   .js-pl-nav--isFixed & {
     width: 100%;
+    margin-right: 0;
+    margin-left: 0;
     position: fixed;
     top: 0;
     left: 0;

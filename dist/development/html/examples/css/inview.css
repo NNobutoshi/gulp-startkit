@@ -41,8 +41,8 @@
   margin-bottom: 100vh;
   height: 80vh;
   background-color: #ddd;
-  -webkit-transition: background .25s ease-in;
-  transition: background .25s ease-in;
+  -webkit-transition: background-color .25s ease-in;
+  transition: background-color .25s ease-in;
   padding: 15px 30px;
 }
 
@@ -52,6 +52,7 @@
 
 .pl-offsetElement {
   position: fixed;
+  left: 0;
   width: 100%;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -61,7 +62,7 @@
 }
 
 .pl-offsetElement--start {
-  top: 0;
+  top: 50px;
 }
 
 .pl-offsetElement--end {
@@ -81,6 +82,6 @@
 }
 
 .pl-line--50 {
-  top: 50%;
+  top: calc( 50% + 25px);
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/inview.css.map */

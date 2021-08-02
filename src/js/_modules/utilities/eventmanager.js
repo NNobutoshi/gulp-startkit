@@ -72,9 +72,9 @@ export default class EventManager {
        */
       if ( prefix === 'remove' || prefix === 'trigger' ) {
         objListeners = _collectListeners( ( key ) => {
-          return ( eventType && nameSpace && key === fullEventTypeName ) ||
-                 ( eventType && key.indexOf( eventType ) === 0 ) ||
-                 ( nameSpace && !eventType && key.indexOf( `.${nameSpace}` ) >= 0 )
+          return ( eventType && nameSpace && fullEventTypeName === key ) ||
+                 ( eventType && !nameSpace && key.indexOf( eventType ) === 0 ) ||
+                 ( !eventType && nameSpace && key.indexOf( `.${nameSpace}` ) >= 0 )
           ;
         } );
 

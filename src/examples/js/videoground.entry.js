@@ -12,26 +12,30 @@ const
     src                : '/examples/media/mainvisual.mp4',
     selectorVideoFrame : '.pl-mainVisual_body',
     aspectRatio        : 1080 / 1920,
-    onPlay : function() {
+  } )
+;
+
+videoground
+  .run()
+  .on( {
+    play : function() {
       this.elemParent.classList.add( CLASSNAME_PLAYING );
     },
-    onPlayBefore : function() {
+    playBefore : function() {
       this.elemVideo.classList.add( CLASSNAME_VIDEO );
     },
-    onLoad : _fitPosAndSize,
-    onDestroy :function() {
+    load : _fitPosAndSize,
+    destroy :function() {
       this.elemParent.classList.remove( CLASSNAME_PLAYING );
       this.elemParnet.classList.add( CLASSNAME_DESTROYED );
     },
   } )
 ;
 
-videoground.run();
-
 function _fitPosAndSize() {
   const
     that = this
-    ,elemOffsetItem = document.querySelector( '.page_head' )
+    ,elemOffsetItem = document.querySelector( '.sg-page_head' )
   ;
   let
     height = 0

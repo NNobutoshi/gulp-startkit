@@ -36,7 +36,7 @@
 
 /* stylelint-disable */
 /* stylelint-anable */
-.page_head {
+.sg-page_head {
   position: fixed;
   z-index: 10;
   background-color: #fff;
@@ -46,25 +46,26 @@
 .pl-mainVisual {
   height: 100vh;
   position: relative;
+  z-index: 1;
 }
 
 .pl-mainVisual::after {
   content: "";
-  -webkit-box-sizing: border-top;
-          box-sizing: border-top;
   position: absolute;
   z-index: 100;
   top: 50%;
   left: 50%;
   width: 40px;
   height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
   border-top: solid 5px rgba(0, 0, 0, 0.8);
   border-right: solid 5px rgba(0, 0, 0, 0.8);
   border-bottom: solid 5px rgba(0, 0, 0, 0.3);
   border-left: solid 5px rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  -webkit-transform: translate3d(-50%, -50%, 0);
-          transform: translate3d(-50%, -50%, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
   -webkit-animation: spin 1s linear 0s infinite;
           animation: spin 1s linear 0s infinite;
 }

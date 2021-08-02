@@ -2,77 +2,102 @@ import merge from 'lodash/mergeWith';
 import './polyfills/closest';
 import EM from './utilities/eventmanager';
 
-const doc = document;
+const d = document;
 
 export default class SimpleVideoPlay {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name          : 'SimpleVideoPlay',
-      selectorVideo : '',
-      selectorOuter : '',
-      onBefore      : null,
-      onPlayBefore  : null,
-      onPlay        : null,
-      onPause       : null,
-      onEnd         : null,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorVideo = this.settings.selectorVideo;
-    this.selectorOuter = this.settings.selectorOuter;
-    this.elemVideo = doc.querySelector( this.selectorVideo );
-    this.elemWrapper = this.elemVideo.closest( this.selectorOuter );
-    this.elemCover = doc.createElement( 'div' );
-    this.evtNamecanPlay = `canplay.${this.id}`;
-    this.evtNamePlay = `play.${this.id}`;
-    this.evtNamePause = `pause.${this.id}`;
-    this.evtNameEnded = `ended.${this.id}`;
-    this.evtNameCoverClick = `click.${this.id} touchend.${this.id}`;
+    const defaultSettings = this.defaultSettings = {
+        name                : 'SimpleVideoPlay',
+        selectorVideo       : '',
+        selectorWrapper     : '',
+        elemVideo           : null,
+        elemWrapper         : null,
+        eventNameCanPlay    : 'canplay.{name}',
+        eventNamePlay       : 'play.{name}',
+        eventNamePause      : 'pause.{name}',
+        eventNameEnded      : 'ended.{name}',
+        eventNameCoverClick : 'click.{name} touchend.{name}',
+        onBefore            : null,
+        onPlayBefore        : null,
+        onPlay              : null,
+        onPause             : null,
+        onEnd               : null,
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorVideo = settings.selectorVideo;
+    this.selectorWrapper = settings.selectorWrapper;
+    this.elemVideo = settings.elemVideo || d.querySelector( this.selectorVideo );
+    this.elemWrapper = settings.elemWrapper || this.elemVideo.closest( this.selectorWrapper );
+    this.elemCover = d.createElement( 'div' );
+    this.eventNameCanPlay = settings.eventNameCanPlay.replaceAll( '{name}', this.id );
+    this.eventNamePlay = settings.eventNamePlay.replaceAll( '{name}', this.id );
+    this.eventNamePause = settings.eventNamePause.replaceAll( '{name}', this.id );
+    this.eventNameEnded = settings.eventNameEnded.replaceAll( '{name}', this.id );
+    this.eventNameCoverClick = settings.eventNameCoverClick.replaceAll( '{name}', this.id );
     this.src = this.elemVideo.src;
     this.isPlaying = false;
-    this.evtVideo = new EM( this.elemVideo );
-    this.evtCover = new EM( this.elemCover );
+    this.eventVideo = null;
+    this.eventCover = null;
     this.init();
   }
 
   init() {
-    this.eventCall( this.settings.onBefore );
     this.elemWrapper.appendChild( this.elemCover );
     if ( this.elemVideo.poster ) {
       this.elemCover.style.backgroundImage = `url(${this.elemVideo.poster})`;
     }
-    this.on();
     this.elemVideo.load();
   }
 
-  on() {
-    this.evtVideo.on( this.evtNamecanPlay, this.handleCanplay.bind( this ) );
-    this.evtVideo.on( this.evtNamePlay, this.handlePlay.bind( this ) );
-    this.evtVideo.on( this.evtNamePause, this.handlePause.bind( this ) );
-    this.evtVideo.on( this.evtNameEnded, this.handleEnded.bind( this ) );
+  on( callbacks ) {
+    this.eventVideo = new EM( this.elemVideo );
+    this.eventCover = new EM( this.elemCover );
+    this.callbackBefore     = callbacks.before.bind( this );
+    this.callbackPlayBefore = callbacks.playBefore.bind( this );
+    this.callbackPlay       = callbacks.play.bind( this );
+    this.callbackPause      = callbacks.pause.bind( this );
+    this.callbackEnd        = callbacks.end.bind( this );
+    this.eventCall( this.callbackBefore );
+    this.eventVideo
+      .on( this.eventNameCanPlay, this.handleCanplay.bind( this ) )
+      .on( this.eventNamePlay, this.handlePlay.bind( this ) )
+      .on( this.eventNamePause, this.handlePause.bind( this ) )
+      .on( this.eventNameEnded, this.handleEnded.bind( this ) )
+    ;
   }
 
   off() {
-    this.evtVideo.off( `.${this.id}` );
-    this.evtCover.off( `.${this.id}` );
+    this.eventVideo.off( `.${this.id}` );
+    this.eventCover.off( `.${this.id}` );
   }
 
-  handleCanplay() {
-    this.eventCall( this.settings.onPlayBefore );
-    this.evtCover.on( this.evtNameCoverClick, this.handleCoverClick.bind( this ) );
+  handleCanplay( e ) {
+    this.eventCall( this.callbackPlayBefore, e );
+    this.eventCover.on( this.eventNameCoverClick, this.handleCoverClick.bind( this ) );
   }
 
-  handlePlay() {
-    this.eventCall( this.settings.onPlay );
+  handlePlay( e ) {
+    this.isPlaying = true;
+    this.eventCall( this.callbackPlay, e );
   }
 
-  handlePause() {
-    this.eventCall( this.settings.onPause );
+  handlePause( e ) {
+    this.isPlaying = false;
+    this.eventCall( this.callbackPause, e );
   }
 
-  handleEnded() {
-    this.eventCall( this.settings.onEnd );
+  handleEnded( e ) {
+    this.isPlaying = false;
+    this.eventCall( this.callbackEnd, e );
+
+    /**
+     * IE 11 で確認。
+     * 再生終了後にvideo.load() しておかないと再度のvideo.play()を許してくれない。
+     */
+    this.elemVideo.load();
   }
 
   handleCoverClick( e ) {
@@ -82,9 +107,9 @@ export default class SimpleVideoPlay {
     }
   }
 
-  eventCall( func ) {
+  eventCall( func, e ) {
     if ( typeof func === 'function' ) {
-      func.call( this, this );
+      func.call( this, e, this );
     }
   }
 

@@ -36,25 +36,45 @@
 
 /* stylelint-disable */
 /* stylelint-anable */
+.pl-section {
+  margin-top: 20vh;
+}
+
 .pl-hoverTarget {
   width: 100%;
-  line-height: 3;
-  -webkit-transition: line-height .25s ease-in-out;
-  transition: line-height .25s ease-in-out;
-  background-color: rgba(255, 0, 0, 0.2);
-  margin-top: 50vh;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  line-height: 1;
+  -webkit-transition: padding .25s ease-in-out;
+  transition: padding .25s ease-in-out;
+  background-color: #FFCCCC;
+  padding: 20px;
+  border: solid 1px #f00;
+  -webkit-transform: translate3d();
+          transform: translate3d();
 }
 
-.pl-hoverTarget a {
-  display: inline-block;
+.pl-hoverTarget > .pl-hoverTarget {
+  background-color: #FFA3A3;
 }
 
-.pl-hoverTarget a span {
+.pl-hoverTarget > .pl-hoverTarget > .pl-hoverTarget {
+  background-color: #FF8383;
+}
+
+.pl-hoverTarget + .pl-hoverTarget {
+  margin-top: 20px;
+}
+
+.pl-hoverTarget span, .pl-hoverTarget a {
   display: block;
+}
+
+.pl-hoverTarget span {
   padding: 10px;
 }
 
 .pl-hoverTarget.js-hover {
-  line-height: 5;
+  padding: 40px;
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/hover.css.map */

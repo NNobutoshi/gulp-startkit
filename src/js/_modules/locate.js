@@ -4,40 +4,43 @@ import parents from './utilities/parents';
 export default class Locate {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name            : 'locate',
-      selectorTarget  : '',
-      selectorParents : '',
-      indexRegex      : /index\.[^/]+?$/,
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorTarget = this.settings.selectorTarget;
-    this.selectorParents = this.settings.selectorParents;
-    this.elemTargets = document.querySelectorAll( this.selectorTarget );
+    const
+      defaultSettings = this.defaultSettings = {
+        name            : 'locate',
+        selectorTarget  : '',
+        selectorParent  : '',
+        elemTargetAll   : null,
+        indexRegex      : /index\.[^/]+?$/,
+      }
+      ,settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorTarget = settings.selectorTarget;
+    this.selectorParent = settings.selectorParent;
+    this.elemTargetAll = settings.elemTargetAll || document.querySelectorAll( this.selectorTarget );
     this.elemCurrent = null;
-    this.elemParents = null;
+    this.elemParentAll = null;
   }
 
   run( callback ) {
     const
-      hostName = location.host
-      ,wPathname = location.pathname.replace( this.settings.indexRegex, '' )
-      ,elemTargets = this.elemTargets
+      hostNameByLocal = location.host
+      ,pathnameByLocal = location.pathname.replace( this.settings.indexRegex, '' )
     ;
-    for ( let i = 0, len = elemTargets.length; i < len; i++ ) {
+    this.elemCurrent = null;
+    this.elemParentAll = null;
+    for ( const elemTarget of this.elemTargetAll ) {
       const
-        elem = elemTargets[ i ]
-        ,aPathname = elem.pathname.replace( this.settings.indexRegex, '' )
-        ,aHost = elem.host
+        pathNameByElement = elemTarget.pathname.replace( this.settings.indexRegex, '' )
+        ,hostNameByElement = elemTarget.host
       ;
-      if ( hostName !== aHost ) {
+      if ( hostNameByLocal !== hostNameByElement ) {
         continue;
-      } else if ( aPathname === wPathname ) {
-        this.elemCurrent = elem;
-        this.elemParents = parents( this.elemCurrent, this.selectorParents, 'body' );
+      } else if ( pathNameByElement === pathnameByLocal ) {
+        this.elemCurrent = elemTarget;
+        this.elemParentAll = parents( this.elemCurrent, this.selectorParent, 'body' );
       }
-    }
+    } // for
     if ( typeof callback === 'function' ) {
       callback.call( this, this );
     }

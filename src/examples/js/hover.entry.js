@@ -7,10 +7,12 @@ mdls.hover = new Adaptivehover( {
 } );
 
 mdls.hover
-  .on( ( e, inst ) =>  {
-    inst.elemTarget.classList.add( 'js-hover' );
-  }
-  ,( e, inst ) => {
-    inst.elemTarget.classList.remove( 'js-hover' );
-  } )
+  .on(
+    ( e, _inst, target ) => {
+      target.classList.add( 'js-hover' );
+    }
+    ,( e, _inst, target ) => {
+      target.classList.remove( 'js-hover' );
+    }
+  )
 ;

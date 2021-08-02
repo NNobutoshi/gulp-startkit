@@ -39,11 +39,12 @@
 .pl-localNav {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  width: 100%;
+  width: calc( 100% - 60px + 10px);
   position: fixed;
+  z-index: 2;
+  left: 70px;
   top: 0;
-  left: 0;
-  padding: 0 10px;
+  padding: 20px 0;
   background-color: rgba(255, 255, 255, 0.6);
 }
 
@@ -53,11 +54,18 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  margin: 0;
   padding: 0;
 }
 
 .pl-localNav_item {
-  padding-right: 10px;
+  font-size: 0.75rem;
+  margin-left: 0.5em;
+}
+
+.pl-sectionGroup {
+  margin-right: -10px;
+  margin-left: -10px;
 }
 
 .pl-section {
@@ -65,22 +73,24 @@
 }
 
 .pl-section img {
+  margin-top: 10px;
+  display: block;
   width: 100%;
 }
 
-.pl-section:nth-child(2n) {
+.pl-section:nth-child(1n) {
   background-color: #fcc;
 }
 
-.pl-section:nth-child(3n) {
-  background-color: #c7c7e7;
+.pl-section:nth-child(2n) {
+  background-color: #87BEED;
 }
 
-.pl-section:nth-child(4n) {
+.pl-section:nth-child(3n) {
   background-color: #ccffcc;
 }
 
-.pl-section:nth-child(5n) {
+.pl-section:nth-child(4n) {
   background-color: #ccffff;
 }
 

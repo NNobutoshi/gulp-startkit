@@ -14,7 +14,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 new _js_modules_rescroll__WEBPACK_IMPORTED_MODULE_1__.default({
-  offsetTop: '.pl-head'
+  offsetTop: '.pl-nav'
 }).on().addShoulder('.pl-sectionGroup');
 new _js_modules_tab__WEBPACK_IMPORTED_MODULE_0__.default({
   selectorWrapper: '.pl-sectionGroup',

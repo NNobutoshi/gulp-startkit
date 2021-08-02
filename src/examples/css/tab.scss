@@ -8,15 +8,51 @@
 ;
 
 
-.pl-head {
-  width: 100%;
-  padding: 10px;
+.pl-nav {
+  width: calc( 100% - 90px );
   position: fixed;
   top: 0;
-  left: 0;
+  left: 75px;
+  z-index: 3;
   background-color: #fee;
-  a {
-    margin-left: 10px;
+  @include mq( min-width, sm ) {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  @include mq( max-width, sm ) {
+    padding: 5px 0 0 10px;
+  }
+  @at-root {
+    .pl-nav_heading {
+      @include fs(16, 16);
+      margin: 0;
+    }
+  }
+}
+.pl-linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  @include fs(18, 16);
+  @include mq( min-width, sm ) {
+    margin-left: 1em;
+  }
+  @at-root {
+    .pl-linkList_item {
+      & + & {
+        @include mq( min-width, sm ) {
+          margin-left: 0.5em;
+        }
+      }
+      white-space: nowrap;
+    }
+    .pl-linkList_anchor {
+      display: block;
+      padding: 6px 10px;
+      text-align: center;
+    }
   }
 }
 .pl-tabmenu {
@@ -28,14 +64,13 @@
     }
     .pl-tabmenu_item {
       display: flex;
-      flex-wrap: wrap;
-      flex: 1 0 auto;
+      flex: 1;
       padding: 0;
       margin: 0;
     }
     .pl-tabmenu_anchor {
       display: flex;
-      flex: 1 0 auto;
+      flex: 1;
       align-items: center;
       justify-content: center;
       background-color: #fcc;
@@ -48,9 +83,10 @@
   }
 }
 .pl-sectionGroup {
-  margin-top: 2em;
-  &:first-child {
-    margin-top: 0;
+  @at-root {
+    .pl-sectionGroup + .pl-sectionGroup {
+      margin-top: 100px;
+    }
   }
 }
 .pl-section {

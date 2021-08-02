@@ -23,36 +23,43 @@
     <script src="/js/common_head.js"></script>
   </head>
   <body>
-    <div class="page" id="page">
+    <div class="sg-page" id="page">
 
-      <header class="page_head">
-        <div class="page_core">
-          <div class="siteId page_siteId"><a class="siteId_anchor" href="/">site</a></div>
+      <header class="sg-page_head">
+        <div class="sg-page_core sg-page_core--head">
+          <div class="sg-siteId sg-page_siteId"><a class="sg-siteId_anchor" href="/">site</a></div>
         </div>
-      <!--/.page_head--></header>
+      <!--/.sg-page_head--></header>
 
-      <main class="page_body">
-        <div class="pl-localNav">
-          <ul class="pl-localNav_list">
-            <li class="pl-localNav_item"><a href="#section-A">section A</a></li>
-            <li class="pl-localNav_item"><a href="#section-B">section B</a></li>
-            <li class="pl-localNav_item"><a href="#section-C">section C</a></li>
-            <li class="pl-localNav_item"><a href="#section-D">section D</a></li>
-          </ul>
+      <main class="sg-page_body">
+        <div class="sg-page_core sg-page_core--body">
+          <div class="pl-localNav">
+            <ul class="pl-localNav_list">
+              <li class="pl-localNav_item"><a href="#section-A">section A</a></li>
+              <li class="pl-localNav_item"><a href="#section-B">section B</a></li>
+              <li class="pl-localNav_item"><a href="#section-C">section C</a></li>
+              <li class="pl-localNav_item"><a href="#section-D">section D</a></li>
+            </ul>
+          </div>
+          <div class="pl-sectionGroup">
+            <section class="pl-section" id="section-A">section A</section>
+            <section class="pl-section" id="section-B">section B
+              <div class="pl-section_core"><img src="./img/test.png" alt=""></div>
+            </section>
+            <section class="pl-section" id="section-C">section C</section>
+            <section class="pl-section" id="section-D">section D</section>
+          </div>
         </div>
-        <section class="pl-section" id="section-A">section A</section>
-        <section class="pl-section" id="section-B">section B
-          <div class="pl-section_core"><img src="./img/test.png" alt=""></div>
-        </section>
-        <section class="pl-section" id="section-C">section C</section>
-        <section class="pl-section" id="section-D">section D</section>
-      <!--/.page_body--></main>
+      <!--/.sg-page_body--></main>
 
-      <footer class="paoge_foot">
-        <a href="/">
-          <div>site</div>
-        </a>
-      <!--/.page_foot--></footer>
+
+      <footer class="sg-page_foot">
+        <div class="sg-page_core sg-page_core--foot">
+          <a href="/">
+            <div>site</div>
+          </a>
+        </div>
+      <!--/.sg-page_foot--></footer>
 
     <!--/.page#page--></div>
 

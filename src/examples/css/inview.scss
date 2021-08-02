@@ -12,7 +12,7 @@
   margin-bottom: 100vh;
   height: 80vh;
   background-color: #ddd;
-  transition: background .25s ease-in;
+  transition: background-color .25s ease-in;
   padding: 15px 30px;
   &.js-isInView {
     background: rgb(253, 88, 88);
@@ -21,6 +21,7 @@
 
 .pl-offsetElement {
   position: fixed;
+  left: 0;
   width: 100%;
   box-sizing: border-box;
   background-color: rgba(255,255,255,.6);
@@ -28,7 +29,7 @@
   padding: 15px 10px;
   @at-root {
     &--start {
-      top: 0;
+      top: 50px;
     }
     &--end {
       bottom: 0;
@@ -48,7 +49,7 @@
   width: 100%;
   @at-root {
     &--50 {
-      top: 50%;
+      top: calc( 50% + 25px );
     }
   }
 }

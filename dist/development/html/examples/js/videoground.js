@@ -23,24 +23,25 @@ var CLASSNAME_VIDEO = 'js-pl-mainVisual_video',
     videoground = new _js_modules_videoground__WEBPACK_IMPORTED_MODULE_2__.default({
   src: '/examples/media/mainvisual.mp4',
   selectorVideoFrame: '.pl-mainVisual_body',
-  aspectRatio: 1080 / 1920,
-  onPlay: function onPlay() {
+  aspectRatio: 1080 / 1920
+});
+videoground.run().on({
+  play: function play() {
     this.elemParent.classList.add(CLASSNAME_PLAYING);
   },
-  onPlayBefore: function onPlayBefore() {
+  playBefore: function playBefore() {
     this.elemVideo.classList.add(CLASSNAME_VIDEO);
   },
-  onLoad: _fitPosAndSize,
-  onDestroy: function onDestroy() {
+  load: _fitPosAndSize,
+  destroy: function destroy() {
     this.elemParent.classList.remove(CLASSNAME_PLAYING);
     this.elemParnet.classList.add(CLASSNAME_DESTROYED);
   }
 });
-videoground.run();
 
 function _fitPosAndSize() {
   var that = this,
-      elemOffsetItem = document.querySelector('.page_head');
+      elemOffsetItem = document.querySelector('.sg-page_head');
   var height = 0,
       parentHeight = 0;
   scrollManager.on(_fit);

@@ -8,41 +8,61 @@
 ;
 
 .pl-list {
-  @at-root {
-    .pl-list_btn {
-      display: block;
-      padding: 10px;
-      border: solid 1px #f00;
-      cursor: pointer;
-      &::after {
-        display: inline-block;
-        @include icon-styles;
-        content: icon-char(arrow_down);
-        font-size: 10px;
-        margin-left: 10px;
-        transform: rotate(0) scale(.8);
-        transition: transform .3s ease-in-out;
-      }
-      .js-list--isOpening &::after {
-        transform: rotate(180deg) scale(.8);
-      }
+  list-style: none;
+  padding: 0;
+  &_item {
+    border: solid 1px #d00;
+    transition: background-color.25s ease-in-out;
+    margin: 0;
+    padding: 10px;
+    &.js-pl-accordion--isOpen {
+      background-color: rgba(255, 0, 0, .1);
     }
-    .pl-list_inner {
-      background-color: rgba(0, 0, 255, .2);
-      .js & {
-        transition-property: height, opacity, background-color;
-        transition-duration: .25s;
-        transition-timing-function: ease-in-out;
-        overflow: hidden;
-        height: 0;
-        opacity: 0;
-      }
-      .js-list--isOpening & {
-        opacity: 1;
-      }
-      .js-list--isOpen & {
-        background-color: rgba(0, 255, 255, .2);
-      }
+  }
+  &_heading {
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+    @include fs(18, 16);
+    .js-pl-accordion--isOpening & {
+      border-bottom: solid 1px  rgba(0, 0, 0, .5);
     }
+    &::after {
+      display: inline-block;
+      @include icon-styles;
+      content: icon-char(arrow_down);
+      font-size: 10px;
+      margin-left: 10px;
+      transform: rotate(0) scale(.8);
+      transition: transform .3s ease-in-out;
+    }
+    .js-pl-accordion--isOpening &::after {
+      transform: rotate(180deg) scale(.8);
+    }
+  }
+  &_body {
+    .js & {
+      transition-property: height, opacity;
+      transition-duration: .25s;
+      transition-timing-function: ease-in-out;
+      overflow: hidden;
+      opacity: 0;
+      display: none;
+    }
+    .js-pl-accordion--isOpening & {
+      opacity: 1;
+    }
+  }
+}
+
+.pl-controller {
+  &_input {
+    & + span {
+      display: inlin-block;
+      margin-left: .5em;
+    }
+  }
+  &_button {
+    margin-left: 0.5em;
   }
 }

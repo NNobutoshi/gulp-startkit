@@ -19,63 +19,70 @@ let
 export default class ScrollManager {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name                 : 'scrollManager',
-      selectorOffsetTop    : '',
-      selectorOffsetBottom : '',
-      selectorEventRoot    : '',
-      delayTime            : 0,
-      catchPoint           : '100%',
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.id = this.settings.name;
-    this.selectorEventRoot = this.settings.selectorEventRoot;
-    this.selectorOffsetTop = this.settings.selectorOffsetTop;
-    this.selectorOffsetBottom = this.settings.selectorOffsetBottom;
-    this.elemEventRoot = this.selectorEventRoot && doc.querySelector( this.selectorEventRoot ) ||
-      window
+    const
+      defaultSettings = this.defaultSettings = {
+        name                 : 'scrollManager',
+        selectorOffsetTop    : '',
+        selectorOffsetBottom : '',
+        selectorEventRoot    : '',
+        elemOffsetTop        : null,
+        elemOffsetBottom     : null,
+        elemEventRoot        : window,
+        eventName            : 'scroll.{name}',
+        delayTime            : 0,
+        catchPoint           : '100%',
+      }
+      ,settings = this.settings = merge( {}, defaultSettings, options )
     ;
+    this.id = settings.name;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.selectorOffsetTop = settings.selectorOffsetTop;
+    this.selectorOffsetBottom = settings.selectorOffsetBottom;
+    this.elemEventRoot = settings.elemEventRoot || doc.querySelector( this.selectorEventRoot );
     this.callbacks = {};
-    this.eventName = `scroll.${this.id}`;
+    this.eventName = settings.eventName.replaceAll( '{name}', this.id );
     this.isRunning = false;
     this.lastSctop = 0;
     this.scrollDown = null;
     this.scrollUp = null;
     this.startTime = null;
-    this.catchPoint = this.settings.catchPoint;
-    this.evtRoot = new EM( this.elemEventRoot );
+    this.catchPoint = settings.catchPoint;
+    this.eventRoot = null;
   }
 
   runCallbacksAll() {
     const
-      scTop     = this.elemEventRoot.pageYOffset
-      ,vwHeight = this.elemEventRoot.innerHeight
+      scTop        = this.elemEventRoot.pageYOffset
+      ,innerHeight = this.elemEventRoot.innerHeight
     ;
     for ( let key in this.callbacks ) {
       const
         entry = this.callbacks[ key ]
-        ,selectorOffsetTop     = entry.selectorOffsetTop || this.selectorOffsetTop
+        ,selectorOffsetTop    = entry.selectorOffsetTop || this.selectorOffsetTop
         ,selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom
-        ,offsetTop    = _getMaxOffset( selectorOffsetTop, vwHeight, 'top' )
-        ,offsetBottom = _getMaxOffset( selectorOffsetBottom, vwHeight, 'bottom' )
-        ,vwTop        = scTop + offsetTop
-        ,vwBottom     = vwHeight - offsetTop - offsetBottom
-        ,catchPoint   =  _calcPoint( vwBottom, this.catchPoint )
+        ,offsetTop    = _getMaxOffset( selectorOffsetTop, innerHeight, 'top' )
+        ,offsetBottom = _getMaxOffset( selectorOffsetBottom, innerHeight, 'bottom' )
+        ,viewTop      = scTop + offsetTop
+        ,viewHeight   = innerHeight - offsetTop - offsetBottom
+        ,catchPoint   =  _calcPoint( viewHeight, this.catchPoint )
         ,elemTarget   = entry.elemTarget || document.createElement( 'div' )
         ,rect         = elemTarget.getBoundingClientRect()
         ,hookPoint    = _calcPoint( rect.height, entry.observed.hookPoint || entry.hookPoint )
         ,range        = catchPoint + ( rect.height - hookPoint )
-        ,scrollFrom   = ( vwTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
+        ,scrollFrom   = ( viewTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
         ,ratio        = scrollFrom / range
       ;
-
       entry.observed = merge( entry.observed, {
-        name    : entry.name,
-        target  : entry.elemTarget,
-        range   : range,
-        scroll  : scrollFrom,
-        ratio   : ratio,
-        catched : ratio >= 0 && ratio <= 1
+        name       : entry.name,
+        target     : entry.elemTarget,
+        range      : range,
+        scroll     : scrollFrom,
+        ratio      : ratio,
+        catchPoint : catchPoint,
+        hookPoint  : hookPoint,
+        viewTop    : viewTop,
+        viewHeight : viewHeight,
+        catched    : ratio >= 0 && ratio <= 1
       } );
       entry.callback.call( this, entry.observed, this );
 
@@ -126,13 +133,14 @@ export default class ScrollManager {
 
   setUp() {
     if ( !this.callbacks.length ) {
-      this.evtRoot.on( this.eventName, () => this.handle() );
+      this.eventRoot = new EM( this.elemEventRoot );
+      this.eventRoot.on( this.eventName, () => this.handle() );
     }
     return this;
   }
 
   destroy() {
-    this.evtRoot.off( this.eventName );
+    this.eventRoot.off( this.eventName );
     return this;
   }
 

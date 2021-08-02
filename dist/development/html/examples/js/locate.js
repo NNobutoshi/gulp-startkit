@@ -20,25 +20,26 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 var mdls = {},
-    TARGETSELECTOR = '.pl-nav_anchor',
-    elemTarget = document.querySelectorAll(TARGETSELECTOR),
+    SELECTORTARGET = '.pl-nav_anchor',
+    SELECTORPARENT = '.pl-nav_item',
+    elemTarget = document.querySelectorAll(SELECTORTARGET),
     evtWindow = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(window),
     evtTarget = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__.default(elemTarget);
 mdls.locate = new _js_modules_locate__WEBPACK_IMPORTED_MODULE_0__.default({
-  selectorTarget: TARGETSELECTOR,
-  selectorParents: '.pl-nav_item'
+  selectorTarget: SELECTORTARGET,
+  selectorParent: SELECTORPARENT
 });
 evtTarget.on('click', function (e) {
   e.preventDefault();
   history.pushState(null, null, e.currentTarget.href);
 
-  _run();
+  _locate();
 });
-evtWindow.on('popstate', _run).trigger('popstate');
+evtWindow.on('popstate', _locate).trigger('popstate');
 
-function _run() {
-  if (mdls.locate.elemParents) {
-    var _iterator = _createForOfIteratorHelper(mdls.locate.elemParents),
+function _locate() {
+  if (mdls.locate.elemParentAll) {
+    var _iterator = _createForOfIteratorHelper(mdls.locate.elemParentAll),
         _step;
 
     try {
@@ -54,8 +55,8 @@ function _run() {
   }
 
   mdls.locate.run(function (inst) {
-    if (inst.elemParents) {
-      var _iterator2 = _createForOfIteratorHelper(inst.elemParents),
+    if (inst.elemParentAll) {
+      var _iterator2 = _createForOfIteratorHelper(inst.elemParentAll),
           _step2;
 
       try {

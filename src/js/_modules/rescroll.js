@@ -8,42 +8,59 @@ import './polyfills/closest';
 import '../_vendor/raf';
 import EM from './utilities/eventmanager';
 
+const d = document;
+
 export default class Rescroll {
 
   constructor( options ) {
-    this.defaultSettings = {
-      name      : 'rescroll',
-      exclude   : '',
-      offsetTop : 0,
-      selectorShoulder : null, /* スクロール先を肩代わりする要素 */
-      animation : true, /* 所謂スムーススクロール */
-      animeOption : {
-        duration : 1000,
-        easing : function( pos ) {
-          return 1 - Math.pow( 1 - pos, 5 );
+    const
+      defaultSettings = this.defaultSettings = {
+        name             : 'rescroll',
+        selectorTrigger  : 'a',
+        selectorShoulder : '', /* スクロール先を肩代わりする要素 */
+        selectorEventRoot : '',
+        elemEventRoot : window,
+        elemShoudler : null,
+        eventNameLoad  : 'load.{name}',
+        eventNameHashChange  : 'hashchange.{name}',
+        eventNameClick : 'click.{name}',
+        eventNameScroll : 'scroll.{name}',
+        exclude   : '',
+        offsetTop : 0,
+        animation : true, /* 所謂スムーススクロール */
+        animeOption : {
+          duration : 1000,
+          easing : function( pos ) {
+            return 1 - Math.pow( 1 - pos, 5 );
+          }
         }
       }
-    };
-    this.settings = merge( {}, this.defaultSettings, options );
-    this.offsetTop = this.settings.offsetTop;
-    this.id = this.settings.name;
+      ,settings = this.settings = merge( {}, defaultSettings, options )
+    ;
+    this.id = settings.name;
+    this.selectorTrigger = settings.selectorTrigger;
+    this.selectorShoulder = settings.selectorShoulder;
+    this.selectorEventRoot = settings.selectorEventRoot;
+    this.elemEventRoot = settings.elemEventRoot || d.querySelector( settings.selectorEventRoot );
+    this.offsetTop = settings.offsetTop;
     this.isWorking = false;
     this.enabled = false;
-    this.lastScrollY = window.pageYOffset;
-    this.evtRoot = new EM( window );
+    this.lastScrollY = this.elemEventRoot.pageYOffset;
     this.arryShoulderSelector = [];
-    this.addShoulder( this.settings.selectorShoulder );
-    this.eventNameLoad  = `load.${this.id}`;
-    this.eventNameHashChange  = `hashchange.${this.id}`;
-    this.eventNameClick = `click.${this.id}`;
-    this.eventNameScroll = `scroll.${this.id}`;
+    this.eventNameLoad  = settings.eventNameLoad.replaceAll( '{name}', this.id );
+    this.eventNameHashChange = settings.eventNameHashChange.replaceAll( '{name}', this.id );
+    this.eventNameClick = settings.eventNameClick.replaceAll( '{name}', this.id );
+    this.eventNameScroll = settings.eventNameScroll.replaceAll( '{name}', this.id );
+    this.addShoulder( this.selectorShoulder );
+    this.eventRoot = null;
   }
 
   on() {
-    this.evtRoot
+    this.eventRoot = new EM( this.elemEventRoot );
+    this.eventRoot
       .on( this.eventNameLoad, this.handleLoad.bind( this ) )
       .on( this.eventNameHashChange, this.handleHashChange.bind( this ) )
-      .on( this.eventNameClick, 'a', this.handleClick.bind( this ) )
+      .on( this.eventNameClick, this.selectorTrigger, this.handleClick.bind( this ) )
       .on( this.eventNameScroll, this.handleScroll.bind( this ) )
     ;
     return this;
@@ -73,7 +90,7 @@ export default class Rescroll {
       return;
     }
     this.enabled = true;
-    this.lastScrollY = window.pageYOffset;
+    this.lastScrollY = this.elemEventRoot.pageYOffset;
     e.preventDefault();
     window.history.pushState( null ,null, target.href );
     this.preprocess( e, target );
@@ -83,27 +100,24 @@ export default class Rescroll {
    * スクロールの起点になるポイントを常に取得しておく。
    */
   handleScroll( e ) {
-    const that = this;
     requestAnimationFrame( () => {
-      if ( that.enabled === false ) {
-        that.lastScrollY = window.pageYOffset;
+      if ( this.enabled === false ) {
+        this.lastScrollY = this.elemEventRoot.pageYOffset;
       }
     } );
   }
 
   preprocess( e, target ) {
     const
-      that = this
-    ;
-    const
       hash = this.getHash()
       ,arryShoulder = this.arryShoulderSelector
       ,elemByHash = ( hash ) ? document.querySelector( hash ) : null
-      ,elemShoulder = arryShoulder.length && elemByHash && _getShoulderElement( elemByHash )
+      ,elemShoulder = arryShoulder.length && elemByHash &&
+                      _getShoulderElement.bind( this )( elemByHash )
     ;
     let
       lastScrollY = this.lastScrollY
-      ,currentScrollY = window.pageYOffset
+      ,currentScrollY = this.elemEventRoot.pageYOffset
     ;
 
     /**
@@ -113,17 +127,11 @@ export default class Rescroll {
      * or ジャンプ先を肩代わりする要素も、hash をセレクターにして得られた要素も、どちらもなければ、
      * return
      */
-    if (
-      (
-        e.type === 'click' &&
-        target &&
-        target.hash &&
-        elemShoulder &&
+    if ( (
+      e.type === 'click' && target && target.hash && elemShoulder &&
         position( target ).top === position( elemShoulder ).top
-      ) ||
-      this.isWorking === true ||
-      this.enabled === false ||
-      ( !elemByHash && !elemShoulder )
+    ) ||
+      this.isWorking === true || this.enabled === false || ( !elemByHash && !elemShoulder )
     ) {
       this.isWorking = false;
       return this;
@@ -133,30 +141,31 @@ export default class Rescroll {
      * デフォルトのスクロールを終えるのを待って改めてスクロールさせる
      * hashchange やload のevent でキャンセルできないため。
      */
-    ( function _retry() {
-      requestAnimationFrame( () => {
-        if ( currentScrollY !== lastScrollY ) {
-          lastScrollY = currentScrollY;
-          _retry();
-        } else {
-          that.isWorking = true;
-          lastScrollY = null;
-          if ( that.settings.animation ) {
-            that.animatedScroll( elemShoulder || elemByHash );
-          } else {
-            that.scroll( elemShoulder || elemByHash );
-          }
-        }
-      } );
-    } )();
+    requestAnimationFrame( _retry.bind( this ) );
+
     return this;
+
+    function _retry() {
+      if ( currentScrollY !== lastScrollY ) {
+        lastScrollY = currentScrollY;
+        requestAnimationFrame( _retry.bind( this ) );
+      } else {
+        this.isWorking = true;
+        lastScrollY = null;
+        if ( this.settings.animation ) {
+          this.animatedScroll( elemShoulder || elemByHash );
+        } else {
+          this.scroll( elemShoulder || elemByHash );
+        }
+      }
+    }
 
     /**
      * スクロール先を肩代わりする要素を取得する。
      * 先祖の要素で限定。
      */
     function _getShoulderElement( elemTarget ) {
-      const arry = that.arryShoulderSelector;
+      const arry = this.arryShoulderSelector;
       let elemClosest = null;
       if ( !elemTarget ) {
         return elemClosest;
@@ -177,8 +186,8 @@ export default class Rescroll {
    */
   scroll( elemTarget ) {
     const finishPoint = position( elemTarget ).top - this.offset();
-    window.scrollTo( 0, this.lastScrollY );
-    window.scrollTo( 0, finishPoint );
+    this.elemEventRoot.scrollTo( 0, this.lastScrollY );
+    this.elemEventRoot.scrollTo( 0, finishPoint );
     this.isWorking = false;
     this.enabled = false;
     this.lastScrollY = finishPoint;
@@ -188,9 +197,6 @@ export default class Rescroll {
    * スムーススクロール
    */
   animatedScroll( elemTarget ) {
-    const
-      that = this
-    ;
     const
       duration = this.settings.animeOption.duration
       ,easing = this.settings.animeOption.easing
@@ -202,24 +208,25 @@ export default class Rescroll {
       currentPoint = 0
       ,startTime = null
     ;
-    window.scrollTo( 0, startPoint );
-    requestAnimationFrame( _scrollStep );
+    this.elemEventRoot.scrollTo( 0, startPoint );
+
+    requestAnimationFrame( _scrollStep.bind( this ) );
+
+    return this;
 
     function _scrollStep( time ) {
       startTime = startTime || time;
       currentPoint = startPoint + range * easing.call( null, ( time - startTime ) / duration );
-      window.scrollTo( 0, currentPoint );
+      this.elemEventRoot.scrollTo( 0, currentPoint );
       if ( time - startTime < duration ) {
-        requestAnimationFrame( _scrollStep );
+        requestAnimationFrame( _scrollStep.bind( this ) );
       } else {
-        that.isWorking = false;
-        that.enabled = false;
-        that.lastScrollY = finishPoint;
-        window.scrollTo( 0, finishPoint );
+        this.isWorking = false;
+        this.enabled = false;
+        this.lastScrollY = finishPoint;
+        this.elemEventRoot.scrollTo( 0, finishPoint );
       }
     }
-
-    return this;
 
   }
 

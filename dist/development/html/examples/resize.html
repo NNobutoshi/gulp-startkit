@@ -23,45 +23,52 @@
     <script src="/js/common_head.js"></script>
   </head>
   <body>
-    <div class="page" id="page">
+    <div class="sg-page" id="page">
 
-      <header class="page_head">
-        <div class="page_core">
-          <div class="siteId page_siteId"><a class="siteId_anchor" href="/">site</a></div>
+      <header class="sg-page_head">
+        <div class="sg-page_core sg-page_core--head">
+          <div class="sg-siteId sg-page_siteId"><a class="sg-siteId_anchor" href="/">site</a></div>
         </div>
-      <!--/.page_head--></header>
+      <!--/.sg-page_head--></header>
 
-      <main class="page_body">
-        <div class="pl-test">resize
-          <div class="pl-test_box">
-            <h1 class="pl-test_heading">one</h1>
-            <p class="pl-test_text pl-test_text--one"></p>
-          </div>
-          <div class="pl-test_box">
-            <h1 class="pl-test_heading">turn</h1>
-            <p class="pl-test_text pl-test_text--turn"></p>
-          </div>
-          <div class="pl-test_box">
-            <h1 class="pl-test_heading">cross</h1>
-            <p class="pl-test_text pl-test_text--cross"></p>
-          </div>
-          <div class="pl-test_box">
-            <h1 class="pl-test_heading">on</h1>
-            <p class="pl-test_text pl-test_text--on"></p>
-          </div>
-          <div class="pl-test_inner pl-test_inner--1200">width 1200px
-            <div class="pl-test_inner pl-test_inner--980">width: 980px
-              <div class="pl-test_inner pl-test_inner--768">width: 768px</div>
+      <main class="sg-page_body">
+        <div class="sg-page_core sg-page_core--body">
+          <div class="pl-test">resize
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">one</h1>
+              <p class="pl-test_p"> (max-width: 1200px) ==<span class="pl-test_span pl-test_span--one"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">turn</h1>
+              <p class="pl-test_p">(max-width: 979px) ==<span class="pl-test_span pl-test_span--turn"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">cross</h1>
+              <p class="pl-test_p">(min-width: 980px) ==<span class="pl-test_span pl-test_span--cross"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">on</h1>
+              <p class="pl-test_p">(max-width: 767px) ==<span class="pl-test_span pl-test_span--on"></span></p>
+            </div>
+            <div class="pl-test_section pl-test_section--display">
+              <div class="pl-test_display pl-test_display--1200">width 1200px
+                <div class="pl-test_display pl-test_display--980">width: 980px
+                  <div class="pl-test_display pl-test_display--768">width: 768px</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      <!--/.page_body--></main>
+      <!--/.sg-page_body--></main>
 
-      <footer class="paoge_foot">
-        <a href="/">
-          <div>site</div>
-        </a>
-      <!--/.page_foot--></footer>
+
+      <footer class="sg-page_foot">
+        <div class="sg-page_core sg-page_core--foot">
+          <a href="/">
+            <div>site</div>
+          </a>
+        </div>
+      <!--/.sg-page_foot--></footer>
 
     <!--/.page#page--></div>
 

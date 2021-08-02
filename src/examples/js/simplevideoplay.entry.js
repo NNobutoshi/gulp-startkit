@@ -9,24 +9,25 @@ const
 ;
 
 new SimpleVideoPlay( {
-  selectorOuter : '.pl-videoPlayer_outer',
-  selectorVideo : '.pl-videoPlayer_video',
-  onBefore : function() {
+  selectorWrapper : '.pl-videoPlayer_outer',
+  selectorVideo   : '.pl-videoPlayer_video',
+} ).on( {
+  before : function() {
     this.elemCover.classList.add( CLASSNAME_COVER );
   },
-  onPlayBefore : function() {
+  playBefore : function() {
     this.elemWrapper.classList.add( CLASSNAME_CANPLAY );
   },
-  onPlay : function() {
+  play : function() {
     this.elemWrapper.classList.add( CLASSNAME_PLAY );
     this.elemWrapper.classList.remove( CLASSNAME_PAUSED );
     this.elemWrapper.classList.remove( CLASSNAME_ENDED );
   },
-  onPause : function() {
+  pause : function() {
     this.elemWrapper.classList.add( CLASSNAME_PAUSED );
     this.elemWrapper.classList.remove( CLASSNAME_PLAY );
   },
-  onEnd : function() {
+  end : function() {
     this.elemWrapper.classList.add( CLASSNAME_ENDED );
     this.elemWrapper.classList.remove( CLASSNAME_PLAY );
     this.elemWrapper.classList.remove( CLASSNAME_PAUSED );

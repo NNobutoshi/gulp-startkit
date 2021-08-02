@@ -18,25 +18,25 @@ mdls.resize.on('(max-width: 767px)', function (inst) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_text--on').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
+  document.querySelector('.pl-test_span--on').textContent = ++inst.counter;
 }).turn('(max-width: 979px)', function (inst) {
   if (inst.counter === undefined) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_text--turn').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
+  document.querySelector('.pl-test_span--turn').textContent = ++inst.counter;
 }).cross('(min-width: 980px)', function (inst) {
   if (inst.counter === undefined) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_text--cross').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
+  document.querySelector('.pl-test_span--cross').textContent = ++inst.counter;
 }).one('(max-width: 1200px)', function (inst) {
   if (inst.counter === undefined) {
     inst.counter = 0;
   }
 
-  document.querySelector('.pl-test_text--one').textContent = "".concat(inst.query, " == ").concat(++inst.counter);
+  document.querySelector('.pl-test_span--one').textContent = ++inst.counter;
 }).run();
 
 /***/ }),
