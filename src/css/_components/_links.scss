@@ -1,18 +1,20 @@
 @charset "utf-8";
 
 
-.link {
+.sg-link {
   vertical-align: middle;
-  &::before {
-    font-size: 14px;
-    @include icon-styles;
-    display: inline-block;
-    transform: translateY( 2px );
-    margin-right: 2px;
-  }
-  &--normal {
-    &::before {
-      content: icon-char(arrow_right);
+  @at-root {
+    .sg-link::before {
+      font-size: 14px;
+      @include icon-styles;
+      display: inline-block;
+      transform: translateY( 2px );
+      margin-right: 2px;
+    }
+    .sg-link--normal {
+      &::before {
+        content: icon-char(arrow_right);
+      }
     }
   }
 }

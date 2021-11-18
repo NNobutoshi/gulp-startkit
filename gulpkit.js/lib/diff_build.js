@@ -58,7 +58,6 @@ function diff_build( options, collect, select ) {
 function _transform( stores, settings, collect ) {
 
   return function( file, enc, callBack ) {
-
     if ( file.isNull() ) {
       return callBack( null, file );
     }
@@ -76,7 +75,7 @@ function _transform( stores, settings, collect ) {
 
       if (
         _includes( map, file.path ) ||
-         !_includes( map, file.path ) && _includes( stores.lastDiffMap, file.path )
+        _includes( stores.lastDiffMap, file.path )
       ) {
         stores.targets[ file.path ] = 1;
       }

@@ -390,12 +390,12 @@ template {
 }
 
 .icon_factory {
-  background-position: 79.54842202477627% 52.74926777050367%;
+  background-position: 100% 0;
 }
 
 .icon_factory_dims {
-  width: 148.594px;
-  height: 83.219px;
+  width: 182px;
+  height: 112px;
 }
 
 .icon_home {
@@ -403,35 +403,35 @@ template {
 }
 
 .icon_home_dims {
-  width: 174.5px;
-  height: 106.438px;
+  width: 183px;
+  height: 112px;
 }
 
 .icon_mail {
-  background-position: 0 56.28840682411923%;
+  background-position: 0 50%;
 }
 
 .icon_mail_dims {
-  width: 149.874px;
-  height: 95.906px;
+  width: 182px;
+  height: 112px;
 }
 
 .icon_network {
-  background-position: 99.4483324594798% 0;
+  background-position: 99.4535519125683% 49.6469305341921%;
 }
 
 .icon_network_dims {
-  width: 161.532px;
-  height: 101.874px;
+  width: 182px;
+  height: 110.407px;
 }
 
 .icon_school {
-  background-position: 0 99.67684729064038%;
+  background-position: 0 100%;
 }
 
 .icon_school_dims {
-  width: 148px;
-  height: 82px;
+  width: 182px;
+  height: 112px;
 }
 
 @font-face {
@@ -1539,11 +1539,11 @@ template {
 
 /* stylelint-disable */
 /* stylelint-anable */
-.link {
+.sg-link {
   vertical-align: middle;
 }
 
-.link::before {
+.sg-link::before {
   font-size: 14px;
   /* stylelint-disable */
   font-family: "icons";
@@ -1561,7 +1561,7 @@ template {
   margin-right: 2px;
 }
 
-.link--normal::before {
+.sg-link--normal::before {
   content: "";
 }
 
@@ -1614,7 +1614,32 @@ template {
 
 /* stylelint-disable */
 /* stylelint-anable */
-.iconList {
+.sg-linkList {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 10px;
+}
+
+.sg-linkList::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #f00;
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
+  -webkit-transform: scaleY(1.05);
+          transform: scaleY(1.05);
+}
+
+.sg-linkList_item + .sg-linkList_item {
+  margin-top: 10px;
+}
+
+.sg-iconList {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1622,34 +1647,52 @@ template {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  position: fixed;
+  bottom: 0;
 }
 
-.iconList_item + .iconList_item {
+.sg-iconList_item + .sg-iconList_item {
   margin-left: 10px;
 }
 
-.iconList_item--home {
+.sg-iconList_item--home {
   background-image: url(../img/common_pack.png);
   background-position: 0px 0px;
-  width: 87.5px;
-  height: 53.5px;
-  background-size: 174px 153px;
+  width: 91.5px;
+  height: 56px;
+  background-size: 187.5px 177.5px;
 }
 
-.iconList_item--factory {
+.sg-iconList_item--factory {
   background-image: url(../img/common_pack.png);
-  background-position: -80px -58.5px;
-  width: 74.5px;
-  height: 42px;
-  background-size: 174px 153px;
+  background-position: -96.5px 0px;
+  width: 91px;
+  height: 56px;
+  background-size: 187.5px 177.5px;
 }
 
-.iconList_item--school {
+.sg-iconList_item--school {
   background-image: url(../img/common_pack.png);
-  background-position: 0px -112px;
-  width: 74px;
-  height: 41px;
-  background-size: 174px 153px;
+  background-position: -96px -61px;
+  width: 91px;
+  height: 56px;
+  background-size: 187.5px 177.5px;
+}
+
+.sg-iconList_item--mail {
+  background-image: url(../img/common_pack.png);
+  background-position: 0px -61px;
+  width: 91px;
+  height: 56px;
+  background-size: 187.5px 177.5px;
+}
+
+.sg-iconList_item--network {
+  background-image: url(../img/common_pack.png);
+  background-position: 0px -122px;
+  width: 91px;
+  height: 55.5px;
+  background-size: 187.5px 177.5px;
 }
 
 @media (min-width: 768px) and (max-width: 979px) {

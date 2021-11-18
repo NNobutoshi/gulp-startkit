@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="148" height="82" viewBox="0 0 148 82">
+<svg xmlns="http://www.w3.org/2000/svg" width="182" height="112" viewBox="0 0 182 112">
   <defs>
     <style>
       .cls-1 {
@@ -7,5 +7,5 @@
       }
     </style>
   </defs>
-  <path id="examples_school.png_examples_school.svg" data-name="examples/school.png,examples/school.svg" class="cls-1" d="M1307,743V719h-22v24h-64V687h50V661h50v26h48v56h-62Zm-64-46h-10v10h10V697Zm20,0h-10v10h10V697Zm32-26c-5.52,0-10,4.925-10,11s4.48,11,10,11,10-4.925,10-11S1300.52,671,1295,671Z" transform="translate(-1221 -661)"/>
+  <path id="examples_school.png_examples_school.svg" data-name="examples/school.png,examples/school.svg" class="cls-1" d="M716,453V427H694v26H630V367h67V341h50v26h65v86H716Zm-64-76H642v10h10V377Zm20,0H662v10h10V377Zm49-26c-5.523,0-10,4.925-10,11s4.477,11,10,11,10-4.925,10-11S726.523,351,721,351Z" transform="translate(-630 -341)"/>
 </svg>

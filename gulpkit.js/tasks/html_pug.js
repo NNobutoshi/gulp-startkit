@@ -9,6 +9,7 @@ const
   ,through      = require( 'through2' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,log          = require( 'fancy-log' )
+  ,sizeOf       = require( 'image-size' )
 ;
 const
   diff = require( '../lib/diff_build.js' )
@@ -118,11 +119,15 @@ function _pugRender() {
       file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
       rendered.files.push( file.path );
-      log( `html_pug: rendered: ${path.relative( process.cwd(), file.path )}` );
-      return callBack( null, file );
+      callBack( null, file );
     } );
   }, ( callBack ) => {
-    log( `html_pug: rendered ${rendered.files.length} files` );
+    log( 'html_pug: rendered\n' +
+      rendered.files.map( filePath => {
+        return `: ${path.relative( process.cwd(), filePath )}`;
+      } ).join( '\n' ) +
+      `\ntotal: ${rendered.files.length} files`
+    );
     callBack();
   } );
   return stream;
@@ -136,11 +141,14 @@ function _postPug() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
+    ,imgRegEx = /<img(.*?)src=(["'])(.+?)["'](.*?)>/g
   ;
-  return through.obj( ( file, enc, callBack ) => {
-    let
-      contents = String( file.contents )
+  const stream = through.obj( ( file, enc, callBack ) => {
+    const
+      promiseReplaceImgTextAll = []
+      ,objReplaceImgText = {}
     ;
+    let contents = String( file.contents );
 
     /*
      * オプションで指定があれば、
@@ -177,9 +185,49 @@ function _postPug() {
     if ( options.assistPretty.commentPosition ) {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
-    file.contents = new global.Buffer.from( contents );
-    return callBack( null, file );
+    if ( options.imgSize === false ) {
+      file.contents = new global.Buffer.from( contents );
+      return callBack( null, file );
+    }
+
+    /*
+     * img サイズの自動挿入
+     */
+    for ( const match of contents.matchAll( imgRegEx ) ) {
+      const
+        q = match[ 2 ]
+        ,src = match[ 3 ]
+      ;
+      if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
+        continue;
+      }
+      promiseReplaceImgTextAll.push( new Promise( ( resolve ) => {
+        sizeOf( path.resolve( file.dirname, src ), ( error, dm ) => {
+          if ( error ) {
+            stream.emit( 'error', error );
+          }
+          const
+            text  = `<img${match[ 1 ]}src=${q}${src}${q} ` +
+                    `width=${q}${dm.width}${q} height=${q}${dm.height}${q}${match[ 4 ]}>`
+          ;
+          objReplaceImgText[ match [ 0 ] ] = text;
+          resolve();
+        } );
+      } ) );
+    } // for
+    Promise
+      .all( promiseReplaceImgTextAll )
+      .then( () => {
+        contents = contents.replace( imgRegEx, ( all ) => {
+          return objReplaceImgText[ all ] || all;
+        } );
+        file.contents = new global.Buffer.from( contents );
+        callBack( null, file );
+      } )
+    ;
+    return;
   } );
+  return stream;
 }
 
 function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {

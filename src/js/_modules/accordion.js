@@ -55,7 +55,6 @@ export default class Accordion {
       this.toggles.push( toggle );
     } );
   }
-
   on( callbacks ) {
     this.eventRoot = new EM( this.elemEventRoot );
     this.callbackBefore = callbacks.before;
@@ -80,6 +79,7 @@ export default class Accordion {
       toggle.callbackAfter = this.callbackAfter.bind( toggle );
       toggle.callbackFinish = this.callbackFinish.bind( toggle );
     } );
+
     return this;
   }
 

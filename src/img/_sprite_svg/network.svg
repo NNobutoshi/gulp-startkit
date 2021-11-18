@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="161.532" height="101.874" viewBox="0 0 161.532 101.874">
+<svg xmlns="http://www.w3.org/2000/svg" width="182" height="110.407" viewBox="0 0 182 110.407">
   <defs>
     <style>
       .cls-1 {
@@ -7,5 +7,5 @@
       }
     </style>
   </defs>
-  <path id="network.png_network.svg" data-name="network.png,network.svg" class="cls-1" d="M1030.11,595.121v-43.1h43.1v43.1h-43.1Zm-75.325-21.5v26.937h-43.1v-43.1h43.1v1.469l15.671-29.385V498.687h43.094v43.1H971.762Z" transform="translate(-911.688 -498.688)"/>
+  <path id="network.png_network.svg" data-name="network.png,network.svg" class="cls-1" d="M763.433,447.158v-46.72l48.558,0.064v46.72Zm-84.875-23.423v29.2L630,452.872v-46.72l48.558,0.064v1.592l17.658-31.832V342.53l48.559,0.064v46.72l-47.088-.062Z" transform="translate(-630 -342.531)"/>
 </svg>

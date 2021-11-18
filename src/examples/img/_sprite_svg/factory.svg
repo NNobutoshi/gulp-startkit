@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="148.59" height="83.219" viewBox="0 0 148.59 83.219">
+<svg xmlns="http://www.w3.org/2000/svg" width="182" height="112" viewBox="0 0 182 112">
   <defs>
     <style>
       .cls-1 {
@@ -7,5 +7,5 @@
       }
     </style>
   </defs>
-  <path id="examples_factory.png_examples_factory.svg" data-name="examples/factory.png,examples/factory.svg" class="cls-1" d="M1221,604.216V565.58h121.85V521h14.86v44.58h11.89v38.636H1221Zm35.66-32.692H1241.8v14.86h14.86v-14.86ZM1221,529.916l83.22,35.663H1221V529.916Zm62.41,0,83.22,35.663h-83.22V529.916Z" transform="translate(-1221 -521)"/>
+  <path id="examples_factory.png_examples_factory.svg" data-name="examples/factory.png,examples/factory.svg" class="cls-1" d="M812.007,401v52H630V401h0V353l76.442,36V353l72.8,34.285V341h18.2v54.855L808.366,401h3.641Zm-138.325,8h-18.2v20h18.2V409Z" transform="translate(-630 -341)"/>
 </svg>

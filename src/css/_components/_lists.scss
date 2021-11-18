@@ -3,14 +3,39 @@
 @import
   "../_mixins_sprite.scss"
 ;
-
-.iconList {
+.sg-linkList {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 10px;
+  @at-root {
+    .sg-linkList::before {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #f00;
+      transform-origin: bottom;
+      transform: scaleY(1.05);
+    }
+    .sg-linkList_item {
+      & + & {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+.sg-iconList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
+  position: fixed;
+  bottom: 0;
   @at-root {
-    &_item {
+    .sg-iconList_item {
       & + & {
         margin-left:10px;
       }
@@ -22,6 +47,12 @@
       }
       &--school {
         @include sprite($sheet-school,2);
+      }
+      &--mail {
+        @include sprite($sheet-mail,2);
+      }
+      &--network {
+        @include sprite($sheet-network,2);
       }
     }
   }

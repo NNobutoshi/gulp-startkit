@@ -64,15 +64,15 @@
 }
 
 .pl-test_display--1200 {
-  max-width: 1200px;
+  width: 1200px;
 }
 
 .pl-test_display--980 {
-  max-width: 980px;
+  width: 980px;
 }
 
 .pl-test_display--768 {
-  max-width: 768px;
+  width: 768px;
 }
 
 .pl-test_p {
