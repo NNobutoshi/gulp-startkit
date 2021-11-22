@@ -1,7 +1,7 @@
 const
   { src, dest } = require( 'gulp' )
   ,plumber      = require( 'gulp-plumber' )
-  ,sass         = require( 'gulp-sass' )
+  ,sass         = require( 'gulp-sass' )( require( 'sass' ) )
   ,postcss      = require( 'gulp-postcss' )
   ,grapher      = require( 'sass-graph' )
   ,cssMqpacker  = require( 'css-mqpacker' )

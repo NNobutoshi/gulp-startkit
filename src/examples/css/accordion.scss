@@ -12,7 +12,7 @@
   padding: 0;
   &_item {
     border: solid 1px #d00;
-    transition: background-color.25s ease-in-out;
+    transition: background-color .25s ease-in-out;
     margin: 0;
     padding: 10px;
     &.js-pl-accordion--isOpen {

@@ -5,6 +5,7 @@
 }
 
 {{#block "sprites-comment"}}
+@use "sass:math";
 // SCSS variables are information about icon's compiled state, stored under its original file name
 //
 // .icon-home {
@@ -73,16 +74,16 @@ ${{spritesheet_info.strings.name}}: ({{spritesheet.px.width}}, {{spritesheet.px.
 {{#if options.functions}}
 
 @mixin sprite-width($sprite, $ratio:1) {
-  width: nth($sprite, 5)/$ratio;
+  width: math.div(nth($sprite, 5), $ratio);
 }
 
 @mixin sprite-height($sprite, $ratio:1) {
-  height: nth($sprite, 6)/$ratio;
+  height: math.div(nth($sprite, 6),$ratio);
 }
 
 @mixin sprite-position($sprite, $ratio:1) {
-  $sprite-offset-x: nth($sprite, 3)/$ratio;
-  $sprite-offset-y: nth($sprite, 4)/$ratio;
+  $sprite-offset-x: math.div(nth($sprite, 3),$ratio);
+  $sprite-offset-y: math.div(nth($sprite, 4),$ratio);
   background-position: $sprite-offset-x  $sprite-offset-y;
 }
 
@@ -92,7 +93,7 @@ ${{spritesheet_info.strings.name}}: ({{spritesheet.px.width}}, {{spritesheet.px.
 }
 
 @mixin sprite-size($sprite, $ratio:1) {
-  background-size: nth($sprite, 7)/$ratio nth($sprite, 8)/$ratio;
+  background-size: math.div(nth($sprite, 7),$ratio) math.div(nth($sprite, 8),$ratio);
 }
 
 @mixin sprite($sprite, $ratio:1) {

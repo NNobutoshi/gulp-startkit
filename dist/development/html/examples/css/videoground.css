@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,19 +17,19 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
@@ -48,7 +46,6 @@
   position: relative;
   z-index: 1;
 }
-
 .pl-mainVisual::after {
   content: "";
   position: absolute;
@@ -69,11 +66,9 @@
   -webkit-animation: spin 1s linear 0s infinite;
           animation: spin 1s linear 0s infinite;
 }
-
 .pl-mainVisual.js-pl-mainVisual_video--isDestroyed::after, .pl-mainVisual.js-pl-mainVisual_video--isPlaying::after {
   display: none;
 }
-
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -84,7 +79,6 @@
             transform: rotate(360deg);
   }
 }
-
 @keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -95,7 +89,6 @@
             transform: rotate(360deg);
   }
 }
-
 .pl-mainVisual_head {
   z-index: 1;
   position: absolute;
@@ -116,13 +109,11 @@
   width: 100%;
   height: inherit;
 }
-
 .js .pl-mainVisual_body {
   opacity: 0;
   -webkit-transition: opacity 3s ease-in;
   transition: opacity 3s ease-in;
 }
-
 .js-pl-mainVisual_video--isPlaying .pl-mainVisual_body {
   opacity: 1;
 }
@@ -158,32 +149,26 @@
 .pl-mainVisual_copyright {
   color: #fff;
 }
-
 .pl-mainVisual_copyright a:link {
   color: #fff;
   text-decoration: none;
 }
-
 .pl-mainVisual_copyright a:visited {
   color: #fff;
   text-decoration: none;
 }
-
 .pl-mainVisual_copyright a:hover {
   color: #fff;
   text-decoration: underline;
 }
-
 .pl-mainVisual_copyright a:visited:hover {
   color: #fff;
   text-decoration: underline;
 }
-
 .pl-mainVisual_copyright a:active {
   color: #fff;
   text-decoration: underline;
 }
-
 .pl-mainVisual_copyright a:focus {
   color: #fff;
   text-decoration: none;

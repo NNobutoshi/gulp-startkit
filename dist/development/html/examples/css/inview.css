@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,19 +17,19 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
@@ -41,11 +39,10 @@
   margin-bottom: 100vh;
   height: 80vh;
   background-color: #ddd;
-  -webkit-transition: background-color .25s ease-in;
-  transition: background-color .25s ease-in;
+  -webkit-transition: background-color 0.25s ease-in;
+  transition: background-color 0.25s ease-in;
   padding: 15px 30px;
 }
-
 .pl-inviewTarget.js-isInView {
   background: #fd5858;
 }
@@ -60,7 +57,6 @@
   border: solid 1px #f00;
   padding: 15px 10px;
 }
-
 .pl-offsetElement--start {
   top: 50px;
 }
@@ -80,8 +76,7 @@
   border-top: solid 1px #000;
   width: 100%;
 }
-
 .pl-line--50 {
-  top: calc( 50% + 25px);
+  top: calc(50% + 25px);
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/inview.css.map */

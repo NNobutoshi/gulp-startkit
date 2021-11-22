@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,19 +17,19 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
@@ -67,7 +65,6 @@ video {
   left: 0;
   z-index: 2;
 }
-
 .js-video_cover::before, .js-video_cover::after {
   content: "";
   position: absolute;
@@ -76,11 +73,9 @@ video {
   z-index: 3;
   display: none;
 }
-
 .js-video--canPlay .js-video_cover::before, .js-video--canPlay .js-video_cover::after {
   display: block;
 }
-
 .js-video_cover::before {
   width: 100px;
   height: 100px;
@@ -89,7 +84,6 @@ video {
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
 }
-
 .js-video_cover::after {
   border-style: solid;
   border-width: 30px;
@@ -98,9 +92,7 @@ video {
           transform: translate(-50%, -50%) scale(1, 0.5);
   margin-left: 18px;
 }
-
-.js-video--isPlaying .js-video_cover,
-.js-video--isPaused .js-video_cover {
+.js-video--isPlaying .js-video_cover, .js-video--isPaused .js-video_cover {
   display: none;
 }
 

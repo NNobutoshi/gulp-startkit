@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,19 +17,19 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
@@ -45,7 +43,6 @@
   margin-left: -10px;
   margin-right: -10px;
 }
-
 .js-pl-nav--isFixed .pl-nav {
   width: 100%;
   margin-right: 0;
@@ -54,7 +51,6 @@
   top: 0;
   left: 0;
 }
-
 .pl-nav_outer {
   height: 50px;
   margin-top: 50vh;

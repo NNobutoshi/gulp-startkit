@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,19 +17,19 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
@@ -45,35 +43,29 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   line-height: 1;
-  -webkit-transition: padding .25s ease-in-out;
-  transition: padding .25s ease-in-out;
+  -webkit-transition: padding 0.25s ease-in-out;
+  transition: padding 0.25s ease-in-out;
   background-color: #FFCCCC;
   padding: 20px;
   border: solid 1px #f00;
   -webkit-transform: translate3d();
           transform: translate3d();
 }
-
 .pl-hoverTarget > .pl-hoverTarget {
   background-color: #FFA3A3;
 }
-
 .pl-hoverTarget > .pl-hoverTarget > .pl-hoverTarget {
   background-color: #FF8383;
 }
-
 .pl-hoverTarget + .pl-hoverTarget {
   margin-top: 20px;
 }
-
 .pl-hoverTarget span, .pl-hoverTarget a {
   display: block;
 }
-
 .pl-hoverTarget span {
   padding: 10px;
 }
-
 .pl-hoverTarget.js-hover {
   padding: 40px;
 }

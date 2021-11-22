@@ -1,11 +1,9 @@
-@charset "UTF-8";
 @font-face {
   font-family: "icons";
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -19,33 +17,32 @@
 }
 
 .icon-arrow_down:before {
-  content: "";
+  content: "\f001";
 }
 
 .icon-arrow_left:before {
-  content: "";
+  content: "\f002";
 }
 
 .icon-arrow_right:before {
-  content: "";
+  content: "\f003";
 }
 
 .icon-arrow_up:before {
-  content: "";
+  content: "\f004";
 }
 
 /* stylelint-disable */
 /* stylelint-anable */
 .pl-nav {
-  width: calc( 100% - 90px);
+  width: calc(100% - 90px);
   position: fixed;
   top: 0;
   left: 75px;
   z-index: 3;
   background-color: #fee;
 }
-
-@media (min-width: 375px) {
+@media ( min-width: 375px ) {
   .pl-nav {
     display: -webkit-box;
     display: -webkit-flex;
@@ -58,13 +55,11 @@
     padding: 10px;
   }
 }
-
-@media (max-width: 374px) {
+@media ( max-width: 374px ) {
   .pl-nav {
     padding: 5px 0 0 10px;
   }
 }
-
 .pl-nav_heading {
   font-size: 1rem;
   margin: 0;
@@ -80,18 +75,15 @@
   display: flex;
   font-size: 1.125rem;
 }
-
-@media (min-width: 375px) {
+@media ( min-width: 375px ) {
   .pl-linkList {
     margin-left: 1em;
   }
 }
-
 .pl-linkList_item {
   white-space: nowrap;
 }
-
-@media (min-width: 375px) {
+@media ( min-width: 375px ) {
   .pl-linkList_item + .pl-linkList_item {
     margin-left: 0.5em;
   }
@@ -146,7 +138,6 @@
   padding: 10px;
   text-align: center;
 }
-
 .pl-tabmenu_anchor.js-selected {
   background-color: #f77;
 }
@@ -159,23 +150,20 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
-
 .js .pl-section {
   height: 0;
   width: 100%;
   overflow: hidden;
   opacity: 0;
   background-color: transparent;
-  -webkit-transition: opacity .25s .25s ease;
-  transition: opacity .25s .25s ease;
+  -webkit-transition: opacity 0.25s 0.25s ease;
+  transition: opacity 0.25s 0.25s ease;
 }
-
 .pl-section.js-selected {
   background-color: #f77;
   height: auto;
   opacity: 1;
 }
-
 .pl-section_body {
   padding: 10px;
   min-height: 50vh;

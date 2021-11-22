@@ -1,13 +1,15 @@
 @charset 'utf-8';
 
+@use "sass:math";
+
 // font size
 @mixin fs( $size: 12, $base: 16 ) {
-  font-size: ( $size / $base ) * 1rem;
+  font-size: math.div( $size , $base ) * 1rem;
 }
 
 // line-height
 @mixin lh( $size: 14, $height: 18 ) {
-  line-height: ( $height / $size );
+  line-height: math.div( $height , $size );
 }
 
 // メディアクエリ用
@@ -127,6 +129,6 @@
 
 @mixin column_width( $num:1, $base:1 ) {
   @include each_in_queries() {
-    width: $num/$base * 100%;
+    width: math.div( $num , $base ) * 100%;
   }
 }
