@@ -75,7 +75,7 @@ Vagrant.configure("2") do |config|
     # Display the VirtualBox GUI when booting the machine
     # vb.gui = true
     # Customize the amount of memory on the VM:
-    # vb.memory = "1024"
+    vb.memory = "4096"
   end
   #
   # View the documentation for the provider you are using for more
@@ -95,7 +95,7 @@ Vagrant.configure("2") do |config|
     sudo yum -y update
     sudo yum -y install httpd
     sudo yum -y install git-all
-    # sudo yum install -y gcc gcc-c++ make
+    sudo yum -y install gcc gcc-c++ make
     # apache conf
     cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
     sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
@@ -104,8 +104,8 @@ Vagrant.configure("2") do |config|
     # selinux conf
     sed -i -e "s%SELINUX=enforcing%SELINUX=disabled%g" /etc/selinux/config
     # nodejs
-    curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
-    sudo yum install -y nodejs-14.15.4
+    curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
+    sudo yum install -y nodejs-16.13.0
     # firewall
     setenforce 0
     firewall-cmd --permanent --add-service=http
