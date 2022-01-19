@@ -1,6 +1,6 @@
 {
   "common_units_body" : {
-    "test"    : [ "/js/_modules/" ],
+    "test"    : [ "/js/_modules/", "/js/_vendor/raf.js" ],
     "name"    : "./js/common_units_body",
     "chunks"  : "initial",
     "enforce" : true

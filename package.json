@@ -15,7 +15,7 @@
   },
   "browserslist": [
     "last 2 versions",
-    "ie >= 10",
+    "ie 11",
     "ios 7",
     "android 4"
   ],

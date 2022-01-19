@@ -32,7 +32,7 @@ export default class EventManager {
   setUp( prefix, fullEventTypeNames, selectorTarget, listener, options ) {
     const that = this;
 
-    fullEventTypeNames.split( ' ' ).forEach( ( fullEventTypeName )=> {
+    fullEventTypeNames.split( ' ' ).forEach( ( fullEventTypeName ) => {
       const
         [ eventType, nameSpace ] = fullEventTypeName.split( '.' )
       ;
@@ -119,7 +119,8 @@ export default class EventManager {
 
   setEventListener( prefix, eventType, listener, options ) {
     const arrElements = ( this.elemEventer.length ) ?
-      Array.from( this.elemEventer ) : [ this.elemEventer ];
+      Array.from( this.elemEventer ) : [ this.elemEventer ]
+    ;
     arrElements.forEach( ( elem ) => {
       elem[ `${prefix}EventListener` ]( eventType, listener, options );
     } );

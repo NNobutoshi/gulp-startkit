@@ -1,6 +1,6 @@
 {
   "common_units_head" : {
-    "test"    : [ "/ua-parser-js/" ],
+    "test"    : [ "/node_modules/ua-parser-js/" ],
     "name"    : "./js/common_units_head",
     "chunks"  : "initial",
     "enforce" : true
