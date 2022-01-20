@@ -16,8 +16,7 @@
   "browserslist": [
     "last 2 versions",
     "ie 11",
-    "ios 7",
-    "android 4"
+    "ios >= 9"
   ],
   "devDependencies": {
     "@babel/core": "*",
