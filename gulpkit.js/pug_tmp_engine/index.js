@@ -3,9 +3,9 @@ const
   ,path = require( 'path' )
 ;
 const
-  nodeX2j = require( 'xls-to-json' )
-  ,mkdirp = require( 'mkdirp' )
+  mkdirp = require( 'mkdirp' )
   ,log    = require( 'fancy-log' )
+  ,XLSX   = require( 'xlsx' )
 ;
 const
   CHARSET               = 'utf-8'
@@ -19,17 +19,16 @@ const
     configFile : path.resolve( __dirname, PUG_CONFIG_FILE_PATH ),
     indexName  : 'index.pug',
     linefeed   : '\n', // '\r\n'
-    x2j        : {
-      input  : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
-      // output : path.resolve( __dirname, OUTPUT_JSON_PATH ),
-      sheet  : 'Sheet1',
-    },
+    sheetName  : 'Sheet1',
+    xlsxFilePath : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
   }
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
+
 ( async function _run() {
   const
-    jSONData     = await _nodeX2j( settings.x2j )
+    workBook    = XLSX.readFile( settings.xlsxFilePath )
+    ,jSONData    = _xlsxToJson( workBook )
     ,confStrings = await _readConfigFile()
     ,indent      = _getIndent( confStrings, /[\s\S]+?( +)"{{": "",/ )
     ,dataStrings = _deleteWrapperParen( jSONData, indent )
@@ -40,16 +39,10 @@ const
   } );
 } )();
 
-function _nodeX2j( options ) {
-  return new Promise( ( resolve, reject ) => {
-    nodeX2j( options, ( error, result ) => {
-      if ( error ) {
-        reject();
-        return console.error( error );
-      }
-      return resolve( _reJsonData( result ) );
-    } );
-  } );
+function _xlsxToJson( workBook ) {
+  return _reJsonData(
+    XLSX.utils.sheet_to_json( workBook.Sheets[ settings.sheetName ] )
+  );
 }
 
 function _readConfigFile() {

@@ -54,7 +54,7 @@
         "through2": "*",
         "webpack": "*",
         "webpack-cli": "*",
-        "xls-to-json": "*"
+        "xlsx": "^0.18.0"
       }
     },
     "node_modules/@babel/code-frame": {
@@ -2158,16 +2158,12 @@
       }
     },
     "node_modules/adler-32": {
-      "version": "1.2.0",
-      "resolved": "https://registry.npmjs.org/adler-32/-/adler-32-1.2.0.tgz",
-      "integrity": "sha1-aj5r8KY5ALoVZSgIyxXGgT0aXyU=",
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/adler-32/-/adler-32-1.3.0.tgz",
+      "integrity": "sha512-f5nltvjl+PRUh6YNfUstRaXwJxtfnKEWhAWWlmKvh+Y3J2+98a0KKVYDEhz6NdKGqswLhjNGznxfSsZGOvOd9g==",
       "dev": true,
       "dependencies": {
-        "exit-on-epipe": "~1.0.1",
-        "printj": "~1.1.0"
-      },
-      "bin": {
-        "adler32": "bin/adler32.njs"
+        "printj": "~1.2.2"
       },
       "engines": {
         "node": ">=0.8"
@@ -3919,34 +3915,10 @@
         "node": ">=0.8"
       }
     },
-    "node_modules/cfb/node_modules/adler-32": {
-      "version": "1.3.0",
-      "resolved": "https://registry.npmjs.org/adler-32/-/adler-32-1.3.0.tgz",
-      "integrity": "sha512-f5nltvjl+PRUh6YNfUstRaXwJxtfnKEWhAWWlmKvh+Y3J2+98a0KKVYDEhz6NdKGqswLhjNGznxfSsZGOvOd9g==",
-      "dev": true,
-      "dependencies": {
-        "printj": "~1.2.2"
-      },
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
-    "node_modules/cfb/node_modules/adler-32/node_modules/printj": {
-      "version": "1.2.3",
-      "resolved": "https://registry.npmjs.org/printj/-/printj-1.2.3.tgz",
-      "integrity": "sha512-sanczS6xOJOg7IKDvi4sGOUOe7c1tsEzjwlLFH/zgwx/uyImVM9/rgBkc8AfiQa/Vg54nRd8mkm9yI7WV/O+WA==",
-      "dev": true,
-      "bin": {
-        "printj": "bin/printj.njs"
-      },
-      "engines": {
-        "node": ">=0.8"
-      }
-    },
     "node_modules/cfb/node_modules/printj": {
-      "version": "1.3.0",
-      "resolved": "https://registry.npmjs.org/printj/-/printj-1.3.0.tgz",
-      "integrity": "sha512-017o8YIaz8gLhaNxRB9eBv2mWXI2CtzhPJALnQTP+OPpuUfP0RMWqr/mHCzqVeu1AQxfzSfAtAq66vKB8y7Lzg==",
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/printj/-/printj-1.3.1.tgz",
+      "integrity": "sha512-GA3TdL8szPK4AQ2YnOe/b+Y1jUFwmmGMMK/qbY7VcE3Z7FU8JstbKiKRzO6CIiAKPhTO8m01NoQ0V5f3jc4OGg==",
       "dev": true,
       "bin": {
         "printj": "bin/printj.njs"
@@ -4581,26 +4553,13 @@
       }
     },
     "node_modules/codepage": {
-      "version": "1.14.0",
-      "resolved": "https://registry.npmjs.org/codepage/-/codepage-1.14.0.tgz",
-      "integrity": "sha1-jL4lSBMjVZ19MHVxsP/5HnodL5k=",
+      "version": "1.15.0",
+      "resolved": "https://registry.npmjs.org/codepage/-/codepage-1.15.0.tgz",
+      "integrity": "sha512-3g6NUTPd/YtuuGrhMnOMRjFc+LJw/bnMp3+0r/Wcz3IXUuCosKRJvMphm5+Q+bvTVGcJJuRvVLuYba+WojaFaA==",
       "dev": true,
-      "dependencies": {
-        "commander": "~2.14.1",
-        "exit-on-epipe": "~1.0.1"
-      },
-      "bin": {
-        "codepage": "bin/codepage.njs"
-      },
       "engines": {
         "node": ">=0.8"
       }
-    },
-    "node_modules/codepage/node_modules/commander": {
-      "version": "2.14.1",
-      "resolved": "https://registry.npmjs.org/commander/-/commander-2.14.1.tgz",
-      "integrity": "sha512-+YR16o3rK53SmWHU3rEM3tPAh2rwb1yPcQX5irVn7mb0gXbwuCCrnkbV5+PBfETdfg1vui07nM6PCG1zndcjQw==",
-      "dev": true
     },
     "node_modules/collection-map": {
       "version": "1.0.0",
@@ -5021,16 +4980,28 @@
       }
     },
     "node_modules/crc-32": {
-      "version": "1.2.0",
-      "resolved": "https://registry.npmjs.org/crc-32/-/crc-32-1.2.0.tgz",
-      "integrity": "sha512-1uBwHxF+Y/4yF5G48fwnKq6QsIXheor3ZLPT80yGBV1oEUwpPojlEhQbWKVw1VwcTQyMGHK1/XMmTjmlsmTTGA==",
+      "version": "1.2.1",
+      "resolved": "https://registry.npmjs.org/crc-32/-/crc-32-1.2.1.tgz",
+      "integrity": "sha512-Dn/xm/1vFFgs3nfrpEVScHoIslO9NZRITWGz/1E/St6u4xw99vfZzVkW0OSnzx2h9egej9xwMCEut6sqwokM/w==",
       "dev": true,
       "dependencies": {
         "exit-on-epipe": "~1.0.1",
-        "printj": "~1.1.0"
+        "printj": "~1.3.1"
       },
       "bin": {
         "crc32": "bin/crc32.njs"
+      },
+      "engines": {
+        "node": ">=0.8"
+      }
+    },
+    "node_modules/crc-32/node_modules/printj": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/printj/-/printj-1.3.1.tgz",
+      "integrity": "sha512-GA3TdL8szPK4AQ2YnOe/b+Y1jUFwmmGMMK/qbY7VcE3Z7FU8JstbKiKRzO6CIiAKPhTO8m01NoQ0V5f3jc4OGg==",
+      "dev": true,
+      "bin": {
+        "printj": "bin/printj.njs"
       },
       "engines": {
         "node": ">=0.8"
@@ -5305,12 +5276,6 @@
       "version": "0.5.0",
       "resolved": "https://registry.npmjs.org/cssom/-/cssom-0.5.0.tgz",
       "integrity": "sha512-iKuQcq+NdHqlAcwUY0o/HL69XQrUaQdMjmStJ8JFmUaiiQErlhrmuigkg/CU4E2J0IyUKUrMAgl36TvN67MqTw==",
-      "dev": true
-    },
-    "node_modules/csv-parse": {
-      "version": "4.16.3",
-      "resolved": "https://registry.npmjs.org/csv-parse/-/csv-parse-4.16.3.tgz",
-      "integrity": "sha512-cO1I/zmz4w2dcKHVvpCr7JVRu8/FymG5OEpmvsZYlccYolPBLoVGKUHgNoc4ZGkFeFlWGEDmMyBM+TTqRdW/wg==",
       "dev": true
     },
     "node_modules/cubic2quad": {
@@ -7377,12 +7342,6 @@
       "version": "4.2.1",
       "resolved": "https://registry.npmjs.org/fecha/-/fecha-4.2.1.tgz",
       "integrity": "sha512-MMMQ0ludy/nBs1/o0zVOiKTpG7qMbonKUzjJgQFEuvq6INZ1OraKPRAWkBq5vlKLOUMpmNYG1JoN3oDPUQ9m3Q==",
-      "dev": true
-    },
-    "node_modules/fflate": {
-      "version": "0.3.11",
-      "resolved": "https://registry.npmjs.org/fflate/-/fflate-0.3.11.tgz",
-      "integrity": "sha512-Rr5QlUeGN1mbOHlaqcSYMKVpPbgLy0AWT/W0EHxA6NGI12yO1jpoui2zBBvU2G824ltM6Ut8BFgfHSBGfkmS0A==",
       "dev": true
     },
     "node_modules/figures": {
@@ -14724,9 +14683,9 @@
       "dev": true
     },
     "node_modules/printj": {
-      "version": "1.1.2",
-      "resolved": "https://registry.npmjs.org/printj/-/printj-1.1.2.tgz",
-      "integrity": "sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==",
+      "version": "1.2.3",
+      "resolved": "https://registry.npmjs.org/printj/-/printj-1.2.3.tgz",
+      "integrity": "sha512-sanczS6xOJOg7IKDvi4sGOUOe7c1tsEzjwlLFH/zgwx/uyImVM9/rgBkc8AfiQa/Vg54nRd8mkm9yI7WV/O+WA==",
       "dev": true,
       "bin": {
         "printj": "bin/printj.njs"
@@ -20579,29 +20538,16 @@
         }
       }
     },
-    "node_modules/xls-to-json": {
-      "version": "2.1.0",
-      "resolved": "https://registry.npmjs.org/xls-to-json/-/xls-to-json-2.1.0.tgz",
-      "integrity": "sha512-gV8gLLmVMlbmxUJh7DRpvngf2PfYNYwEr4SC4duZ0qmtxw8bdy3VBpsz62lVlBZAE58PVJCbzrXCYRaMxajzzA==",
-      "dev": true,
-      "dependencies": {
-        "csv-parse": "^4.12.0",
-        "xlsx": "^0.16.8"
-      }
-    },
     "node_modules/xlsx": {
-      "version": "0.16.9",
-      "resolved": "https://registry.npmjs.org/xlsx/-/xlsx-0.16.9.tgz",
-      "integrity": "sha512-gxi1I3EasYvgCX1vN9pGyq920Ron4NO8PNfhuoA3Hpq6Y8f0ECXiy4OLrK4QZBnj1jx3QD+8Fq5YZ/3mPZ5iXw==",
+      "version": "0.18.0",
+      "resolved": "https://registry.npmjs.org/xlsx/-/xlsx-0.18.0.tgz",
+      "integrity": "sha512-zQluErfRAr7ga2me77sIlDoljSrPCXnrNaiKo2+YFLtGkd0aW0Z9zfARVgNn9nytYBhsEjf6A+H5TogTeddscg==",
       "dev": true,
       "dependencies": {
-        "adler-32": "~1.2.0",
+        "adler-32": "~1.3.0",
         "cfb": "^1.1.4",
-        "codepage": "~1.14.0",
-        "commander": "~2.17.1",
-        "crc-32": "~1.2.0",
-        "exit-on-epipe": "~1.0.1",
-        "fflate": "^0.3.8",
+        "codepage": "~1.15.0",
+        "crc-32": "~1.2.1",
         "ssf": "~0.11.2",
         "wmf": "~1.0.1",
         "word": "~0.3.0"
@@ -20612,12 +20558,6 @@
       "engines": {
         "node": ">=0.8"
       }
-    },
-    "node_modules/xlsx/node_modules/commander": {
-      "version": "2.17.1",
-      "resolved": "https://registry.npmjs.org/commander/-/commander-2.17.1.tgz",
-      "integrity": "sha512-wPMUt6FnH2yzG95SA6mzjQOEKUU3aLaDEmzs1ti+1E9h+CsrZghRlqEM/EJ4KscsQVG8uNN4uVreUeT8+drlgg==",
-      "dev": true
     },
     "node_modules/xmldom": {
       "version": "0.1.31",

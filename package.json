@@ -59,7 +59,7 @@
     "through2": "*",
     "webpack": "*",
     "webpack-cli": "*",
-    "xls-to-json": "*"
+    "xlsx": "*"
   },
   "dependencies": {
     "core-js": "*",
