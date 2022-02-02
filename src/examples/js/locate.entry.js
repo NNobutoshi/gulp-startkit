@@ -1,5 +1,5 @@
 import Locate from '../../js/_modules/locate';
-import EM from '../../js/_modules/utilities/eventmanager';
+import EM from '../../js/_modules/libs/eventmanager';
 
 const
   mdls = {}

@@ -6,7 +6,7 @@ import merge from 'lodash/mergeWith';
 import position from './utilities/position';
 import './polyfills/closest';
 import '../_vendor/raf';
-import EM from './utilities/eventmanager';
+import EM from './libs/eventmanager';
 
 const d = document;
 

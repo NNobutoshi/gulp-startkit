@@ -10,10 +10,10 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_modules_accordion__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/_modules/accordion */ "./src/js/_modules/accordion.js");
-/* harmony import */ var _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _js_modules_libs_eventmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../js/_modules/libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
-var evtController = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_1__["default"](document.querySelector('.pl-controller'));
+var evtController = new _js_modules_libs_eventmanager__WEBPACK_IMPORTED_MODULE_1__["default"](document.querySelector('.pl-controller'));
 var accordion = new _js_modules_accordion__WEBPACK_IMPORTED_MODULE_0__["default"]({
   selectorParent: '.pl-list_item',
   selectorTrigger: '.pl-list_heading',

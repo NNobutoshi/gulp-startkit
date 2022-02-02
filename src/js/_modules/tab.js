@@ -2,7 +2,7 @@
 
 import merge from 'lodash/mergeWith';
 import './polyfills/closest';
-import EM from './utilities/eventmanager';
+import EM from './libs/eventmanager';
 
 const d = document;
 

@@ -5,7 +5,7 @@
 
 import '../../_vendor/raf';
 import merge from 'lodash/mergeWith';
-import EM from '../utilities/eventmanager';
+import EM from '../libs/eventmanager';
 
 const d = document;
 let uniqueNumber = 0;

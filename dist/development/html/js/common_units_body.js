@@ -26,7 +26,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _libs_transitiontoggle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./libs/transitiontoggle */ "./src/js/_modules/libs/transitiontoggle.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -105,7 +105,7 @@ var Accordion = /*#__PURE__*/function () {
     value: function on(callbacks) {
       var _this2 = this;
 
-      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_8__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_8__["default"](this.elemEventRoot);
       this.callbackBefore = callbacks.before;
       this.callbackAfter = callbacks.after;
       this.callbackFinish = callbacks.finish;
@@ -247,7 +247,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -308,7 +308,7 @@ var AdaptiveHover = /*#__PURE__*/function () {
   _createClass(AdaptiveHover, [{
     key: "on",
     value: function on(callbackEnter, callbackLeave) {
-      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
       this.callbackEnter = callbackEnter;
       this.callbackLeave = callbackLeave;
       this.eventRoot.on(this.eventNameEnter, this.selectorTarget, this.handleEnter.bind(this)).on(this.eventNameLeave, this.selectorTarget, this.handleLeave.bind(this)).on(this.eventNameOutside, this.handleOutSide.bind(this));
@@ -405,6 +405,252 @@ function _getEventObj(e) {
 
 /***/ }),
 
+/***/ "./src/js/_modules/libs/eventmanager.js":
+/*!**********************************************!*\
+  !*** ./src/js/_modules/libs/eventmanager.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ EventManager; }
+/* harmony export */ });
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each.js */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.string.split.js */ "./node_modules/core-js/modules/es.string.split.js");
+/* harmony import */ var core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.iterator.js */ "./node_modules/core-js/modules/es.array.iterator.js");
+/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.map.js */ "./node_modules/core-js/modules/es.map.js");
+/* harmony import */ var core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.string.iterator.js */ "./node_modules/core-js/modules/es.string.iterator.js");
+/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es.object.entries.js */ "./node_modules/core-js/modules/es.object.entries.js");
+/* harmony import */ var core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es.array.concat.js */ "./node_modules/core-js/modules/es.array.concat.js");
+/* harmony import */ var core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es.array.from.js */ "./node_modules/core-js/modules/es.array.from.js");
+/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es.symbol.js */ "./node_modules/core-js/modules/es.symbol.js");
+/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es.symbol.description.js */ "./node_modules/core-js/modules/es.symbol.description.js");
+/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/es.symbol.iterator.js */ "./node_modules/core-js/modules/es.symbol.iterator.js");
+/* harmony import */ var core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es.function.name.js */ "./node_modules/core-js/modules/es.function.name.js");
+/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var EventManager = /*#__PURE__*/function () {
+  function EventManager(elemEventer) {
+    _classCallCheck(this, EventManager);
+
+    this.listeners = {};
+    this.elemEventer = elemEventer || document;
+  }
+
+  _createClass(EventManager, [{
+    key: "on",
+    value: function on(fullEventTypeNames, selectorTarget, listener, options) {
+      if (typeof selectorTarget === 'function') {
+        var _ref = [listener, selectorTarget, null];
+        options = _ref[0];
+        listener = _ref[1];
+        selectorTarget = _ref[2];
+      }
+
+      this.setUp('add', fullEventTypeNames, selectorTarget, listener, options);
+      return this;
+    }
+  }, {
+    key: "off",
+    value: function off(fullEventTypeNames, listener) {
+      this.setUp('remove', fullEventTypeNames, null, listener);
+      return this;
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(fullEventTypeNames) {
+      this.setUp('trigger', fullEventTypeNames);
+      return this;
+    }
+    /**
+     * 半角スペースで区切られた、複数分の、name space を含むfull のtype name 毎に処理。
+     * "add"、"remove"、"trigger"と、渡されたprefix 引数で処理を分ける。
+     */
+
+  }, {
+    key: "setUp",
+    value: function setUp(prefix, fullEventTypeNames, selectorTarget, listener, options) {
+      var _this = this;
+
+      var that = this;
+      fullEventTypeNames.split(' ').forEach(function (fullEventTypeName) {
+        var _fullEventTypeName$sp = fullEventTypeName.split('.'),
+            _fullEventTypeName$sp2 = _slicedToArray(_fullEventTypeName$sp, 2),
+            eventType = _fullEventTypeName$sp2[0],
+            nameSpace = _fullEventTypeName$sp2[1];
+
+        var objListeners, mapListener, target;
+        /**
+         *  name space を含めたfull のevent type 名をキーに、
+         *  listener を配列に格納したものを値にしたオブジェクトをthis.listeners に格納。
+         *  同時にname space を取り除いたevent type 名でaddEventListnerに登録。
+         */
+
+        if (prefix === 'add' && eventType && typeof listener === 'function') {
+          mapListener = new Map();
+          mapListener.set(listener, function (e) {
+            if (selectorTarget && typeof selectorTarget === 'string') {
+              target = e.target.closest(selectorTarget);
+
+              if (!target) {
+                return;
+              }
+            }
+
+            listener(e, target);
+          });
+
+          if (!_this.listeners[fullEventTypeName]) {
+            _this.listeners[fullEventTypeName] = [];
+          }
+
+          _this.listeners[fullEventTypeName].push(mapListener);
+
+          _this.setEventListener(prefix, eventType, mapListener.get(listener), options);
+        } // if( prefix === 'add' )
+
+        /**
+         * this.listeners の中からそのkeyに、渡された引数fullEventTypeNames がフルで一致するもの、
+         * event type 名だけが渡され、それが部分的に含まれるもの、
+         * name space だけが渡され、それが部分的に含まれるものを収集。
+         */
+
+
+        if (prefix === 'remove' || prefix === 'trigger') {
+          objListeners = _collectListeners(function (key) {
+            return eventType && nameSpace && fullEventTypeName === key || eventType && !nameSpace && key.indexOf(eventType) === 0 || !eventType && nameSpace && key.indexOf(".".concat(nameSpace)) >= 0;
+          });
+          /**
+           * 収集したobject の中からprefix 引数に応じて、"remove" で、removeEventListener"の登録。
+           * "trigger"でそのままlistner を実行。
+           */
+
+          var _loop = function _loop() {
+            var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
+                typeName = _Object$entries$_i[0],
+                arrListeners = _Object$entries$_i[1];
+
+            if (prefix === 'remove') {
+              delete that.listeners[typeName];
+            }
+
+            arrListeners.forEach(function (mapListener) {
+              if (prefix === 'remove' && (!listener || mapListener.has(listener))) {
+                _this.setEventListener(prefix, typeName, mapListener.values().next().value);
+              } else if (prefix === 'trigger') {
+                mapListener.values().next().value();
+              }
+            });
+          };
+
+          for (var _i2 = 0, _Object$entries = Object.entries(objListeners); _i2 < _Object$entries.length; _i2++) {
+            _loop();
+          }
+        } // if ( prefix === 'remove' || prefix === 'trigger' )
+
+      });
+      /**
+       * this.listeners の中から渡されたcondition 関数でtrue を返すkey と値を格納したobject を返す。
+       */
+
+      function _collectListeners(condition) {
+        var objListeners = {};
+
+        for (var _i3 = 0, _Object$entries2 = Object.entries(that.listeners); _i3 < _Object$entries2.length; _i3++) {
+          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2),
+              fullTypeName = _Object$entries2$_i[0],
+              arrListeners = _Object$entries2$_i[1];
+
+          if (condition.call(null, fullTypeName, arrListeners)) {
+            var _fullTypeName$split = fullTypeName.split('.'),
+                _fullTypeName$split2 = _slicedToArray(_fullTypeName$split, 1),
+                typeName = _fullTypeName$split2[0];
+
+            if (!objListeners[typeName]) {
+              objListeners[typeName] = [];
+            }
+
+            objListeners[typeName] = objListeners[typeName].concat(arrListeners);
+          }
+        }
+
+        return objListeners;
+      }
+    }
+  }, {
+    key: "setEventListener",
+    value: function setEventListener(prefix, eventType, listener, options) {
+      var arrElements = this.elemEventer.length ? Array.from(this.elemEventer) : [this.elemEventer];
+      arrElements.forEach(function (elem) {
+        elem["".concat(prefix, "EventListener")](eventType, listener, options);
+      });
+    }
+  }]);
+
+  return EventManager;
+}();
+
+
+
+/***/ }),
+
 /***/ "./src/js/_modules/libs/optimizedresize.js":
 /*!*************************************************!*\
   !*** ./src/js/_modules/libs/optimizedresize.js ***!
@@ -430,7 +676,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -591,7 +837,7 @@ var OptimizedResize = /*#__PURE__*/function () {
       var _this = this;
 
       if (!Object.keys(this.callbacks).length) {
-        this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
+        this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
         this.eventRoot.on(this.eventName, function (e) {
           return _this.handleSetup(e);
         });
@@ -695,7 +941,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_position__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../utilities/position */ "./src/js/_modules/utilities/position.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../_vendor/raf */ "./src/js/_vendor/raf.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -864,7 +1110,7 @@ var ScrollManager = /*#__PURE__*/function () {
       var _this = this;
 
       if (!this.callbacks.length) {
-        this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_16__["default"](this.elemEventRoot);
+        this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_16__["default"](this.elemEventRoot);
         this.eventRoot.on(this.eventName, function () {
           return _this.handle();
         });
@@ -997,7 +1243,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -1061,7 +1307,7 @@ var TtransitionToggle = /*#__PURE__*/function () {
   _createClass(TtransitionToggle, [{
     key: "on",
     value: function on(callbacks) {
-      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEvtRoot);
+      this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEvtRoot);
       this.callbackBefore = callbacks.before.bind(this);
       this.callbackAfter = callbacks.after.bind(this);
       this.callbackFinish = callbacks.finish.bind(this);
@@ -1379,7 +1625,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../_vendor/raf */ "./src/js/_vendor/raf.js");
 /* harmony import */ var _vendor_raf__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_vendor_raf__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -1467,7 +1713,7 @@ var Rescroll = /*#__PURE__*/function () {
   _createClass(Rescroll, [{
     key: "on",
     value: function on() {
-      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_17__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_17__["default"](this.elemEventRoot);
       this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameHashChange, this.handleHashChange.bind(this)).on(this.eventNameClick, this.selectorTrigger, this.handleClick.bind(this)).on(this.eventNameScroll, this.handleScroll.bind(this));
       return this;
     }
@@ -1723,7 +1969,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -1794,8 +2040,8 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
   }, {
     key: "on",
     value: function on(callbacks) {
-      this.eventVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemVideo);
-      this.eventCover = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemCover);
+      this.eventVideo = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemVideo);
+      this.eventCover = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemCover);
       this.callbackBefore = callbacks.before.bind(this);
       this.callbackPlayBefore = callbacks.playBefore.bind(this);
       this.callbackPlay = callbacks.play.bind(this);
@@ -1905,7 +2151,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13__);
 /* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -1986,7 +2232,7 @@ var Tab = /*#__PURE__*/function () {
     value: function on(callbacks) {
       this.callbackAllChange = callbacks && callbacks.allChange;
       this.callbackChange = callbacks && callbacks.change;
-      this.eventRoot = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_15__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_15__["default"](this.elemEventRoot);
       this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameClick, this.selectorAnchor, this.handleClick.bind(this));
     }
   }, {
@@ -2169,252 +2415,6 @@ var Tab = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/js/_modules/utilities/eventmanager.js":
-/*!***************************************************!*\
-  !*** ./src/js/_modules/utilities/eventmanager.js ***!
-  \***************************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* binding */ EventManager; }
-/* harmony export */ });
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each.js */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
-/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.string.split.js */ "./node_modules/core-js/modules/es.string.split.js");
-/* harmony import */ var core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_split_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.array.iterator.js */ "./node_modules/core-js/modules/es.array.iterator.js");
-/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.map.js */ "./node_modules/core-js/modules/es.map.js");
-/* harmony import */ var core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_map_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.string.iterator.js */ "./node_modules/core-js/modules/es.string.iterator.js");
-/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es.object.entries.js */ "./node_modules/core-js/modules/es.object.entries.js");
-/* harmony import */ var core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_entries_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es.array.concat.js */ "./node_modules/core-js/modules/es.array.concat.js");
-/* harmony import */ var core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es.array.from.js */ "./node_modules/core-js/modules/es.array.from.js");
-/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es.symbol.js */ "./node_modules/core-js/modules/es.symbol.js");
-/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es.symbol.description.js */ "./node_modules/core-js/modules/es.symbol.description.js");
-/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/es.symbol.iterator.js */ "./node_modules/core-js/modules/es.symbol.iterator.js");
-/* harmony import */ var core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_iterator_js__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
-/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es.function.name.js */ "./node_modules/core-js/modules/es.function.name.js");
-/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _polyfills_closest__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../polyfills/closest */ "./src/js/_modules/polyfills/closest.js");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-var EventManager = /*#__PURE__*/function () {
-  function EventManager(elemEventer) {
-    _classCallCheck(this, EventManager);
-
-    this.listeners = {};
-    this.elemEventer = elemEventer || document;
-  }
-
-  _createClass(EventManager, [{
-    key: "on",
-    value: function on(fullEventTypeNames, selectorTarget, listener, options) {
-      if (typeof selectorTarget === 'function') {
-        var _ref = [listener, selectorTarget, null];
-        options = _ref[0];
-        listener = _ref[1];
-        selectorTarget = _ref[2];
-      }
-
-      this.setUp('add', fullEventTypeNames, selectorTarget, listener, options);
-      return this;
-    }
-  }, {
-    key: "off",
-    value: function off(fullEventTypeNames, listener) {
-      this.setUp('remove', fullEventTypeNames, null, listener);
-      return this;
-    }
-  }, {
-    key: "trigger",
-    value: function trigger(fullEventTypeNames) {
-      this.setUp('trigger', fullEventTypeNames);
-      return this;
-    }
-    /**
-     * 半角スペースで区切られた、複数分の、name space を含むfull のtype name 毎に処理。
-     * "add"、"remove"、"trigger"と、渡されたprefix 引数で処理を分ける。
-     */
-
-  }, {
-    key: "setUp",
-    value: function setUp(prefix, fullEventTypeNames, selectorTarget, listener, options) {
-      var _this = this;
-
-      var that = this;
-      fullEventTypeNames.split(' ').forEach(function (fullEventTypeName) {
-        var _fullEventTypeName$sp = fullEventTypeName.split('.'),
-            _fullEventTypeName$sp2 = _slicedToArray(_fullEventTypeName$sp, 2),
-            eventType = _fullEventTypeName$sp2[0],
-            nameSpace = _fullEventTypeName$sp2[1];
-
-        var objListeners, mapListener, target;
-        /**
-         *  name space を含めたfull のevent type 名をキーに、
-         *  listener を配列に格納したものを値にしたオブジェクトをthis.listeners に格納。
-         *  同時にname space を取り除いたevent type 名でaddEventListnerに登録。
-         */
-
-        if (prefix === 'add' && eventType && typeof listener === 'function') {
-          mapListener = new Map();
-          mapListener.set(listener, function (e) {
-            if (selectorTarget && typeof selectorTarget === 'string') {
-              target = e.target.closest(selectorTarget);
-
-              if (!target) {
-                return;
-              }
-            }
-
-            listener(e, target);
-          });
-
-          if (!_this.listeners[fullEventTypeName]) {
-            _this.listeners[fullEventTypeName] = [];
-          }
-
-          _this.listeners[fullEventTypeName].push(mapListener);
-
-          _this.setEventListener(prefix, eventType, mapListener.get(listener), options);
-        } // if( prefix === 'add' )
-
-        /**
-         * this.listeners の中からそのkeyに、渡された引数fullEventTypeNames がフルで一致するもの、
-         * event type 名だけが渡され、それが部分的に含まれるもの、
-         * name space だけが渡され、それが部分的に含まれるものを収集。
-         */
-
-
-        if (prefix === 'remove' || prefix === 'trigger') {
-          objListeners = _collectListeners(function (key) {
-            return eventType && nameSpace && fullEventTypeName === key || eventType && !nameSpace && key.indexOf(eventType) === 0 || !eventType && nameSpace && key.indexOf(".".concat(nameSpace)) >= 0;
-          });
-          /**
-           * 収集したobject の中からprefix 引数に応じて、"remove" で、removeEventListener"の登録。
-           * "trigger"でそのままlistner を実行。
-           */
-
-          var _loop = function _loop() {
-            var _Object$entries$_i = _slicedToArray(_Object$entries[_i2], 2),
-                typeName = _Object$entries$_i[0],
-                arrListeners = _Object$entries$_i[1];
-
-            if (prefix === 'remove') {
-              delete that.listeners[typeName];
-            }
-
-            arrListeners.forEach(function (mapListener) {
-              if (prefix === 'remove' && (!listener || mapListener.has(listener))) {
-                _this.setEventListener(prefix, typeName, mapListener.values().next().value);
-              } else if (prefix === 'trigger') {
-                mapListener.values().next().value();
-              }
-            });
-          };
-
-          for (var _i2 = 0, _Object$entries = Object.entries(objListeners); _i2 < _Object$entries.length; _i2++) {
-            _loop();
-          }
-        } // if ( prefix === 'remove' || prefix === 'trigger' )
-
-      });
-      /**
-       * this.listeners の中から渡されたcondition 関数でtrue を返すkey と値を格納したobject を返す。
-       */
-
-      function _collectListeners(condition) {
-        var objListeners = {};
-
-        for (var _i3 = 0, _Object$entries2 = Object.entries(that.listeners); _i3 < _Object$entries2.length; _i3++) {
-          var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2),
-              fullTypeName = _Object$entries2$_i[0],
-              arrListeners = _Object$entries2$_i[1];
-
-          if (condition.call(null, fullTypeName, arrListeners)) {
-            var _fullTypeName$split = fullTypeName.split('.'),
-                _fullTypeName$split2 = _slicedToArray(_fullTypeName$split, 1),
-                typeName = _fullTypeName$split2[0];
-
-            if (!objListeners[typeName]) {
-              objListeners[typeName] = [];
-            }
-
-            objListeners[typeName] = objListeners[typeName].concat(arrListeners);
-          }
-        }
-
-        return objListeners;
-      }
-    }
-  }, {
-    key: "setEventListener",
-    value: function setEventListener(prefix, eventType, listener, options) {
-      var arrElements = this.elemEventer.length ? Array.from(this.elemEventer) : [this.elemEventer];
-      arrElements.forEach(function (elem) {
-        elem["".concat(prefix, "EventListener")](eventType, listener, options);
-      });
-    }
-  }]);
-
-  return EventManager;
-}();
-
-
-
-/***/ }),
-
 /***/ "./src/js/_modules/utilities/parents.js":
 /*!**********************************************!*\
   !*** ./src/js/_modules/utilities/parents.js ***!
@@ -2509,7 +2509,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! lodash/mergeWith */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(lodash_mergeWith__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _libs_eventmanager__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
@@ -2667,7 +2667,7 @@ var VideoGround = /*#__PURE__*/function () {
         this.callbackDestroy = callbacks.destroy;
       }
 
-      this.eventVideo = new _utilities_eventmanager__WEBPACK_IMPORTED_MODULE_14__["default"](this.elemVideo);
+      this.eventVideo = new _libs_eventmanager__WEBPACK_IMPORTED_MODULE_14__["default"](this.elemVideo);
       this.eventVideo.on(this.eventNamePlay, this.handlePlay.bind(this)).on(this.eventNameCanPlay, this.handleCanPlay.bind(this));
       this.eventCall(this.callbackBefore);
       return this;

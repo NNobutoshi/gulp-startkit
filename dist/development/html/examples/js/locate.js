@@ -32,7 +32,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
 /* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var _js_modules_locate__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../js/_modules/locate */ "./src/js/_modules/locate.js");
-/* harmony import */ var _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../js/_modules/utilities/eventmanager */ "./src/js/_modules/utilities/eventmanager.js");
+/* harmony import */ var _js_modules_libs_eventmanager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../js/_modules/libs/eventmanager */ "./src/js/_modules/libs/eventmanager.js");
 
 
 
@@ -57,8 +57,8 @@ var mdls = {},
     SELECTORTARGET = '.pl-nav_anchor',
     SELECTORPARENT = '.pl-nav_item',
     elemTarget = document.querySelectorAll(SELECTORTARGET),
-    evtWindow = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_12__["default"](window),
-    evtTarget = new _js_modules_utilities_eventmanager__WEBPACK_IMPORTED_MODULE_12__["default"](elemTarget);
+    evtWindow = new _js_modules_libs_eventmanager__WEBPACK_IMPORTED_MODULE_12__["default"](window),
+    evtTarget = new _js_modules_libs_eventmanager__WEBPACK_IMPORTED_MODULE_12__["default"](elemTarget);
 mdls.locate = new _js_modules_locate__WEBPACK_IMPORTED_MODULE_11__["default"]({
   selectorTarget: SELECTORTARGET,
   selectorParent: SELECTORPARENT
