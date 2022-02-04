@@ -27,7 +27,7 @@ const
     watchTasks = {}
     ,args = process.argv.slice( process.argv.indexOf( 'gulpkit.js' ) + 1 )
   ;
-  if ( !args.length ) {
+  if ( args.length === 0 ) {
     return;
   }
   args.forEach( ( taskName ) => {

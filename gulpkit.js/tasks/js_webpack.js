@@ -10,32 +10,22 @@ const
   ,{ isEqual, mergeWith } = require( 'lodash' )
 ;
 const
-  config         = require( '../config.js' ).js_webpack
-  ,options       = config.options
-  ,webpackConfig = config.webpackConfig
-  ,optimization  = {
-    splitChunks : { cacheGroups : {} }
-  }
+  config   = require( '../config.js' ).js_webpack
+  ,options = config.options
 ;
 let
   compiler = null
+  ,webpackConfig = config.webpackConfig
   ,entries
-  ,catcheGroups
+  ,cacheGroups
 ;
 
 /*
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。
  * watch はGulpのものを使用。
- * entry や splitChunks は、Gulp.src() 後,chumk が通ってくる毎、作成し。
- * 既存の webpackConfigと 比較し差異があれば再代入する。
+ * entry や splitChunks は、Gulp.src() 後,chumk が通ってくる毎に作成し、
+ * 既存の webpackConfigと 比較して差異があれば再代入する。
  */
-
-/*
- * WebpackConfig。既存の設定を上書きしないようにマージ
- */
-if ( webpackConfig.optimization ) {
-  webpackConfig.optimization = mergeWith( {}, webpackConfig.optimization, optimization );
-}
 
 /*
  * config.js 側で'filesystem' の指定があれば、cacheDirectory はここで指定。
@@ -62,7 +52,7 @@ function _createEntries() {
   ;
 
   entries = {};
-  catcheGroups = {};
+  cacheGroups = {};
 
   return through.obj( _transform, _flush );
 
@@ -77,7 +67,7 @@ function _createEntries() {
      * chunk のcontentsを webpackConfig で使用可能な状態にする。
      */
     if ( regexShareFileConf && regexShareFileConf.test( file.path ) ) {
-      catcheGroups = _createSplitChunks( catcheGroups, file.contents );
+      cacheGroups = _createSplitChunks( cacheGroups, file.contents );
     }
 
     /*
@@ -100,16 +90,20 @@ function _createEntries() {
   function _flush( callBack ) {
     if ( compiler === null ||
       !isEqual( webpackConfig.entry, entries ) ||
-      !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, catcheGroups )
+      !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, cacheGroups )
     ) {
-      webpackConfig.entry = entries;
-      webpackConfig.output.filename = '[name].js';
-      webpackConfig.output.path = path.resolve( process.cwd(), config.dist );
-      webpackConfig.optimization.splitChunks.cacheGroups = mergeWith(
-        {},
-        webpackConfig.optimization.splitChunks.cacheGroups,
-        catcheGroups,
-      );
+      webpackConfig = mergeWith( {}, webpackConfig, {
+        entry : entries,
+        output : {
+          filename : '[name].js',
+          path : path.resolve( process.cwd(), config.dist ),
+        },
+        optimization : {
+          splitChunks : {
+            cacheGroups : cacheGroups,
+          }
+        }
+      } );
       compiler = webpack( webpackConfig );
     }
     callBack();
@@ -133,7 +127,7 @@ function _webPackCall( callBack, stream ) {
     if ( error ) {
       return stream.emit( 'error', error );
     }
-    if ( stats.hasErrors && stats.hasErrors() ) {
+    if ( stats && stats.hasErrors && stats.hasErrors() ) {
       stats.toJson().errors.forEach( ( item ) => {
         errorMessages.push( item.message );
       } );
