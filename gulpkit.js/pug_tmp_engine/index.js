@@ -4,22 +4,21 @@ const
 ;
 const
   mkdirp = require( 'mkdirp' )
-  ,log    = require( 'fancy-log' )
-  ,XLSX   = require( 'xlsx' )
+  ,log   = require( 'fancy-log' )
+  ,XLSX  = require( 'xlsx' )
 ;
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
   ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.json'
   ,SITE_MAP_FILE_PATH   = '../../src/sitemap.xlsx'
-  // ,OUTPUT_JSON_PATH     = './output.json'
   ,settings = {
-    src        : path.resolve( __dirname, SRC_DIR ),
-    extension  : /\.pug?$/,
-    configFile : path.resolve( __dirname, PUG_CONFIG_FILE_PATH ),
-    indexName  : 'index.pug',
-    linefeed   : '\n', // '\r\n'
-    sheetName  : 'Sheet1',
+    src          : path.resolve( __dirname, SRC_DIR ),
+    extension    : /\.pug?$/,
+    configFile   : path.resolve( __dirname, PUG_CONFIG_FILE_PATH ),
+    indexName    : 'index.pug',
+    linefeed     : '\n', // '\r\n'
+    sheetName    : 'Sheet1',
     xlsxFilePath : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
   }
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
@@ -27,16 +26,16 @@ const
 
 ( async function _run() {
   const
-    workBook    = XLSX.readFile( settings.xlsxFilePath )
+    workBook     = XLSX.readFile( settings.xlsxFilePath )
     ,jSONData    = _xlsxToJson( workBook )
     ,confStrings = await _readConfigFile()
     ,indent      = _getIndent( confStrings, /[\s\S]+?( +)"{{": "",/ )
     ,dataStrings = _deleteWrapperParen( jSONData, indent )
   ;
   _writePugConfigFile( confStrings, dataStrings, indent );
-  Object.keys( jSONData ).forEach( ( url ) => {
+  for ( let url in jSONData ) {
     _createPugFileByProps( jSONData[ url ], _createPugFile );
-  } );
+  }
 } )();
 
 function _xlsxToJson( workBook ) {
@@ -95,10 +94,10 @@ function _reJsonData( data ) {
 
 function _createPugFileByProps( props, callback ) {
   let
-    url = props.url
-    ,temp = props.template
+    url      = props.url
+    ,temp    = props.template
     ,htmlUrl = url
-    ,pugUrl = ''
+    ,pugUrl  = ''
   ;
   if ( url.match( /\/$/ ) ) {
     pugUrl = url.replace( /\/$/, '/index.pug' );

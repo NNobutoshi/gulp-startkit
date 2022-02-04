@@ -9,6 +9,7 @@ const
   ,through      = require( 'through2' )
   ,beautifyHtml = require( 'js-beautify' ).html
   ,log          = require( 'fancy-log' )
+  ,chalk        = require( 'chalk' )
   ,sizeOf       = require( 'image-size' )
 ;
 const
@@ -97,40 +98,40 @@ function _select( filePath, collection, destFiles ) {
 }
 
 function _pugRender() {
-  const
-    excludedFileRegEx = /[\\/]_|_data\.json$/
-    ,rendered = {
-      files : []
-    }
-  ;
-  const stream = through.obj( ( file, enc, callBack ) => {
-    if ( excludedFileRegEx.test( path.relative( __dirname, file.path ) ) ) {
+  const ignoreFileRegEx = /^_/;
+  let renderedFileCounter = 0;
+
+  return through.obj( _transform, _flush );
+
+  function _transform( file, enc, callBack ) {
+    if ( ignoreFileRegEx.test( path.basename( file.path ) ) ) {
       return callBack();
     }
-    options.pug.filename = file.path;
-    options.pug.self = true;
-    options.pug.siteData = file.data.siteData;
-    options.pug.pageData = file.data.pageData;
+    options.pug = Object.assign( options.pug, {
+      filename : file.path,
+      self     : true,
+      siteData : file.data.siteData,
+      pageData : file.data.pageData,
+    } );
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        stream.emit( 'error', error );
+        this.emit( 'error', error );
+        console.log( chalk.hex( '#FF0000' )( file.path ) );
         return callBack();
       }
       file.contents = new Buffer.from( contents );
+      log( `[html_pug]: rendered ${path.relative( process.cwd(), file.path )}` );
       file.path = file.path.replace( /\.pug$/, '.html' );
-      rendered.files.push( file.path );
+      renderedFileCounter += 1;
       callBack( null, file );
     } );
-  }, ( callBack ) => {
-    log( 'html_pug: rendered\n' +
-      rendered.files.map( filePath => {
-        return `: ${path.relative( process.cwd(), filePath )}`;
-      } ).join( '\n' ) +
-      `\ntotal: ${rendered.files.length} files`
-    );
+  }
+
+  function _flush( callBack ) {
+    log( `[html_pug]: rendered ${renderedFileCounter} files` );
     callBack();
-  } );
-  return stream;
+  }
+
 }
 
 /*
