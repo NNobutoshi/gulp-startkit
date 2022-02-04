@@ -139,7 +139,7 @@ const
         },
         iconfontCss : {
           fontName   : 'icons',
-          path       : SRC + '/_templates/_icons.scss',
+          path       : SRC + '/css/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/',
           firstGlyph : 0xF001,
@@ -336,7 +336,7 @@ const
           imgPath     : '../img/common_pack.png',
           cssFormat   : 'scss',
           padding     : 10,
-          cssTemplate : SRC + '/_templates/scss.template.handlebars',
+          cssTemplate : SRC + '/css/_templates/_sprite.scss.handlebars',
           cssVarMap   : function( sprite ) {
             sprite.name = 'sheet-' + sprite.name;
           },
