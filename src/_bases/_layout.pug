@@ -10,7 +10,7 @@ block config
     pageData.url = pageData.url.replace( /\/index\.html$/, '/' )
 doctype html
 //- ↓差分ビルドに検知させるためのコメント
-//- include /_pug_data.json
+//- include /_data/_pug_data.json
 html(lang=pageData.lang)
   head(prefix=pageData.ogPrefix)
     meta(charset="utf-8")
@@ -39,14 +39,14 @@ html(lang=pageData.lang)
       script(src=pageData.jsCommonDir + "/common_head.js")
   body
     div.sg-page#page
-      include _page_head.pug
+      include ../_parts/_page_head.pug
       ///.sg-page_head
       main.sg-page_body
         div.sg-page_core.sg-page_core--body
           block pageBody
             p foo
       ///.sg-page_body
-      include _page_foot.pug
+      include ../_parts/_page_foot.pug
       ///.sg-page_foot
     ///.page#page
     block script_body

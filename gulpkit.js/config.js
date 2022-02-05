@@ -285,7 +285,7 @@ const
       dist    : DIST,
       base    : SRC,
       watch   : true && ENABLE_WATCH,
-      data    : path.resolve( process.cwd(), `${SRC}/_pug_data.json` ),
+      data    : path.resolve( process.cwd(), `${SRC}/_data/_pug_data.json` ),
       options : {
         imgSize : true,
         assistPretty : {

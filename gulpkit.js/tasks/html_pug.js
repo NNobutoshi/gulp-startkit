@@ -107,7 +107,7 @@ function _pugRender() {
     if ( ignoreFileRegEx.test( path.basename( file.path ) ) ) {
       return callBack();
     }
-    options.pug = Object.assign( options.pug, {
+    Object.assign( options.pug, {
       filename : file.path,
       self     : true,
       siteData : file.data.siteData,

@@ -92,7 +92,7 @@ function _createEntries() {
       !isEqual( webpackConfig.entry, entries ) ||
       !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, cacheGroups )
     ) {
-      webpackConfig = mergeWith( {}, webpackConfig, {
+      mergeWith( webpackConfig, {
         entry : entries,
         output : {
           filename : '[name].js',

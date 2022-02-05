@@ -22,59 +22,59 @@
   "/index.html": {
     "url": "/index.html",
     "title": "starter kit",
-    "template": "/_template.pug",
+    "template": "/_templates/_template.pug",
     "ogPrefix": "og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#",
     "ogType": "website"
   },
   "/examples/accordion.html": {
     "url": "/examples/accordion.html",
     "title": "starter kit | accordion",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/hover.html": {
     "url": "/examples/hover.html",
     "title": "starter kit | hover",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/inview.html": {
     "url": "/examples/inview.html",
     "title": "starter kit | inview",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/locate.html": {
     "url": "/examples/locate.html",
     "title": "starter kit | locate",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/rescroll.html": {
     "url": "/examples/rescroll.html",
     "title": "starter kit | rescroll",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/resize.html": {
     "url": "/examples/resize.html",
     "title": "starter kit | resize",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/sticky.html": {
     "url": "/examples/sticky.html",
     "title": "starter kit | sticky",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/tab.html": {
     "url": "/examples/tab.html",
     "title": "starter kit | tab",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/videoground.html": {
     "url": "/examples/videoground.html",
     "title": "starter kit | videoground",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "/examples/simplevideoplay.html": {
     "url": "/examples/simplevideoplay.html",
     "title": "starter kit | simplevideoplay",
-    "template": "/_template.pug"
+    "template": "/_templates/_template.pug"
   },
   "}}": ""
 }

@@ -10,8 +10,8 @@ const
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
-  ,PUG_CONFIG_FILE_PATH = '../../src/_pug_data.json'
-  ,SITE_MAP_FILE_PATH   = '../../src/sitemap.xlsx'
+  ,PUG_CONFIG_FILE_PATH = '../../src/_data/_pug_data.json'
+  ,SITE_MAP_FILE_PATH   = '../../src/_data/sitemap.xlsx'
   ,settings = {
     src          : path.resolve( __dirname, SRC_DIR ),
     extension    : /\.pug?$/,
