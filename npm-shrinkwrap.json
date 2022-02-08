@@ -54,7 +54,7 @@
         "through2": "*",
         "webpack": "*",
         "webpack-cli": "*",
-        "xlsx": "^0.18.0"
+        "xlsx": "*"
       }
     },
     "node_modules/@babel/code-frame": {
