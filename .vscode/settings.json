@@ -13,5 +13,7 @@
     ],
     "path-autocomplete.pathMappings": {
       "$root": ["${folder}/src"] // the root is now relative to both p1/src and p2/src
-    }
+    },
+    "stylelint.validate": ["css", "scss"],
+    "scss.validate": false
 }
