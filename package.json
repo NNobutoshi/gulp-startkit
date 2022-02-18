@@ -55,6 +55,7 @@
     "sass-graph": "*",
     "stylelint": "*",
     "stylelint-config-recommended": "*",
+    "stylelint-config-recommended-scss": "*",
     "svglint": "*",
     "terser-webpack-plugin": "*",
     "through2": "*",
