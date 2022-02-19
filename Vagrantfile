@@ -4,7 +4,7 @@
 _conf_defaults = {
   "ip" => "192.168.33.10",
   "name" => "project_A",
-  "box" => "generic/centos8",
+  "box" => "ubuntu/bionic64",
   "guestPort" => 22,
   "hostPort" => 2222,
 }
@@ -90,30 +90,21 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    sudo yum -y update
-    sudo yum -y install httpd
-    sudo yum -y install git-all
-    sudo yum -y install gcc gcc-c++ make
-    # apache conf
-    cp -n /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd_orig.conf
-    sed -i -e "\\%<Directory \\"/var/www/html\\">%,\\%</Directory>%s%AllowOverride None%AllowOverride All%g" /etc/httpd/conf/httpd.conf
-    sed -i -e "s%#EnableMMAP off%EnableMMAP off%g" /etc/httpd/conf/httpd.conf
-    sed -i -e "s%EnableSendfile on%EnableSendfile off%g" /etc/httpd/conf/httpd.conf
-    # selinux conf
-    sed -i -e "s%SELINUX=enforcing%SELINUX=disabled%g" /etc/selinux/config
+    sudo apt-get update -y
+    sudo apt-get install -y g++ build-essential
+
     # nodejs
-    curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
-    sudo yum install -y nodejs-16.13.0
-    # firewall
-    setenforce 0
-    firewall-cmd --permanent --add-service=http
-    firewall-cmd --permanent --add-port=3000/tcp
-    firewall-cmd --permanent --add-port=3001/tcp
-    firewall-cmd --reload
-    # http
-    systemctl enable httpd.service
-    systemctl start httpd.service
-    # npm install
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+    # nginx
+    sudo apt install -y nginx
+    sudo ufw -y enable
+    sudo ufw allow 22
+    sudo ufw allow 3000
+    sudo ufw allow 'Nginx HTTP'
+    sudo ufw reload
+
     cd /home/vagrant/myproject
     sudo npm install
   SHELL
