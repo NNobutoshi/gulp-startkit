@@ -1,5 +1,5 @@
-import Accordion from '../../js/_modules/accordion';
-import EM from '../../js/_modules/libs/eventmanager';
+import Accordion from '../../js/_modules/accordion.js';
+import EM from '../../js/_modules/libs/eventmanager.js';
 
 const evtController = new EM( document.querySelector( '.pl-controller' ) );
 

@@ -1,33 +1,32 @@
-const
-  { src, dest, lastRun } = require( 'gulp' )
-  ,imagemin         = require( 'gulp-imagemin' )
-  ,plumber          = require( 'gulp-plumber' )
-  ,imageminMozjpeg  = require( 'imagemin-mozjpeg' )
-  ,imageminPngquant = require( 'imagemin-pngquant' )
-  ,diff             = require( '../lib/diff_build.js' )
-;
-const
-  config = require( '../config.js' ).img_min
-;
-const
-  options = config.options
-;
+import gulp from 'gulp';
+import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
+import plumber          from 'gulp-plumber';
+import imageminPngquant from 'imagemin-pngquant';
+import diff             from '../lib/diff_build.js';
 
-module.exports = img_min;
+import configFile       from '../config.js';
+
+const
+  { src, dest, lastRun } = gulp
+;
+const
+  config = configFile.img_min
+  ,options = config.options
+;
 
 /*
  * 1 src → 1 dist なので diff build はGulp.lastRun と併用する。
  */
-function img_min() {
+export default function img_min() {
   return src( config.src, { since : lastRun( img_min ) } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( imagemin( [
-      imageminMozjpeg( options.imageminMozjpeg ),
+      mozjpeg( options.imageminMozjpeg ),
       imageminPngquant( options.imageminPngquant ),
-      imagemin.svgo( options.svgo ),
-      imagemin.optipng(),
-      imagemin.gifsicle(),
+      svgo( options.svgo ),
+      optipng(),
+      gifsicle(),
     ] ) )
     .pipe( dest( config.dist ) )
   ;

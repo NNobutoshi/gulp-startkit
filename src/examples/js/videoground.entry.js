@@ -1,6 +1,6 @@
-import ScrollManager from '../../js/_modules/libs/scrollmanager';
-import OptimizedResize from '../../js/_modules/libs/optimizedresize';
-import VideoGround from '../../js/_modules/videoground';
+import ScrollManager from '../../js/_modules/libs/scrollmanager.js';
+import OptimizedResize from '../../js/_modules/libs/optimizedresize.js';
+import VideoGround from '../../js/_modules/videoground.js';
 
 const
   CLASSNAME_VIDEO = 'js-pl-mainVisual_video'

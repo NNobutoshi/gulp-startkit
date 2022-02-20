@@ -2,11 +2,11 @@
  * rescroll.js
  */
 
-import merge from 'lodash/mergeWith';
-import position from './utilities/position';
-import './polyfills/closest';
-import '../_vendor/raf';
-import EM from './libs/eventmanager';
+import merge from 'lodash/mergeWith.js';
+import position from './utilities/position.js';
+import './polyfills/closest.js';
+import '../_vendor/raf.js';
+import EM from './libs/eventmanager.js';
 
 const d = document;
 

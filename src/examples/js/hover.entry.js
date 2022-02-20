@@ -1,4 +1,4 @@
-import Adaptivehover from '../../js/_modules/libs/adaptivehover';
+import Adaptivehover from '../../js/_modules/libs/adaptivehover.js';
 
 const mdls = {};
 

@@ -1,22 +1,22 @@
+import gulp    from 'gulp';
+import eslint  from 'gulp-eslint';
+import plumber from 'gulp-plumber';
+import diff    from '../lib/diff_build.js';
+
+import configFile from '../config.js';
 const
-  { src, lastRun } = require( 'gulp' )
-  ,eslint  = require( 'gulp-eslint' )
-  ,plumber = require( 'gulp-plumber' )
-  ,diff    = require( '../lib/diff_build.js' )
+  { src, lastRun } = gulp
 ;
 const
-  config = require( '../config.js' ).js_eslint
-;
-const
-  options = config.options
+  config = configFile.js_eslint
+  ,options = config.options
 ;
 
-module.exports = js_eslint;
 
 /*
  * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
  */
-function js_eslint() {
+export default function js_eslint() {
   return src( config.src, { since : lastRun( js_eslint ) } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

@@ -1,16 +1,18 @@
+import path       from 'path';
+import gulp       from 'gulp';
+import plumber    from 'gulp-plumber';
+import webpack    from 'webpack';
+import log        from 'fancy-log';
+import through    from 'through2';
+import mergeWith  from 'lodash/mergeWith.js';
+import isEqual    from 'lodash/isEqual.js';
+import configFile from '../config.js';
+
 const
-  path = require( 'path' )
+  { src } = gulp
 ;
 const
-  { src }  = require( 'gulp' )
-  ,plumber = require( 'gulp-plumber' )
-  ,webpack = require( 'webpack' )
-  ,log     = require( 'fancy-log' )
-  ,through = require( 'through2' )
-  ,{ isEqual, mergeWith } = require( 'lodash' )
-;
-const
-  config   = require( '../config.js' ).js_webpack
+  config   = configFile.js_webpack
   ,options = config.options
 ;
 let
@@ -35,9 +37,8 @@ if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
 }
 
-module.exports = js_webpack;
 
-function js_webpack() {
+export default function js_webpack() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( _createEntries() )

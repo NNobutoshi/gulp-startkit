@@ -4,10 +4,10 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import merge from 'lodash/mergeWith';
-import position from '../utilities/position';
-import '../../_vendor/raf';
-import EM from '../libs/eventmanager';
+import merge from 'lodash/mergeWith.js';
+import position from '../utilities/position.js';
+import '../../_vendor/raf.js';
+import EM from '../libs/eventmanager.js';
 
 const
   doc = document

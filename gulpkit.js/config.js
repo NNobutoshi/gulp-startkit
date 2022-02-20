@@ -180,8 +180,14 @@ const
         },
         svgo : {
           plugins : [
-            { removeViewBox : false },
-            { cleanupIDs : true },
+            {
+              name: 'removeViewBox',
+              active: true
+            },
+            {
+              name: 'cleanupIDs',
+              active: false
+            },
           ],
         },
         diff : {
@@ -254,7 +260,7 @@ const
     },
     'js_eslint' : {
       src : [
-        ''  + './gulpkit.js/**/*.js',
+        './**/*.js',
         ''  + SRC + '/**/*.js',
         '!' + SRC + '/**/_vendor/*.js',
       ],

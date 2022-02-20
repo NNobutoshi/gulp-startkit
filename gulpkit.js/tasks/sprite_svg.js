@@ -1,24 +1,21 @@
+import gulp        from 'gulp';
+import svgSprite   from 'gulp-svg-sprite';
+import plumber     from 'gulp-plumber';
+import gulpIf      from 'gulp-if';
+import diff        from '../lib/diff_build.js';
+import taskForEach from '../lib/task_for_each.js';
+import svgLint     from '../lib/svg_lint.js';
+import configFile  from '../config.js';
+
 const
-  { src, dest } = require( 'gulp' )
-  ,svgSprite    = require( 'gulp-svg-sprite' )
-  ,plumber      = require( 'gulp-plumber' )
-  ,gulpIf       = require( 'gulp-if' )
+  { src, dest } = gulp
 ;
 const
-  diff         = require( '../lib/diff_build.js' )
-  ,taskForEach = require( '../lib/task_for_each.js' )
-  ,svgLint     = require( '../lib/svg_lint.js' )
-;
-const
-  config = require( '../config.js' ).sprite_svg
-;
-const
-  options = config.options
+  config = configFile.sprite_svg
+  ,options = config.options
 ;
 
-module.exports = sprite_svg;
-
-function sprite_svg() {
+export default function sprite_svg() {
   return src( config.src )
     .pipe( diff( options.diff ) )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )

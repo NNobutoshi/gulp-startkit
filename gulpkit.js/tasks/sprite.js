@@ -1,21 +1,21 @@
+import gulp from 'gulp';
+import spriteSmith  from 'gulp.spritesmith';
+import plumber      from 'gulp-plumber';
+import mergeStream  from 'merge-stream';
+import taskForEach  from '../lib/task_for_each.js';
+import diff         from '../lib/diff_build.js';
+
+import configFile from '../config.js';
+
 const
-  { src, dest } = require( 'gulp' )
-  ,spriteSmith  = require( 'gulp.spritesmith' )
-  ,plumber      = require( 'gulp-plumber' )
-  ,mergeStream  = require( 'merge-stream' )
-  ,taskForEach  = require( '../lib/task_for_each.js' )
-  ,diff         = require( '../lib/diff_build.js' )
+  { src, dest } = gulp
 ;
 const
-  config = require( '../config.js' ).sprite
-;
-const
-  options = config.options
+  config = configFile.sprite
+  ,options = config.options
 ;
 
-module.exports = sprite;
-
-function sprite() {
+export default function sprite() {
   return src( config.src )
     .pipe( diff( options.diff ) )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )

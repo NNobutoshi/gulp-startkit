@@ -4,10 +4,10 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import '../polyfills/matches';
-import '../polyfills/closest';
-import merge from 'lodash/mergeWith';
-import EM from '../libs/eventmanager';
+import '../polyfills/matches.js';
+import '../polyfills/closest.js';
+import merge from 'lodash/mergeWith.js';
+import EM from '../libs/eventmanager.js';
 
 const d = document;
 

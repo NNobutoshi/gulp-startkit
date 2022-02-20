@@ -1,4 +1,4 @@
-import ScrollManager from '../../js/_modules/libs/scrollmanager';
+import ScrollManager from '../../js/_modules/libs/scrollmanager.js';
 
 const
   mdls = {}

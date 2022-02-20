@@ -1,6 +1,6 @@
-import TransitionToggle from './libs/transitiontoggle';
-import merge from 'lodash/mergeWith';
-import EM from './libs/eventmanager';
+import TransitionToggle from './libs/transitiontoggle.js';
+import merge from 'lodash/mergeWith.js';
+import EM from './libs/eventmanager.js';
 
 const d = document;
 

@@ -1,5 +1,5 @@
-import merge from 'lodash/mergeWith';
-import parents from './utilities/parents';
+import merge from 'lodash/mergeWith.js';
+import parents from './utilities/parents.js';
 
 export default class Locate {
 

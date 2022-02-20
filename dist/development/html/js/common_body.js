@@ -2,14 +2,14 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/common_body.entry.js":
-/*!*************************************!*\
-  !*** ./src/js/common_body.entry.js ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+/***/ "../src/js/common_body.entry.js":
+/*!**************************************!*\
+  !*** ../src/js/common_body.entry.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
+/* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "../src/js/_modules/foo.js");
 
 (0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function () {
   console.info('ok');
@@ -78,18 +78,6 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
 /******/ 		};
 /******/ 	}();
 /******/ 	
@@ -171,7 +159,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			return __webpack_require__.O(result);
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || [];
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	}();
@@ -181,7 +169,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_units_body"], function() { return __webpack_require__("./src/js/common_body.entry.js"); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_units_body"], function() { return __webpack_require__("../src/js/common_body.entry.js"); })
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

@@ -1,4 +1,4 @@
-import '../polyfills/closest';
+import '../polyfills/closest.js';
 
 export default class EventManager {
 

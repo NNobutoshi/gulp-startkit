@@ -1,5 +1,5 @@
-import Tab from '../../js/_modules/tab';
-import Rescroll from '../../js/_modules/rescroll';
+import Tab from '../../js/_modules/tab.js';
+import Rescroll from '../../js/_modules/rescroll.js';
 
 new Rescroll( {
   offsetTop : '.pl-nav',

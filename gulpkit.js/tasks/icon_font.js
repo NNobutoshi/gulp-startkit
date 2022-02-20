@@ -1,27 +1,27 @@
+import gulp        from 'gulp';
+import iconfont    from 'gulp-iconfont';
+import iconfontCss from 'gulp-iconfont-css';
+import plumber     from 'gulp-plumber';
+import through     from 'through2';
+
+import svgLint     from '../lib/svg_lint.js';
+import taskForEach from '../lib/task_for_each.js';
+import diff        from '../lib/diff_build.js';
+
+import configFile  from '../config.js';
+
 const
-  { src, dest } = require( 'gulp' )
-  ,iconfont     = require( 'gulp-iconfont' )
-  ,iconfontCss  = require( 'gulp-iconfont-css' )
-  ,plumber      = require( 'gulp-plumber' )
-  ,through      = require( 'through2' )
+  { src, dest } = gulp
 ;
+
 const
-  svgLint      = require( '../lib/svg_lint.js' )
-  ,taskForEach = require( '../lib/task_for_each.js' )
-  ,diff        = require( '../lib/diff_build.js' )
-;
-const
-  config = require( '../config.js' ).icon_font
-;
-const
-  options = config.options
+  config = configFile.icon_font
+  ,options = config.options
 ;
 
 options.iconfont.timestamp = 0;
 
-module.exports = icon_font;
-
-function icon_font() {
+export default function icon_font() {
   return src( config.src )
     .pipe( diff( options.diff ) )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )

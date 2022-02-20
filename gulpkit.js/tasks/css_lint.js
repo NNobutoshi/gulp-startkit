@@ -1,22 +1,22 @@
-const
-  { src, lastRun } = require( 'gulp' )
-  ,plumber   = require( 'gulp-plumber' )
-  ,stylelint = require( 'gulp-stylelint' )
-  ,diff      = require( '../lib/diff_build.js' )
-;
-const
-  config = require( '../config.js' ).css_lint
-;
-const
-  options = config.options
-;
+import gulp      from 'gulp';
+import plumber   from 'gulp-plumber';
+import stylelint from 'gulp-stylelint';
 
-module.exports = css_lint;
+import diff       from '../lib/diff_build.js';
+import configFile from '../config.js';
+
+const
+  { src, lastRun } = gulp
+;
+const
+  config = configFile.css_lint
+  ,options = config.options
+;
 
 /*
  * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
  */
-function css_lint() {
+export default function css_lint() {
   return src( config.src, { since : lastRun( css_lint ) } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

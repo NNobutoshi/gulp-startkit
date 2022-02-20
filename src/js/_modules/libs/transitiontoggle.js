@@ -4,8 +4,8 @@
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
-import merge from 'lodash/mergeWith';
-import EM from '../libs/eventmanager';
+import merge from 'lodash/mergeWith.js';
+import EM from '../libs/eventmanager.js';
 
 const d = document;
 

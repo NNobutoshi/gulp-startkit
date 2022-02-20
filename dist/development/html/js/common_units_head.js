@@ -1,9 +1,9 @@
-(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_units_head"],{
+(self["webpackChunk"] = self["webpackChunk"] || []).push([["./js/common_units_head"],{
 
-/***/ "./node_modules/ua-parser-js/src/ua-parser.js":
-/*!****************************************************!*\
-  !*** ./node_modules/ua-parser-js/src/ua-parser.js ***!
-  \****************************************************/
+/***/ "../node_modules/ua-parser-js/src/ua-parser.js":
+/*!*****************************************************!*\
+  !*** ../node_modules/ua-parser-js/src/ua-parser.js ***!
+  \*****************************************************/
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/////////////////////////////////////////////////////////////////////////////////

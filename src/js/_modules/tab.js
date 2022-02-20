@@ -1,8 +1,8 @@
 'use strict';
 
-import merge from 'lodash/mergeWith';
-import './polyfills/closest';
-import EM from './libs/eventmanager';
+import merge from 'lodash/mergeWith.js';
+import './polyfills/closest.js';
+import EM from './libs/eventmanager.js';
 
 const d = document;
 

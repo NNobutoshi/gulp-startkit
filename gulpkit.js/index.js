@@ -4,6 +4,14 @@ import copy_to from  './tasks/copy_to.js';
 import html_pug from './tasks/html_pug.js';
 import watcher from './tasks/watcher.js';
 import serve from './tasks/serve.js';
+import img_min from './tasks/img_min.js';
+import css_lint from './tasks/css_lint.js';
+import icon_font from './tasks/icon_font.js';
+import sprite from './tasks/sprite.js';
+import css_sass from './tasks/css_sass.js';
+import sprite_svg from './tasks/sprite_svg.js';
+import js_eslint from './tasks/js_eslint.js';
+import js_webpack from './tasks/js_webpack.js';
 
 const { series, parallel } = gulp;
 
@@ -17,18 +25,14 @@ const
     clean : clean,
     copy_to : copy_to,
     html_pug : html_pug,
-    // copy_to      : require( './tasks/copy_to' ),
-    // css_lint     : require( './tasks/css_lint' ),
-    // css_sass     : require( './tasks/css_sass' ),
-    // html_pug     : require( './tasks/html_pug' ),
-    // icon_font    : require( './tasks/icon_font' ),
-    // img_min      : require( './tasks/img_min' ),
-    // js_eslint    : require( './tasks/js_eslint' ),
-    // js_webpack   : require( './tasks/js_webpack' ),
-    // serve_init   : require( './tasks/serve' ).serve_init,
-    // serve_reload : require( './tasks/serve' ).serve_reload,
-    // sprite       : require( './tasks/sprite' ),
-    // sprite_svg   : require( './tasks/sprite_svg' ),
+    img_min : img_min,
+    css_lint : css_lint,
+    icon_font : icon_font,
+    sprite : sprite,
+    css_sass : css_sass,
+    sprite_svg : sprite_svg,
+    js_eslint : js_eslint,
+    js_webpack : js_webpack,
   }
 ;
 
@@ -61,18 +65,14 @@ export default series(
   parallel(
     copy_to,
     html_pug,
+    img_min,
+    series(
+      parallel( icon_font, sprite, sprite_svg ),
+      css_lint,
+      css_sass,
+    ),
+    series( js_eslint, js_webpack )
   ),
-  // parallel(
-  //   tasks.copy_to,
-  //   tasks.html_pug,
-  //   tasks.img_min,
-  //   series(
-  //     parallel( tasks.icon_font, tasks.sprite, tasks.sprite_svg ),
-  //     tasks.css_lint,
-  //     tasks.css_sass,
-  //   ),
-  //   series( tasks.js_eslint, tasks.js_webpack )
-  // ),
   serve_init,
   watcher( tasks, tasks.serve_reload ),
 );
@@ -81,4 +81,12 @@ export {
   clean,
   copy_to,
   html_pug,
+  img_min,
+  css_lint,
+  icon_font,
+  sprite,
+  sprite_svg,
+  css_sass,
+  js_eslint,
+  js_webpack,
 };

@@ -1,6 +1,6 @@
-import merge from 'lodash/mergeWith';
-import EM from './libs/eventmanager';
-import 'regenerator-runtime/runtime';
+import merge from 'lodash/mergeWith.js';
+import EM from './libs/eventmanager.js';
+import 'regenerator-runtime/runtime.js';
 
 const d = document;
 

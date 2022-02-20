@@ -1,14 +1,9 @@
-const
-  path = require( 'path' )
-;
-const
-  through      = require( 'through2' )
-  ,mergeStream = require( 'merge-stream' )
-;
+import path from 'path';
 
-module.exports = taskForEach;
+import through     from 'through2';
+import mergeStream from 'merge-stream';
 
-function taskForEach( group, base, branchTask ) {
+export default function taskForEach( group, base, branchTask ) {
   const srcCollection = {};
   return _groupSrc( srcCollection, group, base, branchTask );
 }

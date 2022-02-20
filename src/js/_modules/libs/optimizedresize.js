@@ -3,9 +3,9 @@
  * Inspired by https://developer.mozilla.org
  */
 
-import '../../_vendor/raf';
-import merge from 'lodash/mergeWith';
-import EM from '../libs/eventmanager';
+import '../../_vendor/raf.js';
+import merge from 'lodash/mergeWith.js';
+import EM from '../libs/eventmanager.js';
 
 const d = document;
 let uniqueNumber = 0;

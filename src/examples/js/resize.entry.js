@@ -1,4 +1,4 @@
-import OptimizedResize from '../../js/_modules/libs/optimizedresize';
+import OptimizedResize from '../../js/_modules/libs/optimizedresize.js';
 
 const
   mdls = {}

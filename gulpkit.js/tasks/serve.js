@@ -7,7 +7,6 @@ const
 ;
 
 const serve_init = ( () => {
-  console.info( 'serve == ' + config.enable );
   if ( !config.enable ) {
     return function no_serve( cb ) {
       _done( cb );
