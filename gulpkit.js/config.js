@@ -1,27 +1,26 @@
-const
-  fs    = require( 'fs' )
-  ,path = require( 'path' )
-;
-const
-  merge         = require( 'lodash/mergeWith' )
-  ,webpack      = require( 'webpack' )
-  ,log          = require( 'fancy-log' )
-  ,chalk        = require( 'chalk' )
-  ,TerserPlugin = require( 'terser-webpack-plugin' )
-;
+import fs           from 'fs';
+import path         from 'path';
+import merge        from 'lodash/mergeWith.js';
+import webpack      from 'webpack';
+import log          from 'fancy-log';
+import chalk        from 'chalk';
+import TerserPlugin from 'terser-webpack-plugin';
+import autoprefixer from 'autoprefixer';
+
 const
   NODE_ENV = process.env.NODE_ENV
 ;
 const
   DIR_DEV = {
-    dist : 'dist/development/html',
-    src  : 'src',
+    dist : '../dist/development/html',
+    src  : '../src',
   }
   ,DIR_PROD = {
-    dist : 'dist/production/html',
-    src  : 'src',
+    dist : '../dist/production/html',
+    src  : '../src',
   }
 ;
+
 const
   SRC                 = ( NODE_ENV === 'production' ) ? DIR_PROD.src : DIR_DEV.src
   ,DIST               = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist
@@ -29,9 +28,10 @@ const
   ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
   ,SOURCEMAPS_DIR     = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( __dirname, '.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/`
+  ,SERVER_CONF_PATH   = path.resolve( process.cwd(), './config_serve.json' )
 ;
 const
   config_dev = {
@@ -76,7 +76,7 @@ const
           },
         },
         postcss : {
-          plugins : [ require( 'autoprefixer' )() ]
+          plugins : [ autoprefixer() ]
         },
         sass : {
           outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -483,17 +483,21 @@ const
 // config_serve.js が存在すれば、設定を上書き。
 // config_serve.js 自体はGit でignore している。
 // 実装者毎で設定を自由にさせるため。
-if ( fs.existsSync( path.resolve( __dirname, './config_serve.js' ) ) ) {
-  config_dev.serve = require( './config_serve.js' ).conf_dev;
-  config_prod.serve = require( './config_serve.js' ).conf_prod;
+if ( fs.existsSync( SERVER_CONF_PATH ) ) {
+  const data = JSON.parse( fs.readFileSync( SERVER_CONF_PATH ) );
+  data.conf_dev.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_dev.enable );
+  data.conf_prod.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_prod.enable );
+  config_dev.serve = data.conf_dev;
+  config_prod.serve = data.conf_prod;
 }
 
 // 'production'用の設定は、'development' を基準にしてマージする
 switch ( NODE_ENV ) {
 case 'production':
-  module.exports = merge( {}, config_dev, config_prod );
+  merge( config_dev, config_prod );
   break;
 case 'development':
 default:
-  module.exports = config_dev;
 }
+
+export default config_dev;

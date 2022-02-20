@@ -1,13 +1,14 @@
+import configFile from '../config.js';
+import server from 'browser-sync';
+
 const
-  config   = require( '../config.js' ).serve
+  config = configFile.serve
   ,options = config.options
 ;
-let
-  server = ( config.enable === true ) ? require( 'browser-sync' ) : null
-;
 
-module.exports.serve_init = ( () => {
-  if ( !server ) {
+const serve_init = ( () => {
+  console.info( 'serve == ' + config.enable );
+  if ( !config.enable ) {
     return function no_serve( cb ) {
       _done( cb );
     };
@@ -18,8 +19,8 @@ module.exports.serve_init = ( () => {
   };
 } )();
 
-module.exports.serve_reload = ( () => {
-  if ( !server ) {
+const serve_reload = ( () => {
+  if ( !config.enable ) {
     return function no_serve( cb ) {
       _done( cb );
     };
@@ -31,6 +32,11 @@ module.exports.serve_reload = ( () => {
     _done( cb );
   };
 } )();
+
+export default  {
+  serve_init : serve_init,
+  serve_reload: serve_reload,
+};
 
 function _done( cb ) {
   if ( typeof cb === 'function' ) {

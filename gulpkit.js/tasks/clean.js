@@ -1,21 +1,17 @@
-const
-  { exec } = require( 'child_process' )
-;
-const
-  log    = require( 'fancy-log' )
-  ,chalk = require( 'chalk' )
-;
-const
-  config = require( '../config.js' ).clean
-;
+import { exec } from 'child_process';
+import log from 'fancy-log';
+import chalk from 'chalk';
+import configFile from '../config.js';
 
-module.exports = clean;
+const
+  config = configFile.clean
+;
 
 /*
  * Git Command をつかってUntracked fileを、削除。
  * 戻り値はPromise。
  */
-async function clean() {
+export default async function clean() {
   await _gitClean( config.command );
 }
 

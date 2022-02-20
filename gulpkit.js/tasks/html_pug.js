@@ -1,30 +1,27 @@
+import path from 'path';
+import fs  from 'fs';
+
+import gulp     from 'gulp';
+import plumber  from 'gulp-plumber';
+import pug      from 'pug';
+import through  from 'through2';
+import beautify from 'js-beautify';
+import log      from 'fancy-log';
+import chalk    from 'chalk';
+import sizeOf   from 'image-size';
+
+import diff from '../lib/diff_build.js';
+import configFile from '../config.js';
+
 const
-  path = require( 'path' )
-  ,fs  = require( 'fs' )
+  { src, dest } = gulp
 ;
 const
-  { src, dest } = require( 'gulp' )
-  ,plumber      = require( 'gulp-plumber' )
-  ,pug          = require( 'pug' )
-  ,through      = require( 'through2' )
-  ,beautifyHtml = require( 'js-beautify' ).html
-  ,log          = require( 'fancy-log' )
-  ,chalk        = require( 'chalk' )
-  ,sizeOf       = require( 'image-size' )
-;
-const
-  diff = require( '../lib/diff_build.js' )
-;
-const
-  config = require( '../config.js' ).html_pug
-;
-const
-  options  = config.options
+  config = configFile.html_pug
+  ,options  = config.options
 ;
 
-module.exports = html_pug;
-
-function html_pug() {
+export default function html_pug() {
   const pugData = JSON.parse( fs.readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
@@ -168,7 +165,7 @@ function _postPug() {
             .replace( '><a ', '>' + linefeed + '<a ' )
             .replace( '</a>', '</a>' + linefeed )
           ;
-          return beautifyHtml( element, options.beautifyHtml ).replace( /^/mg, indent );
+          return beautify.html( element, options.beautifyHtml ).replace( /^/mg, indent );
         } )
       ;
     }

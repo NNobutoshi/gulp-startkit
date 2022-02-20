@@ -1,11 +1,10 @@
+import fs     from 'fs';
+import path   from 'path';
+import mkdirp from 'mkdirp';
+import del    from 'del';
+
 const
-  fs      = require( 'fs' )
-  ,path   = require( 'path' )
-  ,mkdirp = require( 'mkdirp' )
-  ,del    = require( 'del' )
-;
-const
-  FILEPATH  = path.resolve( __dirname, '../.last_diff/.diffmap' )
+  FILEPATH  = path.resolve( process.cwd(), '.last_diff/.diffmap' )
   ,DIRNAME  = path.dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastDiff'
 ;
@@ -17,14 +16,13 @@ let
  * Git コマンドで得たタスク終了時までの差分リストを環境変数に格納、取得、
  * また、ファイル保存する。
  */
-module.exports.default = {
-  get : _get,
-  set : _set,
+
+export default  {
+  get   : _get,
+  set   : _set,
+  write : _write,
+  reset : _reset,
 };
-module.exports.get   = _get;
-module.exports.set   = _set;
-module.exports.write = _write;
-module.exports.reset = _reset;
 
 /*
  * 環境変数に格納されている差分ファイルリストを優先して取得。

@@ -1,12 +1,15 @@
+import gulp from 'gulp';
+import configFile from '../config.js';
+
 const
-  { watch, series } = require( 'gulp' )
+  { watch, series } =  gulp
 ;
 const
-  config        = require( '../config.js' )
+  config        = configFile
   ,watchOptions = config.watcher.options.watch
 ;
 
-module.exports = function( tasks, reload ) {
+export default function watcher( tasks, reload ) {
 
   return function watch_init( cb ) {
 
@@ -28,4 +31,4 @@ module.exports = function( tasks, reload ) {
     }
 
   };
-};
+}

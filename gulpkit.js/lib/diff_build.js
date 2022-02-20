@@ -1,16 +1,11 @@
-const
-  path      = require( 'path' )
-  ,{ exec } = require( 'child_process' )
-;
-const
-  through    = require( 'through2' )
-  ,mergeWith = require( 'lodash/mergeWith' )
-  ,fancyLog  = require( 'fancy-log' )
-  ,chalk     = require( 'chalk' )
-;
-const
-  lastDiff  = require( './last_diff.js' )
-;
+import path      from 'path';
+import { exec }  from 'child_process';
+import through   from  'through2';
+import mergeWith from  'lodash/mergeWith.js';
+import fancyLog  from  'fancy-log';
+import chalk     from  'chalk';
+import lastDiff  from './last_diff.js';
+
 const
   WRITING_DELAY_TIME = 2000
   ,defaultSettings = {
@@ -29,10 +24,7 @@ let
  * いったんGulp.src を通った後なので
  * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
  */
-
-module.exports = diff_build;
-
-function diff_build( options, collect, select ) {
+export default function diff_build( options, collect, select ) {
   const
     stores = {
       allFiles        : {}, // 全chumk用

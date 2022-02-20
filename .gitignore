@@ -9,4 +9,4 @@ sourcemaps
 /package-lock.json
 /config.yml
 /vagrant_config.yml
-/gulpkit.js/config_serve.js
+/gulpkit.js/config_serve.json
