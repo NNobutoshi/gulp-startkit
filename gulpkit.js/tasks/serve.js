@@ -1,5 +1,6 @@
-import configFile from '../config.js';
 import server from 'browser-sync';
+
+import configFile from '../config.js';
 
 const
   config = configFile.serve

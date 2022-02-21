@@ -1,11 +1,11 @@
-import gulp from 'gulp';
-import spriteSmith  from 'gulp.spritesmith';
-import plumber      from 'gulp-plumber';
-import mergeStream  from 'merge-stream';
-import taskForEach  from '../lib/task_for_each.js';
-import diff         from '../lib/diff_build.js';
+import gulp        from 'gulp';
+import spriteSmith from 'gulp.spritesmith';
+import plumber     from 'gulp-plumber';
+import mergeStream from 'merge-stream';
 
-import configFile from '../config.js';
+import taskForEach from '../lib/task_for_each.js';
+import diff        from '../lib/diff_build.js';
+import configFile  from '../config.js';
 
 const
   { src, dest } = gulp

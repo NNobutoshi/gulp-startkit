@@ -7,8 +7,8 @@ import grapher     from 'sass-graph';
 import cssMqpacker from 'css-mqpacker';
 import through     from 'through2';
 import log         from 'fancy-log';
-import diff        from '../lib/diff_build.js';
 
+import diff        from '../lib/diff_build.js';
 import configFile  from '../config.js';
 
 const

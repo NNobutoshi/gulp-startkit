@@ -1,25 +1,25 @@
-const
-  fs    = require( 'fs' )
-  ,path = require( 'path' )
-;
-const
-  mkdirp = require( 'mkdirp' )
-  ,log   = require( 'fancy-log' )
-  ,XLSX  = require( 'xlsx' )
-;
+import fs   from 'fs';
+import path from 'path';
+import url  from 'url';
+
+import mkdirp from 'mkdirp';
+import log    from 'fancy-log';
+import XLSX   from 'xlsx';
+
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
   ,PUG_CONFIG_FILE_PATH = '../../src/_data/_pug_data.json'
   ,SITE_MAP_FILE_PATH   = '../../src/_data/sitemap.xlsx'
+  ,DIRNAME              = path.dirname( url.fileURLToPath( import.meta.url ) )
   ,settings = {
-    src          : path.resolve( __dirname, SRC_DIR ),
+    src          : path.resolve( DIRNAME, SRC_DIR ),
     extension    : /\.pug?$/,
-    configFile   : path.resolve( __dirname, PUG_CONFIG_FILE_PATH ),
+    configFile   : path.resolve( DIRNAME, PUG_CONFIG_FILE_PATH ),
     indexName    : 'index.pug',
     linefeed     : '\n', // '\r\n'
     sheetName    : 'Sheet1',
-    xlsxFilePath : path.resolve( __dirname , SITE_MAP_FILE_PATH ),
+    xlsxFilePath : path.resolve( DIRNAME, SITE_MAP_FILE_PATH ),
   }
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;

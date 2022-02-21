@@ -74,7 +74,7 @@ export default series(
     series( js_eslint, js_webpack )
   ),
   serve_init,
-  watcher( tasks, tasks.serve_reload ),
+  watcher( tasks, serve_reload ),
 );
 
 export {

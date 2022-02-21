@@ -1,5 +1,5 @@
 import path from 'path';
-import fs  from 'fs';
+import fs   from 'fs';
 
 import gulp     from 'gulp';
 import plumber  from 'gulp-plumber';
@@ -10,7 +10,7 @@ import log      from 'fancy-log';
 import chalk    from 'chalk';
 import sizeOf   from 'image-size';
 
-import diff from '../lib/diff_build.js';
+import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const

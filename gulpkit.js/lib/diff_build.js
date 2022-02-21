@@ -1,10 +1,12 @@
-import path      from 'path';
-import { exec }  from 'child_process';
+import path     from 'path';
+import { exec } from 'child_process';
+
 import through   from  'through2';
 import mergeWith from  'lodash/mergeWith.js';
 import fancyLog  from  'fancy-log';
 import chalk     from  'chalk';
-import lastDiff  from './last_diff.js';
+
+import lastDiff from './last_diff.js';
 
 const
   WRITING_DELAY_TIME = 2000

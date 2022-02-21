@@ -7,7 +7,6 @@ import through     from 'through2';
 import svgLint     from '../lib/svg_lint.js';
 import taskForEach from '../lib/task_for_each.js';
 import diff        from '../lib/diff_build.js';
-
 import configFile  from '../config.js';
 
 const
