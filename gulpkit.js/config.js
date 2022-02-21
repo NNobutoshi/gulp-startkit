@@ -1,5 +1,6 @@
 import fs           from 'fs';
 import path         from 'path';
+import url          from 'url';
 import merge        from 'lodash/mergeWith.js';
 import webpack      from 'webpack';
 import log          from 'fancy-log';
@@ -12,26 +13,26 @@ const
 ;
 const
   DIR_DEV = {
-    dist : '../dist/development/html',
-    src  : '../src',
+    dist : 'dist/development/html',
+    src  : 'src',
   }
   ,DIR_PROD = {
-    dist : '../dist/production/html',
-    src  : '../src',
+    dist : 'dist/production/html',
+    src  : 'src',
   }
 ;
-
 const
   SRC                 = ( NODE_ENV === 'production' ) ? DIR_PROD.src : DIR_DEV.src
+  ,DIRNAME            = path.dirname( url.fileURLToPath( import.meta.url ) )
   ,DIST               = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist
   ,ENABLE_SOURCEMAP   = ( NODE_ENV === 'production' ) ? false : true
   ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
   ,SOURCEMAPS_DIR     = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( DIRNAME, '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/`
-  ,SERVER_CONF_PATH   = path.resolve( process.cwd(), './config_serve.json' )
+  ,SERVER_CONF_PATH   = path.resolve( DIRNAME, './config_serve.json' )
 ;
 const
   config_dev = {
@@ -260,7 +261,7 @@ const
     },
     'js_eslint' : {
       src : [
-        './**/*.js',
+        './gulpkit.js/**/*.js',
         ''  + SRC + '/**/*.js',
         '!' + SRC + '/**/_vendor/*.js',
       ],

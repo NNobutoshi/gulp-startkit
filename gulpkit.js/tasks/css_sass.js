@@ -19,6 +19,7 @@ const
   config = configFile.css_sass
   ,options = config.options
 ;
+
 const
   graph = grapher.parseDir( config.base )
 ;
