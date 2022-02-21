@@ -1,17 +1,17 @@
 import gulp from 'gulp';
-import clean from './tasks/clean.js';
-import copy_to from  './tasks/copy_to.js';
-import html_pug from './tasks/html_pug.js';
-import watcher from './tasks/watcher.js';
-import serve from './tasks/serve.js';
-import img_min from './tasks/img_min.js';
-import css_lint from './tasks/css_lint.js';
-import icon_font from './tasks/icon_font.js';
-import sprite from './tasks/sprite.js';
-import css_sass from './tasks/css_sass.js';
-import sprite_svg from './tasks/sprite_svg.js';
-import js_eslint from './tasks/js_eslint.js';
-import js_webpack from './tasks/js_webpack.js';
+import clean from './gulpkit.js/tasks/clean.js';
+import copy_to from  './gulpkit.js/tasks/copy_to.js';
+import html_pug from './gulpkit.js/tasks/html_pug.js';
+import watcher from './gulpkit.js/tasks/watcher.js';
+import serve from './gulpkit.js/tasks/serve.js';
+import img_min from './gulpkit.js/tasks/img_min.js';
+import css_lint from './gulpkit.js/tasks/css_lint.js';
+import icon_font from './gulpkit.js/tasks/icon_font.js';
+import sprite from './gulpkit.js/tasks/sprite.js';
+import css_sass from './gulpkit.js/tasks/css_sass.js';
+import sprite_svg from './gulpkit.js/tasks/sprite_svg.js';
+import js_eslint from './gulpkit.js/tasks/js_eslint.js';
+import js_webpack from './gulpkit.js/tasks/js_webpack.js';
 
 const { series, parallel } = gulp;
 
