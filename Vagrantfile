@@ -90,8 +90,10 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+
     sudo apt-get update -y
     sudo apt-get install -y g++ build-essential
+    sudo apt-get install -y git-all
 
     # nodejs
     curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
