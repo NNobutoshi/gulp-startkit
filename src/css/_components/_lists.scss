@@ -1,8 +1,7 @@
 @charset "utf-8";
 
-@import
-  "../_mixins_sprite"
-;
+@use "../_mixins_sprite" as mixin;
+
 .sg-linkList {
   position: relative;
   list-style: none;
@@ -40,19 +39,19 @@
         margin-left:10px;
       }
       &--home {
-        @include sprite($sheet-home,2);
+        @include mixin.sprite(mixin.$sheet-home,2);
       }
       &--factory {
-        @include sprite($sheet-factory,2);
+        @include mixin.sprite(mixin.$sheet-factory,2);
       }
       &--school {
-        @include sprite($sheet-school,2);
+        @include mixin.sprite(mixin.$sheet-school,2);
       }
       &--mail {
-        @include sprite($sheet-mail,2);
+        @include mixin.sprite(mixin.$sheet-mail,2);
       }
       &--network {
-        @include sprite($sheet-network,2);
+        @include mixin.sprite(mixin.$sheet-network,2);
       }
     }
   }

@@ -1,47 +1,40 @@
 @charset "UTF-8";
 
-@import
-  "variables"
-  ,"mixins"
-  ,"elements"
-  ,"icons"
-  ,"fonts"
-  ,"_vendor/normalize"
-  ,"mixins_sprite"
-  ,"sprite_svg"
-;
+@forward "fonts";
+@forward  "elements";
+@forward "_vendor/normalize";
+@forward "_components/layout";
+@forward  "_components/_group";
+@forward  "_components/_nav";
+@forward  "_components/_sections";
+@forward  "_components/_headings";
+@forward  "_components/_paragraphs";
+@forward  "_components/_links";
+@forward  "_components/_logos";
+@forward  "_components/_buttons";
+@forward  "_components/_banners";
+@forward  "_components/_lists";
+@forward  "_components/_tables";
 
-@import "_components/_layout"
-  ,"_components/_group"
-  ,"_components/_nav"
-  ,"_components/_sections"
-  ,"_components/_headings"
-  ,"_components/_paragraphs"
-  ,"_components/_links"
-  ,"_components/_logos"
-  ,"_components/_buttons"
-  ,"_components/_banners"
-  ,"_components/_lists"
-  ,"_components/_tables"
-;
+@use "mixins" as mixin;
 
 .and {
-  @include mq( min-width, md, and, max-width, lg ) {
-    @include fs( 14, 17 );
+  @include mixin.mq( min-width, md, and, max-width, lg ) {
+    @include mixin.fs( 14, 17 );
   }
 }
 
 .caseOne {
-  @include mq( min-width, md ) {
+  @include mixin.mq( min-width, md ) {
     margin-top: 10px;
   }
-  @include mq( max-width, md ) {
+  @include mixin.mq( max-width, md ) {
     margin-top: 20px;
   }
 }
 
 .caseTwo {
-  @include mq( max-height, 100px ) {
+  @include mixin.mq( max-height, 100px ) {
     margin-top: 0;
   }
 }

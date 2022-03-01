@@ -1,19 +1,20 @@
 @charset "utf-8";
 
+@use "../icons";
 
 .sg-link {
   vertical-align: middle;
   @at-root {
     .sg-link::before {
       font-size: 14px;
-      @include icon-styles;
+      @include icons.icon-styles;
       display: inline-block;
       transform: translateY( 2px );
       margin-right: 2px;
     }
     .sg-link--normal {
       &::before {
-        content: icon-char(arrow_right);
+        content: icons.icon-char(arrow_right);
       }
     }
   }

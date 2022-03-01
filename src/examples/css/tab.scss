@@ -1,12 +1,6 @@
 @charset "UTF-8";
 
-@import
-  "../../css/variables"
-  ,"../../css/mixins"
-  ,"../../css/icons"
-  ,"../../css/mixins_sprite"
-;
-
+@use "../../css/mixins" as mixin;
 
 .pl-nav {
   width: calc( 100% - 90px );
@@ -15,17 +9,17 @@
   left: 75px;
   z-index: 3;
   background-color: #fee;
-  @include mq( min-width, sm ) {
+  @include mixin.mq( min-width, sm ) {
     display: flex;
     align-items: center;
     padding: 10px;
   }
-  @include mq( max-width, sm ) {
+  @include mixin.mq( max-width, sm ) {
     padding: 5px 0 0 10px;
   }
   @at-root {
     .pl-nav_heading {
-      @include fs(16, 16);
+      @include mixin.fs(16, 16);
       margin: 0;
     }
   }
@@ -35,14 +29,14 @@
   margin: 0;
   padding: 0;
   display: flex;
-  @include fs(18, 16);
-  @include mq( min-width, sm ) {
+  @include mixin.fs(18, 16);
+  @include mixin.mq( min-width, sm ) {
     margin-left: 1em;
   }
   @at-root {
     .pl-linkList_item {
       & + & {
-        @include mq( min-width, sm ) {
+        @include mixin.mq( min-width, sm ) {
           margin-left: 0.5em;
         }
       }

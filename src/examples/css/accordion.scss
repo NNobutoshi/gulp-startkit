@@ -1,11 +1,8 @@
 @charset "UTF-8";
 
-@import
-  "../../css/variables"
-  ,"../../css/mixins"
-  ,"../../css/mixins_sprite"
-  ,"icons"
-;
+@use "../../css/mixins" as mixin;
+@use "mixins_sprite" as mixin_sprite;
+@use "icons" as icon;
 
 .pl-list {
   list-style: none;
@@ -23,14 +20,14 @@
     margin: 0;
     padding: 10px;
     cursor: pointer;
-    @include fs(18, 16);
+    @include mixin.fs(18, 16);
     .js-pl-accordion--isOpening & {
       border-bottom: solid 1px  rgba(0, 0, 0, .5);
     }
     &::after {
       display: inline-block;
-      @include icon-styles;
-      content: icon-char(arrow_down);
+      @include icon.icon-styles;
+      content: icon.icon-char(arrow_down);
       font-size: 10px;
       margin-left: 10px;
       transform: rotate(0) scale(.8);

@@ -4,40 +4,6 @@ html {
   font-weight: 350;
 }
 
-@font-face {
-  font-family: "icons";
-  src: url("../fonts/icons.eot");
-  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
-}
-.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
-  /* stylelint-disable */
-  font-family: "icons";
-  /* stylelint-anable */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: normal;
-  text-decoration: none;
-  text-transform: none;
-}
-
-.icon-arrow_down:before {
-  content: "\f001";
-}
-
-.icon-arrow_left:before {
-  content: "\f002";
-}
-
-.icon-arrow_right:before {
-  content: "\f003";
-}
-
-.icon-arrow_up:before {
-  content: "\f004";
-}
-
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 /* Document
    ========================================================================== */
@@ -381,93 +347,6 @@ template {
   display: none;
 }
 
-/* stylelint-disable */
-/* stylelint-anable */
-.icon_school, .icon_network, .icon_mail, .icon_home, .icon_factory {
-  background: url("../img/common_sheet.svg") no-repeat;
-}
-
-.icon_factory {
-  background-position: 100% 0;
-}
-
-.icon_factory_dims {
-  width: 182px;
-  height: 112px;
-}
-
-.icon_home {
-  background-position: 0 0;
-}
-
-.icon_home_dims {
-  width: 183px;
-  height: 112px;
-}
-
-.icon_mail {
-  background-position: 0 50%;
-}
-
-.icon_mail_dims {
-  width: 182px;
-  height: 112px;
-}
-
-.icon_network {
-  background-position: 99.4535519126% 49.6469305342%;
-}
-
-.icon_network_dims {
-  width: 182px;
-  height: 110.407px;
-}
-
-.icon_school {
-  background-position: 0 100%;
-}
-
-.icon_school_dims {
-  width: 182px;
-  height: 112px;
-}
-
-@font-face {
-  font-family: "icons";
-  src: url("../fonts/icons.eot");
-  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
-}
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
-  /* stylelint-disable */
-  font-family: "icons";
-  /* stylelint-anable */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: normal;
-  text-decoration: none;
-  text-transform: none;
-}
-
-.icon-arrow_down:before {
-  content: "\f001";
-}
-
-.icon-arrow_left:before {
-  content: "\f002";
-}
-
-.icon-arrow_right:before {
-  content: "\f003";
-}
-
-.icon-arrow_up:before {
-  content: "\f004";
-}
-
-/* stylelint-disable */
-/* stylelint-anable */
 .sg-page {
   overflow: hidden;
 }
@@ -1477,7 +1356,7 @@ template {
   src: url("../fonts/icons.eot");
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
+.icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   /* stylelint-disable */
   font-family: "icons";
   /* stylelint-anable */
@@ -1506,8 +1385,6 @@ template {
   content: "\f004";
 }
 
-/* stylelint-disable */
-/* stylelint-anable */
 .sg-link {
   vertical-align: middle;
 }
@@ -1533,42 +1410,6 @@ template {
   content: "\f003";
 }
 
-@font-face {
-  font-family: "icons";
-  src: url("../fonts/icons.eot");
-  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
-}
-.icon-arrow_down:before, .icon-arrow_left:before, .icon-arrow_right:before, .icon-arrow_up:before {
-  /* stylelint-disable */
-  font-family: "icons";
-  /* stylelint-anable */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: normal;
-  text-decoration: none;
-  text-transform: none;
-}
-
-.icon-arrow_down:before {
-  content: "\f001";
-}
-
-.icon-arrow_left:before {
-  content: "\f002";
-}
-
-.icon-arrow_right:before {
-  content: "\f003";
-}
-
-.icon-arrow_up:before {
-  content: "\f004";
-}
-
-/* stylelint-disable */
-/* stylelint-anable */
 .sg-siteId {
   border-left: solid 1px #f00;
 }

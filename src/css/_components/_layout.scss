@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-@import
-  "../variables"
-  ,"../mixins"
-  ,"../icons"
-  ,"../mixins_sprite"
-;
 .sg-page {
   overflow: hidden;
   @at-root {
