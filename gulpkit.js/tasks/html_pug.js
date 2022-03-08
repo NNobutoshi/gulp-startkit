@@ -6,12 +6,13 @@ import plumber  from 'gulp-plumber';
 import pug      from 'pug';
 import through  from 'through2';
 import beautify from 'js-beautify';
-import log      from 'fancy-log';
 import chalk    from 'chalk';
 import sizeOf   from 'image-size';
 
-import diff       from '../lib/diff_build.js';
-import configFile from '../config.js';
+import renderingLog          from '../lib/rendering_log.js';
+import diff                  from '../lib/diff_build.js';
+import { selectTargetFiles } from '../lib/diff_build.js';
+import configFile            from '../config.js';
 
 const
   { src, dest } = gulp
@@ -25,7 +26,7 @@ export default function html_pug() {
   const pugData = JSON.parse( fs.readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff ,_collect ,_select ) )
+    .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', ( file ) => {
       const keyFilePath = file.path
         .replace( path.resolve( process.cwd(), config.base ), '' )
@@ -40,12 +41,13 @@ export default function html_pug() {
     .pipe( _pugRender() )
     .pipe( _postPug() )
     .pipe( dest( config.dist ) )
+    .pipe( renderingLog( '[html_pug]:' ) )
   ;
 }
 
 /*
  * 依存関係を調べ、Objectにまとめる。
- * through2 のtransform の中で実行。
+ * through2 のtransformFunction 中で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
  * collection
@@ -55,7 +57,7 @@ export default function html_pug() {
  *    ]
  * }
  */
-function _collect( file, collection ) {
+function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
     ,regex = /^.*?(extends|include) *(.+)$/mg
@@ -77,26 +79,8 @@ function _collect( file, collection ) {
   }
 }
 
-/*
- * diff_build.jsの hrough2 flush の中で、Object で集めた通過候補毎に実行される。
- * 候補ファイルに依存するものを最終選択する。
- */
-function _select( filePath, collection, destFiles ) {
-  ( function _run_recursive( filePath ) {
-    if ( Array.isArray( collection[ filePath ] ) && collection[ filePath ].length > 0 ) {
-      collection[ filePath ].forEach( ( item ) => {
-        destFiles[ item ] = 1;
-        if ( Object.keys( collection ).includes( item ) ) {
-          _run_recursive( item );
-        }
-      } );
-    }
-  } )( filePath );
-}
-
 function _pugRender() {
   const ignoreFileRegEx = /^_/;
-  let renderedFileCounter = 0;
 
   return through.obj( _transform, _flush );
 
@@ -117,15 +101,12 @@ function _pugRender() {
         return callBack();
       }
       file.contents = new Buffer.from( contents );
-      log( `[html_pug]: rendered ${path.relative( process.cwd(), file.path )}` );
       file.path = file.path.replace( /\.pug$/, '.html' );
-      renderedFileCounter += 1;
       callBack( null, file );
     } );
   }
 
   function _flush( callBack ) {
-    log( `[html_pug]: rendered ${renderedFileCounter} files` );
     callBack();
   }
 

@@ -1,9 +1,4 @@
 @import url("//fonts.googleapis.com/css?family=Noto+Sans+JP:350,400,500,600");
-html {
-  font-family: "Noto Sans JP", YuGothic, "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic", "MS PGothic", sans-serif;
-  font-weight: 350;
-}
-
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 /* Document
    ========================================================================== */
@@ -345,6 +340,15 @@ template {
  */
 [hidden] {
   display: none;
+}
+
+html {
+  font-family: "Noto Sans JP", YuGothic, "Hiragino Kaku Gothic Pro", "Hiragino Kaku Gothic", "MS PGothic", sans-serif;
+  font-weight: 350;
+}
+
+img {
+  height: auto;
 }
 
 .sg-page {

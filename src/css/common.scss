@@ -1,8 +1,9 @@
 @charset "UTF-8";
 
+@forward "_vendor/normalize";
+
 @forward "fonts";
 @forward  "elements";
-@forward "_vendor/normalize";
 @forward "_components/layout";
 @forward  "_components/_group";
 @forward  "_components/_nav";
