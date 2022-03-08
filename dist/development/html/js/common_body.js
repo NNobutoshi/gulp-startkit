@@ -10,9 +10,14 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
+/* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
 
 (0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function () {
   console.info('ok');
+});
+imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), function () {
+  console.info('image loaded');
 });
 
 /***/ })
@@ -37,7 +42,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;

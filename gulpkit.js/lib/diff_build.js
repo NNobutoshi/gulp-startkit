@@ -199,6 +199,23 @@ function _flush( stores, settings, select ) {
 }
 
 /*
+ * through2.obj()の flushFunction 中で、実行。
+ * 候補ファイルに依存するものを最終選択する。
+ */
+export function selectTargetFiles( filePath, collection, destFiles ) {
+  ( function _run_recursive( filePath ) {
+    if ( Array.isArray( collection[ filePath ] ) && collection[ filePath ].length > 0 ) {
+      collection[ filePath ].forEach( ( item ) => {
+        destFiles[ item ] = 1;
+        if ( Object.keys( collection ).includes( item ) ) {
+          _run_recursive( item );
+        }
+      } );
+    }
+  } )( filePath );
+}
+
+/*
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */

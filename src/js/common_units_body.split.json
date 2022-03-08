@@ -1,6 +1,11 @@
 {
   "common_units_body" : {
-    "test"    : [ "/js/_modules/", "/js/_vendor/raf.js" ],
+    "test"    : [
+      "/js/_modules/",
+      "/js/_vendor/raf.js",
+      "/node_modules/imagesloaded/",
+      "/node_modules/ev-emitter/ev-emitter.js"
+    ],
     "name"    : "./js/common_units_body",
     "chunks"  : "initial",
     "enforce" : true
