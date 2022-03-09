@@ -52,10 +52,10 @@ export default function diff_build( options, collect, select ) {
 function _transform( stores, settings, collect ) {
 
   return function( file, enc, callBack ) {
-    if ( file.isNull() ) {
+    if ( file.isNull && file.isNull() ) {
       return callBack( null, file );
     }
-    if ( file.isStream() ) {
+    if ( file.isStream && file.isStream() ) {
       this.emit( 'error' );
       return callBack();
     }

@@ -45,8 +45,10 @@ const
       },
     },
     'copy_to' : {
-      src  : [ SRC + '/**/*.{mp4,webm}' ],
-      dist : DIST,
+      src   : [ SRC + '/**/*.{mp4,webm}' ],
+      base  : SRC,
+      dist  : DIST,
+      watch : true && ENABLE_WATCH,
       options :{
         plumber : {
           errorHandler : function( error ) {
