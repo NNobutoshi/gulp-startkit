@@ -1,8 +1,8 @@
-import gulp      from 'gulp';
-import plumber   from 'gulp-plumber';
+import gulp from 'gulp';
+import plumber from 'gulp-plumber';
 import stylelint from 'gulp-stylelint';
 
-import diff       from '../lib/diff_build.js';
+import diff from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const

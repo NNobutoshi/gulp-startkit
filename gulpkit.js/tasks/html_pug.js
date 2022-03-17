@@ -1,18 +1,19 @@
+import fs from 'fs';
 import path from 'path';
-import fs   from 'fs';
 
-import gulp     from 'gulp';
-import plumber  from 'gulp-plumber';
-import pug      from 'pug';
-import through  from 'through2';
+import gulp from 'gulp';
+import plumber from 'gulp-plumber';
+import pug from 'pug';
+import through from 'through2';
 import beautify from 'js-beautify';
-import chalk    from 'chalk';
-import sizeOf   from 'image-size';
+import chalk from 'chalk';
+import sizeOf from 'image-size';
 
-import renderingLog          from '../lib/rendering_log.js';
-import diff                  from '../lib/diff_build.js';
+import renderingLog from '../lib/rendering_log.js';
+import diff from '../lib/diff_build.js';
 import { selectTargetFiles } from '../lib/diff_build.js';
-import configFile            from '../config.js';
+
+import configFile from '../config.js';
 
 const
   { src, dest } = gulp
@@ -120,11 +121,11 @@ function _postPug() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
-    ,imgRegEx = /<img(.*?)src=(["'])(.+?)["'](.*?)>/g
+    ,imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])(.+?)["'](.*?)>/g
   ;
   const stream = through.obj( ( file, enc, callBack ) => {
     const
-      promiseReplaceImgTextAll = []
+      promiseReplaceImgStringsAll = []
       ,objReplaceImgText = {}
     ;
     let contents = String( file.contents );
@@ -174,20 +175,24 @@ function _postPug() {
      */
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
-        q = match[ 2 ]
-        ,src = match[ 3 ]
+        tagName = match[ 1 ]
+        ,frontPatt = match[ 2 ]
+        ,attrName = match[ 3 ]
+        ,q = match[ 4 ]
+        ,srcPath = match[ 5 ]
+        ,rearPart = match[ 6 ]
       ;
       if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
         continue;
       }
-      promiseReplaceImgTextAll.push( new Promise( ( resolve ) => {
-        sizeOf( path.resolve( file.dirname, src ), ( error, dm ) => {
+      promiseReplaceImgStringsAll.push( new Promise( ( resolve ) => {
+        sizeOf( path.resolve( file.dirname, srcPath ), ( error, dm ) => {
           if ( error ) {
             stream.emit( 'error', error );
           }
           const
-            text  = `<img${match[ 1 ]}src=${q}${src}${q} ` +
-                    `width=${q}${dm.width}${q} height=${q}${dm.height}${q}${match[ 4 ]}>`
+            text  = `<${tagName}${frontPatt}${attrName}=${q}${srcPath}${q} ` +
+                    `width=${q}${dm.width}${q} height=${q}${dm.height}${q}${rearPart}>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
           resolve();
@@ -195,7 +200,7 @@ function _postPug() {
       } ) );
     } // for
     Promise
-      .all( promiseReplaceImgTextAll )
+      .all( promiseReplaceImgStringsAll )
       .then( () => {
         contents = contents.replace( imgRegEx, ( all ) => {
           return objReplaceImgText[ all ] || all;

@@ -1361,9 +1361,7 @@ img {
   src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
 }
 .icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
-  /* stylelint-disable */
   font-family: "icons";
-  /* stylelint-anable */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -1394,9 +1392,7 @@ img {
 }
 .sg-link::before {
   font-size: 14px;
-  /* stylelint-disable */
   font-family: "icons";
-  /* stylelint-anable */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -1423,8 +1419,6 @@ img {
   padding: 10px;
 }
 
-/* stylelint-disable */
-/* stylelint-anable */
 .sg-linkList {
   position: relative;
   list-style: none;

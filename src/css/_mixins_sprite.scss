@@ -1,4 +1,5 @@
 @use "sass:math";
+@use "sass:list";
 // SCSS variables are information about icon's compiled state, stored under its original file name
 //
 // .icon-home {
@@ -10,7 +11,7 @@
 //
 // At the bottom of this section, we provide information about the spritesheet itself
 // $spritesheet: width height image $spritesheet-sprites;
-/* stylelint-disable */
+// stylelint-disable
 $sheet-factory-name: 'sheet-factory';
 $sheet-factory-x: 193px;
 $sheet-factory-y: 0px;
@@ -71,7 +72,7 @@ $spritesheet-height: 355px;
 $spritesheet-image: '../img/common_pack.png';
 $spritesheet-sprites: ($sheet-factory, $sheet-home, $sheet-mail, $sheet-network, $sheet-school, );
 $spritesheet: (375px, 355px, '../img/common_pack.png', $spritesheet-sprites, );
-/* stylelint-anable */
+// stylelint-anable
 // The provided mixins are intended to be used with the array-like variables
 //
 // .icon-home {
@@ -98,26 +99,26 @@ $spritesheet: (375px, 355px, '../img/common_pack.png', $spritesheet-sprites, );
 // <i class="icon icon-home"></i>
 
 @mixin sprite-width($sprite, $ratio:1) {
-  width: math.div(nth($sprite, 5), $ratio);
+  width: math.div(list.nth($sprite, 5), $ratio);
 }
 
 @mixin sprite-height($sprite, $ratio:1) {
-  height: math.div(nth($sprite, 6),$ratio);
+  height: math.div(list.nth($sprite, 6),$ratio);
 }
 
 @mixin sprite-position($sprite, $ratio:1) {
-  $sprite-offset-x: math.div(nth($sprite, 3),$ratio);
-  $sprite-offset-y: math.div(nth($sprite, 4),$ratio);
+  $sprite-offset-x: math.div(list.nth($sprite, 3),$ratio);
+  $sprite-offset-y: math.div(list.nth($sprite, 4),$ratio);
   background-position: $sprite-offset-x  $sprite-offset-y;
 }
 
 @mixin sprite-image($sprite) {
-  $sprite-image: nth($sprite, 9);
+  $sprite-image: list.nth($sprite, 9);
   background-image: url(#{$sprite-image});
 }
 
 @mixin sprite-size($sprite, $ratio:1) {
-  background-size: math.div(nth($sprite, 7),$ratio) math.div(nth($sprite, 8),$ratio);
+  background-size: math.div(list.nth($sprite, 7),$ratio) math.div(list.nth($sprite, 8),$ratio);
 }
 
 @mixin sprite($sprite, $ratio:1) {
@@ -134,7 +135,7 @@ $spritesheet: (375px, 355px, '../img/common_pack.png', $spritesheet-sprites, );
 // @include sprites($spritesheet-sprites);
 @mixin sprites($sprites) {
   @each $sprite in $sprites {
-    $sprite-name: nth($sprite, 10);
+    $sprite-name: list.nth($sprite, 10);
     .#{$sprite-name} {
       @include sprite($sprite);
     }

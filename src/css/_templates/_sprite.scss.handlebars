@@ -4,8 +4,9 @@
   'variableNameTransforms': ['dasherize']
 }
 
-{{#block "sprites-comment"}}
 @use "sass:math";
+@use "sass:list";
+{{#block "sprites-comment"}}
 // SCSS variables are information about icon's compiled state, stored under its original file name
 //
 // .icon-home {
@@ -18,7 +19,7 @@
 // At the bottom of this section, we provide information about the spritesheet itself
 // $spritesheet: width height image $spritesheet-sprites;
 {{/block}}
-/* stylelint-disable */
+// stylelint-disable
 {{#block "sprites"}}
 {{#each sprites}}
 ${{strings.name_name}}: '{{name}}';
@@ -41,7 +42,7 @@ ${{spritesheet_info.strings.name_image}}: '{{{spritesheet.escaped_image}}}';
 ${{spritesheet_info.strings.name_sprites}}: ({{#each sprites}}${{strings.name}}, {{/each}});
 ${{spritesheet_info.strings.name}}: ({{spritesheet.px.width}}, {{spritesheet.px.height}}, '{{{spritesheet.escaped_image}}}', ${{spritesheet_info.strings.name_sprites}}, );
 {{/block}}
-/* stylelint-anable */
+// stylelint-anable
 {{#block "sprite-functions-comment"}}
 {{#if options.functions}}
 // The provided mixins are intended to be used with the array-like variables
@@ -74,26 +75,26 @@ ${{spritesheet_info.strings.name}}: ({{spritesheet.px.width}}, {{spritesheet.px.
 {{#if options.functions}}
 
 @mixin sprite-width($sprite, $ratio:1) {
-  width: math.div(nth($sprite, 5), $ratio);
+  width: math.div(list.nth($sprite, 5), $ratio);
 }
 
 @mixin sprite-height($sprite, $ratio:1) {
-  height: math.div(nth($sprite, 6),$ratio);
+  height: math.div(list.nth($sprite, 6),$ratio);
 }
 
 @mixin sprite-position($sprite, $ratio:1) {
-  $sprite-offset-x: math.div(nth($sprite, 3),$ratio);
-  $sprite-offset-y: math.div(nth($sprite, 4),$ratio);
+  $sprite-offset-x: math.div(list.nth($sprite, 3),$ratio);
+  $sprite-offset-y: math.div(list.nth($sprite, 4),$ratio);
   background-position: $sprite-offset-x  $sprite-offset-y;
 }
 
 @mixin sprite-image($sprite) {
-  $sprite-image: nth($sprite, 9);
+  $sprite-image: list.nth($sprite, 9);
   background-image: url(#{$sprite-image});
 }
 
 @mixin sprite-size($sprite, $ratio:1) {
-  background-size: math.div(nth($sprite, 7),$ratio) math.div(nth($sprite, 8),$ratio);
+  background-size: math.div(list.nth($sprite, 7),$ratio) math.div(list.nth($sprite, 8),$ratio);
 }
 
 @mixin sprite($sprite, $ratio:1) {
@@ -118,7 +119,7 @@ ${{spritesheet_info.strings.name}}: ({{spritesheet.px.width}}, {{spritesheet.px.
 {{#if options.functions}}
 @mixin sprites($sprites) {
   @each $sprite in $sprites {
-    $sprite-name: nth($sprite, 10);
+    $sprite-name: list.nth($sprite, 10);
     .#{$sprite-name} {
       @include sprite($sprite);
     }

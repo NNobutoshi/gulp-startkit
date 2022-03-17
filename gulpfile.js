@@ -16,22 +16,22 @@ import js_webpack from './gulpkit.js/tasks/js_webpack.js';
 const { series, parallel } = gulp;
 
 const
-  serve_init = serve.serve_init
+  serve_init    = serve.serve_init
   ,serve_reload = serve.serve_reload
 ;
 
 const
   tasks = {
-    clean : clean,
-    copy_to : copy_to,
-    html_pug : html_pug,
-    img_min : img_min,
-    css_lint : css_lint,
-    icon_font : icon_font,
-    sprite : sprite,
-    css_sass : css_sass,
+    clean      : clean,
+    copy_to    : copy_to,
+    img_min    : img_min,
+    html_pug   : html_pug,
+    icon_font  : icon_font,
+    sprite     : sprite,
     sprite_svg : sprite_svg,
-    js_eslint : js_eslint,
+    css_lint   : css_lint,
+    css_sass   : css_sass,
+    js_eslint  : js_eslint,
     js_webpack : js_webpack,
   }
 ;
@@ -64,14 +64,19 @@ export default series(
   clean,
   parallel(
     copy_to,
-    html_pug,
-    img_min,
     series(
-      parallel( icon_font, sprite, sprite_svg ),
+      img_min,
+      html_pug,
+      parallel(
+        icon_font,
+        sprite,
+        sprite_svg
+      ),
       css_lint,
       css_sass,
-    ),
-    series( js_eslint, js_webpack )
+      js_eslint,
+      js_webpack,
+    )
   ),
   serve_init,
   watcher( tasks, serve_reload ),
@@ -80,12 +85,12 @@ export default series(
 export {
   clean,
   copy_to,
-  html_pug,
   img_min,
-  css_lint,
+  html_pug,
   icon_font,
   sprite,
   sprite_svg,
+  css_lint,
   css_sass,
   js_eslint,
   js_webpack,

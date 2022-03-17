@@ -9,9 +9,8 @@
 }
 
 @mixin icon-styles {
-  /* stylelint-disable */
+  // stylelint-disable-next-line
   font-family: "icons";
-  /* stylelint-anable */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -28,7 +27,7 @@
 
 @function icon-char($filename) {
   $char: "";
-  
+
   @if $filename == arrow_down {
     $char: "\F001";
   }

@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 
-import log   from 'fancy-log';
+import log from 'fancy-log';
 import chalk from 'chalk';
 
 import configFile from '../config.js';

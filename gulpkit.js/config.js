@@ -1,10 +1,11 @@
-import fs           from 'fs';
-import path         from 'path';
-import url          from 'url';
-import merge        from 'lodash/mergeWith.js';
-import webpack      from 'webpack';
-import log          from 'fancy-log';
-import chalk        from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import url from 'url';
+
+import merge from 'lodash/mergeWith.js';
+import webpack from 'webpack';
+import log from 'fancy-log';
+import chalk from 'chalk';
 import TerserPlugin from 'terser-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 
@@ -184,12 +185,12 @@ const
         svgo : {
           plugins : [
             {
-              name: 'removeViewBox',
-              active: true
+              name   : 'removeViewBox',
+              active : true
             },
             {
-              name: 'cleanupIDs',
-              active: false
+              name   : 'cleanupIDs',
+              active : false
             },
           ],
         },
@@ -239,8 +240,8 @@ const
                       [
                         '@babel/preset-env',
                         {
-                          useBuiltIns: 'usage',
-                          corejs: 3,
+                          useBuiltIns : 'usage',
+                          corejs      : 3,
                         },
                       ],
                     ],
@@ -332,7 +333,7 @@ const
       watch    : true && ENABLE_WATCH,
       imgDist  : DIST + '[subdir]/img',
       scssDist : SRC + '[subdir]/css',
-      options : {
+      options  : {
         plumber : {
           errorHandler : function( error ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );

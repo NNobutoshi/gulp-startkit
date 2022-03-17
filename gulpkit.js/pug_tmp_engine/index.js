@@ -1,10 +1,10 @@
-import fs   from 'fs';
+import fs from 'fs';
 import path from 'path';
-import url  from 'url';
+import url from 'url';
 
 import mkdirp from 'mkdirp';
-import log    from 'fancy-log';
-import XLSX   from 'xlsx';
+import log from 'fancy-log';
+import XLSX from 'xlsx';
 
 const
   CHARSET               = 'utf-8'

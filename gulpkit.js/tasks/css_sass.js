@@ -70,7 +70,7 @@ function _collectTargetFiles( file, collection ) {
         path.dirname( dependentFilePath ),
         path.basename( dependentFilePath ).replace( /^/, '_' )
       );
-      if ( fs.statSync( _dependentFilePath ) ) {
+      if ( fs.existsSync( _dependentFilePath ) ) {
         dependentFilePath = _dependentFilePath;
       }
     }
@@ -78,5 +78,5 @@ function _collectTargetFiles( file, collection ) {
       collection[ dependentFilePath ] = [];
     }
     collection[ dependentFilePath ].push( file.path );
-  }
+  } // for
 }

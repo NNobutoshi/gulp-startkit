@@ -1,11 +1,11 @@
-import fs      from 'fs';
-import path    from 'path';
+import fs from 'fs';
+import path from 'path';
 
 import plumber from 'gulp-plumber';
-import gs      from 'glob-stream';
-import chalk   from 'chalk';
+import gs from 'glob-stream';
+import chalk from 'chalk';
 
-import diff       from '../lib/diff_build.js';
+import diff from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const

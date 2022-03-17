@@ -1,12 +1,12 @@
-import gulp      from 'gulp';
+import gulp from 'gulp';
 import svgSprite from 'gulp-svg-sprite';
-import plumber   from 'gulp-plumber';
-import gulpIf    from 'gulp-if';
+import plumber from 'gulp-plumber';
+import gulpIf from 'gulp-if';
 
-import diff        from '../lib/diff_build.js';
+import diff from '../lib/diff_build.js';
 import taskForEach from '../lib/task_for_each.js';
-import svgLint     from '../lib/svg_lint.js';
-import configFile  from '../config.js';
+import svgLint from '../lib/svg_lint.js';
+import configFile from '../config.js';
 
 const
   { src, dest } = gulp
