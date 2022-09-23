@@ -5,7 +5,6 @@ foo( () => {
   console.info( 'ok' );
 } );
 
-imagesloaded( document.querySelector( '#page' ), () =>{
+imagesloaded( document.querySelector( '#page' ), () => {
   console.info( 'image loaded' );
 } );
-

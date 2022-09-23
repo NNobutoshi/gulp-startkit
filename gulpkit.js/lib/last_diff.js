@@ -2,7 +2,7 @@ import fs   from 'fs';
 import path from 'path';
 
 import mkdirp from 'mkdirp';
-import del    from 'del';
+import { deleteSync } from 'del';
 
 const
   FILEPATH  = path.resolve( process.cwd(), '.last_diff/.diffmap' )
@@ -65,5 +65,5 @@ function _write() {
  * 保存のディレクトリごと削除。
  */
 function _reset() {
-  del( DIRNAME );
+  deleteSync( DIRNAME );
 }
