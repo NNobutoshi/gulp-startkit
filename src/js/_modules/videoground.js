@@ -77,14 +77,14 @@ export default class VideoGround {
       ;
       let
         timeoutId = null
-        ,currentTry = 0
+        ,counterOfTries = 0
       ;
       testVideo.play();
       ( function _try() {
-        currentTry += 1;
+        counterOfTries += 1;
         clearTimeout( timeoutId );
         timeoutId = null;
-        if ( testVideo.paused === false || currentTry > retries ) {
+        if ( testVideo.paused === false || counterOfTries > retries ) {
           resolve( !testVideo.paused );
           return;
         }

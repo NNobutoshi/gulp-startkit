@@ -20,14 +20,12 @@ videoground
   .on( {
     play : function() {
       this.elemParent.classList.add( CLASSNAME_PLAYING );
-    },
-    playBefore : function() {
       this.elemVideo.classList.add( CLASSNAME_VIDEO );
     },
     load : _fitPosAndSize,
     destroy :function() {
       this.elemParent.classList.remove( CLASSNAME_PLAYING );
-      this.elemParnet.classList.add( CLASSNAME_DESTROYED );
+      this.elemParent.classList.add( CLASSNAME_DESTROYED );
     },
   } )
 ;
