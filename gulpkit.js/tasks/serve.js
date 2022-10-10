@@ -33,10 +33,8 @@ const serve_reload = ( () => {
   };
 } )();
 
-export default  {
-  serve_init : serve_init,
-  serve_reload: serve_reload,
-};
+
+export { serve_init, serve_reload };
 
 function _done( cb ) {
   if ( typeof cb === 'function' ) {

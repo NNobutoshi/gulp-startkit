@@ -9,9 +9,8 @@
 }
 
 @mixin <%= cssClass%>-styles {
-  /* stylelint-disable */
+  // stylelint-disable-next-line
   font-family: "<%= fontName %>";
-  /* stylelint-anable */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;

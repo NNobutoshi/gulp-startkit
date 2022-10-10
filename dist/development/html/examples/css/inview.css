@@ -8,7 +8,7 @@
   padding: 15px 30px;
 }
 .pl-inviewTarget.js-isInView {
-  background: #fd5858;
+  background: rgb(253, 88, 88);
 }
 
 .pl-offsetElement {
