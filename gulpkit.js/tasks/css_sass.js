@@ -3,6 +3,8 @@ import path        from 'path';
 import gulp        from 'gulp';
 import dartSass    from 'sass';
 import gulpSass    from 'gulp-sass';
+import gulpIf      from 'gulp-if';
+import sourcemaps  from 'gulp-sourcemaps';
 import plumber     from 'gulp-plumber';
 import postcss     from 'gulp-postcss';
 import cssMqpacker from 'css-mqpacker';
@@ -21,19 +23,17 @@ const
   ,options = config.options
 ;
 export default function css_sass() {
-  const
-    srcOptions   = { sourcemaps : config.sourcemap }
-    ,destOptions = { sourcemaps : config.sourcemap_dir }
-  ;
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );
   }
-  return src( config.src, srcOptions )
+  return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectTargetFiles, selectTargetFiles ) )
+    .pipe( gulpIf( config.sourcemap, sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( dest( config.dist, destOptions ) )
+    .pipe( gulpIf( config.sourcemap, sourcemaps.write( config.sourcemap_dir ) ) )
+    .pipe( dest( config.dist ) )
     .pipe( renderingLog( '[css_sass]:' ) )
   ;
 }
