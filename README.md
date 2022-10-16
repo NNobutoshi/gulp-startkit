@@ -65,13 +65,13 @@ $ cd myproject
 ```
 後、以下前述のコマンド通り。
 
-- CentOS8（変更を予定）
-- Node.js 14.15.4
+- Ubuntu 20.10
+- Node.js 16.13.0
 - Apache
 
 IP アドレス等は、`/vagrant_config.yml`を用意して実装者各々で設定自由｡
 
 ## その他の特長
 
-- iconfont 等は、任意のフォルダ名ルールに従って自動でグループ分けし、タスクを実行し、フォルダ毎に利用可能にする。
+- iconfont 等は、任意のフォルダ名ルールに従って自動でグループを分け、タスクを実行し、フォルダ毎に利用可能にする。
 - 中規模静的サイトを想定する事から、webpack の[SplitChunksPlugin](https://webpack.js.org/plugins/split-chunks-plugin/)を活用し、その際、任意のフォルダ毎に利用可能にする。

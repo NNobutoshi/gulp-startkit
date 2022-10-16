@@ -4,7 +4,7 @@
 _conf_defaults = {
   "ip" => "192.168.33.10",
   "name" => "project_A",
-  "box" => "ubuntu/bionic64",
+  "box" => "generic/ubuntu2010",
   "guestPort" => 22,
   "hostPort" => 2222,
 }
@@ -91,20 +91,21 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
 
-    sudo apt-get update -y
-    sudo apt-get install -y g++ build-essential
-    sudo apt-get install -y git-all
+    sudo apt update -y
+    sudo apt install -y g++ build-essential
+    sudo apt install -y git
 
     # nodejs
     curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    sudo apt install -y nodejs
 
     # nginx
     sudo apt install -y nginx
-    sudo ufw -y enable
+    yes | sudo ufw enable
     sudo ufw allow 22
+    sudo ufw allow 2222
     sudo ufw allow 3000
-    sudo ufw allow 'Nginx HTTP'
+    sudo ufw allow 'Nginx Full'
     sudo ufw reload
 
     cd /home/vagrant/myproject
