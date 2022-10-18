@@ -7,6 +7,7 @@ _conf_defaults = {
   "box" => "generic/ubuntu2010",
   "guestPort" => 22,
   "hostPort" => 2222,
+  "bsPort" => 3000,
 }
 
 if File.exists?("./vagrant_config.yml")
@@ -69,7 +70,7 @@ Vagrant.configure("2") do |config|
   # Example for VirtualBox:
   #
   config.vm.provider "virtualbox" do |vb|
-    vb.name = _conf['name']
+    vb.name = _conf["name"]
     # Display the VirtualBox GUI when booting the machine
     # vb.gui = true
     # Customize the amount of memory on the VM:
@@ -102,9 +103,9 @@ Vagrant.configure("2") do |config|
     # nginx
     sudo apt install -y nginx
     yes | sudo ufw enable
-    sudo ufw allow 22
-    sudo ufw allow 2222
-    sudo ufw allow 3000
+    sudo ufw allow #{ _conf["guestPort"] }
+    sudo ufw allow #{ _conf["hostPort"] }
+    sudo ufw allow #{ _conf["bsPort"] }
     sudo ufw allow 'Nginx Full'
     sudo ufw reload
 
