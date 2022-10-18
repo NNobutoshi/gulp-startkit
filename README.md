@@ -67,7 +67,7 @@ $ cd myproject
 
 - Ubuntu 20.10
 - Node.js 16.13.0
-- Apache
+- Nginx
 
 IP アドレス等は、`/vagrant_config.yml`を用意して実装者各々で設定自由｡
 
