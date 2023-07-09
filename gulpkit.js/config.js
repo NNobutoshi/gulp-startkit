@@ -409,7 +409,10 @@ const
               {
                 svgo: {
                   plugins : [
-                    { removeViewBox : false },
+                    {
+                      name   : 'removeViewBox',
+                      active : true
+                    },
                   ],
                 },
               },

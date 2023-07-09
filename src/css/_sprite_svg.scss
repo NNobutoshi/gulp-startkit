@@ -1,54 +1,54 @@
 %svg-common {
-	background: url("../img/common_sheet.svg") no-repeat;
+    background: url("../img/common_sheet.svg") no-repeat;
 }
 
 .icon_factory {
-	@extend %svg-common;
-	background-position: 100% 0;
+    @extend %svg-common;
+    background-position: 100% 0;
 }
 
 .icon_factory_dims {
-	width: 182px;
-	height: 112px;
+    width: 182px;
+    height: 112px;
 }
 
 .icon_home {
-	@extend %svg-common;
-	background-position: 0 0;
+    @extend %svg-common;
+    background-position: 0 0;
 }
 
 .icon_home_dims {
-	width: 183px;
-	height: 112px;
+    width: 183px;
+    height: 112px;
 }
 
 .icon_mail {
-	@extend %svg-common;
-	background-position: 0 50%;
+    @extend %svg-common;
+    background-position: 0 50%;
 }
 
 .icon_mail_dims {
-	width: 182px;
-	height: 112px;
+    width: 182px;
+    height: 112px;
 }
 
 .icon_network {
-	@extend %svg-common;
-	background-position: 99.4535519125683% 49.6469305341921%;
+    @extend %svg-common;
+    background-position: 99.4535519125683% 49.6469305341921%;
 }
 
 .icon_network_dims {
-	width: 182px;
-	height: 110.407px;
+    width: 182px;
+    height: 110.407px;
 }
 
 .icon_school {
-	@extend %svg-common;
-	background-position: 0 100%;
+    @extend %svg-common;
+    background-position: 0 100%;
 }
 
 .icon_school_dims {
-	width: 182px;
-	height: 112px;
+    width: 182px;
+    height: 112px;
 }
 

@@ -43,6 +43,7 @@
       $ruleString: "#{$ruleString}" + " #{$item}";
     }
   }
+  // stylelint-disable-next-line media-query-no-invalid
   @media #{$ruleString} {
     @content;
   }

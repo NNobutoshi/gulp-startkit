@@ -79,7 +79,7 @@ function _createEntries() {
     if ( regexTarget.test( file.path ) ) {
       key = path.relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
       val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
-      val =  /^\.?\.\//.test( val ) ? val : './' + val;
+      val = /^\.?\.\//.test( val ) ? val : './' + val;
       entries[ key ] = val;
     }
     callBack( null, file );
