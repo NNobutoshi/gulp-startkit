@@ -1,9 +1,9 @@
-import gulp from 'gulp';
-import through from 'through2';
-import plumber from 'gulp-plumber';
+import gulp      from 'gulp';
+import through   from 'through2';
+import plumber   from 'gulp-plumber';
 import stylelint from 'stylelint';
 
-import diff from '../lib/diff_build.js';
+import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const
@@ -15,7 +15,7 @@ const
 ;
 
 /*
- * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
+ * one source → destination 無しなので diff build はGulp.lastRun と併用する。
  */
 
 export default function css_lint() {

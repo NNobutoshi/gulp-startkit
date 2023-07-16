@@ -1,7 +1,7 @@
 import fs   from 'fs';
 import path from 'path';
 
-import { mkdirp } from 'mkdirp';
+import { mkdirp }     from 'mkdirp';
 import { deleteSync } from 'del';
 
 const
@@ -45,7 +45,7 @@ function _set( map ) {
 }
 
 /*
- * ファイルに書き鋳込み保存。
+ * ファイルに書き込み、保存。
  */
 function _write() {
   if ( !envData ) {

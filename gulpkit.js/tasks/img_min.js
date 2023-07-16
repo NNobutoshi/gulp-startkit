@@ -1,9 +1,9 @@
-import gulp from 'gulp';
+import gulp                                           from 'gulp';
 import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
-import plumber from 'gulp-plumber';
-import imageminPngquant from 'imagemin-pngquant';
+import plumber                                        from 'gulp-plumber';
+import imageminPngquant                               from 'imagemin-pngquant';
 
-import diff from '../lib/diff_build.js';
+import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const
@@ -15,7 +15,7 @@ const
 ;
 
 /*
- * 1 src → 1 dist なので diff build はGulp.lastRun と併用する。
+ * one source → one destination なので diff build はGulp.lastRun と併用する。
  */
 export default function img_min() {
   return src( config.src, { since : lastRun( img_min ) } )

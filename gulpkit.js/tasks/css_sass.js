@@ -1,7 +1,7 @@
 import fs          from 'fs';
 import path        from 'path';
 import gulp        from 'gulp';
-import dartSass    from 'sass';
+import * as dartSass    from 'sass';
 import gulpSass    from 'gulp-sass';
 import gulpIf      from 'gulp-if';
 import sourcemaps  from 'gulp-sourcemaps';
@@ -9,10 +9,9 @@ import plumber     from 'gulp-plumber';
 import postcss     from 'gulp-postcss';
 import cssMqpacker from 'css-mqpacker';
 
-import diff                   from '../lib/diff_build.js';
-import { selectTargetFiles  } from '../lib/diff_build.js';
-import renderingLog           from '../lib/rendering_log.js';
-import configFile             from '../config.js';
+import diff, { selectTargetFiles } from '../lib/diff_build.js';
+import renderingLog                from '../lib/rendering_log.js';
+import configFile                  from '../config.js';
 
 const
   { src, dest } = gulp

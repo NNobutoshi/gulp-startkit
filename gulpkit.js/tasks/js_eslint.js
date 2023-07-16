@@ -1,8 +1,8 @@
-import gulp from 'gulp';
-import eslint from 'gulp-eslint';
+import gulp    from 'gulp';
+import eslint  from 'gulp-eslint';
 import plumber from 'gulp-plumber';
 
-import diff from '../lib/diff_build.js';
+import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const
@@ -14,7 +14,7 @@ const
 ;
 
 /*
- * 1 src → dist なし、なので diff build はGulp.lastRun と併用する。
+ * one source → destination 無しなので diff build はGulp.lastRun と併用する。
  */
 export default function js_eslint() {
   return src( config.src, { since : lastRun( js_eslint ) } )

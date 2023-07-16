@@ -1,13 +1,13 @@
-import gulp from 'gulp';
-import iconfont from 'gulp-iconfont';
+import gulp        from 'gulp';
+import iconfont    from 'gulp-iconfont';
 import iconfontCss from 'gulp-iconfont-css';
-import plumber from 'gulp-plumber';
-import through from 'through2';
+import plumber     from 'gulp-plumber';
+import through     from 'through2';
 
-import svgLint from '../lib/svg_lint.js';
+import svgLint     from '../lib/svg_lint.js';
 import taskForEach from '../lib/task_for_each.js';
-import diff from '../lib/diff_build.js';
-import configFile from '../config.js';
+import diff        from '../lib/diff_build.js';
+import configFile  from '../config.js';
 
 const
   { src, dest } = gulp

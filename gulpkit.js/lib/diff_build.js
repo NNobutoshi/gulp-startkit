@@ -21,12 +21,17 @@ let
   writing_timeoutId = null
 ;
 
+export {
+  selectTargetFiles,
+  diff_build as default
+};
+
 /*
  * Git で管理する前提での差分ビルド。
  * いったんGulp.src を通った後なので
  * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
  */
-export default function diff_build( options, collect, select ) {
+function diff_build( options, collect, select ) {
   const
     stores = {
       allFiles        : {}, // 全chumk用
@@ -202,7 +207,7 @@ function _flush( stores, settings, select ) {
  * through2.obj()の flushFunction 中で、実行。
  * 候補ファイルに依存するものを最終選択する。
  */
-export function selectTargetFiles( filePath, collection, destFiles ) {
+function selectTargetFiles( filePath, collection, destFiles ) {
   ( function _run_recursive( filePath ) {
     if ( Array.isArray( collection[ filePath ] ) && collection[ filePath ].length > 0 ) {
       collection[ filePath ].forEach( ( item ) => {

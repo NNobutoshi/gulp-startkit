@@ -1,12 +1,12 @@
 import path from 'path';
 
-import gulp from 'gulp';
-import plumber from 'gulp-plumber';
-import webpack from 'webpack';
-import log from 'fancy-log';
-import through from 'through2';
+import gulp      from 'gulp';
+import plumber   from 'gulp-plumber';
+import webpack   from 'webpack';
+import log       from 'fancy-log';
+import through   from 'through2';
 import mergeWith from 'lodash/mergeWith.js';
-import isEqual from 'lodash/isEqual.js';
+import isEqual   from 'lodash/isEqual.js';
 
 import configFile from '../config.js';
 
