@@ -1,4 +1,5 @@
-import path     from 'path';
+import path from 'node:path';
+
 import through  from 'through2';
 import fancyLog from 'fancy-log';
 

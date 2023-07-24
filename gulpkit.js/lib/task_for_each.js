@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import through     from 'through2';
 import mergeStream from 'merge-stream';

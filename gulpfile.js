@@ -49,16 +49,4 @@ export default series(
   tasks.watcher( tasks, tasks.serve_reload ),
 );
 
-export {
-  clean,
-  copy_to,
-  img_min,
-  html_pug,
-  icon_font,
-  sprite,
-  sprite_svg,
-  css_lint,
-  css_sass,
-  js_eslint,
-  js_webpack,
-} from './gulpkit.js/tasks/index.js';
+export * from './gulpkit.js/tasks/index.js';

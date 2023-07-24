@@ -1,11 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import url from 'url';
+import fs   from 'node:fs';
+import path from 'node:path';
+import url  from 'node:url';
 
-import merge from 'lodash/mergeWith.js';
-import webpack from 'webpack';
-import log from 'fancy-log';
-import chalk from 'chalk';
+import merge        from 'lodash/mergeWith.js';
+import webpack      from 'webpack';
+import log          from 'fancy-log';
+import chalk        from 'chalk';
 import TerserPlugin from 'terser-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 

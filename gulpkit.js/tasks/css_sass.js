@@ -1,13 +1,14 @@
-import fs          from 'fs';
-import path        from 'path';
-import gulp        from 'gulp';
-import * as dartSass    from 'sass';
-import gulpSass    from 'gulp-sass';
-import gulpIf      from 'gulp-if';
-import sourcemaps  from 'gulp-sourcemaps';
-import plumber     from 'gulp-plumber';
-import postcss     from 'gulp-postcss';
-import cssMqpacker from 'css-mqpacker';
+import fs   from 'node:fs';
+import path from 'node:path';
+
+import gulp          from 'gulp';
+import * as dartSass from 'sass';
+import gulpSass      from 'gulp-sass';
+import gulpIf        from 'gulp-if';
+import sourcemaps    from 'gulp-sourcemaps';
+import plumber       from 'gulp-plumber';
+import postcss       from 'gulp-postcss';
+import cssMqpacker   from 'css-mqpacker';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';

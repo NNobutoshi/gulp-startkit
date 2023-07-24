@@ -1,5 +1,5 @@
-import path     from 'path';
-import { exec } from 'child_process';
+import path     from 'node:path';
+import { exec } from 'node:child_process';
 
 import through   from  'through2';
 import mergeWith from  'lodash/mergeWith.js';
