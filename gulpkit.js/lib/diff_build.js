@@ -193,7 +193,7 @@ function _flush( stores, settings, select ) {
       stream.push( stores.allFiles[ filePath ].file );
     }
 
-    _log( name, Object.keys( stores.targets ).length, Object.keys( stores.targets ).length );
+    _log( name, Object.keys( destFiles ).length, Object.keys( stores.targets ).length );
     stores.lastDiffMap = stores.currentDiffMap;
     lastDiff.set( stores.currentDiffMap );
     stores.promiseGetGitDiffList = null;
