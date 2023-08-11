@@ -6125,7 +6125,7 @@ function _handle(observed) {
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_units_body","./examples/js/common_units"], function() { return __webpack_require__("./src/examples/js/inview.entry.js"); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_modules_body","./examples/js/common_modules"], function() { return __webpack_require__("./src/examples/js/inview.entry.js"); })
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

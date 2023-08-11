@@ -35,7 +35,7 @@ html(lang=pageData.lang)
     block style
       link(rel="stylesheet", href=pageData.cssCommonDir + "/common.css")
     block script_head
-      script(src=pageData.jsCommonDir + "/common_units_head.js")
+      script(src=pageData.jsCommonDir + "/common_modules_head.js")
       script(src=pageData.jsCommonDir + "/common_head.js")
   body
     div.sg-page#page
@@ -50,5 +50,5 @@ html(lang=pageData.lang)
       ///.sg-page_foot
     ///.page#page
     block script_body
-      script(src=pageData.jsCommonDir + "/common_units_body.js")
+      script(src=pageData.jsCommonDir + "/common_modules_body.js")
       script(src=pageData.jsCommonDir + "/common_body.js")

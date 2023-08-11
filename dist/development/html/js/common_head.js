@@ -1305,7 +1305,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_units_body","./js/common_units_head"], function() { return __webpack_require__("./src/js/common_head.entry.js"); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_modules_body","./js/common_modules_head"], function() { return __webpack_require__("./src/js/common_head.entry.js"); })
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

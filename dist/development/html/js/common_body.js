@@ -174,7 +174,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), funct
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_units_body"], function() { return __webpack_require__("./src/js/common_body.entry.js"); })
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_modules_body"], function() { return __webpack_require__("./src/js/common_body.entry.js"); })
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
