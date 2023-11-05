@@ -1,4 +1,4 @@
-(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_units_body"],{
+(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_modules_body"],{
 
 /***/ "./node_modules/ev-emitter/ev-emitter.js":
 /*!***********************************************!*\
@@ -3047,4 +3047,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 }]);
-//# sourceMappingURL=../sourcemaps/js/common_units_body.js.map
+//# sourceMappingURL=../sourcemaps/js/common_modules_body.js.map

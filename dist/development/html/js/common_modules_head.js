@@ -1,4 +1,4 @@
-(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_units_head"],{
+(self["webpackChunkproject_example"] = self["webpackChunkproject_example"] || []).push([["./js/common_modules_head"],{
 
 /***/ "./node_modules/ua-parser-js/src/ua-parser.js":
 /*!****************************************************!*\
@@ -944,4 +944,4 @@ var __WEBPACK_AMD_DEFINE_RESULT__;//////////////////////////////////////////////
 /***/ })
 
 }]);
-//# sourceMappingURL=../sourcemaps/js/common_units_head.js.map
+//# sourceMappingURL=../sourcemaps/js/common_modules_head.js.map

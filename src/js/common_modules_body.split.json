@@ -1,5 +1,5 @@
 {
-  "common_units_body" : {
+  "common_modules_body" : {
     "test"    : [
       "/js/_modules/",
       "/js/_vendor/raf.js",

@@ -46,6 +46,7 @@ video {
   border-radius: 50%;
   border: solid 2px #000;
   -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
 }
 .js-video_cover::after {
@@ -53,6 +54,7 @@ video {
   border-width: 30px;
   border-color: transparent transparent transparent #000;
   -webkit-transform: translate(-50%, -50%) scale(1, 0.5);
+      -ms-transform: translate(-50%, -50%) scale(1, 0.5);
           transform: translate(-50%, -50%) scale(1, 0.5);
   margin-left: 18px;
 }

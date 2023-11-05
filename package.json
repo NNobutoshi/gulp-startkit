@@ -13,9 +13,9 @@
     "type": "git"
   },
   "browserslist": [
-    "last 2 versions",
-    "ie 11",
-    "ios >= 9"
+    "last 3 versions",
+    "Safari >= 14",
+    "ios >= 12"
   ],
   "type": "module",
   "devDependencies": {
