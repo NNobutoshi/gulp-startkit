@@ -1,7 +1,7 @@
 import fs   from 'node:fs';
 import path from 'node:path';
 
-import gulp          from 'gulp';
+import { src, dest } from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass      from 'gulp-sass';
 import gulpIf        from 'gulp-if';
@@ -14,14 +14,13 @@ import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
 import configFile                  from '../config.js';
 
-const
-  { src, dest } = gulp
-  ,sass         = gulpSass( dartSass )
-;
+const sass = gulpSass( dartSass );
+
 const
   config = configFile.css_sass
   ,options = config.options
 ;
+
 export default function css_sass() {
   if ( config.cssMqpack ) {
     options.postcss.plugins.push( cssMqpacker() );

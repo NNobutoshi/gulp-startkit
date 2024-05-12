@@ -1,4 +1,4 @@
-import gulp                                           from 'gulp';
+import { src, dest, lastRun }                         from 'gulp';
 import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
 import plumber                                        from 'gulp-plumber';
 import imageminPngquant                               from 'imagemin-pngquant';
@@ -6,9 +6,6 @@ import imageminPngquant                               from 'imagemin-pngquant';
 import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
 
-const
-  { src, dest, lastRun } = gulp
-;
 const
   config = configFile.img_min
   ,options = config.options

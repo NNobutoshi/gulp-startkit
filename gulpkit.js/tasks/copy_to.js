@@ -1,13 +1,9 @@
-import gulp from 'gulp';
+import { src, dest } from 'gulp';
 
 import plumber from 'gulp-plumber';
 
 import diff       from '../lib/diff_build.js';
 import configFile from '../config.js';
-
-const
-  { src, dest } = gulp
-;
 
 const
   config = configFile.copy_to

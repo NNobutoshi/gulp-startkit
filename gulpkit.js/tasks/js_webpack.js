@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import gulp      from 'gulp';
+import { src }   from 'gulp';
 import plumber   from 'gulp-plumber';
 import webpack   from 'webpack';
 import log       from 'fancy-log';
@@ -10,9 +10,6 @@ import isEqual   from 'lodash/isEqual.js';
 
 import configFile from '../config.js';
 
-const
-  { src } = gulp
-;
 const
   config   = configFile.js_webpack
   ,options = config.options

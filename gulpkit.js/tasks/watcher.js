@@ -1,10 +1,7 @@
-import gulp from 'gulp';
+import { watch, series } from 'gulp';
 
 import configFile from '../config.js';
 
-const
-  { watch, series } =  gulp
-;
 const
   config        = configFile
   ,watchOptions = config.watcher.options.watch

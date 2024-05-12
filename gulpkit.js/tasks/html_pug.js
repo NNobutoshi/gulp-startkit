@@ -1,22 +1,19 @@
 import fs   from 'node:fs';
 import path from 'node:path';
 
-import gulp     from 'gulp';
-import plumber  from 'gulp-plumber';
-import pug      from 'pug';
-import through  from 'through2';
-import beautify from 'js-beautify';
-import chalk    from 'chalk';
-import sizeOf   from 'image-size';
+import { src, dest } from 'gulp';
+import plumber       from 'gulp-plumber';
+import pug           from 'pug';
+import through       from 'through2';
+import beautify      from 'js-beautify';
+import chalk         from 'chalk';
+import sizeOf        from 'image-size';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
 
 import configFile from '../config.js';
 
-const
-  { src, dest } = gulp
-;
 const
   config = configFile.html_pug
   ,options  = config.options
