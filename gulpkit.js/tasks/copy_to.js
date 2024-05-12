@@ -17,7 +17,7 @@ const
 ;
 
 export default function copy_to() {
-  return src( config.src )
+  return src( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( dest( config.dist ) )

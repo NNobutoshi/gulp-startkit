@@ -18,7 +18,7 @@ const
  * one source → one destination なので diff build はGulp.lastRun と併用する。
  */
 export default function img_min() {
-  return src( config.src, { since : lastRun( img_min ) } )
+  return src( config.src, { since : lastRun( img_min ), encoding: false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( imagemin( [

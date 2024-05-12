@@ -1434,35 +1434,35 @@ img {
   background-position: 0px 0px;
   width: 91.5px;
   height: 56px;
-  background-size: 187.5px 177.5px;
+  background-size: 187.5px 178px;
 }
 .sg-iconList_item--factory {
   background-image: url(../img/common_pack.png);
   background-position: -96.5px 0px;
   width: 91px;
   height: 56px;
-  background-size: 187.5px 177.5px;
+  background-size: 187.5px 178px;
 }
 .sg-iconList_item--school {
   background-image: url(../img/common_pack.png);
-  background-position: -96px -61px;
+  background-position: 0px -122px;
   width: 91px;
   height: 56px;
-  background-size: 187.5px 177.5px;
+  background-size: 187.5px 178px;
 }
 .sg-iconList_item--mail {
   background-image: url(../img/common_pack.png);
   background-position: 0px -61px;
   width: 91px;
   height: 56px;
-  background-size: 187.5px 177.5px;
+  background-size: 187.5px 178px;
 }
 .sg-iconList_item--network {
   background-image: url(../img/common_pack.png);
-  background-position: 0px -122px;
+  background-position: -96px -122px;
   width: 91px;
   height: 55.5px;
-  background-size: 187.5px 177.5px;
+  background-size: 187.5px 178px;
 }
 
 @media ( min-width: 768px ) and ( max-width: 979px ) {

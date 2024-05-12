@@ -1,7 +1,7 @@
 import gulp        from 'gulp';
 import spriteSmith from 'gulp.spritesmith';
 import plumber     from 'gulp-plumber';
-import mergeStream from 'merge-stream';
+import gulpIf      from 'gulp-if';
 
 import taskForEach from '../lib/task_for_each.js';
 import diff        from '../lib/diff_build.js';
@@ -16,29 +16,17 @@ const
 ;
 
 export default function sprite() {
-  return src( config.src )
+  return src( config.src, { encoding: false } )
+    .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
 }
 
 function _branchTask( subSrc, baseDir ) {
-  let
-    spriteData
-    ,imgStream
-    ,cSSStream
-  ;
-  spriteData = src( subSrc )
-    .pipe( plumber( options.plumber ) )
+  return src( subSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
+    .pipe( gulpIf( /\.png$/ , dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding :false } ) ) )
+    .pipe( gulpIf( /\.scss$/ , dest( config.scssDist.replace( '[subdir]', baseDir ) ) ) )
   ;
-  imgStream = spriteData
-    .img
-    .pipe( dest( config.imgDist.replace( '[subdir]' , baseDir ) ) )
-  ;
-  cSSStream = spriteData
-    .css
-    .pipe( dest( config.scssDist.replace( '[subdir]', baseDir ) ) )
-  ;
-  return mergeStream( spriteData, imgStream, cSSStream );
 }
