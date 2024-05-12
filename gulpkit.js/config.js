@@ -32,13 +32,13 @@ const
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = path.resolve( DIRNAME, '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
-  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${SRC}/`
+  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${ SRC }/`
   ,SERVER_CONF_PATH   = path.resolve( DIRNAME, './config_serve.json' )
 ;
 const
   config_dev = {
     'clean' : {
-      command : `git clean -f ${DIST}/`,
+      command : `git clean -f ${ DIST }/`,
       options : {
         del : {
           force : true,
@@ -296,7 +296,7 @@ const
       dist    : DIST,
       base    : SRC,
       watch   : true && ENABLE_WATCH,
-      data    : path.resolve( process.cwd(), `${SRC}/_data/_pug_data.json` ),
+      data    : path.resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
       options : {
         imgSize : true,
         assistPretty : {

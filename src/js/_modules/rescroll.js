@@ -67,7 +67,7 @@ export default class Rescroll {
   }
 
   off() {
-    this.evtRoot.off( `.${this.id}` );
+    this.evtRoot.off( `.${ this.id }` );
     this.lastScrollY = null;
     this.enabled = false;
     this.isWorking = false;

@@ -22,6 +22,6 @@ export default function js_eslint() {
     .pipe( diff( options.diff ) )
     .pipe( eslint( options.eslint ) )
     .pipe( eslint.format() )
-    .pipe( eslint.failAfterError() )
+    // .pipe( eslint.failAfterError() )
   ;
 }

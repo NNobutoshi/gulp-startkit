@@ -190,8 +190,9 @@ function _postPug() {
             stream.emit( 'error', error );
           }
           const
-            text  = `<${tagName}${frontPart}${attrName}=${q}${srcPath}${q} ` +
-                    `width=${q}${dm.width}${q} height=${q}${dm.height}${q}${rearPart}>`
+            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } ` +
+                    `width=${ q }${ dm.width }${ q } ` +
+                    `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
           resolve();

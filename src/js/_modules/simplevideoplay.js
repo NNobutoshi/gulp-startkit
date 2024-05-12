@@ -47,7 +47,7 @@ export default class SimpleVideoPlay {
   init() {
     this.elemWrapper.appendChild( this.elemCover );
     if ( this.elemVideo.poster ) {
-      this.elemCover.style.backgroundImage = `url(${this.elemVideo.poster})`;
+      this.elemCover.style.backgroundImage = `url(${ this.elemVideo.poster })`;
     }
     this.elemVideo.load();
   }
@@ -70,8 +70,8 @@ export default class SimpleVideoPlay {
   }
 
   off() {
-    this.eventVideo.off( `.${this.id}` );
-    this.eventCover.off( `.${this.id}` );
+    this.eventVideo.off( `.${ this.id }` );
+    this.eventCover.off( `.${ this.id }` );
   }
 
   handleCanplay( e ) {

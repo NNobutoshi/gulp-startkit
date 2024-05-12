@@ -33,8 +33,8 @@ function _branchTask( subSrc, baseDir ) {
     optIconfont     = Object.create( options.iconfont )
     ,optIconfontCss = Object.create( options.iconfontCss )
   ;
-  if( baseDir ) {
-    const fontSubName = baseDir.replace( /\//, '_');
+  if ( baseDir ) {
+    const fontSubName = baseDir.replace( /\//, '_' );
     optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', fontSubName );
     optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', fontSubName );
   } else {
@@ -55,7 +55,7 @@ function _branchTask( subSrc, baseDir ) {
             ,condition = false
           ;
           for ( let i = 0, len = optIconfont.formats.length; i < len; i++ ) {
-            fileReg = new RegExp( '\\.' + optIconfont.formats[ i ] + '$');
+            fileReg = new RegExp( '\\.' + optIconfont.formats[ i ] + '$' );
             if ( fileReg.test( file.path ) ) {
               condition = true;
             }

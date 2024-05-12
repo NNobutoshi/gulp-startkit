@@ -66,19 +66,19 @@ function _getIndent( configContent, indentRegeX ) {
 function _deleteWrapperParen( jSONData, indent ) {
   return JSON
     .stringify( jSONData, null, 2 )
-    .replace( new RegExp( `^\\{\\${settings.linefeed}` ), '' )
-    .replace( new RegExp( `\\}\\${settings.linefeed}\\}` ), `},${settings.linefeed}` )
+    .replace( new RegExp( `^\\{\\${ settings.linefeed }` ), '' )
+    .replace( new RegExp( `\\}\\${ settings.linefeed }\\}` ), `},${ settings.linefeed }` )
     .replace( /^ {2}/mg, indent )
   ;
 }
 
 function _writePugConfigFile( content, newStrings, indent ) {
-  content = content.replace( /"{{": "",[\s\S]*?"}}": ""/, `"{{": "",${settings.linefeed + newStrings + indent}"}}": ""` );
+  content = content.replace( /"{{": "",[\s\S]*?"}}": ""/, `"{{": "",${ settings.linefeed + newStrings + indent }"}}": ""` );
   fs.writeFile( settings.configFile, content, CHARSET, ( error )  => {
     if ( error ) {
       return console.error( error );
     }
-    log( `configed  "${path.relative( process.cwd(), settings.configFile )}"` );
+    log( `configed  "${ path.relative( process.cwd(), settings.configFile ) }"` );
   } );
 }
 
@@ -136,15 +136,15 @@ function _readTemplateFile( template ) {
 
 function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
   return new Promise( ( resolve, reject ) => {
-    fs.writeFile( pugUrl, content.replace( '//{page}', `"${htmlUrl}"` ), CHARSET, ( error ) => {
+    fs.writeFile( pugUrl, content.replace( '//{page}', `"${ htmlUrl }"` ), CHARSET, ( error ) => {
       if ( error ) {
         reject();
         return console.error( error );
       }
       if ( isNew ) {
-        log( `new created "${path.relative( process.cwd(), pugUrl )}"` );
+        log( `new created "${ path.relative( process.cwd(), pugUrl ) }"` );
       } else {
-        log( `renewed     "${path.relative( process.cwd(), pugUrl )}"` );
+        log( `renewed     "${ path.relative( process.cwd(), pugUrl ) }"` );
       }
       resolve();
     } );

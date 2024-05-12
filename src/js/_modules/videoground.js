@@ -128,7 +128,7 @@ export default class VideoGround {
       this.elemVideoFrame.removeChild( this.elemVideo );
     }
     this.eventCall( this.callbackDestroy );
-    this.eventVideo.off( `.${this.id}` );
+    this.eventVideo.off( `.${ this.id }` );
     return this;
   }
 

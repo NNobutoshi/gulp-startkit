@@ -74,7 +74,7 @@ export default class EventManager {
         objListeners = _collectListeners( ( key ) => {
           return ( eventType && nameSpace && fullEventTypeName === key ) ||
                  ( eventType && !nameSpace && key.indexOf( eventType ) === 0 ) ||
-                 ( !eventType && nameSpace && key.indexOf( `.${nameSpace}` ) >= 0 )
+                 ( !eventType && nameSpace && key.indexOf( `.${ nameSpace }` ) >= 0 )
           ;
         } );
 
@@ -122,7 +122,7 @@ export default class EventManager {
       Array.from( this.elemEventer ) : [ this.elemEventer ]
     ;
     arrElements.forEach( ( elem ) => {
-      elem[ `${prefix}EventListener` ]( eventType, listener, options );
+      elem[ `${ prefix }EventListener` ]( eventType, listener, options );
     } );
   }
 

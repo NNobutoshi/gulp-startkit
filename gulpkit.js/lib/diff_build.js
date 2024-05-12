@@ -238,8 +238,8 @@ function _writeDiffMap() {
  */
 function _log( name, total, detected ) {
   if ( name ) {
-    fancyLog( chalk.gray( `[${name}]: detected ${detected} files diff` ) );
-    fancyLog( chalk.gray( `[${name}]: thrown ${total} files` ) );
+    fancyLog( chalk.gray( `[${ name }]: detected ${ detected } files diff` ) );
+    fancyLog( chalk.gray( `[${ name }]: thrown ${ total } files` ) );
   }
 }
 

@@ -59,7 +59,7 @@ export default class Tab {
   }
 
   off() {
-    this.eventRoot.off( `.${this.id}` );
+    this.eventRoot.off( `.${ this.id }` );
   }
 
   handleLoad( e ) {

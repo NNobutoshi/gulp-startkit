@@ -61,7 +61,7 @@ export default class AdaptiveHover {
 
   off() {
     this.clear();
-    this.evtRoot.off( `.${this.id}` );
+    this.evtRoot.off( `.${ this.id }` );
     return this;
   }
 

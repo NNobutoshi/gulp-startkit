@@ -19,7 +19,7 @@ export default function svg_lint() {
       if ( linting.state === linting.STATES.success ) {
         callBack( null, file );
       } else {
-        stream.emit( 'error', new Error( `Linting failed (${linting.state})\n${file.path}` ) );
+        stream.emit( 'error', new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
         callBack();
       }
     } );
