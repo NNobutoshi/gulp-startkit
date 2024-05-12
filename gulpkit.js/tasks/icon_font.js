@@ -2,6 +2,7 @@ import gulp        from 'gulp';
 import iconfont    from 'gulp-iconfont';
 import iconfontCss from 'gulp-iconfont-css';
 import plumber     from 'gulp-plumber';
+import gulpIf      from 'gulp-if';
 import through     from 'through2';
 
 import svgLint     from '../lib/svg_lint.js';
@@ -28,18 +29,45 @@ export default function icon_font() {
 }
 
 function _branchTask( subSrc, baseDir ) {
+  const
+    optIconfont     = Object.create( options.iconfont )
+    ,optIconfontCss = Object.create( options.iconfontCss )
+  ;
+  if( baseDir ) {
+    const fontSubName = baseDir.replace( /\//, '_');
+    optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', fontSubName );
+    optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', fontSubName );
+  } else {
+    optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', '' );
+    optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', '' );
+  }
   return src( subSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( svgLint() )
     .pipe( _setTimestampOption( options.iconfont.timestamp ) )
-    .pipe( iconfontCss( options.iconfontCss ) )
-    .pipe( iconfont( options.iconfont ) )
-    .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ) ) )
-    .on( 'finish', () => {
-      src( config.fontsCopyFrom.replace( '[subdir]', baseDir ) )
-        .pipe( dest( config.fontsCopyTo.replace( '[subdir]', baseDir )  ) )
-      ;
-    } )
+    .pipe( iconfontCss( optIconfontCss ) )
+    .pipe( iconfont( optIconfont ) )
+    .pipe(
+      gulpIf(
+        ( file ) => {
+          let
+            fileReg
+            ,condition = false
+          ;
+          for ( let i = 0, len = optIconfont.formats.length; i < len; i++ ) {
+            fileReg = new RegExp( '\\.' + optIconfont.formats[ i ] + '$');
+            if ( fileReg.test( file.path ) ) {
+              condition = true;
+            }
+          }
+          return condition;
+        }
+        ,dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } )
+      )
+    )
+    .pipe(
+      gulpIf( /\.scss$/, dest( config.scssDist.replace( '[subdir]', baseDir ) ) )
+    )
   ;
 }
 

@@ -130,19 +130,20 @@ const
       group         : '/fonts/icons',
       base          : SRC,
       watch         : true && ENABLE_WATCH,
-      fontsDist     : SRC +  '[subdir]/fonts',
+      fontsDist     : DIST +  '[subdir]/fonts',
+      scssDist      : SRC + '[subdir]/css',
       fontsCopyFrom : SRC +  '[subdir]/fonts/*.*',
       fontsCopyTo   : DIST + '[subdir]/fonts',
       options       : {
         iconfont : {
-          fontName       : 'icons',
+          fontName       : 'icons[subdir]',
           prependUnicode : true,
           formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
           normalize      : true,
           startUnicode   : 0xF001,
         },
         iconfontCss : {
-          fontName   : 'icons',
+          fontName   : 'icons[subdir]',
           path       : SRC + '/css/_templates/_icons.scss',
           targetPath : '../css/_icons.scss',
           fontPath   : '../fonts/',
@@ -166,7 +167,7 @@ const
       src     : [
         ''  + SRC + '/**/*.{png,jpg,svg}',
         '!' + SRC + '/**/_sprite*/*.{png,svg}',
-        '!' + SRC + '/**/fonts/icons/*.{png,svg}',
+        '!' + SRC + '/**/fonts/icons/*.svg',
       ],
       dist    : DIST,
       watch   : true && ENABLE_WATCH,

@@ -29,7 +29,6 @@ function _branchTask( subSrc, baseDir ) {
     .pipe( svgLint() )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/, dest( config.dist + baseDir ) ) )
-    .pipe( gulpIf( /\.css$/, dest( config.dist + baseDir ) ) )
     .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
     .pipe( gulpIf( /\.html$/, dest( config.dist + baseDir ) ) )
   ;

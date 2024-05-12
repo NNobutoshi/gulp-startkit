@@ -1,10 +1,10 @@
 @font-face {
-  font-family: "icons";
-  src: url("../fonts/icons.eot");
-  src: url("../fonts/icons.eot?#iefix") format("eot"), url("../fonts/icons.woff2") format("woff2"), url("../fonts/icons.woff") format("woff"), url("../fonts/icons.ttf") format("truetype");
+  font-family: "icons_examples";
+  src: url("../fonts/icons_examples.eot");
+  src: url("../fonts/icons_examples.eot?#iefix") format("eot"), url("../fonts/icons_examples.woff2") format("woff2"), url("../fonts/icons_examples.woff") format("woff"), url("../fonts/icons_examples.ttf") format("truetype");
 }
 .icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
-  font-family: "icons";
+  font-family: "icons_examples";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -55,7 +55,7 @@
 }
 .pl-list_heading::after {
   display: inline-block;
-  font-family: "icons";
+  font-family: "icons_examples";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
