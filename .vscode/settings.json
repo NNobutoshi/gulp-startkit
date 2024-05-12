@@ -5,6 +5,7 @@
       "source.fixAll.eslint": "explicit",
       "source.fixAll.stylelint": "explicit"
     },
+    "eslint.useFlatConfig": false,
     "eslint.format.enable": true,
     "eslint.workingDirectories": ["./"],
     "eslint.validate": [
