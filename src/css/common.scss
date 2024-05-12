@@ -4,17 +4,17 @@
 @forward "fonts";
 @forward  "elements";
 @forward "_components/layout";
-@forward  "_components/_group";
-@forward  "_components/_nav";
-@forward  "_components/_sections";
-@forward  "_components/_headings";
-@forward  "_components/_paragraphs";
-@forward  "_components/_links";
-@forward  "_components/_logos";
-@forward  "_components/_buttons";
-@forward  "_components/_banners";
-@forward  "_components/_lists";
-@forward  "_components/_tables";
+@forward  "_components/group";
+@forward  "_components/nav";
+@forward  "_components/sections";
+@forward  "_components/headings";
+@forward  "_components/paragraphs";
+@forward  "_components/links";
+@forward  "_components/logos";
+@forward  "_components/buttons";
+@forward  "_components/banners";
+@forward  "_components/lists";
+@forward  "_components/tables";
 
 @use "mixins" as mixin;
 

@@ -3,6 +3,7 @@
 @use "sass:math";
 @use "sass:list";
 @use "sass:map";
+@use "sass:string";
 
 @use "variables" as val;
 
@@ -34,7 +35,7 @@
       @if ( not $width ) {
         $width: $item;
       }
-      @if ( str-index( $query, "max" ) ) {
+      @if ( string.index( $query, "max" ) ) {
         $width: $width - 1px;
       }
       $ruleString: "#{$ruleString}" + "#{$width} )";

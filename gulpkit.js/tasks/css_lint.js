@@ -34,8 +34,10 @@ export default function css_lint() {
             files: lintedList,
             formatter: 'string',
           } )
-            .then( ( { output, errored } ) =>  {
-              console.log( output );
+            .then( ( { report, errored } ) =>  {
+              if ( report ) {
+                console.log( report );
+              }
               callBack();
             } )
             .catch( error =>  {
