@@ -15,8 +15,6 @@ const
   ,options = config.options
 ;
 
-options.iconfont.timestamp = 0;
-
 export default function icon_font() {
   return src( config.src )
     .pipe( diff( options.diff ) )
@@ -40,27 +38,17 @@ function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( svgLint() )
-    .pipe( _setTimestampOption( options.iconfont.timestamp ) )
+    .pipe( _setTimestampOption( optIconfont ) )
     .pipe( iconfontCss( optIconfontCss ) )
     .pipe( iconfont( optIconfont ) )
-    .pipe(
-      gulpIf(
-        ( file ) => {
-          let
-            fileReg
-            ,condition = false
-          ;
-          for ( let i = 0, len = optIconfont.formats.length; i < len; i++ ) {
-            fileReg = new RegExp( '\\.' + optIconfont.formats[ i ] + '$' );
-            if ( fileReg.test( file.path ) ) {
-              condition = true;
-            }
-          }
-          return condition;
-        }
-        ,dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } )
-      )
-    )
+    .pipe( gulpIf(
+      file => {
+        return optIconfont.formats.some(
+          format => new RegExp( `\\.${ format }$` ).test( file.path )
+        );
+      }
+      ,dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } )
+    ) )
     .pipe(
       gulpIf( /\.scss$/, dest( config.scssDist.replace( '[subdir]', baseDir ) ) )
     )
@@ -70,15 +58,20 @@ function _branchTask( subSrc, baseDir ) {
 /*
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  */
-function _setTimestampOption() {
-  let newer = new Date( 0 );
-  return through.obj( ( file, enc, callBack ) => {
-    if ( file.stat && file.stat.birthtime > newer ) {
-      newer = Date.parse( file.stat.birthtime ) / 1000;
+function _setTimestampOption( optIconfont ) {
+  let
+    newer = new Date( 0 )
+  ;
+  return through.obj(
+    ( file, enc, callBack ) => {
+      if ( file.stat && file.stat.birthtime > newer ) {
+        newer = Math.round( file.stat.birthtime / 1000 );
+      }
+      callBack( null, file );
     }
-    callBack( null, file );
-  }, ( callBack ) => {
-    options.iconfont.timestamp = newer;
-    callBack();
-  } );
+    ,( callBack ) => {
+      optIconfont.timestamp = newer;
+      callBack();
+    }
+  );
 }
