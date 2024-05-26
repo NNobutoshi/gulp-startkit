@@ -37,20 +37,31 @@ function diff_build( options, collect, select ) {
       allFiles        : {}, // 全chumk用
       collection      : {}, // 依存関係収集用
       targets         : {}, // 通過候補
-      currentDiffMap  : null,
-      lastDiffMap     : lastDiff.get(),
-      promiseGetGitDiffList : null,
+      currentDiffData  : null,
+      lastDiffData     : lastDiff.get(),
+      promiseGetGitDiffData : null,
+      promiseOnGitDIffData  : null,
     },
     settings = mergeWith( {}, defaultSettings, options )
   ;
-  stores.promiseGetGitDiffList = _getGitDiffList( settings.command );
 
   if ( !settings.detection ) {
     return through.obj();
   }
+
+  stores.promiseGetGitDiffData = _getGitDiffData( settings.command );
+
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, path.sep );
   }
+
+  stores.promiseOnGitDiffData = stores.promiseGetGitDiffData.then( ( data ) => {
+    return new Promise( ( resolve ) => {
+      stores.currentDiffData = data;
+      resolve( data );
+    } );
+  } );
+
   return through.obj( _transform( stores, settings, collect ), _flush( stores, settings, select ) );
 }
 
@@ -66,26 +77,25 @@ function _transform( stores, settings, collect ) {
     }
 
     /*
+     * すべてのchunk は収集しておく
+     */
+    stores.allFiles[ file.path ]  = {
+      file : file,
+    };
+
+    /*
      * git コマンドで得た差分ファイルリストにchunk のpath があればstream で通す候補にし、
      * リストになくても、直近最後の差分としてリストにあればそれも候補にする。
      * そうしないと、git のrevert などが未検知になってしまうため。
      */
-    stores.promiseGetGitDiffList.then( ( map ) => {
+    stores.promiseOnGitDiffData.then( () => {
 
       if (
-        _includes( map, file.path ) ||
-        _includes( stores.lastDiffMap, file.path )
+        _includes( stores.currentDiffData, file.path ) ||
+        _includes( stores.lastDiffData, file.path )
       ) {
         stores.targets[ file.path ] = 1;
       }
-      stores.currentDiffMap = map;
-
-      /*
-       * すべてのchunk は収集しておく
-       */
-      stores.allFiles[ file.path ]  = {
-        file : file,
-      };
 
       /*
        * 複数のsrc ファイルを一つのdist にするようなタスク用。
@@ -117,21 +127,21 @@ function _flush( stores, settings, select ) {
       ,group     = settings.group
     ;
 
-    if ( stores.currentDiffMap === null ) {
+    if ( stores.currentDiffData === null ) {
       return callBack();
     }
 
     /*
      * 消去されたファイルもtargetに。
      */
-    for ( let [ filePath, value ] of Object.entries( stores.currentDiffMap ) ) {
+    for ( let [ filePath, value ] of Object.entries( stores.currentDiffData ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
         stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
 
-    for ( let [ filePath, value ] of Object.entries( stores.lastDiffMap ) ) {
-      if ( !stores.currentDiffMap[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
+    for ( let [ filePath, value ] of Object.entries( stores.lastDiffData ) ) {
+      if ( !stores.currentDiffData[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
         stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
@@ -194,10 +204,11 @@ function _flush( stores, settings, select ) {
     }
 
     _log( name, Object.keys( destFiles ).length, Object.keys( stores.targets ).length );
-    stores.lastDiffMap = stores.currentDiffMap;
-    lastDiff.set( stores.currentDiffMap );
-    stores.promiseGetGitDiffList = null;
-    _writeDiffMap();
+    stores.lastDiffData = stores.currentDiffData;
+    lastDiff.set( stores.currentDiffData );
+    stores.promiseGetGitDiffData = null;
+    stores.promiseOnGitDiffData = null;
+    _writeDiffData();
     return callBack();
 
   };
@@ -224,7 +235,7 @@ function selectTargetFiles( filePath, collection, destFiles ) {
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */
-function _writeDiffMap() {
+function _writeDiffData() {
   clearTimeout( writing_timeoutId );
   writing_timeoutId = setTimeout( () => {
     lastDiff.write();
@@ -243,9 +254,9 @@ function _log( name, total, detected ) {
   }
 }
 
-function _includes( map, filePath ) {
+function _includes( data, filePath ) {
   filePath = path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
-  return Object.keys( map ).includes( filePath );
+  return Object.keys( data ).includes( filePath );
 }
 
 /*
@@ -253,13 +264,13 @@ function _includes( map, filePath ) {
  * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
  * oject（差分ファイルリスト） の作成。
  */
-function _getGitDiffList( comand ) {
+function _getGitDiffData( comand ) {
   return new Promise( ( resolve ) => {
     exec( comand, ( error, stdout, stderror ) => {
-      let diffMap = {};
+      let diffData = {};
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
-        resolve( diffMap );
+        resolve( diffData );
       }
       if ( stdout ) {
         const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
@@ -268,10 +279,10 @@ function _getGitDiffList( comand ) {
           if ( item[ 2 ].indexOf( ' -> ' ) > -1 ) {
             item[ 2 ] = item[ 2 ].split( ' -> ' )[ 1 ];
           }
-          diffMap[ item[ 2 ] ] = { status: item[ 1 ] };
+          diffData[ item[ 2 ] ] = { status: item[ 1 ] };
         }
       }
-      resolve( diffMap );
+      resolve( diffData );
     } );
   } );
 }
