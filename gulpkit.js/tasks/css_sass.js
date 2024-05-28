@@ -1,4 +1,3 @@
-import fs   from 'node:fs';
 import path from 'node:path';
 
 import { src, dest } from 'gulp';
@@ -58,20 +57,16 @@ function _collectTargetFiles( file, collection ) {
   for ( const match of matches ) {
     let
       dependentFilePath
-      ,_dependentFilePath
     ;
     dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
     if ( !match[ 3 ] ) {
       dependentFilePath += '.scss';
     }
     if ( /^_/.test( path.basename( dependentFilePath ) ) === false ) {
-      _dependentFilePath = path.join(
+      dependentFilePath = path.join(
         path.dirname( dependentFilePath ),
         path.basename( dependentFilePath ).replace( /^/, '_' )
       );
-      if ( fs.existsSync( _dependentFilePath ) ) {
-        dependentFilePath = _dependentFilePath;
-      }
     }
     if ( !collection[ dependentFilePath ] ) {
       collection[ dependentFilePath ] = [];

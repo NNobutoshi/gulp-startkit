@@ -34,13 +34,13 @@ export {
 function diff_build( options, collect, select ) {
   const
     stores = {
-      allFiles        : {}, // 全chumk用
-      collection      : {}, // 依存関係収集用
-      targets         : {}, // 通過候補
+      allFiles         : {}, // 全chumk用
+      collection       : {}, // 依存関係収集用
+      targets          : {}, // 通過候補
       currentDiffData  : null,
       lastDiffData     : lastDiff.get(),
       promiseGetGitDiffData : null,
-      promiseOnGitDIffData  : null,
+      promiseOnGitDiffData  : null,
     },
     settings = mergeWith( {}, defaultSettings, options )
   ;
@@ -180,6 +180,11 @@ function _flush( stores, settings, select ) {
      */
     } else {
       for ( let filePath in stores.targets ) {
+        if ( stores.collection[ filePath ] ) {
+          stores.collection[ filePath ].forEach( dependentFilePath => {
+            destFiles[ dependentFilePath ] = 1;
+          } );
+        }
         if ( stores.allFiles[ filePath ] ) {
           destFiles[ filePath ] = 1;
         } else {
