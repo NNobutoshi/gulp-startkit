@@ -62,6 +62,10 @@ const
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
         },
+        src : {
+          base: SRC,
+          encoding: false,
+        },
       },
     },
     'css_sass' : {
@@ -199,6 +203,10 @@ const
           name      : 'img_min',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
+        },
+        src : {
+          base : SRC,
+          encoding: false,
         },
       },
     },

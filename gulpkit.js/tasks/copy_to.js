@@ -2,8 +2,8 @@ import { src, dest } from 'gulp';
 
 import plumber from 'gulp-plumber';
 
-import diff       from '../lib/diff_build.js';
-import configFile from '../config.js';
+import { diff_1on1 } from '../lib/diff_build.js';
+import configFile    from '../config.js';
 
 const
   config = configFile.copy_to
@@ -13,9 +13,13 @@ const
 ;
 
 export default function copy_to() {
-  return src( config.src, { encoding : false } )
+  return diff_1on1( src, config.src, mainTask, options.diff );
+}
+
+function mainTask( fixedSrc, resolve ) {
+  return src( fixedSrc, options.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff ) )
     .pipe( dest( config.dist ) )
+    .on( 'finish', () => resolve() )
   ;
 }

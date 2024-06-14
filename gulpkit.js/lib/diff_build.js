@@ -22,12 +22,17 @@ let
 ;
 
 export {
+  diff_build as default,
   selectTargetFiles,
-  diff_build as default
+  diff_1on1,
 };
+
 
 /*
  * Git で管理する前提での差分ビルド。
+ * /
+
+/*
  * いったんGulp.src を通った後なので
  * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
  */
@@ -218,6 +223,69 @@ function _flush( stores, settings, select ) {
 
   };
 }
+
+
+/*
+ * one source → one destination 用。
+ * Gulp.srcのオプション { read: false } の速さに期待して、
+ * Gulp.src()を
+ * 1段階目で { read false } で Git のdiff の結果からファイルのパスを取捨選択して
+ * 2段階目で { read: true } で 選択したファイルで再実行。
+ */
+async function diff_1on1( gulpSrc, firstSrc, mainTask, options ) {
+  const
+    settings = mergeWith( {}, defaultSettings, options )
+    ,lastDiffData    = lastDiff.get()
+    ,currentDiffData = await _getGitDiffData( settings.command )
+    ,fixedSrc = await _setUpByFirstSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData )
+  ;
+  await _runByFixedSrc( mainTask, fixedSrc, currentDiffData, settings );
+}
+
+
+function _setUpByFirstSrc( src, firstSrc, currentDiffData, lastDiffData ) {
+  const
+    fixedSrc = []
+  ;
+  return new Promise( ( resolve ) => {
+    src( firstSrc, { read: false } )
+      .pipe( through.obj( function( file, enc, callBack ) {
+        if ( file.isStream && file.isStream() ) {
+          this.emit( 'error' );
+          return callBack();
+        }
+        if (
+          _includes( currentDiffData, file.path ) ||
+          _includes( lastDiffData, file.path )
+        ) {
+          fixedSrc.push( path.relative( process.cwd(), file.path ).replace( /[\\]/g, '/' ) );
+        }
+        callBack();
+      } ) )
+      .on( 'finish', () => {
+        resolve( fixedSrc );
+      } )
+    ;
+  } );
+}
+
+
+function _runByFixedSrc( mainTask, fixedSrc, currentDiffData, settings ) {
+  _log( settings.name, fixedSrc.length, fixedSrc.length );
+  return new Promise( ( resolve ) => {
+    if ( fixedSrc.length === 0 ) {
+      return resolve();
+    }
+    mainTask
+      .call( null, fixedSrc, resolve )
+      .on( 'finish', () => {
+        lastDiff.set( currentDiffData );
+        _writeDiffData();
+      } );
+  } );
+
+}
+
 
 /*
  * through2.obj()の flushFunction 中で、実行。

@@ -1,9 +1,9 @@
-import { src, dest, lastRun }                         from 'gulp';
+import { src, dest }                                  from 'gulp';
 import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
 import plumber                                        from 'gulp-plumber';
 import imageminPngquant                               from 'imagemin-pngquant';
 
-import diff       from '../lib/diff_build.js';
+import { diff_1on1 }  from '../lib/diff_build.js';
 import configFile from '../config.js';
 
 const
@@ -11,13 +11,14 @@ const
   ,options = config.options
 ;
 
-/*
- * one source → one destination なので diff build はGulp.lastRun と併用する。
- */
+
 export default function img_min() {
-  return src( config.src, { since : lastRun( img_min ), encoding: false } )
+  return diff_1on1( src, config.src, mainTask, options.diff );
+}
+
+function mainTask( fixedSrc, resolve ) {
+  return src( fixedSrc, options.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff ) )
     .pipe( imagemin( [
       mozjpeg( options.imageminMozjpeg ),
       imageminPngquant( options.imageminPngquant ),
@@ -26,5 +27,6 @@ export default function img_min() {
       gifsicle(),
     ] ) )
     .pipe( dest( config.dist ) )
+    .on( 'finish', () => resolve() )
   ;
 }
