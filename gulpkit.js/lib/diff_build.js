@@ -234,12 +234,21 @@ function _flush( stores, settings, select ) {
  */
 async function diff_1on1( gulpSrc, firstSrc, mainTask, options ) {
   const
-    settings = mergeWith( {}, defaultSettings, options )
-    ,lastDiffData    = lastDiff.get()
-    ,currentDiffData = await _getGitDiffData( settings.command )
-    ,fixedSrc = await _setUpByFirstSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData )
+    settings      = mergeWith( {}, defaultSettings, options )
+    ,lastDiffData = lastDiff.get();
+  let
+    currentDiffData
+    ,fixedSrc
   ;
-  await _runByFixedSrc( mainTask, fixedSrc, currentDiffData, settings );
+  if ( settings.detection === false ) {
+    await _runByFixedSrc( mainTask, firstSrc, settings );
+  } else {
+    currentDiffData = await _getGitDiffData( settings.command );
+    fixedSrc        = await _setUpByFirstSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData );
+    await _runByFixedSrc( mainTask, fixedSrc, settings );
+    lastDiff.set( currentDiffData );
+    _writeDiffData();
+  }
 }
 
 
@@ -270,20 +279,16 @@ function _setUpByFirstSrc( src, firstSrc, currentDiffData, lastDiffData ) {
 }
 
 
-function _runByFixedSrc( mainTask, fixedSrc, currentDiffData, settings ) {
-  _log( settings.name, fixedSrc.length, fixedSrc.length );
+function _runByFixedSrc( mainTask, fixedSrc, settings ) {
+  if ( settings.detection === true ) {
+    _log( settings.name, fixedSrc.length, fixedSrc.length );
+  }
   return new Promise( ( resolve ) => {
     if ( fixedSrc.length === 0 ) {
       return resolve();
     }
-    mainTask
-      .call( null, fixedSrc, resolve )
-      .on( 'finish', () => {
-        lastDiff.set( currentDiffData );
-        _writeDiffData();
-      } );
+    mainTask.call( null, fixedSrc, resolve );
   } );
-
 }
 
 
