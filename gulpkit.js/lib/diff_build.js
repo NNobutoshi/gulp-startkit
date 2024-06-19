@@ -287,7 +287,14 @@ function _runByFixedSrc( mainTask, fixedSrc, settings ) {
     if ( fixedSrc.length === 0 ) {
       return resolve();
     }
-    mainTask.call( null, fixedSrc, resolve );
+    mainTask
+      .call( null, fixedSrc, resolve )
+
+      /*
+       * 書き込みを行わないタスクのstream のためにflowing モードに。
+       */
+      .on( 'data', () => {} )
+    ;
   } );
 }
 

@@ -27,6 +27,6 @@ function mainTask( fixedSrc, resolve ) {
       gifsicle(),
     ] ) )
     .pipe( dest( config.dist ) )
-    .on( 'finish', () => resolve() )
+    .on( 'finish', resolve )
   ;
 }

@@ -19,7 +19,6 @@ function mainTask( fixedSrc, resolve ) {
     .pipe( plumber( options.plumber ) )
     .pipe( eslint( options.eslint ) )
     .pipe( eslint.format() )
-    .on( 'finish', () => resolve() )
-    // .pipe( eslint.failAfterError() )
+    .on( 'finish', resolve )
   ;
 }

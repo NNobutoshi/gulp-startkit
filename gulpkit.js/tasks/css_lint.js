@@ -22,7 +22,7 @@ function mainTask( fixedSrc, resolve ) {
     .pipe( through.obj(
       function( file, enc, callBack ) {
         targetFiles.push( file.path );
-        callBack( null, file );
+        callBack();
       }
     ) )
     .on( 'finish', function() {
@@ -40,6 +40,7 @@ function mainTask( fixedSrc, resolve ) {
           if ( targetFiles.length > 0 ) {
             this.emit( 'error', error );
           }
+          resolve();
         } );
     } )
   ;
