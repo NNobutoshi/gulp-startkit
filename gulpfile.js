@@ -1,7 +1,7 @@
-import gulp from 'gulp';
+import { series, parallel } from 'gulp';
+
 import * as tasks from './gulpkit.js/tasks/index.js';
 
-const { series, parallel } = gulp;
 
 /*
  * コマンドライン上 Gulp <task>
