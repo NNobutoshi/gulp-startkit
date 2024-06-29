@@ -11,12 +11,10 @@ import sizeOf        from 'image-size';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
-
-import configFile from '../config.js';
+import { html_pug as config }      from '../config.js';
 
 const
-  config = configFile.html_pug
-  ,options  = config.options
+  options  = config.options
 ;
 
 export default function html_pug() {

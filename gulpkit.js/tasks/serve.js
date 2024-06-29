@@ -1,10 +1,9 @@
 import server from 'browser-sync';
 
-import configFile from '../config.js';
+import { serve as config } from '../config.js';
 
 const
-  config = configFile.serve
-  ,options = config.options
+  options = config.options
 ;
 
 const serve_init = ( () => {

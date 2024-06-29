@@ -3,13 +3,12 @@ import spriteSmith   from 'gulp.spritesmith';
 import plumber       from 'gulp-plumber';
 import gulpIf        from 'gulp-if';
 
-import taskForEach from '../lib/task_for_each.js';
-import diff        from '../lib/diff_build.js';
-import configFile  from '../config.js';
+import taskForEach          from '../lib/task_for_each.js';
+import diff                 from '../lib/diff_build.js';
+import { sprite as config } from '../config.js';
 
 const
-  config = configFile.sprite
-  ,options = config.options
+  options = config.options
 ;
 
 export default function sprite() {

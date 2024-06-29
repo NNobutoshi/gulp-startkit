@@ -3,12 +3,11 @@ import through   from 'through2';
 import plumber   from 'gulp-plumber';
 import stylelint from 'stylelint';
 
-import { diff_1on1 } from '../lib/diff_build.js';
-import configFile    from '../config.js';
+import { diff_1on1 }          from '../lib/diff_build.js';
+import { css_lint as config } from '../config.js';
 
 const
-  config = configFile.css_lint
-  ,options = config.options
+  options = config.options
 ;
 
 export default function css_lint() {

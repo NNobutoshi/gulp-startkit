@@ -522,4 +522,18 @@ case 'development':
 default:
 }
 
-export default config_dev;
+export const {
+  clean,
+  copy_to,
+  css_sass,
+  css_lint,
+  icon_font,
+  img_min,
+  js_webpack,
+  js_eslint,
+  html_pug,
+  sprite,
+  sprite_svg,
+  serve,
+  watcher,
+} = config_dev;

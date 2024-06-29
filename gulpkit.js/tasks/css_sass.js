@@ -11,13 +11,12 @@ import cssMqpacker   from 'css-mqpacker';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
-import configFile                  from '../config.js';
+import { css_sass as config }      from '../config.js';
 
 const sass = gulpSass( dartSass );
 
 const
-  config = configFile.css_sass
-  ,options = config.options
+  options = config.options
 ;
 
 export default function css_sass() {

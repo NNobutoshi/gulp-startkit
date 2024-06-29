@@ -3,12 +3,11 @@ import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
 import plumber                                        from 'gulp-plumber';
 import imageminPngquant                               from 'imagemin-pngquant';
 
-import { diff_1on1 }  from '../lib/diff_build.js';
-import configFile from '../config.js';
+import { diff_1on1 }         from '../lib/diff_build.js';
+import { img_min as config } from '../config.js';
 
 const
-  config = configFile.img_min
-  ,options = config.options
+  options = config.options
 ;
 
 

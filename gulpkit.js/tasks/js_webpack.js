@@ -8,11 +8,10 @@ import through   from 'through2';
 import mergeWith from 'lodash/mergeWith.js';
 import isEqual   from 'lodash/isEqual.js';
 
-import configFile from '../config.js';
+import { js_webpack as config } from '../config.js';
 
 const
-  config   = configFile.js_webpack
-  ,options = config.options
+  options = config.options
 ;
 let
   compiler = null

@@ -3,11 +3,7 @@ import { exec } from 'node:child_process';
 import log   from 'fancy-log';
 import chalk from 'chalk';
 
-import configFile from '../config.js';
-
-const
-  config = configFile.clean
-;
+import { clean as config } from '../config.js';
 
 /*
  * Git Command をつかってUntracked fileを、削除。
