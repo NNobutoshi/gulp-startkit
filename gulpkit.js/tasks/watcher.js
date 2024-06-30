@@ -1,9 +1,10 @@
 import { watch, series } from 'gulp';
 
-import { watcher as config } from '../config.js';
+import configFile from '../config.js';
 
 const
-  watchOptions = config.options.watch
+  config        = configFile
+  ,watchOptions = config.watcher.options.watch
 ;
 
 export default function watcher( tasks, reload ) {

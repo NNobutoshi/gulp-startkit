@@ -522,6 +522,7 @@ case 'development':
 default:
 }
 
+export default config_dev;
 export const {
   clean,
   copy_to,
