@@ -32,7 +32,7 @@ const
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = path.resolve( DIRNAME, '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
-  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit.js/ ${ SRC }/`
+  ,GIT_DIFF_COMMAND   = `git status -suall gulpkit/ ${ SRC }/`
   ,SERVER_CONF_PATH   = path.resolve( DIRNAME, './config_serve.json' )
 ;
 const
@@ -273,7 +273,7 @@ const
     },
     'js_eslint' : {
       src : [
-        './gulpkit.js/**/*.js',
+        './gulpkit/**/*.js',
         ''  + SRC + '/**/*.js',
         '!' + SRC + '/**/_vendor/*.js',
       ],

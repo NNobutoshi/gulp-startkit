@@ -1,6 +1,6 @@
 import { series, parallel } from 'gulp';
 
-import * as tasks from './gulpkit.js/tasks/index.js';
+import * as tasks from './gulpkit/tasks/index.js';
 
 
 /*
@@ -10,7 +10,7 @@ import * as tasks from './gulpkit.js/tasks/index.js';
 ( function _taskOnCommand() {
   const
     watchTasks = {}
-    ,args = process.argv.slice( process.argv.indexOf( 'gulpkit.js' ) + 1 )
+    ,args = process.argv.slice( process.argv.indexOf( 'gulpkit' ) + 1 )
   ;
   if ( args.length === 0 ) {
     return;
@@ -49,4 +49,4 @@ export default series(
   tasks.watcher( tasks, tasks.serve_reload ),
 );
 
-export * from './gulpkit.js/tasks/index.js';
+export * from './gulpkit/tasks/index.js';
