@@ -24,7 +24,7 @@ let
 export {
   diff_build as default,
   selectTargetFiles,
-  diff_1on1,
+  diff_1to1,
 };
 
 
@@ -232,7 +232,7 @@ function _flush( stores, settings, select ) {
  * 1段階目で { read false } で Git のdiff の結果からファイルのパスを取捨選択して
  * 2段階目で { read: true } で 選択したファイルで再実行。
  */
-async function diff_1on1( gulpSrc, firstSrc, mainTask, options ) {
+async function diff_1to1( gulpSrc, firstSrc, mainTask, options ) {
   const
     settings      = mergeWith( {}, defaultSettings, options )
     ,lastDiffData = lastDiff.get();
