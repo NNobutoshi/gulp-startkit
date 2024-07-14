@@ -2,7 +2,7 @@
 
 静的な中規模Web サイトのGulp による製作用。
 
-## sample
+## 制作sample
 
 [http://sample1.nobbtossi.jp/](http://sample1.nobbtossi.jp/)
 
