@@ -238,23 +238,23 @@ async function diff_1on1( gulpSrc, firstSrc, mainTask, options ) {
     ,lastDiffData = lastDiff.get();
   let
     currentDiffData
-    ,fixedSrc
+    ,preparedSrc
   ;
   if ( settings.detection === false ) {
-    await _runByFixedSrc( mainTask, firstSrc, settings );
+    await _runMainTaskByPreparedSrc( mainTask, firstSrc, settings );
   } else {
     currentDiffData = await _getGitDiffData( settings.command );
-    fixedSrc        = await _setUpByFirstSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData );
-    await _runByFixedSrc( mainTask, fixedSrc, settings );
+    preparedSrc     = await _prepareSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData );
+    await _runMainTaskByPreparedSrc( mainTask, preparedSrc, settings );
     lastDiff.set( currentDiffData );
     _writeDiffData();
   }
 }
 
 
-function _setUpByFirstSrc( src, firstSrc, currentDiffData, lastDiffData ) {
+function _prepareSrc( src, firstSrc, currentDiffData, lastDiffData ) {
   const
-    fixedSrc = []
+    preparedSrc = []
   ;
   return new Promise( ( resolve ) => {
     src( firstSrc, { read: false } )
@@ -267,32 +267,32 @@ function _setUpByFirstSrc( src, firstSrc, currentDiffData, lastDiffData ) {
           _includes( currentDiffData, file.path ) ||
           _includes( lastDiffData, file.path )
         ) {
-          fixedSrc.push( path.relative( process.cwd(), file.path ).replace( /[\\]/g, '/' ) );
+          preparedSrc.push( path.relative( process.cwd(), file.path ).replace( /[\\]/g, '/' ) );
         }
         callBack();
       } ) )
       .on( 'finish', () => {
-        resolve( fixedSrc );
+        resolve( preparedSrc );
       } )
     ;
   } );
 }
 
 
-function _runByFixedSrc( mainTask, fixedSrc, settings ) {
+function _runMainTaskByPreparedSrc( mainTask, preparedSrc, settings ) {
   if ( settings.detection === true ) {
-    _log( settings.name, fixedSrc.length, fixedSrc.length );
+    _log( settings.name, preparedSrc.length, preparedSrc.length );
   }
   return new Promise( ( resolve ) => {
-    if ( fixedSrc.length === 0 ) {
+    if ( preparedSrc.length === 0 ) {
       return resolve();
     }
     mainTask
-      .call( null, fixedSrc, resolve )
+      .call( null, preparedSrc, resolve )
 
-      /*
-       * 書き込みを行わないタスクのstream のためにflowing モードに。
-       */
+    /*
+     * 書き込みを行わないタスクのstream のためにflowing モードに。
+     */
       .on( 'data', () => {} )
     ;
   } );

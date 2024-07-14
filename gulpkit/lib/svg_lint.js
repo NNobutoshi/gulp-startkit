@@ -7,26 +7,19 @@ import through from 'through2';
  */
 export default function svg_lint() {
 
-  return through.obj( _transform, _flush );
+  return through.obj( _transform );
 
   async function _transform( file, enc, callBack ) {
     const
-      stream = this
-      ,contents = String( file.contents )
+      contents = String( file.contents )
       ,linting = await svgLint.lintSource( contents, { debug: true, config: {} } )
     ;
     linting.on( 'done', () => {
       if ( linting.state === linting.STATES.success ) {
         callBack( null, file );
       } else {
-        stream.emit( 'error', new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
-        callBack();
+        callBack( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
       }
     } );
   }
-
-  function _flush( callBack ) {
-    callBack();
-  }
-
 }
