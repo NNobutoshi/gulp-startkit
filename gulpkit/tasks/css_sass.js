@@ -50,7 +50,7 @@ export default function css_sass() {
 function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
-    ,regex = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
+    ,regex   = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {

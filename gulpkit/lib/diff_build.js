@@ -38,7 +38,7 @@ export {
  */
 function diff_build( options, collect, select ) {
   const
-    stores = {
+    shared = {
       allFiles         : {}, // 全chumk用
       collection       : {}, // 依存関係収集用
       targets          : {}, // 通過候補
@@ -54,23 +54,23 @@ function diff_build( options, collect, select ) {
     return through.obj();
   }
 
-  stores.promiseGetGitDiffData = _getGitDiffData( settings.command );
+  shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
 
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, path.sep );
   }
 
-  stores.promiseOnGitDiffData = stores.promiseGetGitDiffData.then( ( data ) => {
+  shared.promiseOnGitDiffData = shared.promiseGetGitDiffData.then( ( data ) => {
     return new Promise( ( resolve ) => {
-      stores.currentDiffData = data;
+      shared.currentDiffData = data;
       resolve( data );
     } );
   } );
 
-  return through.obj( _transform( stores, settings, collect ), _flush( stores, settings, select ) );
+  return through.obj( _transform( shared, settings, collect ), _flush( shared, settings, select ) );
 }
 
-function _transform( stores, settings, collect ) {
+function _transform( shared, settings, collect ) {
 
   return function( file, enc, callBack ) {
     if ( file.isNull && file.isNull() ) {
@@ -84,7 +84,7 @@ function _transform( stores, settings, collect ) {
     /*
      * すべてのchunk は収集しておく
      */
-    stores.allFiles[ file.path ]  = {
+    shared.allFiles[ file.path ]  = {
       file : file,
     };
 
@@ -93,13 +93,13 @@ function _transform( stores, settings, collect ) {
      * リストになくても、直近最後の差分としてリストにあればそれも候補にする。
      * そうしないと、git のrevert などが未検知になってしまうため。
      */
-    stores.promiseOnGitDiffData.then( () => {
+    shared.promiseOnGitDiffData.then( () => {
 
       if (
-        _includes( stores.currentDiffData, file.path ) ||
-        _includes( stores.lastDiffData, file.path )
+        _includes( shared.currentDiffData, file.path ) ||
+        _includes( shared.lastDiffData, file.path )
       ) {
-        stores.targets[ file.path ] = 1;
+        shared.targets[ file.path ] = 1;
       }
 
       /*
@@ -107,7 +107,7 @@ function _transform( stores, settings, collect ) {
        * 自身のパスをkey に、所属するグループ（設定で指定されたポイントとなるディレクトリ）を値に。
        */
       if ( settings.group ) {
-        stores.allFiles[ file.path ].group =
+        shared.allFiles[ file.path ].group =
           file.path.slice( 0, file.path.indexOf( settings.group ) + settings.group.length );
       }
 
@@ -115,7 +115,7 @@ function _transform( stores, settings, collect ) {
        * ファイルの依存関係をcall back で収集してもらう。
        */
       if ( typeof collect === 'function' ) {
-        collect.call( null, file, stores.collection );
+        collect.call( null, file, shared.collection );
       }
       callBack();
     } );
@@ -123,7 +123,7 @@ function _transform( stores, settings, collect ) {
   };
 }
 
-function _flush( stores, settings, select ) {
+function _flush( shared, settings, select ) {
   return function( callBack ) {
     const
       stream     = this
@@ -132,22 +132,22 @@ function _flush( stores, settings, select ) {
       ,group     = settings.group
     ;
 
-    if ( stores.currentDiffData === null ) {
+    if ( shared.currentDiffData === null ) {
       return callBack();
     }
 
     /*
      * 消去されたファイルもtargetに。
      */
-    for ( let [ filePath, value ] of Object.entries( stores.currentDiffData ) ) {
+    for ( let [ filePath, value ] of Object.entries( shared.currentDiffData ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
-        stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
+        shared.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
 
-    for ( let [ filePath, value ] of Object.entries( stores.lastDiffData ) ) {
-      if ( !stores.currentDiffData[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
-        stores.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
+    for ( let [ filePath, value ] of Object.entries( shared.lastDiffData ) ) {
+      if ( !shared.currentDiffData[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
+        shared.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
       }
     }
 
@@ -157,15 +157,16 @@ function _flush( stores, settings, select ) {
      */
     if ( group ) {
 
-      for ( let filePath in stores.allFiles ) {
-        for ( let targetFilePath in stores.targets ) {
+      for ( let filePath in shared.allFiles ) {
+        for ( let targetFilePath in shared.targets ) {
           const myGroup = targetFilePath.slice( 0, targetFilePath.indexOf( group ) + group.length );
           if (
-            ( stores.allFiles[ targetFilePath ] &&
-              stores.allFiles[ targetFilePath ].group &&
-              filePath.indexOf( stores.allFiles[ targetFilePath ].group ) === 0
-            ) ||
-             myGroup === stores.allFiles[ filePath ].group
+            (
+              shared.allFiles[ targetFilePath ]
+              && shared.allFiles[ targetFilePath ].group
+              && filePath.indexOf( shared.allFiles[ targetFilePath ].group ) === 0
+            )
+            || myGroup === shared.allFiles[ filePath ].group
           ) {
             destFiles[ filePath ] = 1;
           }
@@ -176,7 +177,7 @@ function _flush( stores, settings, select ) {
      * 全部道連れにする場合。
      */
     } else if ( settings.allForOne === true ) {
-      for ( let filePath in stores.allFiles ) {
+      for ( let filePath in shared.allFiles ) {
         destFiles[ filePath ] = 1;
       }
 
@@ -184,13 +185,13 @@ function _flush( stores, settings, select ) {
      * 候補として収集したものを通す。
      */
     } else {
-      for ( let filePath in stores.targets ) {
-        if ( stores.collection[ filePath ] ) {
-          stores.collection[ filePath ].forEach( dependentFilePath => {
+      for ( let filePath in shared.targets ) {
+        if ( shared.collection[ filePath ] ) {
+          shared.collection[ filePath ].forEach( dependentFilePath => {
             destFiles[ dependentFilePath ] = 1;
           } );
         }
-        if ( stores.allFiles[ filePath ] ) {
+        if ( shared.allFiles[ filePath ] ) {
           destFiles[ filePath ] = 1;
         } else {
           continue;
@@ -200,7 +201,7 @@ function _flush( stores, settings, select ) {
          * 収集した依存関係から候補ファイルと関係のあるファイルの最終的な選択。
          */
         if ( typeof select === 'function' ) {
-          select.call( null, filePath, stores.collection, destFiles );
+          select.call( null, filePath, shared.collection, destFiles );
         }
       } //for
     }
@@ -210,14 +211,14 @@ function _flush( stores, settings, select ) {
      * stream にプッシュする。
      */
     for ( let filePath in destFiles ) {
-      stream.push( stores.allFiles[ filePath ].file );
+      stream.push( shared.allFiles[ filePath ].file );
     }
 
-    _log( name, Object.keys( destFiles ).length, Object.keys( stores.targets ).length );
-    stores.lastDiffData = stores.currentDiffData;
-    lastDiff.set( stores.currentDiffData );
-    stores.promiseGetGitDiffData = null;
-    stores.promiseOnGitDiffData = null;
+    _log( name, Object.keys( destFiles ).length, Object.keys( shared.targets ).length );
+    shared.lastDiffData = shared.currentDiffData;
+    lastDiff.set( shared.currentDiffData );
+    shared.promiseGetGitDiffData = null;
+    shared.promiseOnGitDiffData = null;
     _writeDiffData();
     return callBack();
 

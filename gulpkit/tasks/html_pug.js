@@ -6,7 +6,6 @@ import plumber       from 'gulp-plumber';
 import pug           from 'pug';
 import through       from 'through2';
 import beautify      from 'js-beautify';
-import chalk         from 'chalk';
 import sizeOf        from 'image-size';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
@@ -55,7 +54,7 @@ export default function html_pug() {
 function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
-    ,regex = /^.*?(extends|include) *(.+)$/mg
+    ,regex   = /^.*?(extends|include) *(.+)$/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
@@ -77,7 +76,7 @@ function _collectTargetFiles( file, collection ) {
 function _pugRender() {
   const ignoreFileRegEx = /^_/;
 
-  return through.obj( _transform, _flush );
+  return through.obj( _transform );
 
   function _transform( file, enc, callBack ) {
     if ( ignoreFileRegEx.test( path.basename( file.path ) ) ) {
@@ -91,18 +90,12 @@ function _pugRender() {
     } );
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        this.emit( 'error', error );
-        console.log( chalk.hex( '#FF0000' )( file.path ) );
-        return callBack();
+        return callBack( error );
       }
       file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
       callBack( null, file );
     } );
-  }
-
-  function _flush( callBack ) {
-    callBack();
   }
 
 }
@@ -115,7 +108,7 @@ function _postPug() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
-    ,imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])(.+?)["'](.*?)>/g
+    ,imgRegEx          = /<(img|source)(.*?)(src|srcset)=(["'])(.+?)["'](.*?)>/g
   ;
   const stream = through.obj( ( file, enc, callBack ) => {
     const
@@ -169,12 +162,12 @@ function _postPug() {
      */
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
-        tagName       = match[ 1 ]
-        ,frontPart    = match[ 2 ]
-        ,attrName     = match[ 3 ]
-        ,q            = match[ 4 ]
-        ,srcPath      = match[ 5 ]
-        ,rearPart     = match[ 6 ]
+        tagName    = match[ 1 ]
+        ,frontPart = match[ 2 ]
+        ,attrName  = match[ 3 ]
+        ,q         = match[ 4 ]
+        ,srcPath   = match[ 5 ]
+        ,rearPart  = match[ 6 ]
       ;
       if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
         continue;
@@ -185,9 +178,9 @@ function _postPug() {
             stream.emit( 'error', error );
           }
           const
-            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } ` +
-                    `width=${ q }${ dm.width }${ q } ` +
-                    `height=${ q }${ dm.height }${ q }${ rearPart }>`
+            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } `
+                  + `width=${ q }${ dm.width }${ q } `
+                  + `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
           resolve();

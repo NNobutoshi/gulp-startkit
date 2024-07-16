@@ -41,9 +41,9 @@ function _branchTask( subSrc, baseDir ) {
     .pipe( iconfontCss( optIconfontCss ) )
     .pipe( iconfont( optIconfont ) )
     .pipe( gulpIf(
-      file => {
+      ( file ) => {
         return optIconfont.formats.some(
-          format => new RegExp( `\\.${ format }$` ).test( file.path )
+          ( format ) => new RegExp( `\\.${ format }$` ).test( file.path )
         );
       }
       ,dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } )

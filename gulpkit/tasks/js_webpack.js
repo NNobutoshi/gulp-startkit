@@ -87,9 +87,10 @@ function _createEntries() {
    * compiler を用意する。
    */
   function _flush( callBack ) {
-    if ( compiler === null ||
-      !isEqual( webpackConfig.entry, entries ) ||
-      !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, cacheGroups )
+    if (
+      compiler === null
+      || !isEqual( webpackConfig.entry, entries )
+      || !isEqual( webpackConfig.optimization.splitChunks.cacheGroups, cacheGroups )
     ) {
       mergeWith( webpackConfig, {
         entry : entries,

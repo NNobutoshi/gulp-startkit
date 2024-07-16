@@ -17,6 +17,6 @@ function mainTask( fixedSrc, resolve ) {
   return src( fixedSrc, options.src )
     .pipe( plumber( options.plumber ) )
     .pipe( dest( config.dist ) )
-    .on( 'finish', () => resolve() )
+    .on( 'finish', resolve )
   ;
 }

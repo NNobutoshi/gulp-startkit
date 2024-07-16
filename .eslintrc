@@ -52,6 +52,20 @@
       {
         "beforeLineComment": false
       }
+    ],
+    "operator-linebreak": [
+      "error",
+      "after",{
+        "overrides":
+        {
+          "?": "ignore",
+          ":": "ignore",
+          "||": "ignore",
+          "&&": "ignore",
+          "+": "ignore",
+          "-": "ignore"
+        }
+      }
     ]
   },
   "parserOptions": {

@@ -22,7 +22,7 @@ export default function sprite() {
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
-    .pipe( gulpIf( /\.png$/ , dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding :false } ) ) )
+    .pipe( gulpIf( /\.png$/ ,  dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding :false } ) ) )
     .pipe( gulpIf( /\.scss$/ , dest( config.scssDist.replace( '[subdir]', baseDir ) ) ) )
   ;
 }

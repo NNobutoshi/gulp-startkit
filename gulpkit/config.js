@@ -330,6 +330,7 @@ const
         plumber : {
           errorHandler : function( error ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
           },
         },
       },
