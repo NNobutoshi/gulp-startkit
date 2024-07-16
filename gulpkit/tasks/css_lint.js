@@ -21,27 +21,21 @@ function mainTask( fixedSrc, resolve ) {
     .pipe( through.obj(
       function( file, enc, callBack ) {
         targetFiles.push( file.path );
-        callBack();
-      }
-    ) )
-    .on( 'finish', function() {
-      stylelint.lint( {
-        files: targetFiles,
-        formatter: 'string',
-      } )
-        .then( ( { report, errored } ) =>  {
-          if ( report ) {
-            console.log( report );
-          }
-          resolve();
+        stylelint.lint( {
+          code: String( file.contents ),
+          formatter: 'string',
         } )
-        .catch( error =>  {
-          if ( targetFiles.length > 0 ) {
-            this.emit( 'error', error );
-          }
-          resolve();
-        } );
-    } )
+          .then( ( { report, errored } ) =>  {
+            if ( report ) {
+              console.log( report.replace( /<.+?>/, file.path ) );
+            }
+            callBack( null, file );
+          } )
+          .catch( ( error ) =>  {
+            callBack( ( targetFiles.length > -1 ) ? error : null );
+          } );
+      },
+    ) ).on( 'finish', resolve )
   ;
 }
 
