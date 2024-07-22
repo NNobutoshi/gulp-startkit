@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
     sudo apt install -y git
 
     # nodejs
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
     sudo apt install -y nodejs
 
     # nginx
