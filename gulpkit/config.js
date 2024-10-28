@@ -30,7 +30,7 @@ const
   ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
   ,SOURCEMAPS_DIR     = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( DIRNAME, '.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit/ ${ SRC }/`
   ,SERVER_CONF_PATH   = path.resolve( DIRNAME, './config_serve.json' )
