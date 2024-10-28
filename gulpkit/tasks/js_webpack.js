@@ -1,17 +1,20 @@
 import path from 'node:path';
 
-import { src }   from 'gulp';
-import plumber   from 'gulp-plumber';
-import webpack   from 'webpack';
-import log       from 'fancy-log';
-import through   from 'through2';
-import mergeWith from 'lodash/mergeWith.js';
-import isEqual   from 'lodash/isEqual.js';
+import { src, dest }    from 'gulp';
+import plumber          from 'gulp-plumber';
+import webpack          from 'webpack';
+import MemoryFileSystem from 'memory-fs';
+import File             from 'vinyl';
+import log              from 'fancy-log';
+import through          from 'through2';
+import mergeWith        from 'lodash/mergeWith.js';
+import isEqual          from 'lodash/isEqual.js';
 
 import { js_webpack as config } from '../config.js';
 
 const
   options = config.options
+  ,mfs = new MemoryFileSystem()
 ;
 let
   compiler = null
@@ -41,6 +44,7 @@ export default function js_webpack() {
     .pipe( plumber( options.plumber ) )
     .pipe( _createEntries() )
     .pipe( _compile() )
+    .pipe( dest( config.dist ) )
   ;
 }
 
@@ -78,7 +82,7 @@ function _createEntries() {
       val = /^\.?\.\//.test( val ) ? val : './' + val;
       entries[ key ] = val;
     }
-    callBack( null, file );
+    callBack();
   }
 
   /*
@@ -112,16 +116,29 @@ function _createEntries() {
 }
 
 function _compile() {
+  const targetFiles = [];
   return through.obj( _transform, _flush );
-  function _transform( file, enc, callBack ) {
-    callBack( null, file );
+  function _transform( _file, enc, callBack ) {
+    callBack();
   }
   function _flush( callBack ) {
-    compiler.run( _webPackCall( callBack, this ) );
+    compiler.outputFileSystem = mfs;
+    compiler.hooks.assetEmitted.tapAsync(
+      'MyPlugin',
+      ( _file, { content, outputPath, targetPath }, cb ) => {
+        const file = new File( {
+          base: outputPath,
+          path: targetPath,
+          contents: content,
+        } );
+        targetFiles.push( file );
+        cb();
+      }
+    );
+    compiler.run( _webPackCall( callBack, this, targetFiles ) );
   }
 }
-
-function _webPackCall( callBack, stream ) {
+function _webPackCall( callBack, stream, targetFiles ) {
   return ( error, stats ) => {
     let errorMessages = [];
     if ( error ) {
@@ -142,6 +159,9 @@ function _webPackCall( callBack, stream ) {
         errors : false,
       } ) );
     }
+    targetFiles.forEach( ( file ) => {
+      stream.push( file );
+    } );
     callBack();
   };
 }

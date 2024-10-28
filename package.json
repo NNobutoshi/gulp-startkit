@@ -46,6 +46,7 @@
     "gulp.spritesmith": "*",
     "imagemin-pngquant": "*",
     "js-beautify": "*",
+    "memory-fs": "*",
     "merge-stream": "*",
     "mkdirp": "*",
     "postcss": "*",
@@ -58,6 +59,7 @@
     "svglint": "*",
     "terser-webpack-plugin": "*",
     "through2": "*",
+    "vinyl": "*",
     "webpack": "*",
     "webpack-cli": "*",
     "xlsx": "*"
