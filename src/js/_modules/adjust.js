@@ -1,11 +1,11 @@
-import UaParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
-const uaParser = new UaParser();
+const uAParser = new UAParser();
 
 export default function( className ) {
   const
     elemHtml = document.documentElement
-    ,browser = uaParser.getBrowser()
+    ,browser = uAParser.getBrowser()
   ;
   elemHtml.classList.add( className );
   elemHtml.classList.add( browser.name + browser.major );
