@@ -91,6 +91,7 @@ const
           linefeed    : 'lf', // 'crlf', 'lf'
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
+          silenceDeprecations: [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
         },
         diff : {
           name      : 'css_sass',
@@ -141,7 +142,7 @@ const
       options       : {
         iconfont : {
           fontName       : 'icons[subdir]',
-          prependUnicode : true,
+          prependUnicode : false,
           formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
           normalize      : true,
           startUnicode   : 0xF001,

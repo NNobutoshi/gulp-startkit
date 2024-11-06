@@ -16,7 +16,9 @@ const
 
 export default function icon_font() {
   return src( config.src )
+    .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
+    .pipe( svgLint() )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
 }
@@ -35,19 +37,15 @@ function _branchTask( subSrc, baseDir ) {
     optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', '' );
   }
   return src( subSrc )
-    .pipe( plumber( options.plumber ) )
-    .pipe( svgLint() )
     .pipe( _setTimestampOption( optIconfont ) )
     .pipe( iconfontCss( optIconfontCss ) )
-    .pipe( iconfont( optIconfont ) )
-    .pipe( gulpIf(
-      ( file ) => {
-        return optIconfont.formats.some(
-          ( format ) => new RegExp( `\\.${ format }$` ).test( file.path )
-        );
-      }
-      ,dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } )
-    ) )
+    .on( 'end', () => {
+      iconfont( subSrc, optIconfont )
+        .on( 'data', file => {
+          console.info( 'font ==== ', file.path );
+        } )
+        .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } ) );
+    } )
     .pipe(
       gulpIf( /\.scss$/, dest( config.scssDist.replace( '[subdir]', baseDir ) ) )
     )
