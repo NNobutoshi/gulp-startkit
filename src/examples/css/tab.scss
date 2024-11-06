@@ -35,12 +35,12 @@
   }
   @at-root {
     .pl-linkList_item {
+      white-space: nowrap;
       & + & {
         @include mixin.mq( min-width, sm ) {
           margin-left: 0.5em;
         }
       }
-      white-space: nowrap;
     }
     .pl-linkList_anchor {
       display: block;
