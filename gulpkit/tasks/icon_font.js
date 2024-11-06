@@ -41,9 +41,6 @@ function _branchTask( subSrc, baseDir ) {
     .pipe( iconfontCss( optIconfontCss ) )
     .on( 'end', () => {
       iconfont( subSrc, optIconfont )
-        .on( 'data', file => {
-          console.info( 'font ==== ', file.path );
-        } )
         .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } ) );
     } )
     .pipe(
