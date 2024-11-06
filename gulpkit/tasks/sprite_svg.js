@@ -14,6 +14,8 @@ const
 
 export default function sprite_svg() {
   return src( config.src )
+    .pipe( plumber( options.plumber ) )
+    .pipe( svgLint() )
     .pipe( diff( options.diff ) )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
@@ -21,8 +23,6 @@ export default function sprite_svg() {
 
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
-    .pipe( plumber( options.plumber ) )
-    .pipe( svgLint() )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/,  dest( config.dist + baseDir ) ) )
     .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
