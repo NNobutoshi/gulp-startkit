@@ -1,4 +1,4 @@
-import svgLint from 'svglint';
+import SVGLint from 'svglint';
 import through from 'through2';
 
 /*
@@ -12,14 +12,15 @@ export default function svg_lint() {
   async function _transform( file, enc, callBack ) {
     const
       contents = String( file.contents )
-      ,linting = await svgLint.lintSource( contents, { debug: true, config: {} } )
+      ,linting = await SVGLint.lintSource( contents, { debug: true, config: {} } )
     ;
     linting.on( 'done', () => {
-      if ( linting.state === linting.STATES.success ) {
+      if ( linting.valid === true ) {
         callBack( null, file );
       } else {
         callBack( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
       }
     } );
+    linting.lint();
   }
 }
