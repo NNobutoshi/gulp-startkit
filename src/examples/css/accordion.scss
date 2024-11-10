@@ -28,13 +28,14 @@
       display: inline-block;
       @include icon.icon-styles;
       content: icon.icon-char(arrow_down);
-      font-size: 10px;
+      vertical-align: middle;
+      font-size: 16px;
       margin-left: 10px;
-      transform: rotate(0) scale(.8);
+      transform: rotate(0);
       transition: transform .3s ease-in-out;
     }
     .js-pl-accordion--isOpening &::after {
-      transform: rotate(180deg) scale(.8);
+      transform: rotate(180deg);
     }
   }
   &_body {

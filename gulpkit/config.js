@@ -145,6 +145,7 @@ const
           prependUnicode : false,
           formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
           normalize      : true,
+          fontHeight     : 1001,
           startUnicode   : 0xF001,
         },
         iconfontCss : {

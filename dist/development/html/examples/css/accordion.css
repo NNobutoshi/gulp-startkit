@@ -1,7 +1,6 @@
 @font-face {
   font-family: "icons_examples";
-  src: url("../fonts/icons_examples.eot");
-  src: url("../fonts/icons_examples.eot?#iefix") format("eot"), url("../fonts/icons_examples.woff2") format("woff2"), url("../fonts/icons_examples.woff") format("woff"), url("../fonts/icons_examples.ttf") format("truetype");
+  src: url("../fonts/icons_examples.ttf") format("truetype"), url("../fonts/icons_examples.woff2") format("woff2"), url("../fonts/icons_examples.woff") format("woff"), url("../fonts/icons_examples.eot");
 }
 .icon-arrow_up:before, .icon-arrow_right:before, .icon-arrow_left:before, .icon-arrow_down:before {
   font-family: "icons_examples";
@@ -64,20 +63,21 @@
   text-decoration: none;
   text-transform: none;
   content: "\f001";
-  font-size: 10px;
+  vertical-align: middle;
+  font-size: 16px;
   margin-left: 10px;
-  -webkit-transform: rotate(0) scale(0.8);
-      -ms-transform: rotate(0) scale(0.8);
-          transform: rotate(0) scale(0.8);
+  -webkit-transform: rotate(0);
+      -ms-transform: rotate(0);
+          transform: rotate(0);
   -webkit-transition: -webkit-transform 0.3s ease-in-out;
   transition: -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
 }
 .js-pl-accordion--isOpening .pl-list_heading::after {
-  -webkit-transform: rotate(180deg) scale(0.8);
-      -ms-transform: rotate(180deg) scale(0.8);
-          transform: rotate(180deg) scale(0.8);
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 .js .pl-list_body {
   -webkit-transition-property: height, opacity;

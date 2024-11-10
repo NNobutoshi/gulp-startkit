@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 136.37 147.27"><defs><style>.cls-1{fill:url(#名称未設定グラデーション_2);}</style><linearGradient id="名称未設定グラデーション_2" x1="287.74" y1="-226.48" x2="287.74" y2="-90.1" gradientTransform="translate(195.3 361.37) rotate(-90)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.92" stop-color="#333"/></linearGradient></defs><g id="レイヤー_2" data-name="レイヤー 2"><g id="レイヤー_2-2" data-name="レイヤー 2"><polygon class="cls-1" points="40.29 52.46 0 52.46 0 94.8 40.29 94.8 40.29 147.27 136.37 73.63 40.29 0 40.29 52.46"/></g></g></svg>
+<svg width="136" height="136" viewBox="0 0 136 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M40.1807 48.4547L-3.82673e-06 48.4547L-2.11762e-06 87.5546L40.1807 87.5546L40.1807 136L136 68.0046L40.1807 2.61895e-06L40.1807 48.4547Z" fill="url(#paint0_linear_1_74)"/>
+<defs>
+<linearGradient id="paint0_linear_1_74" x1="-31.0854" y1="68.0046" x2="104.915" y2="68.0046" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0"/>
+<stop offset="0.92" stop-color="#333333"/>
+</linearGradient>
+</defs>
+</svg>

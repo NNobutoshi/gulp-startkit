@@ -1,10 +1,9 @@
 @font-face {
   font-family: "icons_examples";
-  src: url("../fonts/icons_examples.eot");
-  src: url("../fonts/icons_examples.eot?#iefix") format("eot"),
-    url("../fonts/icons_examples.woff2") format("woff2"),
-    url("../fonts/icons_examples.woff") format("woff"),
-    url("../fonts/icons_examples.ttf") format("truetype"),
+  src: url("../fonts/icons_examples.ttf") format("truetype"),
+  url("../fonts/icons_examples.woff2") format("woff2"),
+  url("../fonts/icons_examples.woff") format("woff"),
+  url("../fonts/icons_examples.eot");
   // url("../fonts/icons_examples.svg#icons_examples") format("svg");
 }
 
