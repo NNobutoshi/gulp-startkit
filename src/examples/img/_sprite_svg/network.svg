@@ -1,11 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="182" height="110.407" viewBox="0 0 182 110.407">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #f069f2;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="examples_network.png_examples_network.svg" data-name="examples/network.png,examples/network.svg" class="cls-1" d="M763.433,447.158v-46.72l48.558,0.064v46.72Zm-84.875-23.423v29.2L630,452.872v-46.72l48.558,0.064v1.592l17.658-31.832V342.53l48.559,0.064v46.72l-47.088-.062Z" transform="translate(-630 -342.531)"/>
+<svg width="183" height="111" viewBox="0 0 183 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M133.933 104.627V57.907L182.491 57.971V104.691L133.933 104.627ZM49.058 81.204V110.404L0.5 110.341V63.621L49.058 63.685V65.277L66.716 33.445V-0.000976562L115.275 0.0630188V46.783L68.187 46.721L49.058 81.204Z" fill="#F069F2"/>
 </svg>

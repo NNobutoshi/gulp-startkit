@@ -1,11 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="183" height="112" viewBox="0 0 183 112">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #f069f2;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="examples_home.png_examples_home.svg" data-name="examples/home.png,examples/home.svg" class="cls-1" d="M787.5,390.251V453H655.51V390.251H630l91.73-49.265,91.276,49.265H787.5Zm-67.712,10.53h-49.3v16.756h49.3V400.781Z" transform="translate(-630 -341)"/>
+<svg width="184" height="112" viewBox="0 0 184 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M158 49.251V112H26.01V49.251H0.5L92.23 -0.0140381L183.506 49.251H158ZM90.288 59.781H40.988V76.537H90.288V59.781Z" fill="#F069F2"/>
 </svg>

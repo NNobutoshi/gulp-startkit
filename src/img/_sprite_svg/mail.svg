@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="182" height="112" viewBox="0 0 182 112">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #00e486;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="mail.png_mail.svg" data-name="mail.png,mail.svg" class="cls-1" d="M630.008,341.993H811.575V454.005H630.008V341.993Zm181.978,14.055L721.464,405.84l-0.822,1.367-89.924-49,1.681-2.8,87.422,47.617,90.484-49.771Z" transform="translate(-630 -342)"/>
+<svg width="182" height="112" viewBox="0 0 182 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3_28)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0.00799561 -0.00695801H181.575V112.005H0.00799561V-0.00695801ZM181.986 14.048L91.464 63.84L90.642 65.207L0.718018 16.207L2.39899 13.407L89.821 61.024L180.305 11.253L181.986 14.048Z" fill="#00E486"/>
+</g>
+<defs>
+<clipPath id="clip0_3_28">
+<rect width="182" height="112" fill="white"/>
+</clipPath>
+</defs>
 </svg>

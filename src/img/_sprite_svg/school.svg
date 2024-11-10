@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="182" height="112" viewBox="0 0 182 112">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #00e486;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path id="school.png_school.svg" data-name="school.png,school.svg" class="cls-1" d="M716,453V427H694v26H630V367h67V341h50v26h65v86H716Zm-64-76H642v10h10V377Zm20,0H662v10h10V377Zm49-26c-5.523,0-10,4.925-10,11s4.477,11,10,11,10-4.925,10-11S726.523,351,721,351Z" transform="translate(-630 -341)"/>
+<svg width="182" height="112" viewBox="0 0 182 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_4_34)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M86 112V86H64V112H0V26H67V0H117V26H182V112H86ZM22 36H12V46H22V36ZM42 36H32V46H42V36ZM91 10C85.477 10 81 14.925 81 21C81 27.075 85.477 32 91 32C96.523 32 101 27.075 101 21C101 14.925 96.523 10 91 10Z" fill="#00E486"/>
+</g>
+<defs>
+<clipPath id="clip0_4_34">
+<rect width="182" height="112" fill="white"/>
+</clipPath>
+</defs>
 </svg>
