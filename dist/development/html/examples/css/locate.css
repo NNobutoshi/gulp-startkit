@@ -1,13 +1,9 @@
 .pl-nav_list {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
 }
 
 .pl-nav_item {
-  -webkit-box-flex: 1;
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto;
+  flex: 1 0 auto;
 }
 
 .pl-nav_anchor {

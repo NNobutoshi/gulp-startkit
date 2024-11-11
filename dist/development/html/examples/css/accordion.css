@@ -35,7 +35,6 @@
 }
 .pl-list_item {
   border: solid 1px #d00;
-  -webkit-transition: background-color 0.25s ease-in-out;
   transition: background-color 0.25s ease-in-out;
   margin: 0;
   padding: 10px;
@@ -66,26 +65,16 @@
   vertical-align: middle;
   font-size: 16px;
   margin-left: 10px;
-  -webkit-transform: rotate(0);
-      -ms-transform: rotate(0);
-          transform: rotate(0);
-  -webkit-transition: -webkit-transform 0.3s ease-in-out;
-  transition: -webkit-transform 0.3s ease-in-out;
+  transform: rotate(0);
   transition: transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
 }
 .js-pl-accordion--isOpening .pl-list_heading::after {
-  -webkit-transform: rotate(180deg);
-      -ms-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 .js .pl-list_body {
-  -webkit-transition-property: height, opacity;
   transition-property: height, opacity;
-  -webkit-transition-duration: 0.25s;
-          transition-duration: 0.25s;
-  -webkit-transition-timing-function: ease-in-out;
-          transition-timing-function: ease-in-out;
+  transition-duration: 0.25s;
+  transition-timing-function: ease-in-out;
   overflow: hidden;
   opacity: 0;
   display: none;

@@ -8,12 +8,8 @@
 }
 @media ( min-width: 375px ) {
   .pl-nav {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    align-items: center;
     padding: 10px;
   }
 }
@@ -31,8 +27,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   font-size: 1.125rem;
 }
@@ -57,37 +51,23 @@
 }
 
 .pl-tabmenu_list {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   padding: 0;
   margin: 0;
 }
 
 .pl-tabmenu_item {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  flex: 1;
   padding: 0;
   margin: 0;
 }
 
 .pl-tabmenu_anchor {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
   background-color: #fcc;
   padding: 10px;
   text-align: center;
@@ -101,8 +81,7 @@
 }
 
 .pl-section {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 .js .pl-section {
   height: 0;
@@ -110,7 +89,6 @@
   overflow: hidden;
   opacity: 0;
   background-color: transparent;
-  -webkit-transition: opacity 0.25s 0.25s ease;
   transition: opacity 0.25s 0.25s ease;
 }
 .pl-section.js-selected {

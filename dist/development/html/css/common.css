@@ -43,8 +43,7 @@ h1 {
  * 2. Show the overflow in Edge and IE.
  */
 hr {
-  -webkit-box-sizing: content-box;
-          box-sizing: content-box; /* 1 */
+  box-sizing: content-box; /* 1 */
   height: 0; /* 1 */
   overflow: visible; /* 2 */
 }
@@ -213,8 +212,7 @@ fieldset {
  *    `fieldset` elements in all browsers.
  */
 legend {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box; /* 1 */
+  box-sizing: border-box; /* 1 */
   color: inherit; /* 2 */
   display: table; /* 1 */
   max-width: 100%; /* 1 */
@@ -242,8 +240,7 @@ textarea {
  */
 [type=checkbox],
 [type=radio] {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box; /* 1 */
+  box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
 }
 
@@ -331,8 +328,7 @@ img {
 }
 
 .sg-page_siteId {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   width: 60px;
 }
 
@@ -346,11 +342,8 @@ img {
 }
 
 .sg-group {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 .sg-group_1\/1 {
   width: 100%;
@@ -1370,9 +1363,7 @@ img {
   text-decoration: none;
   text-transform: none;
   display: inline-block;
-  -webkit-transform: translateY(2px);
-      -ms-transform: translateY(2px);
-          transform: translateY(2px);
+  transform: translateY(2px);
   margin-right: 2px;
 }
 
@@ -1403,12 +1394,8 @@ img {
   bottom: 0;
   width: 1px;
   background-color: #f00;
-  -webkit-transform-origin: bottom;
-      -ms-transform-origin: bottom;
-          transform-origin: bottom;
-  -webkit-transform: scaleY(1.05);
-      -ms-transform: scaleY(1.05);
-          transform: scaleY(1.05);
+  transform-origin: bottom;
+  transform: scaleY(1.05);
 }
 
 .sg-linkList_item + .sg-linkList_item {
@@ -1419,8 +1406,6 @@ img {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   position: fixed;
   bottom: 0;

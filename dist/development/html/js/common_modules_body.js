@@ -459,7 +459,7 @@ return ImagesLoaded;
 /*!**************************************!*\
   !*** ./src/js/_modules/accordion.js ***!
   \**************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -633,20 +633,18 @@ var Accordion = /*#__PURE__*/function () {
 /*!***********************************!*\
   !*** ./src/js/_modules/adjust.js ***!
   \***********************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": function() { return /* export default binding */ __WEBPACK_DEFAULT_EXPORT__; }
+/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.function.name.js */ "./node_modules/core-js/modules/es.function.name.js");
-/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/main/ua-parser.mjs");
+/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/main/ua-parser.mjs");
 
-
-var uAParser = new ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser();
+const uAParser = new ua_parser_js__WEBPACK_IMPORTED_MODULE_0__.UAParser();
 /* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(className) {
-  var elemHtml = document.documentElement,
+  const elemHtml = document.documentElement,
     browser = uAParser.getBrowser();
   elemHtml.classList.add(className);
   elemHtml.classList.add(browser.name + browser.major);
@@ -658,7 +656,7 @@ var uAParser = new ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser();
 /*!********************************!*\
   !*** ./src/js/_modules/foo.js ***!
   \********************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -677,7 +675,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************!*\
   !*** ./src/js/_modules/libs/adaptivehover.js ***!
   \***********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -862,7 +860,7 @@ function _getEventObj(e) {
 /*!**********************************************!*\
   !*** ./src/js/_modules/libs/eventmanager.js ***!
   \**********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1066,7 +1064,7 @@ var EventManager = /*#__PURE__*/function () {
 /*!*************************************************!*\
   !*** ./src/js/_modules/libs/optimizedresize.js ***!
   \*************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1310,7 +1308,7 @@ function _getUniqueName(base) {
 /*!***********************************************!*\
   !*** ./src/js/_modules/libs/scrollmanager.js ***!
   \***********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1589,7 +1587,7 @@ function _calcPoint(base, val) {
 /*!**************************************************!*\
   !*** ./src/js/_modules/libs/transitiontoggle.js ***!
   \**************************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1775,7 +1773,7 @@ var TtransitionToggle = /*#__PURE__*/function () {
 /*!***********************************!*\
   !*** ./src/js/_modules/locate.js ***!
   \***********************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1886,7 +1884,7 @@ var Locate = /*#__PURE__*/function () {
 /*!**********************************************!*\
   !*** ./src/js/_modules/polyfills/closest.js ***!
   \**********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1911,7 +1909,7 @@ if (!Element.prototype.closest) {
 /*!**********************************************!*\
   !*** ./src/js/_modules/polyfills/matches.js ***!
   \**********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -1925,7 +1923,7 @@ if (!Element.prototype.matches) {
 /*!*************************************!*\
   !*** ./src/js/_modules/rescroll.js ***!
   \*************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2252,7 +2250,7 @@ function _getMaxOffset(elems) {
 /*!********************************************!*\
   !*** ./src/js/_modules/simplevideoplay.js ***!
   \********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2421,7 +2419,7 @@ var SimpleVideoPlay = /*#__PURE__*/function () {
 /*!********************************!*\
   !*** ./src/js/_modules/tab.js ***!
   \********************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2682,7 +2680,7 @@ var Tab = /*#__PURE__*/function () {
 /*!**********************************************!*\
   !*** ./src/js/_modules/utilities/parents.js ***!
   \**********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2710,7 +2708,7 @@ function parents(elem, selector, wrapper) {
 /*!***********************************************!*\
   !*** ./src/js/_modules/utilities/position.js ***!
   \***********************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -2733,7 +2731,7 @@ function position(elem) {
 /*!****************************************!*\
   !*** ./src/js/_modules/videoground.js ***!
   \****************************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
@@ -3002,7 +3000,7 @@ function _createVideo(props) {
 /*!*******************************!*\
   !*** ./src/js/_vendor/raf.js ***!
   \*******************************/
-/***/ (function(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);

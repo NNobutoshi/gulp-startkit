@@ -13,9 +13,10 @@
     "type": "git"
   },
   "browserslist": [
-    "last 3 versions",
+    " > 0.2%",
     "Safari >= 14",
-    "ios >= 12"
+    "ios >= 12",
+    "not dead"
   ],
   "type": "module",
   "devDependencies": {

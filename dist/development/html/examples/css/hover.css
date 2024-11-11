@@ -4,16 +4,13 @@
 
 .pl-hoverTarget {
   width: 100%;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   line-height: 1;
-  -webkit-transition: padding 0.25s ease-in-out;
   transition: padding 0.25s ease-in-out;
   background-color: #FFCCCC;
   padding: 20px;
   border: solid 1px #f00;
-  -webkit-transform: translate3d();
-          transform: translate3d();
+  transform: translate3d();
 }
 .pl-hoverTarget > .pl-hoverTarget {
   background-color: #FFA3A3;

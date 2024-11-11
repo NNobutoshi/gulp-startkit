@@ -1,8 +1,7 @@
 .pl-nav {
   height: inherit;
   border: solid 1px #f00;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   background-color: #fff;
   margin-left: -10px;
   margin-right: -10px;
@@ -21,8 +20,6 @@
 }
 
 .pl-nav_list {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
 }
 
