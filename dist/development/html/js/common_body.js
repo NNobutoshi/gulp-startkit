@@ -13,10 +13,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 
 
-(0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])(function () {
+(0,_modules_foo_js__WEBPACK_IMPORTED_MODULE_0__["default"])(() => {
   console.info('ok');
 });
-imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), function () {
+imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () => {
   console.info('image loaded');
 });
 
