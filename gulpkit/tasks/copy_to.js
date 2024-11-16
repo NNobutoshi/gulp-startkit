@@ -9,14 +9,13 @@ const
   options = config.options
 ;
 
-export default function copy_to() {
-  return diff_1to1( src, config.src, mainTask, options.diff );
+export default function copy_to( cb ) {
+  diff_1to1( src, config.src, mainTask, options.diff, cb );
 }
 
-function mainTask( fixedSrc, resolve ) {
-  return src( fixedSrc, options.src )
+function mainTask( preparedSrc ) {
+  return src( preparedSrc, options.src )
     .pipe( plumber( options.plumber ) )
     .pipe( dest( config.dist ) )
-    .on( 'finish', resolve )
   ;
 }

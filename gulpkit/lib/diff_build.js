@@ -233,32 +233,18 @@ function _flush( shared, settings, select ) {
  * 1段階目で { read false } で Git のdiff の結果からファイルのパスを取捨選択して
  * 2段階目で { read: true } で 選択したファイルで再実行。
  */
-async function diff_1to1( gulpSrc, firstSrc, mainTask, options ) {
+function diff_1to1( gulpSrc, firstSrc, mainTask, options, cb ) {
   const
     settings      = mergeWith( {}, defaultSettings, options )
-    ,lastDiffData = lastDiff.get();
-  let
-    currentDiffData
-    ,preparedSrc
+    ,lastDiffData = lastDiff.get()
+    ,preparedSrc = []
   ;
   if ( settings.detection === false ) {
-    await _runMainTaskByPreparedSrc( mainTask, firstSrc, settings );
-  } else {
-    currentDiffData = await _getGitDiffData( settings.command );
-    preparedSrc     = await _prepareSrc( gulpSrc, firstSrc, currentDiffData, lastDiffData );
-    await _runMainTaskByPreparedSrc( mainTask, preparedSrc, settings );
-    lastDiff.set( currentDiffData );
-    _writeDiffData();
+    mainTask( firstSrc ).on( 'finish', () => cb() );
+    return;
   }
-}
-
-
-function _prepareSrc( src, firstSrc, currentDiffData, lastDiffData ) {
-  const
-    preparedSrc = []
-  ;
-  return new Promise( ( resolve ) => {
-    src( firstSrc, { read: false } )
+  _getGitDiffData( settings.command ).then( ( currentDiffData ) => {
+    gulpSrc( firstSrc, { read: false } )
       .pipe( through.obj( function( file, enc, callBack ) {
         if ( file.isStream && file.isStream() ) {
           this.emit( 'error' );
@@ -273,32 +259,21 @@ function _prepareSrc( src, firstSrc, currentDiffData, lastDiffData ) {
         callBack();
       } ) )
       .on( 'finish', () => {
-        resolve( preparedSrc );
+        _log( settings.name, preparedSrc.length, preparedSrc.length );
+        if ( preparedSrc.length === 0 ) {
+          return cb();
+        }
+        mainTask( preparedSrc )
+          .on( 'finish', () => {
+            lastDiff.set( currentDiffData );
+            _writeDiffData();
+            cb();
+          } )
+        ;
       } )
     ;
   } );
 }
-
-
-function _runMainTaskByPreparedSrc( mainTask, preparedSrc, settings ) {
-  if ( settings.detection === true ) {
-    _log( settings.name, preparedSrc.length, preparedSrc.length );
-  }
-  return new Promise( ( resolve ) => {
-    if ( preparedSrc.length === 0 ) {
-      return resolve();
-    }
-    mainTask
-      .call( null, preparedSrc, resolve )
-
-    /*
-     * 書き込みを行わないタスクのstream のためにflowing モードに。
-     */
-      .on( 'data', () => {} )
-    ;
-  } );
-}
-
 
 /*
  * through2.obj()の flushFunction 中で、実行。

@@ -10,13 +10,13 @@ const
   options = config.options
 ;
 
-export default function css_lint() {
-  return diff_1to1( src, config.src, mainTask, options.diff );
+export default function css_lint( cb ) {
+  diff_1to1( src, config.src, mainTask, options.diff, cb );
 }
 
-function mainTask( fixedSrc, resolve ) {
+function mainTask( preparedSrc ) {
   const targetFiles = [];
-  return src( fixedSrc )
+  return src( preparedSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( through.obj(
       function( file, enc, callBack ) {
@@ -35,7 +35,8 @@ function mainTask( fixedSrc, resolve ) {
             callBack( ( targetFiles.length > -1 ) ? error : null );
           } );
       },
-    ) ).on( 'finish', resolve )
+    ) )
+    .on( 'data', () => {} ) //flowing mode をtrue にして finish event を発行されるようにする。
   ;
 }
 

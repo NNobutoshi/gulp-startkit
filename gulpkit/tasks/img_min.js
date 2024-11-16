@@ -11,12 +11,12 @@ const
 ;
 
 
-export default function img_min() {
-  return diff_1to1( src, config.src, mainTask, options.diff );
+export default function img_min( cb ) {
+  diff_1to1( src, config.src, mainTask, options.diff, cb );
 }
 
-function mainTask( fixedSrc, resolve ) {
-  return src( fixedSrc, options.src )
+function mainTask( preparedSrc ) {
+  return src( preparedSrc, options.src )
     .pipe( plumber( options.plumber ) )
     .pipe( imagemin( [
       mozjpeg( options.imageminMozjpeg ),
@@ -26,6 +26,5 @@ function mainTask( fixedSrc, resolve ) {
       gifsicle(),
     ] ) )
     .pipe( dest( config.dist ) )
-    .on( 'finish', resolve )
   ;
 }

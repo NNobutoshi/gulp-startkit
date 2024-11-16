@@ -9,15 +9,15 @@ const
   options = config.options
 ;
 
-export default function js_eslint() {
-  return diff_1to1( src, config.src, mainTask, options.diff );
+export default function js_eslint( cb ) {
+  diff_1to1( src, config.src, mainTask, options.diff, cb );
 }
 
-function mainTask( fixedSrc, resolve ) {
-  return src( fixedSrc )
+function mainTask( preparedSrc ) {
+  return src( preparedSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( eslint( options.eslint ) )
     .pipe( eslint.format() )
-    .on( 'finish', resolve )
+    .on( 'data', () => {} ) //flowing mode をtrue にして finish event を発行されるようにする。
   ;
 }
