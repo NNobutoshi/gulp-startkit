@@ -33,7 +33,7 @@ export default function html_pug() {
       };
     } )
     .pipe( _pugRender() )
-    .pipe( _postPug() )
+    .pipe( _beautify() )
     .pipe( dest( config.dist ) )
     .pipe( renderingLog( '[html_pug]:' ) )
   ;
@@ -101,10 +101,10 @@ function _pugRender() {
 }
 
 /*
- * Pug のrender 後実行。
+ * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
  */
-function _postPug() {
+function _beautify() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg

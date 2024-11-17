@@ -67,12 +67,15 @@ function diff_build( options, collect, select ) {
     } );
   } );
 
-  return through.obj( _transform( shared, settings, collect ), _flush( shared, settings, select ) );
+  return through.obj(
+    _retTransform( shared, settings, collect ),
+    _retFlush( shared, settings, select ),
+  );
 }
 
-function _transform( shared, settings, collect ) {
+function _retTransform( shared, settings, collect ) {
 
-  return function( file, enc, callBack ) {
+  return function _transform( file, enc, callBack ) {
     if ( file.isNull && file.isNull() ) {
       return callBack( null, file );
     }
@@ -123,8 +126,8 @@ function _transform( shared, settings, collect ) {
   };
 }
 
-function _flush( shared, settings, select ) {
-  return function( callBack ) {
+function _retFlush( shared, settings, select ) {
+  return function _flush( callBack ) {
     const
       stream     = this
       ,destFiles = {}
@@ -311,7 +314,7 @@ function _writeDiffData() {
 function _log( name, total, detected ) {
   if ( name ) {
     fancyLog( chalk.gray( `[${ name }]: detected ${ detected } files diff` ) );
-    fancyLog( chalk.gray( `[${ name }]: thrown ${ total } files` ) );
+    fancyLog( chalk.gray( `[${ name }]: passed ${ total } files` ) );
   }
 }
 

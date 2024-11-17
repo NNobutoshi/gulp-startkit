@@ -42,13 +42,12 @@ if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
 export default function js_webpack() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( _createEntries() )
-    .pipe( _compile() )
+    .pipe( _webpackCompile() )
     .pipe( dest( config.dist ) )
   ;
 }
 
-function _createEntries() {
+function _webpackCompile() {
   let
     regexTarget = config.targetEntry // /\.entry\.js$/
     ,regexShareFileConf = config.shareFileConf // /\.split\.json$/
@@ -90,7 +89,7 @@ function _createEntries() {
    * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
    * compiler を用意する。
    */
-  function _flush( callBack ) {
+  function _flush( callBackForStream ) {
     if (
       compiler === null
       || !isEqual( webpackConfig.entry, entries )
@@ -110,35 +109,30 @@ function _createEntries() {
       } );
       compiler = webpack( webpackConfig );
     }
-    callBack();
+    _runWebpackCompiler( callBackForStream, this, compiler );
   }
 
 }
 
-function _compile() {
+function _runWebpackCompiler( callBackForStream, stream, compiler ) {
   const targetFiles = [];
-  return through.obj( _transform, _flush );
-  function _transform( _file, enc, callBack ) {
-    callBack();
-  }
-  function _flush( callBack ) {
-    compiler.outputFileSystem = mfs;
-    compiler.hooks.assetEmitted.tapAsync(
-      'MyPlugin',
-      ( _file, { content, outputPath, targetPath }, cb ) => {
-        const file = new File( {
-          base: outputPath,
-          path: targetPath,
-          contents: content,
-        } );
-        targetFiles.push( file );
-        cb();
-      }
-    );
-    compiler.run( _webPackCall( callBack, this, targetFiles ) );
-  }
+  compiler.outputFileSystem = mfs;
+  compiler.hooks.assetEmitted.tapAsync(
+    'MyPlugin',
+    ( _file, { content, outputPath, targetPath }, cb ) => {
+      const file = new File( {
+        base: outputPath,
+        path: targetPath,
+        contents: content,
+      } );
+      targetFiles.push( file );
+      cb();
+    }
+  );
+  compiler.run( _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles ) );
 }
-function _webPackCall( callBack, stream, targetFiles ) {
+
+function _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles ) {
   return ( error, stats ) => {
     let errorMessages = [];
     if ( error ) {
@@ -162,7 +156,7 @@ function _webPackCall( callBack, stream, targetFiles ) {
     targetFiles.forEach( ( file ) => {
       stream.push( file );
     } );
-    callBack();
+    callBackForStream();
   };
 }
 
