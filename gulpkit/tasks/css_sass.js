@@ -7,7 +7,7 @@ import gulpIf        from 'gulp-if';
 import sourcemaps    from 'gulp-sourcemaps';
 import plumber       from 'gulp-plumber';
 import postcss       from 'gulp-postcss';
-import cssMqpacker   from 'css-mqpacker';
+import mqpacker      from '@hail2u/css-mqpacker';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
@@ -21,7 +21,7 @@ const
 
 export default function css_sass() {
   if ( config.cssMqpack ) {
-    options.postcss.plugins.push( cssMqpacker() );
+    options.postcss.plugins.push( mqpacker() );
   }
   return src( config.src )
     .pipe( plumber( options.plumber ) )

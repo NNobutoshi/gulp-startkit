@@ -6,18 +6,6 @@
   z-index: 3;
   background-color: #fee;
 }
-@media ( min-width: 375px ) {
-  .pl-nav {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-  }
-}
-@media ( max-width: 374px ) {
-  .pl-nav {
-    padding: 5px 0 0 10px;
-  }
-}
 .pl-nav_heading {
   font-size: 1rem;
   margin: 0;
@@ -30,18 +18,8 @@
   display: flex;
   font-size: 1.125rem;
 }
-@media ( min-width: 375px ) {
-  .pl-linkList {
-    margin-left: 1em;
-  }
-}
 .pl-linkList_item {
   white-space: nowrap;
-}
-@media ( min-width: 375px ) {
-  .pl-linkList_item + .pl-linkList_item {
-    margin-left: 0.5em;
-  }
 }
 
 .pl-linkList_anchor {
@@ -103,5 +81,25 @@
 
 .page_body {
   padding-bottom: 50vh;
+}
+
+@media ( min-width: 375px ) {
+  .pl-nav {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  .pl-linkList {
+    margin-left: 1em;
+  }
+  .pl-linkList_item + .pl-linkList_item {
+    margin-left: 0.5em;
+  }
+}
+
+@media ( max-width: 374px ) {
+  .pl-nav {
+    padding: 5px 0 0 10px;
+  }
 }
 /*# sourceMappingURL=../../sourcemaps/examples/css/tab.css.map */

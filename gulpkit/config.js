@@ -73,7 +73,7 @@ const
       dist          : DIST,
       base          : SRC,
       watch         : true && ENABLE_WATCH,
-      cssMqpack     : false,
+      cssMqpack     : true,
       sourcemap     : true && ENABLE_SOURCEMAP,
       sourcemap_dir : '/' + SOURCEMAPS_DIR,
       options   : {

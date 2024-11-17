@@ -22,12 +22,12 @@
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
+    "@hail2u/css-mqpacker": "github:hail2u/node-css-mqpacker",
     "autoprefixer": "*",
     "babel-loader": "*",
     "browser-sync": "*",
     "chalk": "*",
     "cross-env": "*",
-    "css-mqpacker": "*",
     "del": "*",
     "eslint": "*",
     "eslint-config-jquery": "*",
