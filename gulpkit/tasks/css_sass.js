@@ -67,9 +67,9 @@ function _collectTargetFiles( file, collection ) {
         path.basename( dependentFilePath ).replace( /^/, '_' )
       );
     }
-    if ( !collection[ dependentFilePath ] ) {
-      collection[ dependentFilePath ] = [];
+    if ( !collection.get( dependentFilePath ) ) {
+      collection.set( dependentFilePath, [] );
     }
-    collection[ dependentFilePath ].push( file.path );
+    collection.get( dependentFilePath ).push( file.path );
   } // for
 }

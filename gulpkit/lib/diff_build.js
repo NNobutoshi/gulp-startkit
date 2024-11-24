@@ -1,10 +1,12 @@
-import path     from 'node:path';
-import { exec } from 'node:child_process';
+import path         from 'node:path';
+import { exec }     from 'node:child_process';
+import { readFile } from 'node:fs';
 
-import through   from  'through2';
-import mergeWith from  'lodash/mergeWith.js';
-import fancyLog  from  'fancy-log';
-import chalk     from  'chalk';
+import through   from 'through2';
+import File      from 'vinyl';
+import mergeWith from 'lodash/mergeWith.js';
+import fancyLog  from 'fancy-log';
+import chalk     from 'chalk';
 
 import lastDiff from './last_diff.js';
 
@@ -39,9 +41,9 @@ export {
 function diff_build( options, collect, select ) {
   const
     shared = {
-      allFiles         : {}, // 全chumk用
-      collection       : {}, // 依存関係収集用
-      targets          : {}, // 通過候補
+      allFiles         : new Map(), // 全chumk用
+      collection       : new Map(), // 依存関係収集用
+      targets          : new Map(), // 通過候補
       currentDiffData  : null,
       lastDiffData     : lastDiff.get(),
       promiseGetGitDiffData : null,
@@ -74,7 +76,6 @@ function diff_build( options, collect, select ) {
 }
 
 function _retTransform( shared, settings, collect ) {
-
   return function _transform( file, enc, callBack ) {
     if ( file.isNull && file.isNull() ) {
       return callBack( null, file );
@@ -85,11 +86,14 @@ function _retTransform( shared, settings, collect ) {
     }
 
     /*
-     * すべてのchunk は収集しておく
+     * すべてのchunk の必要最低限の情報を収集しておく
      */
-    shared.allFiles[ file.path ]  = {
-      file : file,
-    };
+    shared.allFiles.set( file.path, {
+      // file : file, メモリ消費が抑えられるかもしれないので全部は代入しない
+      base : file.base,
+      path : file.path,
+      stat : file.stat,
+    } );
 
     /*
      * git コマンドで得た差分ファイルリストにchunk のpath があればstream で通す候補にし、
@@ -102,7 +106,7 @@ function _retTransform( shared, settings, collect ) {
         _includes( shared.currentDiffData, file.path ) ||
         _includes( shared.lastDiffData, file.path )
       ) {
-        shared.targets[ file.path ] = 1;
+        shared.targets.set( file.path, 1 );
       }
 
       /*
@@ -110,7 +114,7 @@ function _retTransform( shared, settings, collect ) {
        * 自身のパスをkey に、所属するグループ（設定で指定されたポイントとなるディレクトリ）を値に。
        */
       if ( settings.group ) {
-        shared.allFiles[ file.path ].group =
+        shared.allFiles.get( file.path ).group =
           file.path.slice( 0, file.path.indexOf( settings.group ) + settings.group.length );
       }
 
@@ -129,10 +133,11 @@ function _retTransform( shared, settings, collect ) {
 function _retFlush( shared, settings, select ) {
   return function _flush( callBack ) {
     const
-      stream     = this
-      ,destFiles = {}
-      ,name      = settings.name
-      ,group     = settings.group
+      stream              = this
+      ,destFiles          = new Map()
+      ,name               = settings.name
+      ,group              = settings.group
+      ,promiseReadFileAll = []
     ;
 
     if ( shared.currentDiffData === null ) {
@@ -144,13 +149,13 @@ function _retFlush( shared, settings, select ) {
      */
     for ( let [ filePath, value ] of Object.entries( shared.currentDiffData ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
-        shared.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
+        shared.targets.set( path.resolve( process.cwd(), filePath ), 1 );
       }
     }
 
     for ( let [ filePath, value ] of Object.entries( shared.lastDiffData ) ) {
       if ( !shared.currentDiffData[ filePath ] && value.status.indexOf( '?' ) > -1 ) {
-        shared.targets[ path.resolve( process.cwd(), filePath ) ] = 1;
+        shared.targets.set( path.resolve( process.cwd(), filePath ), 1 );
       }
     }
 
@@ -160,18 +165,18 @@ function _retFlush( shared, settings, select ) {
      */
     if ( group ) {
 
-      for ( let filePath in shared.allFiles ) {
-        for ( let targetFilePath in shared.targets ) {
+      for ( let [ filePath ] of shared.allFiles ) {
+        for ( let [ targetFilePath ] of shared.targets ) {
           const myGroup = targetFilePath.slice( 0, targetFilePath.indexOf( group ) + group.length );
           if (
             (
-              shared.allFiles[ targetFilePath ]
-              && shared.allFiles[ targetFilePath ].group
-              && filePath.indexOf( shared.allFiles[ targetFilePath ].group ) === 0
+              shared.allFiles.get( targetFilePath )
+              && shared.allFiles.get( targetFilePath ).group
+              && filePath.indexOf( shared.allFiles.get( targetFilePath ).group ) === 0
             )
-            || myGroup === shared.allFiles[ filePath ].group
+            || myGroup === shared.allFiles.get( filePath ).group
           ) {
-            destFiles[ filePath ] = 1;
+            destFiles.set( filePath, 1 );
           }
         } // for
       } // for
@@ -180,22 +185,22 @@ function _retFlush( shared, settings, select ) {
      * 全部道連れにする場合。
      */
     } else if ( settings.allForOne === true ) {
-      for ( let filePath in shared.allFiles ) {
-        destFiles[ filePath ] = 1;
+      for ( let [ filePath ] of shared.allFiles ) {
+        destFiles.set( filePath, 1 );
       }
 
     /*
      * 候補として収集したものを通す。
      */
     } else {
-      for ( let filePath in shared.targets ) {
-        if ( shared.collection[ filePath ] ) {
-          shared.collection[ filePath ].forEach( dependentFilePath => {
-            destFiles[ dependentFilePath ] = 1;
+      for ( let [ filePath ] of shared.targets ) {
+        if ( shared.collection.get( filePath ) ) {
+          shared.collection.get( filePath ).forEach( dependentFilePath => {
+            destFiles.set( dependentFilePath, 1 );
           } );
         }
-        if ( shared.allFiles[ filePath ] ) {
-          destFiles[ filePath ] = 1;
+        if ( shared.allFiles.get( filePath ) ) {
+          destFiles.set( filePath,1 );
         } else {
           continue;
         }
@@ -210,24 +215,46 @@ function _retFlush( shared, settings, select ) {
     }
 
     /*
-     * destFiles （最終候補）のkey をpath に持つchunk をallFiles から取得して、
-     * stream にプッシュする。
+     * allFilesから destFiles （最終候補）のpath がkey になっている値を取得して、
+     * その値からFile を生成してstream にプッシュする。
      */
-    for ( let filePath in destFiles ) {
-      stream.push( shared.allFiles[ filePath ].file );
+
+    for ( let [ filePath ] of destFiles ) {
+      promiseReadFileAll.push( _promisePushReadFileToStream( filePath, shared.allFiles, stream ) );
     }
 
-    _log( name, Object.keys( destFiles ).length, Object.keys( shared.targets ).length );
-    shared.lastDiffData = shared.currentDiffData;
-    lastDiff.set( shared.currentDiffData );
-    shared.promiseGetGitDiffData = null;
-    shared.promiseOnGitDiffData = null;
-    _writeDiffData();
-    return callBack();
-
+    Promise
+      .all( promiseReadFileAll )
+      .then( () => {
+        _log( name, shared.targets.size, destFiles.size );
+        lastDiff.set( shared.currentDiffData );
+        shared = null;
+        _writeDiffData();
+        callBack();
+      } )
+      .catch( error => callBack( error ) )
+    ;
   };
 }
 
+function _promisePushReadFileToStream( filePath, allFiles, stream ) {
+  return new Promise( ( resolve, reject ) => {
+    readFile( filePath, ( error, content ) =>{
+      const file = new File( {
+        base: allFiles.get( filePath ).base,
+        path: allFiles.get( filePath ).path,
+        stat: allFiles.get( filePath ).stat,
+        contents: content,
+      } );
+      if ( error ) {
+        reject( error );
+      } else {
+        stream.push( file );
+        resolve();
+      }
+    } );
+  } );
+}
 
 /*
  * one source → one destination 用。
@@ -279,15 +306,15 @@ function diff_1to1( gulpSrc, firstSrc, mainTask, options, cb ) {
 }
 
 /*
- * through2.obj()の flushFunction 中で、実行。
+ * through2.obj()の flush function 中で、実行。
  * 候補ファイルに依存するものを最終選択する。
  */
 function selectTargetFiles( filePath, collection, destFiles ) {
   ( function _run_recursive( filePath ) {
-    if ( Array.isArray( collection[ filePath ] ) && collection[ filePath ].length > 0 ) {
-      collection[ filePath ].forEach( ( item ) => {
-        destFiles[ item ] = 1;
-        if ( Object.keys( collection ).includes( item ) ) {
+    if ( Array.isArray( collection.get( filePath ) ) && collection.get( filePath ).length > 0 ) {
+      collection.get( filePath ).forEach( ( item ) => {
+        destFiles.set( item, 1 );
+        if ( collection.has( item ) ) {
           _run_recursive( item );
         }
       } );
@@ -311,7 +338,7 @@ function _writeDiffData() {
 /*
  * 検知数と通過させた数のログ
  */
-function _log( name, total, detected ) {
+function _log( name, detected, total ) {
   if ( name ) {
     fancyLog( chalk.gray( `[${ name }]: detected ${ detected } files diff` ) );
     fancyLog( chalk.gray( `[${ name }]: passed ${ total } files` ) );

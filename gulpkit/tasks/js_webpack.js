@@ -125,14 +125,17 @@ function _runWebpackCompiler( callBackForStream, stream, compiler ) {
         path: targetPath,
         contents: content,
       } );
-      targetFiles.push( file );
+      if ( targetFiles.includes( targetPath ) === false ) {
+        targetFiles.push( targetPath );
+        stream.push( file );
+      }
       cb();
     }
   );
   compiler.run( _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles ) );
 }
 
-function _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles ) {
+function _callBackForRunWebpackCompiler( callBackForStream, stream ) {
   return ( error, stats ) => {
     let errorMessages = [];
     if ( error ) {
@@ -153,9 +156,6 @@ function _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles 
         errors : false,
       } ) );
     }
-    targetFiles.forEach( ( file ) => {
-      stream.push( file );
-    } );
     callBackForStream();
   };
 }

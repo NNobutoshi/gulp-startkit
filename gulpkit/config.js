@@ -508,7 +508,7 @@ const
 // config_serve.js が存在すれば、設定を上書き。
 // config_serve.js 自体はGit でignore している。
 // 実装者毎で設定を自由にさせるため。
-if ( fs.existsSync( SERVER_CONF_PATH ) ) {
+if ( SERVER_CONF_PATH && fs.existsSync( SERVER_CONF_PATH ) ) {
   const data = JSON.parse( fs.readFileSync( SERVER_CONF_PATH ) );
   data.conf_dev.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_dev.enable );
   data.conf_prod.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_prod.enable );

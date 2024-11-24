@@ -66,10 +66,10 @@ function _collectTargetFiles( file, collection ) {
       // 相対パスであれば
       dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
     }
-    if ( !collection[ dependentFilePath ] ) {
-      collection[ dependentFilePath ] = [];
+    if ( !collection.get( dependentFilePath ) ) {
+      collection.set( dependentFilePath, [] );
     }
-    collection[ dependentFilePath ].push( file.path );
+    collection.get( dependentFilePath ).push( file.path );
   }
 }
 
