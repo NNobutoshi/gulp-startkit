@@ -10,7 +10,7 @@ import * as tasks from './gulpkit/tasks/index.js';
 ( function _taskOnCommand() {
   const
     watchTasks = {}
-    ,args = process.argv.slice( process.argv.indexOf( 'gulpkit' ) + 1 )
+    ,args = process.argv.slice( 2 )
   ;
   if ( args.length === 0 ) {
     return;
