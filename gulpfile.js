@@ -18,9 +18,12 @@ import * as tasks from './gulpkit/tasks/index.js';
   args.forEach( ( taskName ) => {
     watchTasks[ taskName ] = tasks[ taskName ];
   } );
-  process.on( 'beforeExit', () => {
-    tasks.serve_init( tasks.watcher( watchTasks, tasks.serve_reload ) );
-  } );
+  process.on( 'beforeExit',
+    series(
+      tasks.serve_init,
+      tasks.watcher( watchTasks, tasks.serve_reload ),
+    )
+  );
 } )();
 
 

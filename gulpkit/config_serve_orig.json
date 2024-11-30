@@ -7,6 +7,6 @@
       "reloadThrottle" : 100,
       "proxy"          : "localhost:8039"
     }
-  }
-  ,"conf_prod" : {}
+  },
+  "conf_prod" : {}
 }

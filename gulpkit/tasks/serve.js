@@ -1,4 +1,6 @@
-import server from 'browser-sync';
+import server   from 'browser-sync';
+import fancyLog from 'fancy-log';
+import chalk    from 'chalk';
 
 import { serve as config } from '../config.js';
 
@@ -6,37 +8,21 @@ const
   options = config.options
 ;
 
-const serve_init = ( () => {
-  if ( !config.enable ) {
-    return function no_serve( cb ) {
-      _done( cb );
-    };
-  }
-  return function serve_init( cb ) {
-    server.init( options );
-    _done( cb );
-  };
-} )();
-
-const serve_reload = ( () => {
-  if ( !config.enable ) {
-    return function no_serve( cb ) {
-      _done( cb );
-    };
-  }
-  return function serve_reload( cb ) {
-    if ( server.active ) {
-      server.reload();
-    }
-    _done( cb );
-  };
-} )();
-
-
 export { serve_init, serve_reload };
 
-function _done( cb ) {
-  if ( typeof cb === 'function' ) {
+function serve_init( cb ) {
+  if ( !config.enable ) {
+    fancyLog( chalk.gray( 'no serve' ) );
     return cb();
   }
+  server.init( options );
+  cb();
 }
+
+function serve_reload( cb ) {
+  if ( server.active ) {
+    server.reload();
+  }
+  cb();
+}
+

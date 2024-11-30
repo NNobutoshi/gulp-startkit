@@ -4,14 +4,14 @@ import through     from 'through2';
 import mergeStream from 'merge-stream';
 
 export default function taskForEach( group, base, branchTask ) {
-  const srcCollection = {};
-  return _groupSrc( srcCollection, group, base, branchTask );
+  const groupedSources = new Map();
+  return _groupSrc( groupedSources, group, base, branchTask );
 }
 
 /*
  * 指定のグループに従ってsource を小分けする。
  */
-function _groupSrc( srcCollection, group, base, branchTask ) {
+function _groupSrc( groupedSources, group, base, branchTask ) {
 
   group = group.replace( /[/\\]/g, path.sep );
 
@@ -23,13 +23,13 @@ function _groupSrc( srcCollection, group, base, branchTask ) {
       ,parent = splits[ 0 ] + group
       ,child  = splits[ 1 ]
     ;
-    if ( !srcCollection[ parent ] ) {
-      srcCollection[ parent ] = {
+    if ( !groupedSources.get( parent ) ) {
+      groupedSources.set( parent, {
         children : [],
         baseDir  : splits[ 0 ].replace( path.resolve( process.cwd(), base ), '' ),
-      };
+      } );
     }
-    srcCollection[ parent ].children.push( child );
+    groupedSources.get( parent ).children.push( child );
     callBack( null, file );
   }
 
@@ -37,7 +37,7 @@ function _groupSrc( srcCollection, group, base, branchTask ) {
    * callBack は後の _forEach に渡し、全部の branchTask を実行後まで保留。
    */
   function _flush( callBack ) {
-    _forEach( srcCollection, branchTask, callBack );
+    _forEach( groupedSources, branchTask, callBack );
   }
 
 }
@@ -46,13 +46,13 @@ function _groupSrc( srcCollection, group, base, branchTask ) {
  * branchTask は、小分けしたグループ毎、Gulp.src 用の新しいsourceとdest 用のパスを渡し、
  * Gulp のストリームを受け取る。
  */
-function _forEach( srcCollection, branchTask, callBack ) {
+function _forEach( groupedSources, branchTask, callBack ) {
   const streams = [];
-  for ( let key in srcCollection ) {
+  for ( let [ key ] of groupedSources ) {
     streams.push(
       branchTask(
-        srcCollection[ key ].children.map( ( item ) => key + item ),
-        srcCollection[ key ].baseDir.replace( /[/\\]/g, '/' ),
+        groupedSources.get( key ).children.map( ( item ) => key + item ),
+        groupedSources.get( key ).baseDir.replace( /[/\\]/g, '/' ),
       )
     );
   }
