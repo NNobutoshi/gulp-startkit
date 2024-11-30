@@ -5,7 +5,7 @@ import * as tasks from './gulpkit/tasks/index.js';
 
 /*
  * コマンドライン上 Gulp <task>
- * でタスクを個別に実行する際、watch や server も機能させる。
+ * でタスクを個別に実行する際、watch や live reload も機能させる。
  */
 ( function _taskOnCommand() {
   const
@@ -20,8 +20,8 @@ import * as tasks from './gulpkit/tasks/index.js';
   } );
   process.on( 'beforeExit',
     series(
-      tasks.serve_init,
-      tasks.watcher( watchTasks, tasks.serve_reload ),
+      tasks.init_browse,
+      tasks.watcher( watchTasks, tasks.reload_browse ),
     )
   );
 } )();
@@ -48,8 +48,8 @@ export default series(
       tasks.js_webpack,
     )
   ),
-  tasks.serve_init,
-  tasks.watcher( tasks, tasks.serve_reload ),
+  tasks.init_browse,
+  tasks.watcher( tasks, tasks.reload_browse ),
 );
 
 export * from './gulpkit/tasks/index.js';

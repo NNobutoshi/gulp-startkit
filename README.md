@@ -31,20 +31,20 @@ src 1ファイル → dist 1ファイル のようなタスクは、高速化の
 $ npm run dev
 ```
 
-環境変数に` NODE_ENV=development WATCH_ENV=1 SERVE_ENV=1 DIFF_ENV=1 `を含むコマンドのエイリアス。  
-source map、`Gulp.watch()`、server（Browsersync）、差分ビルドを有効にする。
+環境変数に` NODE_ENV=development WATCH_ENV=1 BROWSE_ENV=1 DIFF_ENV=1 `を含むコマンドのエイリアス。  
+source map、`Gulp.watch()`、live reload（Browsersync）、差分ビルドを有効にする。
 
-※ Browsersync を有効にするには設定ファイル（`/gulpkit/config_serve.js`）の用意が必要。`/gulpkit/conifig_serve_orig.js`を複製、リネームして利用し、リネーム後のファイル名は、Git でignore されていて、server のIP アドレス等は、実装者各々で設定自由にする。
+※ Browsersync を有効にするには設定ファイル（`/gulpkit/config_browse.js`）の用意が必要。`/gulpkit/conifig_browse_orig.js`を複製、リネームして利用し、リネーム後のファイル名は、Git でignore されていて、server のIP アドレス等は、実装者各々で設定自由にする。
 ```
 $ npm run one
 ```
-環境変数に`NODE_ENV=development WATCH_ENV=0 SERVE_ENV=0 DIFF_ENV=0`を含むコマンドのエイリアス。
-watch はされず、server も差分ビルドも無効。
+環境変数に`NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0`を含むコマンドのエイリアス。
+watch はされず、live reload も差分ビルドも無効。
 
 ```
 $ npm run prod
 ```
-環境変数に`NODE_ENV=production WATCH_ENV=0 SERVE_ENV=1 DIFF_ENV=0`を含むコマンドのエイリアス。  
+環境変数に`NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=1 DIFF_ENV=0`を含むコマンドのエイリアス。  
 `NODE_ENV=producrion`により`/gulpkit/config.js`の設定に従ってCSS 、JavaScript の圧縮や、dest 先のフォルダの変更などを行う。  
 
 以上のコマンドは、末尾に半角スペースの後、単体タスク名を入力で、各環境変数に従った実行が可能。例（`npm run dev html_pug`）。  

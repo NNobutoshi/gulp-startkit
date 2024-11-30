@@ -33,7 +33,7 @@ const
   ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit/ ${ SRC }/`
-  ,SERVER_CONF_PATH   = path.resolve( DIRNAME, './config_serve.json' )
+  ,BROWSE_CONF_PATH   = path.resolve( DIRNAME, './config_browse.json' )
 ;
 const
   config_dev = {
@@ -443,7 +443,7 @@ const
         },
       },
     },
-    'serve' : { enable: false }, // 別途の設定ファイルにて
+    'browse' : { enable: false }, // 別途の設定ファイルにて
     'watcher' : {
       options : {
         watch : {
@@ -500,20 +500,20 @@ const
         },
       },
     },
-    'serve' : {}, // 別途の設定ファイルにて
+    'browse' : {}, // 別途の設定ファイルにて
     'watcher' : {},
   }
 ;
 
-// config_serve.js が存在すれば、設定を上書き。
-// config_serve.js 自体はGit でignore している。
+// config_browse.js が存在すれば、設定を上書き。
+// config_browse.js 自体はGit でignore している。
 // 実装者毎で設定を自由にさせるため。
-if ( SERVER_CONF_PATH && fs.existsSync( SERVER_CONF_PATH ) ) {
-  const data = JSON.parse( fs.readFileSync( SERVER_CONF_PATH ) );
-  data.conf_dev.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_dev.enable );
-  data.conf_prod.enable = ( JSON.parse( process.env.SERVE_ENV ) && data.conf_prod.enable );
-  config_dev.serve = data.conf_dev;
-  config_prod.serve = data.conf_prod;
+if ( BROWSE_CONF_PATH && fs.existsSync( BROWSE_CONF_PATH ) ) {
+  const data = JSON.parse( fs.readFileSync( BROWSE_CONF_PATH ) );
+  data.conf_dev.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_dev.enable );
+  data.conf_prod.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_prod.enable );
+  config_dev.browse = data.conf_dev;
+  config_prod.browse = data.conf_prod;
 }
 
 // 'production'用の設定は、'development' を基準にしてマージする
@@ -538,6 +538,6 @@ export const {
   html_pug,
   sprite,
   sprite_svg,
-  serve,
+  browse,
   watcher,
 } = config_dev;
