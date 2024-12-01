@@ -100,7 +100,7 @@ const
         },
       },
     },
-    'css_lint' : {
+    'css_scss_lint' : {
       src       : [
         ''  + SRC + '/**/*.scss',
         '!' + SRC + '/**/css/_sprite_svg.scss',
@@ -123,9 +123,48 @@ const
           debug          : true,
         },
         diff : {
-          name      : 'css_lint',
+          name      : 'css_scss_lint',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
+        },
+      },
+    },
+    'html_pug' : {
+      src     : [
+        SRC + '/**/*.pug',
+        SRC + '/**/*_data.json',
+      ],
+      dist    : DIST,
+      base    : SRC,
+      watch   : true && ENABLE_WATCH,
+      data    : path.resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
+      options : {
+        imgSize : true,
+        assistPretty : {
+          assistAElement   : true,
+          commentPosition  : 'inside', // outside
+          commentOnOneLine : true,
+          emptyLine        : true,
+          indent           : true,
+        },
+        beautifyHtml : {
+          indent_size : 2,
+          indent_char : ' ',
+        },
+        pug : {
+          pretty  : true,
+          basedir : SRC,
+        },
+        diff : {
+          name      : 'html_pug',
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+        },
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
         },
       },
     },
@@ -212,132 +251,7 @@ const
         },
       },
     },
-    'js_webpack' : {
-      src            : [ SRC + '/**/*.{js,json}' ],
-      dist           : DIST,
-      targetEntry    : /\.entry\.js$/,
-      shareFileConf  : /\.split\.json$/,
-      watch          : true && ENABLE_WATCH,
-      base           : SRC,
-      options        : {
-        del : {
-          dist    : [ DIST + '/**/*.js.map' ],
-          options : {
-            force : true,
-          },
-        },
-        plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
-            this.emit( 'end' );
-          },
-        },
-      },
-      cacheDirectory : WEBPACK_CACHE_PATH,
-      webpackConfig  : {
-        mode      : NODE_ENV,
-        output    : {},
-        devtool   : ( true && ENABLE_SOURCEMAP ) ? 'source-map' : false,
-        module    : {
-          rules : [
-            {
-              test    : /\.js$/,
-              exclude : /node_modules/,
-              use     : [
-                {
-                  loader  : 'babel-loader',
-                  options : {
-                    presets : [
-                      [
-                        '@babel/preset-env',
-                        {
-                          useBuiltIns : 'usage',
-                          corejs      : 3,
-                        },
-                      ],
-                    ],
-                  },
-                },
-              ], //use
-            },
-          ], //rules
-        }, //module
-        cache : {
-          type : ( ENABLE_DIFF ) ? 'filesystem' : 'memory',
-        },
-        plugins : [
-          new webpack.SourceMapDevToolPlugin( {
-            filename : SOURCEMAPS_DIR + '/[file].map',
-          } ),
-        ],
-        optimization : {},
-      }
-    },
-    'js_eslint' : {
-      src : [
-        './gulpkit/**/*.js',
-        ''  + SRC + '/**/*.js',
-        '!' + SRC + '/**/_vendor/*.js',
-      ],
-      dist    : DIST,
-      watch   : true && ENABLE_WATCH,
-      options : {
-        plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
-            this.emit( 'end' );
-          },
-        },
-        eslint : {
-          useEslintrc: true,
-        },
-        diff : {
-          name      : 'js_eslint',
-          command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
-        },
-      },
-    },
-    'html_pug' : {
-      src     : [
-        SRC + '/**/*.pug',
-        SRC + '/**/*_data.json',
-      ],
-      dist    : DIST,
-      base    : SRC,
-      watch   : true && ENABLE_WATCH,
-      data    : path.resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
-      options : {
-        imgSize : true,
-        assistPretty : {
-          assistAElement   : true,
-          commentPosition  : 'inside', // outside
-          commentOnOneLine : true,
-          emptyLine        : true,
-          indent           : true,
-        },
-        beautifyHtml : {
-          indent_size : 2,
-          indent_char : ' ',
-        },
-        pug : {
-          pretty  : true,
-          basedir : SRC,
-        },
-        diff : {
-          name      : 'html_pug',
-          command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
-        },
-        plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
-            this.emit( 'end' );
-          },
-        },
-      },
-    },
-    'sprite' : {
+    'img_sprite' : {
       src      : [ SRC + '/**/img/_sprite/**/*.png' ],
       dist     : DIST,
       base     : SRC,
@@ -364,14 +278,14 @@ const
           },
         },
         diff : {
-          name      : 'sprite',
+          name      : 'img_sprite',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
           allForOne : '/img/_sprite',
         },
       },
     },
-    'sprite_svg' : {
+    'img_sprite_svg' : {
       src     : [ SRC + '/**/img/_sprite_svg/**/*.svg' ],
       base    : SRC,
       dist    : DIST,
@@ -436,15 +350,101 @@ const
           },
         },
         diff : {
-          name      : 'sprite_svg',
+          name      : 'img_sprite_svg',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
           allForOne : '/img/_sprite_svg',
         },
       },
     },
+    'js_eslint' : {
+      src : [
+        './gulpkit/**/*.js',
+        ''  + SRC + '/**/*.js',
+        '!' + SRC + '/**/_vendor/*.js',
+      ],
+      dist    : DIST,
+      watch   : true && ENABLE_WATCH,
+      options : {
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
+        },
+        eslint : {
+          useEslintrc: true,
+        },
+        diff : {
+          name      : 'js_eslint',
+          command   : GIT_DIFF_COMMAND,
+          detection : true && ENABLE_DIFF,
+        },
+      },
+    },
+    'js_webpack' : {
+      src            : [ SRC + '/**/*.{js,json}' ],
+      dist           : DIST,
+      targetEntry    : /\.entry\.js$/,
+      shareFileConf  : /\.split\.json$/,
+      watch          : true && ENABLE_WATCH,
+      base           : SRC,
+      options        : {
+        del : {
+          dist    : [ DIST + '/**/*.js.map' ],
+          options : {
+            force : true,
+          },
+        },
+        plumber : {
+          errorHandler : function( error ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+            this.emit( 'end' );
+          },
+        },
+      },
+      cacheDirectory : WEBPACK_CACHE_PATH,
+      webpackConfig  : {
+        mode      : NODE_ENV,
+        output    : {},
+        devtool   : ( true && ENABLE_SOURCEMAP ) ? 'source-map' : false,
+        module    : {
+          rules : [
+            {
+              test    : /\.js$/,
+              exclude : /node_modules/,
+              use     : [
+                {
+                  loader  : 'babel-loader',
+                  options : {
+                    presets : [
+                      [
+                        '@babel/preset-env',
+                        {
+                          useBuiltIns : 'usage',
+                          corejs      : 3,
+                        },
+                      ],
+                    ],
+                  },
+                },
+              ], //use
+            },
+          ], //rules
+        }, //module
+        cache : {
+          type : ( ENABLE_DIFF ) ? 'filesystem' : 'memory',
+        },
+        plugins : [
+          new webpack.SourceMapDevToolPlugin( {
+            filename : SOURCEMAPS_DIR + '/[file].map',
+          } ),
+        ],
+        optimization : {},
+      }
+    },
     'browse' : { enable: false }, // 別途の設定ファイルにて
-    'watcher' : {
+    'task_watche' : {
       options : {
         watch : {
           usePolling : true
@@ -465,9 +465,26 @@ const
         },
       },
     },
-    'css_lint' : {},
+    'css_scss_lint' : {},
+    'html_pug' : {},
     'icon_font' : {},
     'img_min' : {},
+    'img_sprite' : {},
+    'img_sprite_svg' : {
+      options : {
+        svgSprite : {
+          mode  : {
+            symbol : {
+              example : false,
+            },
+            css : {
+              example : false,
+            },
+          },
+        },
+      },
+    },
+    'js_eslint' : {},
     'js_webpack' : {
       webpackConfig : {
         devtool : ( false || ENABLE_SOURCEMAP ) ? 'source-map' : false,
@@ -483,25 +500,8 @@ const
         ],
       }
     },
-    'js_eslint' : {},
-    'html_pug' : {},
-    'sprite' : {},
-    'sprite_svg' : {
-      options : {
-        svgSprite : {
-          mode  : {
-            symbol : {
-              example : false,
-            },
-            css : {
-              example : false,
-            },
-          },
-        },
-      },
-    },
     'browse' : {}, // 別途の設定ファイルにて
-    'watcher' : {},
+    'task_watche' : {},
   }
 ;
 
@@ -530,14 +530,14 @@ export const {
   clean,
   copy_to,
   css_sass,
-  css_lint,
+  css_scss_lint,
   icon_font,
-  img_min,
-  js_webpack,
-  js_eslint,
   html_pug,
-  sprite,
-  sprite_svg,
+  img_min,
+  img_sprite,
+  img_sprite_svg,
+  js_eslint,
+  js_webpack,
   browse,
-  watcher,
+  task_watche,
 } = config_dev;

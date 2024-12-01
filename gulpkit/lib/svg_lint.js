@@ -15,11 +15,10 @@ export default function svg_lint() {
       ,linting = await SVGLint.lintSource( contents, { debug: true, config: {} } )
     ;
     linting.on( 'done', () => {
-      if ( linting.valid === true ) {
-        callBack( null, file );
-      } else {
-        callBack( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
+      if ( linting.state === 'error' || linting.valid === false ) {
+        return callBack( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
       }
+      callBack( null, file );
     } );
     linting.lint();
   }

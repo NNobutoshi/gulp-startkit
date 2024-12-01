@@ -5,9 +5,10 @@ import plumber       from 'gulp-plumber';
 import gulpIf        from 'gulp-if';
 import through       from 'through2';
 
-import svgLint                 from '../lib/svg_lint.js';
-import taskForEach             from '../lib/task_for_each.js';
-import diff                    from '../lib/diff_build.js';
+import svgLint     from '../lib/svg_lint.js';
+import taskForEach from '../lib/task_for_each.js';
+import diff        from '../lib/diff_build.js';
+
 import { icon_font as config } from '../config.js';
 
 const

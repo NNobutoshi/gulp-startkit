@@ -6,10 +6,10 @@ import configFile from '../config.js';
 
 const
   config        = configFile
-  ,watchOptions = config.watcher.options.watch
+  ,watchOptions = config.task_watche.options.watch
 ;
 
-export default function watcher( tasks, commonNextTask ) {
+export default function task_watche( tasks, commonNextTask ) {
 
   return function watch_init( cb ) {
 

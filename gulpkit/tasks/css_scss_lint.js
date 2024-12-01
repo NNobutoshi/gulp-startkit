@@ -3,14 +3,15 @@ import through   from 'through2';
 import plumber   from 'gulp-plumber';
 import stylelint from 'stylelint';
 
-import { diff_1to1 }          from '../lib/diff_build.js';
-import { css_lint as config } from '../config.js';
+import { diff_1to1 } from '../lib/diff_build.js';
+
+import { css_scss_lint as config } from '../config.js';
 
 const
   options = config.options
 ;
 
-export default function css_lint( cb ) {
+export default function css_scss_lint( cb ) {
   diff_1to1( src, config.src, mainTask, options.diff, cb );
 }
 

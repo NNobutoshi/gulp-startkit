@@ -300,7 +300,7 @@ function diff_1to1( gulpSrc, firstSrc, mainTask, options, cb ) {
             cb();
           } )
         ;
-      } )
+      } ) //on finish
     ;
   } );
 }

@@ -11,7 +11,8 @@ import mqpacker      from '@hail2u/css-mqpacker';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import renderingLog                from '../lib/rendering_log.js';
-import { css_sass as config }      from '../config.js';
+
+import { css_sass as config } from '../config.js';
 
 const sass = gulpSass( dartSass );
 

@@ -21,7 +21,7 @@ import * as tasks from './gulpkit/tasks/index.js';
   process.on( 'beforeExit',
     series(
       tasks.init_browse,
-      tasks.watcher( watchTasks, tasks.reload_browse ),
+      tasks.task_watche( watchTasks, tasks.reload_browse ),
     )
   );
 } )();
@@ -39,17 +39,17 @@ export default series(
       tasks.html_pug,
       parallel(
         tasks.icon_font,
-        tasks.sprite,
-        tasks.sprite_svg
+        tasks.img_sprite,
+        tasks.img_sprite_svg
       ),
-      tasks.css_lint,
+      tasks.css_scss_lint,
       tasks.css_sass,
       tasks.js_eslint,
       tasks.js_webpack,
     )
   ),
   tasks.init_browse,
-  tasks.watcher( tasks, tasks.reload_browse ),
+  tasks.task_watche( tasks, tasks.reload_browse ),
 );
 
 export * from './gulpkit/tasks/index.js';

@@ -2,7 +2,8 @@ import { src, dest } from 'gulp';
 
 import plumber from 'gulp-plumber';
 
-import { diff_1to1 }         from '../lib/diff_build.js';
+import { diff_1to1 } from '../lib/diff_build.js';
+
 import { copy_to as config } from '../config.js';
 
 const

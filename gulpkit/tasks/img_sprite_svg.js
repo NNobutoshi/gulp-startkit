@@ -3,20 +3,21 @@ import svgSprite     from 'gulp-svg-sprite';
 import plumber       from 'gulp-plumber';
 import gulpIf        from 'gulp-if';
 
-import diff                     from '../lib/diff_build.js';
-import taskForEach              from '../lib/task_for_each.js';
-import svgLint                  from '../lib/svg_lint.js';
-import { sprite_svg as config } from '../config.js';
+import diff        from '../lib/diff_build.js';
+import taskForEach from '../lib/task_for_each.js';
+import svgLint     from '../lib/svg_lint.js';
+
+import { img_sprite_svg as config } from '../config.js';
 
 const
   options = config.options
 ;
 
-export default function sprite_svg() {
+export default function img_sprite_svg() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( svgLint() )
     .pipe( diff( options.diff ) )
+    .pipe( svgLint() )
     .pipe( taskForEach( config.group, config.base, _branchTask ) )
   ;
 }
