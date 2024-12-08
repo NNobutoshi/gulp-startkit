@@ -12,13 +12,10 @@ const
 ;
 
 
-export default function img_min( cb ) {
-  diff_1to1( src, config.src, mainTask, options.diff, cb );
-}
-
-function mainTask( preparedSrc ) {
-  return src( preparedSrc, options.src )
+export default function img_min() {
+  return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )
+    .pipe( diff_1to1( options.diff ) )
     .pipe( imagemin( [
       mozjpeg( options.imageminMozjpeg ),
       imageminPngquant( options.imageminPngquant ),
@@ -29,3 +26,4 @@ function mainTask( preparedSrc ) {
     .pipe( dest( config.dist ) )
   ;
 }
+

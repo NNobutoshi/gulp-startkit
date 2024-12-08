@@ -258,51 +258,59 @@ function _promisePushReadFileToStream( filePath, allFiles, stream ) {
 
 /*
  * one source → one destination 用。
- * Gulp.srcのオプション { read: false } の速さに期待して、
- * Gulp.src()を
- * 1段階目で { read false } で Git のdiff の結果からファイルのパスを取捨選択して
- * 2段階目で { read: true } で 選択したファイルで再実行。
+ * Gulp.src のオプション、 { read: false } の速さに期待して。
+ * Gulp.src() を{ read false } で Git のdiff の結果から対象ファイルのパスを取捨選択して、
+ * 対象ファイルであれば、contents をfile.readFile で改めて読み込み、代入する。
  */
-function diff_1to1( gulpSrc, firstSrc, mainTask, options, cb ) {
+function diff_1to1( options ) {
   const
-    settings      = mergeWith( {}, defaultSettings, options )
-    ,lastDiffData = lastDiff.get()
-    ,preparedSrc = []
+    settings               = mergeWith( {}, defaultSettings, options )
+    ,promiseGetGitDiffData = _getGitDiffData( settings.command )
+    ,lastDiffData          = lastDiff.get()
   ;
+  let
+    currentDiffData
+    ,totalFilesPassed = 0
+  ;
+
   if ( settings.detection === false ) {
-    mainTask( firstSrc ).on( 'finish', () => cb() );
-    return;
+    return through.obj();
   }
-  _getGitDiffData( settings.command ).then( ( currentDiffData ) => {
-    gulpSrc( firstSrc, { read: false } )
-      .pipe( through.obj( function( file, enc, callBack ) {
-        if ( file.isStream && file.isStream() ) {
-          this.emit( 'error' );
-          return callBack();
-        }
-        if (
-          _includes( currentDiffData, file.path ) ||
-          _includes( lastDiffData, file.path )
-        ) {
-          preparedSrc.push( path.relative( process.cwd(), file.path ).replace( /[\\]/g, '/' ) );
-        }
+
+  return through.obj( _transform, _flush );
+
+  function _transform( file, enc, callBack ) {
+    if ( file.isStream && file.isStream() ) {
+      this.emit( 'error' );
+      return callBack();
+    }
+    promiseGetGitDiffData.then( ( diffData ) => {
+      currentDiffData = diffData;
+      if (
+        _includes( currentDiffData, file.path ) ||
+        _includes( lastDiffData, file.path )
+      ) {
+        readFile( file.path, ( error, content ) => {
+          if ( error ) {
+            return callBack( error );
+          }
+          totalFilesPassed += 1;
+          file.contents = content;
+          callBack( null, file );
+        } );
+      } else {
         callBack();
-      } ) )
-      .on( 'finish', () => {
-        _log( settings.name, preparedSrc.length, preparedSrc.length );
-        if ( preparedSrc.length === 0 ) {
-          return cb();
-        }
-        mainTask( preparedSrc )
-          .on( 'finish', () => {
-            lastDiff.set( currentDiffData );
-            _writeDiffData();
-            cb();
-          } )
-        ;
-      } ) //on finish
-    ;
-  } );
+      }
+    } );
+  }
+
+  function _flush( callBack ) {
+    lastDiff.set( currentDiffData );
+    _writeDiffData();
+    _log( settings.name, totalFilesPassed, totalFilesPassed );
+    callBack();
+  }
+
 }
 
 /*
@@ -355,9 +363,9 @@ function _includes( data, filePath ) {
  * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
  * oject（差分ファイルリスト） の作成。
  */
-function _getGitDiffData( comand ) {
+function _getGitDiffData( command ) {
   return new Promise( ( resolve ) => {
-    exec( comand, ( error, stdout, stderror ) => {
+    exec( command, ( error, stdout, stderror ) => {
       let diffData = {};
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );

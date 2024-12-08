@@ -63,8 +63,9 @@ const
           detection : true && ENABLE_DIFF,
         },
         src : {
-          base: SRC,
-          encoding: false,
+          base     : SRC,
+          encoding : false,
+          read     : false || !ENABLE_DIFF,
         },
       },
     },
@@ -126,6 +127,9 @@ const
           name      : 'css_scss_lint',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
+        },
+        src : {
+          read : false || !ENABLE_DIFF,
         },
       },
     },
@@ -246,8 +250,9 @@ const
           detection : true && ENABLE_DIFF,
         },
         src : {
-          base : SRC,
-          encoding: false,
+          base     : SRC,
+          encoding : false,
+          read     : false || !ENABLE_DIFF,
         },
       },
     },
@@ -379,6 +384,9 @@ const
           name      : 'js_eslint',
           command   : GIT_DIFF_COMMAND,
           detection : true && ENABLE_DIFF,
+        },
+        src : {
+          read : false || !ENABLE_DIFF,
         },
       },
     },
