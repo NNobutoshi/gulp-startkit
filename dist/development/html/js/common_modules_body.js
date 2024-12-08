@@ -466,11 +466,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Accordion)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var _libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./libs/transitiontoggle.js */ "./src/js/_modules/libs/transitiontoggle.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var _libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./libs/transitiontoggle.js */ "./src/js/_modules/libs/transitiontoggle.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -495,7 +497,7 @@ class Accordion {
         otherClosing: false,
         propertyTargetTransition: 'height'
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorParentAll = settings.selectorParent;
     this.selectorTrigger = settings.selectorTrigger;
@@ -513,7 +515,7 @@ class Accordion {
   }
   setUp() {
     Array.prototype.forEach.call(this.elemParentAll, (elemParent, index) => {
-      const toggle = new _libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_2__["default"]({
+      const toggle = new _libs_transitiontoggle_js__WEBPACK_IMPORTED_MODULE_3__["default"]({
         name: this.id + index,
         elemParent: elemParent,
         elemTrigger: elemParent.querySelector(this.selectorTrigger),
@@ -525,7 +527,7 @@ class Accordion {
     });
   }
   on(callbacks) {
-    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__["default"](this.elemEventRoot);
+    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEventRoot);
     this.callbackBefore = callbacks.before;
     this.callbackAfter = callbacks.after;
     this.callbackFinish = callbacks.finish;
@@ -632,12 +634,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AdaptiveHover)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
-/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var _polyfills_matches_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../polyfills/matches.js */ "./src/js/_modules/polyfills/matches.js");
+/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 /*!
@@ -666,7 +670,7 @@ class AdaptiveHover {
         delayTime: 500,
         coverage: 20
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_5__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorTarget = settings.selectorTarget;
     this.selectorEvetnRoot = settings.selectorEventRoot;
@@ -684,7 +688,7 @@ class AdaptiveHover {
     this.eventRoot = null;
   }
   on(callbackEnter, callbackLeave) {
-    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEventRoot);
+    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemEventRoot);
     this.callbackEnter = callbackEnter;
     this.callbackLeave = callbackLeave;
     this.eventRoot.on(this.eventNameEnter, this.selectorTarget, this.handleEnter.bind(this)).on(this.eventNameLeave, this.selectorTarget, this.handleLeave.bind(this)).on(this.eventNameOutside, this.handleOutSide.bind(this));
@@ -888,12 +892,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ OptimizedResize)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../_vendor/raf.js */ "./src/js/_vendor/raf.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../_vendor/raf.js */ "./src/js/_vendor/raf.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -916,7 +922,7 @@ class OptimizedResize {
         eventName: 'resize.{name}',
         delayTime: 10
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_5__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorEventRoot = settings.selectorEventRoot;
     this.elemEventRoot = settings.elemEventRoot || d.querySelector(this.selectorEventRoot);
@@ -956,7 +962,7 @@ class OptimizedResize {
     return this;
   }
   add(callback, options) {
-    const settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, {
+    const settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_5__({}, {
       // default
       name: _getUniqueName(this.id),
       query: '',
@@ -1016,7 +1022,7 @@ class OptimizedResize {
   }
   setUp() {
     if (!Object.keys(this.callbacks).length) {
-      this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemEventRoot);
       this.eventRoot.on(this.eventName, e => this.handleSetup(e));
     }
   }
@@ -1069,13 +1075,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ScrollManager)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _utilities_position_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utilities/position.js */ "./src/js/_modules/utilities/position.js");
-/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../_vendor/raf.js */ "./src/js/_vendor/raf.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _utilities_position_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utilities/position.js */ "./src/js/_modules/utilities/position.js");
+/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../_vendor/raf.js */ "./src/js/_vendor/raf.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -1105,7 +1113,7 @@ class ScrollManager {
         delayTime: 0,
         catchPoint: '100%'
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorEventRoot = settings.selectorEventRoot;
     this.selectorOffsetTop = settings.selectorOffsetTop;
@@ -1137,9 +1145,9 @@ class ScrollManager {
         rect = elemTarget.getBoundingClientRect(),
         hookPoint = _calcPoint(rect.height, entry.observed.hookPoint || entry.hookPoint),
         range = catchPoint + (rect.height - hookPoint),
-        scrollFrom = viewTop + catchPoint - (hookPoint + (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_4__["default"])(elemTarget).top),
+        scrollFrom = viewTop + catchPoint - (hookPoint + (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_5__["default"])(elemTarget).top),
         ratio = scrollFrom / range;
-      entry.observed = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__(entry.observed, {
+      entry.observed = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__(entry.observed, {
         name: entry.name,
         target: entry.elemTarget,
         range: range,
@@ -1173,7 +1181,7 @@ class ScrollManager {
         flag: false,
         observed: {}
       },
-      entry = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultOptions, options);
+      entry = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultOptions, options);
     entry.callback = callback;
     this.setUp();
     this.callbacks[entry.name] = entry;
@@ -1191,7 +1199,7 @@ class ScrollManager {
   }
   setUp() {
     if (!this.callbacks.length) {
-      this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemEventRoot);
+      this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
       this.eventRoot.on(this.eventName, () => this.handle());
     }
     return this;
@@ -1273,10 +1281,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ TtransitionToggle)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 /*!
@@ -1305,7 +1315,7 @@ class TtransitionToggle {
         toggleHeight: false,
         propertyTargetTransition: ''
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorParent = settings.selectorParent;
     this.selectorTrigger = settings.selectorTrigger;
@@ -1326,7 +1336,7 @@ class TtransitionToggle {
     this.eventNameFinish = settings.eventNameFinish.replaceAll('{name}', this.id);
   }
   on(callbacks) {
-    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_3__["default"](this.elemEvtRoot);
+    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__["default"](this.elemEvtRoot);
     this.callbackBefore = callbacks.before.bind(this);
     this.callbackAfter = callbacks.after.bind(this);
     this.callbackFinish = callbacks.finish.bind(this);
@@ -1414,10 +1424,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Locate)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _utilities_parents_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utilities/parents.js */ "./src/js/_modules/utilities/parents.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _utilities_parents_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utilities/parents.js */ "./src/js/_modules/utilities/parents.js");
+
 
 
 
@@ -1431,7 +1443,7 @@ class Locate {
         elemTargetAll: null,
         indexRegex: /index\.[^/]+?$/
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorTarget = settings.selectorTarget;
     this.selectorParent = settings.selectorParent;
@@ -1451,7 +1463,7 @@ class Locate {
         continue;
       } else if (pathNameByElement === pathnameByLocal) {
         this.elemCurrent = elemTarget;
-        this.elemParentAll = (0,_utilities_parents_js__WEBPACK_IMPORTED_MODULE_3__["default"])(this.elemCurrent, this.selectorParent, 'body');
+        this.elemParentAll = (0,_utilities_parents_js__WEBPACK_IMPORTED_MODULE_4__["default"])(this.elemCurrent, this.selectorParent, 'body');
       }
     } // for
     if (typeof callback === 'function') {
@@ -1513,14 +1525,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Rescroll)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _utilities_position_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utilities/position.js */ "./src/js/_modules/utilities/position.js");
-/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../_vendor/raf.js */ "./src/js/_vendor/raf.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _utilities_position_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./utilities/position.js */ "./src/js/_modules/utilities/position.js");
+/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
+/* harmony import */ var _vendor_raf_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../_vendor/raf.js */ "./src/js/_vendor/raf.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -1559,7 +1573,7 @@ class Rescroll {
           }
         }
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorTrigger = settings.selectorTrigger;
     this.selectorShoulder = settings.selectorShoulder;
@@ -1578,7 +1592,7 @@ class Rescroll {
     this.eventRoot = null;
   }
   on() {
-    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_7__["default"](this.elemEventRoot);
+    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_8__["default"](this.elemEventRoot);
     this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameHashChange, this.handleHashChange.bind(this)).on(this.eventNameClick, this.selectorTrigger, this.handleClick.bind(this)).on(this.eventNameScroll, this.handleScroll.bind(this));
     return this;
   }
@@ -1634,7 +1648,7 @@ class Rescroll {
      * or ジャンプ先を肩代わりする要素も、hash をセレクターにして得られた要素も、どちらもなければ、
      * return
      */
-    if (e.type === 'click' && target && target.hash && elemShoulder && (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_4__["default"])(target).top === (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_4__["default"])(elemShoulder).top || this.isWorking === true || this.enabled === false || !elemByHash && !elemShoulder) {
+    if (e.type === 'click' && target && target.hash && elemShoulder && (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_5__["default"])(target).top === (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_5__["default"])(elemShoulder).top || this.isWorking === true || this.enabled === false || !elemByHash && !elemShoulder) {
       this.isWorking = false;
       return this;
     }
@@ -1684,7 +1698,7 @@ class Rescroll {
    * 通常のスクロール
    */
   scroll(elemTarget) {
-    const finishPoint = (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_4__["default"])(elemTarget).top - this.offset();
+    const finishPoint = (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_5__["default"])(elemTarget).top - this.offset();
     this.elemEventRoot.scrollTo(0, this.lastScrollY);
     this.elemEventRoot.scrollTo(0, finishPoint);
     this.isWorking = false;
@@ -1699,7 +1713,7 @@ class Rescroll {
     const duration = this.settings.animeOption.duration,
       easing = this.settings.animeOption.easing,
       startPoint = this.lastScrollY,
-      finishPoint = (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_4__["default"])(elemTarget).top - this.offset(),
+      finishPoint = (0,_utilities_position_js__WEBPACK_IMPORTED_MODULE_5__["default"])(elemTarget).top - this.offset(),
       range = finishPoint - startPoint;
     let currentPoint = 0,
       startTime = null;
@@ -1766,11 +1780,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SimpleVideoPlay)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -1796,7 +1812,7 @@ class SimpleVideoPlay {
         onPause: null,
         onEnd: null
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorVideo = settings.selectorVideo;
     this.selectorWrapper = settings.selectorWrapper;
@@ -1822,8 +1838,8 @@ class SimpleVideoPlay {
     this.elemVideo.load();
   }
   on(callbacks) {
-    this.eventVideo = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__["default"](this.elemVideo);
-    this.eventCover = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__["default"](this.elemCover);
+    this.eventVideo = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemVideo);
+    this.eventCover = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemCover);
     this.callbackBefore = callbacks.before.bind(this);
     this.callbackPlayBefore = callbacks.playBefore.bind(this);
     this.callbackPlay = callbacks.play.bind(this);
@@ -1884,12 +1900,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Tab)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _polyfills_closest_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./polyfills/closest.js */ "./src/js/_modules/polyfills/closest.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+
 
 
 
@@ -1919,7 +1937,7 @@ class Tab {
         onAllChange: null,
         onChange: null
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_4__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorWrapper = settings.selectorWrapper;
     this.selectorTrigger = settings.selectorTrigger;
@@ -1941,7 +1959,7 @@ class Tab {
   on(callbacks) {
     this.callbackAllChange = callbacks && callbacks.allChange;
     this.callbackChange = callbacks && callbacks.change;
-    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_5__["default"](this.elemEventRoot);
+    this.eventRoot = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_6__["default"](this.elemEventRoot);
     this.eventRoot.on(this.eventNameLoad, this.handleLoad.bind(this)).on(this.eventNameClick, this.selectorAnchor, this.handleClick.bind(this));
   }
   off() {
@@ -2106,11 +2124,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ VideoGround)
 /* harmony export */ });
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
-/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
-/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
-/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! regenerator-runtime/runtime.js */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
+/* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
+/* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
+/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! regenerator-runtime/runtime.js */ "./node_modules/regenerator-runtime/runtime.js");
+
 
 
 
@@ -2133,7 +2153,7 @@ class VideoGround {
         actualHeightRatio: 1 / 1,
         attrVideo: ['muted', 'playsinline', 'loop']
       },
-      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__({}, defaultSettings, options);
+      settings = this.settings = lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_3__({}, defaultSettings, options);
     this.id = settings.name;
     this.selectorParent = settings.selectorParent;
     this.selectorVideoFrame = settings.selectorVideoFrame;
@@ -2199,7 +2219,7 @@ class VideoGround {
       this.callbackLoad = callbacks.load;
       this.callbackDestroy = callbacks.destroy;
     }
-    this.eventVideo = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_3__["default"](this.elemVideo);
+    this.eventVideo = new _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_4__["default"](this.elemVideo);
     this.eventVideo.on(this.eventNamePlay, this.handlePlay.bind(this)).on(this.eventNameCanPlay, this.handleCanPlay.bind(this));
     this.eventCall(this.callbackBefore);
     return this;
