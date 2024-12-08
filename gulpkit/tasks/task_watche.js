@@ -13,14 +13,14 @@ export default function task_watche( tasks, commonNextTask ) {
 
   return function watch_init( cb ) {
 
-    let taskCounter = 0;
+    let noWatchTask = true;
 
     for ( const [ taskName, task ] of Object.entries( tasks ) ) {
       const
         taskConfig = config[ taskName ]
       ;
       if ( taskConfig && taskConfig.watch === true && taskConfig.src ) {
-        taskCounter = taskCounter + 1;
+        noWatchTask = false;
         if ( typeof commonNextTask === 'function' ) {
           watch( taskConfig.src, watchOptions, series( task, commonNextTask ) );
         } else {
@@ -29,7 +29,7 @@ export default function task_watche( tasks, commonNextTask ) {
       }
     } // for
 
-    if ( taskCounter === 0 ) {
+    if ( noWatchTask ) {
       fancyLog( chalk.gray( 'no task to watch' ) );
     }
 

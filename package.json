@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "description": "project example",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development WATCH_ENV=1 BROWSE_ENV=1 DIFF_ENV=1 gulp",
-    "one": "cross-env NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
-    "prod": "cross-env NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=1 DIFF_ENV=0 gulp",
+    "dev"     : "cross-env NODE_ENV=development WATCH_ENV=1 BROWSE_ENV=1 DIFF_ENV=1 gulp",
+    "one"     : "cross-env NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
+    "prod"    : "cross-env NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=1 DIFF_ENV=0 gulp",
     "pug_tmp_engine": "node ./gulpkit.js/pug_tmp_engine/index.js & npm run dev html_pug"
   },
   "author": "",
