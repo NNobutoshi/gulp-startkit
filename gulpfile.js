@@ -88,12 +88,16 @@ export function img( cb ) {
     tasks.img_min,
     tasks.img_sprite,
     tasks.img_sprite_svg,
+    tasks.css_scss_lint,
+    tasks.css_sass,
     tasks.init_browse,
     series(
       tasks.task_watche( {
         img_min: tasks.img_min,
         img_sprite: tasks.img_sprite,
         img_sprite_svg: tasks.img_sprite_svg,
+        css_scss_lint: tasks.css_scss_lint,
+        css_sass: tasks.css_sass,
       },
       tasks.reload_browse )
     ),
