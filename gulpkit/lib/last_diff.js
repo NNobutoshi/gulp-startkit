@@ -71,6 +71,5 @@ function _reset() {
     if ( error ) {
       throw error;
     }
-  } )
-  ;
+  } );
 }
