@@ -24,6 +24,9 @@ export default function html_pug() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', ( file ) => {
+      if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
+        return;
+      }
       const keyFilePath = file.path
         .replace( resolve( process.cwd(), config.base ), '' )
         .replace( /\\/g, '/' )
@@ -56,27 +59,41 @@ export default function html_pug() {
 function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
-    ,regex   = /^.*?(extends|include) *(.+)$/mg
+    ,regex   = /^.*?(extends|include) *(.+)$|<(img|source).*?src|srcset=["'](.+?)["'].*?>/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
     let dependentFilePath;
-    if ( /^\//.test( match[ 2 ] ) ) {
+
+    if ( match[ 2 ] ) {
+      if ( /^\//.test( match[ 2 ] ) ) {
       // ルートパスであれば
-      dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 2 ] );
-    } else {
+        dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 2 ] );
+      } else {
       // 相対パスであれば
-      dependentFilePath = resolve( file.dirname, match[ 2 ] );
+        dependentFilePath = resolve( file.dirname, match[ 2 ] );
+      }
     }
-    if ( !collection.get( dependentFilePath ) ) {
+    if ( match[ 4 ] ) {
+      if ( /^\//.test( match[ 4 ] ) ) {
+      // ルートパスであれば
+        dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 4 ] );
+      } else {
+      // 相対パスであれば
+        dependentFilePath = resolve( file.dirname, match[ 4 ] );
+      }
+    }
+    if ( dependentFilePath && !collection.get( dependentFilePath ) ) {
       collection.set( dependentFilePath, [] );
     }
-    collection.get( dependentFilePath ).push( file.path );
+    if ( dependentFilePath ) {
+      collection.get( dependentFilePath ).push( file.path );
+    }
   }
 }
 
 function _pugRender() {
-  const ignoreFileRegEx = /^_/;
+  const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
 
   return through.obj( _transform );
 
@@ -174,7 +191,7 @@ function _beautify() {
       if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
         continue;
       }
-      promiseReplaceImgStringsAll.push( new Promise( ( resolve ) => {
+      promiseReplaceImgStringsAll.push( new Promise( ( prmResolve ) => {
         sizeOf( resolve( file.dirname, srcPath ), ( error, dm ) => {
           if ( error ) {
             stream.emit( 'error', error );
@@ -185,7 +202,7 @@ function _beautify() {
                   + `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
-          resolve();
+          prmResolve();
         } );
       } ) );
     } // for

@@ -130,8 +130,11 @@ const
     },
     'html_pug' : {
       src     : [
-        SRC + '/**/*.pug',
-        SRC + '/**/*_data.json',
+        ''  + SRC + '/**/*.pug',
+        ''  + SRC + '/**/*_data.json',
+        ''  + SRC + '/**/*.{png,jpg,svg}',
+        '!' + SRC + '/**/_sprite*/*.{png,svg}',
+        '!' + SRC + '/**/fonts/icons/*.svg',
       ],
       dist    : DIST,
       base    : SRC,
