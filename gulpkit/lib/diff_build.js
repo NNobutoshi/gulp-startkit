@@ -1,6 +1,6 @@
-import path         from 'node:path';
-import { exec }     from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { resolve, relative, sep } from 'node:path';
+import { exec }                   from 'node:child_process';
+import { readFile }               from 'node:fs/promises';
 
 import through   from 'through2';
 import mergeWith from 'lodash/mergeWith.js';
@@ -62,7 +62,7 @@ function diff_build( options, collect, select ) {
   );
 
   if ( typeof settings.allForOne === 'string' ) {
-    settings.group = settings.allForOne.replace( /[/\\]/g, path.sep );
+    settings.group = settings.allForOne.replace( /[/\\]/g, sep );
   }
 
   shared.promiseOnGitDiffData = shared.promiseGetGitDiffData.then( ( data ) => {
@@ -148,7 +148,7 @@ function _retFlush( shared, settings, select ) {
      */
     for ( let [ filePath, value ] of Object.entries( shared.currentDiffData[ settings.name ] ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
-        shared.targets.set( path.resolve( process.cwd(), filePath ), 1 );
+        shared.targets.set( resolve( process.cwd(), filePath ), 1 );
       }
     }
 
@@ -158,7 +158,7 @@ function _retFlush( shared, settings, select ) {
           !shared.currentDiffData[ settings.name ][ filePath ] &&
         value.status.indexOf( '?' ) > -1
         ) {
-          shared.targets.set( path.resolve( process.cwd(), filePath ), 1 );
+          shared.targets.set( resolve( process.cwd(), filePath ), 1 );
         }
       }
     }
@@ -370,7 +370,7 @@ function _log( name, detected, total ) {
 }
 
 function _includes( name, data, filePath ) {
-  filePath = path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  filePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
   return data[ name ] && Object.keys( data[ name ] ).includes( filePath );
 }
 

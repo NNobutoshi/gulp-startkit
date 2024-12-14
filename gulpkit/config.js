@@ -1,6 +1,6 @@
-import fs   from 'node:fs';
-import path from 'node:path';
-import url  from 'node:url';
+import { fileURLToPath }            from 'node:url';
+import { dirname, resolve }         from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 
 import merge        from 'lodash/mergeWith.js';
 import webpack      from 'webpack';
@@ -24,16 +24,16 @@ const
 ;
 const
   SRC                 = ( NODE_ENV === 'production' ) ? DIR_PROD.src : DIR_DEV.src
-  ,DIRNAME            = path.dirname( url.fileURLToPath( import.meta.url ) )
+  ,DIRNAME            = dirname( fileURLToPath( import.meta.url ) )
   ,DIST               = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist
   ,ENABLE_SOURCEMAP   = ( NODE_ENV === 'production' ) ? false : true
   ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
   ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
   ,SOURCEMAPS_DIR     = 'sourcemaps'
-  ,WEBPACK_CACHE_PATH = path.resolve( process.cwd(), '.webpack_cache' )
+  ,WEBPACK_CACHE_PATH = resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit/ ${ SRC }/`
-  ,BROWSE_CONF_PATH   = path.resolve( DIRNAME, './config_browse.json' )
+  ,BROWSE_CONF_PATH   = resolve( DIRNAME, './config_browse.json' )
 ;
 const
   config_dev = {
@@ -136,7 +136,7 @@ const
       dist    : DIST,
       base    : SRC,
       watch   : true && ENABLE_WATCH,
-      data    : path.resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
+      data    : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
       options : {
         imgSize : true,
         assistPretty : {
@@ -315,11 +315,11 @@ const
               bust       : false,
               render     : {
                 scss : {
-                  dest: path.resolve( process.cwd(), 'css/_sprite_svg.scss' ),
+                  dest: resolve( process.cwd(), 'css/_sprite_svg.scss' ),
                 },
               },
               example: {
-                dest: path.resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
+                dest: resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
               }
             },
           },
@@ -505,8 +505,8 @@ const
 // config_browse.js が存在すれば、設定を上書き。
 // config_browse.js 自体はGit でignore している。
 // 実装者毎で設定を自由にさせるため。
-if ( BROWSE_CONF_PATH && fs.existsSync( BROWSE_CONF_PATH ) ) {
-  const data = JSON.parse( fs.readFileSync( BROWSE_CONF_PATH ) );
+if ( BROWSE_CONF_PATH && existsSync( BROWSE_CONF_PATH ) ) {
+  const data = JSON.parse( readFileSync( BROWSE_CONF_PATH ) );
   data.conf_dev.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_dev.enable );
   data.conf_prod.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_prod.enable );
   config_dev.browse = data.conf_dev;

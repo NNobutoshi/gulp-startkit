@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { basename, dirname, resolve, join } from 'node:path';
 
 import { src, dest } from 'gulp';
 import * as dartSass from 'sass';
@@ -58,14 +58,14 @@ function _collectTargetFiles( file, collection ) {
     let
       dependentFilePath
     ;
-    dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
+    dependentFilePath = resolve( file.dirname, match[ 2 ] );
     if ( !match[ 3 ] ) {
       dependentFilePath += '.scss';
     }
-    if ( /^_/.test( path.basename( dependentFilePath ) ) === false ) {
-      dependentFilePath = path.join(
-        path.dirname( dependentFilePath ),
-        path.basename( dependentFilePath ).replace( /^/, '_' )
+    if ( /^_/.test( basename( dependentFilePath ) ) === false ) {
+      dependentFilePath = join(
+        dirname( dependentFilePath ),
+        basename( dependentFilePath ).replace( /^/, '_' )
       );
     }
     if ( !collection.get( dependentFilePath ) ) {

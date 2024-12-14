@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { resolve, sep } from 'node:path';
 
 import through     from 'through2';
 import mergeStream from 'merge-stream';
@@ -13,7 +13,7 @@ export default function taskForEach( group, base, branchTask ) {
  */
 function _groupSrc( groupedSources, group, base, branchTask ) {
 
-  group = group.replace( /[/\\]/g, path.sep );
+  group = group.replace( /[/\\]/g, sep );
 
   return through.obj( _transform, _flush );
 
@@ -26,7 +26,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
     if ( !groupedSources.get( parent ) ) {
       groupedSources.set( parent, {
         children : [],
-        baseDir  : splits[ 0 ].replace( path.resolve( process.cwd(), base ), '' ),
+        baseDir  : splits[ 0 ].replace( resolve( process.cwd(), base ), '' ),
       } );
     }
     groupedSources.get( parent ).children.push( child );

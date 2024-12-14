@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import path             from 'node:path';
+import { readFileSync }  from 'node:fs';
+import { resolve, join } from 'node:path';
 
 import { src, dest } from 'gulp';
 import plumber       from 'gulp-plumber';
@@ -25,7 +25,7 @@ export default function html_pug() {
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', ( file ) => {
       const keyFilePath = file.path
-        .replace( path.resolve( process.cwd(), config.base ), '' )
+        .replace( resolve( process.cwd(), config.base ), '' )
         .replace( /\\/g, '/' )
         .replace( /\.pug$/, '.html' )
       ;
@@ -63,10 +63,10 @@ function _collectTargetFiles( file, collection ) {
     let dependentFilePath;
     if ( /^\//.test( match[ 2 ] ) ) {
       // ルートパスであれば
-      dependentFilePath = path.join( path.resolve( process.cwd(), config.base ), match[ 2 ] );
+      dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 2 ] );
     } else {
       // 相対パスであれば
-      dependentFilePath = path.resolve( file.dirname, match[ 2 ] );
+      dependentFilePath = resolve( file.dirname, match[ 2 ] );
     }
     if ( !collection.get( dependentFilePath ) ) {
       collection.set( dependentFilePath, [] );
@@ -81,7 +81,7 @@ function _pugRender() {
   return through.obj( _transform );
 
   function _transform( file, enc, callBack ) {
-    if ( ignoreFileRegEx.test( path.basename( file.path ) ) ) {
+    if ( ignoreFileRegEx.test( file.basename ) ) {
       return callBack();
     }
     Object.assign( options.pug, {
@@ -175,7 +175,7 @@ function _beautify() {
         continue;
       }
       promiseReplaceImgStringsAll.push( new Promise( ( resolve ) => {
-        sizeOf( path.resolve( file.dirname, srcPath ), ( error, dm ) => {
+        sizeOf( resolve( file.dirname, srcPath ), ( error, dm ) => {
           if ( error ) {
             stream.emit( 'error', error );
           }
