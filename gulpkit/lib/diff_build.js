@@ -1,9 +1,8 @@
 import path         from 'node:path';
 import { exec }     from 'node:child_process';
-import { readFile } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 
 import through   from 'through2';
-import File      from 'vinyl';
 import mergeWith from 'lodash/mergeWith.js';
 import fancyLog  from 'fancy-log';
 import chalk     from 'chalk';
@@ -55,7 +54,6 @@ function diff_build( options, collect, select ) {
   if ( !settings.detection ) {
     return through.obj();
   }
-
   shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
 
   if ( typeof settings.allForOne === 'string' ) {
@@ -81,19 +79,15 @@ function _retTransform( shared, settings, collect ) {
       return callBack( null, file );
     }
     if ( file.isStream && file.isStream() ) {
-      this.emit( 'error' );
+      this.emit( 'error' , new Error( 'Streaming not supported' ) );
       return callBack();
     }
 
     /*
-     * すべてのchunk の必要最低限の情報を収集しておく
+     * すべてのchunk の情報を収集しておく
      */
-    shared.allFiles.set( file.path, {
-      // file : file, メモリ消費が抑えられるかもしれないので全部は代入しない
-      base : file.base,
-      path : file.path,
-      stat : file.stat,
-    } );
+    shared.allFiles.set( file.path, file.clone() );
+    shared.allFiles.get( file.path ).contents = null;
 
     /*
      * git コマンドで得た差分ファイルリストにchunk のpath があればstream で通す候補にし、
@@ -220,7 +214,9 @@ function _retFlush( shared, settings, select ) {
      */
 
     for ( let [ filePath ] of destFiles ) {
-      promiseReadFileAll.push( _promisePushReadFileToStream( filePath, shared.allFiles, stream ) );
+      promiseReadFileAll.push(
+        _promisePushReadFileToStream( filePath, shared.allFiles, stream )
+      );
     }
 
     Promise
@@ -234,26 +230,20 @@ function _retFlush( shared, settings, select ) {
       } )
       .catch( error => callBack( error ) )
     ;
+
   };
+
 }
 
-function _promisePushReadFileToStream( filePath, allFiles, stream ) {
-  return new Promise( ( resolve, reject ) => {
-    readFile( filePath, ( error, content ) =>{
-      const file = new File( {
-        base: allFiles.get( filePath ).base,
-        path: allFiles.get( filePath ).path,
-        stat: allFiles.get( filePath ).stat,
-        contents: content,
-      } );
-      if ( error ) {
-        reject( error );
-      } else {
-        stream.push( file );
-        resolve();
-      }
-    } );
-  } );
+async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
+  try {
+    const content = await readFile( filePath );
+    const file = allFiles.get( filePath );
+    file.contents = content;
+    stream.push( file );
+  } catch ( error ) {
+    stream.emit( 'error', error );
+  }
 }
 
 /*
@@ -264,53 +254,60 @@ function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  */
 function diff_1to1( options ) {
   const
-    settings               = mergeWith( {}, defaultSettings, options )
-    ,promiseGetGitDiffData = _getGitDiffData( settings.command )
-    ,lastDiffData          = lastDiff.get()
-  ;
-  let
-    currentDiffData
-    ,totalFilesPassed = 0
+    settings = mergeWith( {}, defaultSettings, options ),
+    shared = {
+      settings :settings,
+      promiseGetGitDiffData : _getGitDiffData( settings.command ),
+      lastDiffData          : lastDiff.get(),
+      currentDiffData       : null,
+      totalFilesPassed      : 0,
+    }
   ;
 
-  if ( settings.detection === false ) {
+  if ( shared.settings.detection === false ) {
     return through.obj();
   }
 
-  return through.obj( _transform, _flush );
+  return through.obj( _transformFor1to1( shared ), _flushFor1to1( shared ) );
 
-  function _transform( file, enc, callBack ) {
+}
+
+function _transformFor1to1( shared ) {
+  return function _transFormFor1to1( file, enc, callBack ) {
     if ( file.isStream && file.isStream() ) {
-      this.emit( 'error' );
+      this.emit( 'error' , new Error( 'Streaming not supported' ) );
       return callBack();
     }
-    promiseGetGitDiffData.then( ( diffData ) => {
-      currentDiffData = diffData;
+    shared.promiseGetGitDiffData.then( ( diffData ) => {
+      shared.currentDiffData = diffData;
       if (
-        _includes( currentDiffData, file.path ) ||
-        _includes( lastDiffData, file.path )
+        _includes( shared.currentDiffData, file.path ) ||
+        _includes( shared.lastDiffData, file.path )
       ) {
-        readFile( file.path, ( error, content ) => {
-          if ( error ) {
-            return callBack( error );
+        ( async function() {
+          try {
+            file.contents = await readFile( file.path );
+            callBack( null, file );
+            shared.totalFilesPassed += 1;
+          } catch ( error ) {
+            callBack( error );
           }
-          totalFilesPassed += 1;
-          file.contents = content;
-          callBack( null, file );
-        } );
+        } )();
       } else {
         callBack();
       }
     } );
-  }
+  };
 
-  function _flush( callBack ) {
-    lastDiff.set( currentDiffData );
+}
+
+function _flushFor1to1( shared ) {
+  return function _flush( callBack ) {
+    lastDiff.set( shared.currentDiffData );
     _writeDiffData();
-    _log( settings.name, totalFilesPassed, totalFilesPassed );
+    _log( shared.settings.name, shared.totalFilesPassed, shared.totalFilesPassed );
     callBack();
-  }
-
+  };
 }
 
 /*

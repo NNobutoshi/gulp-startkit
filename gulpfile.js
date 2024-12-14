@@ -66,7 +66,7 @@ export * from './gulpkit/tasks/index.js';
  * html 関連タスク
  */
 export function html( cb ) {
-  series(
+  return series(
     tasks.img_min,
     tasks.html_pug,
     tasks.init_browse,
@@ -77,8 +77,7 @@ export function html( cb ) {
       },
       tasks.reload_browse )
     ),
-  )();
-  cb();
+  )( cb );
 }
 
 /*
@@ -98,8 +97,7 @@ export function img( cb ) {
       },
       tasks.reload_browse )
     ),
-  )();
-  cb();
+  )( cb );
 }
 
 /*
@@ -117,8 +115,7 @@ export function css( cb ) {
       },
       tasks.reload_browse )
     ),
-  )();
-  cb();
+  )( cb );
 }
 
 /*
@@ -136,6 +133,5 @@ export function js( cb ) {
       },
       tasks.reload_browse )
     ),
-  )();
-  cb();
+  )( cb );
 }

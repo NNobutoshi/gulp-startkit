@@ -1,5 +1,5 @@
-import fs   from 'node:fs';
-import path from 'node:path';
+import { readFileSync } from 'node:fs';
+import path             from 'node:path';
 
 import { src, dest } from 'gulp';
 import plumber       from 'gulp-plumber';
@@ -18,7 +18,8 @@ const
 ;
 
 export default function html_pug() {
-  const pugData = JSON.parse( fs.readFileSync( config.data ).toString() );
+  const pugData = JSON.parse( readFileSync( config.data ).toString() );
+
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )

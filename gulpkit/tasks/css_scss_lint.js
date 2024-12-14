@@ -12,13 +12,11 @@ const
 ;
 
 export default function css_scss_lint() {
-  const targetFiles = [];
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff_1to1( options.diff ) )
     .pipe( through.obj(
       function( file, enc, callBack ) {
-        targetFiles.push( file.path );
         stylelint.lint( {
           code: String( file.contents ),
           formatter: 'string',
@@ -30,7 +28,7 @@ export default function css_scss_lint() {
             callBack( null, file );
           } )
           .catch( ( error ) =>  {
-            callBack( ( targetFiles.length > -1 ) ? error : null );
+            callBack( error );
           } );
       },
     ) )

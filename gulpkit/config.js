@@ -39,11 +39,6 @@ const
   config_dev = {
     'clean' : {
       command : `git clean -f ${ DIST }/`,
-      options : {
-        del : {
-          force : true,
-        },
-      },
     },
     'copy_to' : {
       src   : [ SRC + '/**/*.{mp4,webm}' ],
@@ -236,11 +231,11 @@ const
           plugins : [
             {
               name   : 'removeViewBox',
-              active : true
+              active : true,
             },
             {
               name   : 'cleanupIDs',
-              active : false
+              active : false,
             },
           ],
         },
@@ -342,7 +337,7 @@ const
                   plugins : [
                     {
                       name   : 'removeViewBox',
-                      active : true
+                      active : true,
                     },
                   ],
                 },
@@ -398,12 +393,6 @@ const
       watch          : true && ENABLE_WATCH,
       base           : SRC,
       options        : {
-        del : {
-          dist    : [ DIST + '/**/*.js.map' ],
-          options : {
-            force : true,
-          },
-        },
         plumber : {
           errorHandler : function( error ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
@@ -455,7 +444,7 @@ const
     'task_watche' : {
       options : {
         watch : {
-          usePolling : true
+          usePolling : true,
         },
       },
     },
@@ -499,7 +488,7 @@ const
         optimization : {
           minimizer : [
             new TerserPlugin( {
-              extractComments : false
+              extractComments : false,
             } ),
           ],
         },

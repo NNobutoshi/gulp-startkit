@@ -1,12 +1,10 @@
-import fs   from 'node:fs';
-import path from 'node:path';
-
-import { mkdirp }     from 'mkdirp';
-import { deleteSync } from 'del';
+import { mkdir } from 'node:fs/promises';
+import { readFileSync, writeFile, existsSync, rm } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 
 const
-  FILEPATH  = path.resolve( process.cwd(), '.last_diff/.diffmap' )
-  ,DIRNAME  = path.dirname( FILEPATH )
+  FILEPATH  = resolve( process.cwd(), '.last_diff/.diffmap' )
+  ,DIRNAME  = dirname( FILEPATH )
   ,DATANAME = 'myProjectTasksLastDiff'
 ;
 let
@@ -31,8 +29,8 @@ export default  {
 function _get() {
   if ( envData ) {
     return envData;
-  } else if ( fs.existsSync( FILEPATH ) ) {
-    return JSON.parse( fs.readFileSync( FILEPATH, 'utf-8' ) );
+  } else if ( existsSync( FILEPATH ) ) {
+    return JSON.parse( readFileSync( FILEPATH, 'utf-8' ) );
   }
   return {};
 }
@@ -47,14 +45,18 @@ function _set( map ) {
 /*
  * ファイルに書き込み、保存。
  */
-function _write() {
-  if ( !envData ) {
+async function _write() {
+  if ( !envData  ) {
     return false;
   }
-  if ( !fs.existsSync( DIRNAME ) ) {
-    mkdirp.sync( DIRNAME );
+  if ( !existsSync( DIRNAME ) ) {
+    await mkdir( DIRNAME, { recursive: true } )
+      .catch( ( error ) => {
+        throw error;
+      } )
+    ;
   }
-  fs.writeFileSync( FILEPATH, JSON.stringify( envData, null, 2 ), 'utf-8', ( error ) => {
+  writeFile( FILEPATH, JSON.stringify( envData, null, 2 ), 'utf-8', ( error ) => {
     if ( error ) {
       throw error;
     }
@@ -65,5 +67,10 @@ function _write() {
  * 保存のディレクトリごと削除。
  */
 function _reset() {
-  deleteSync( DIRNAME );
+  rm( DIRNAME, { recursive: true }, ( error ) => {
+    if ( error ) {
+      throw error;
+    }
+  } )
+  ;
 }
