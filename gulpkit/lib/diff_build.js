@@ -66,9 +66,9 @@ function diff_build( options, collect, select ) {
   }
 
   shared.promiseOnGitDiffData = shared.promiseGetGitDiffData.then( ( data ) => {
-    return new Promise( ( resolve ) => {
+    return new Promise( ( prmResolve ) => {
       shared.currentDiffData = data;
-      resolve( data );
+      prmResolve( data );
     } );
   } );
 
@@ -380,12 +380,12 @@ function _includes( name, data, filePath ) {
  * oject（差分ファイルリスト） の作成。
  */
 function _getGitDiffData( name, command, lastDiffData ) {
-  return new Promise( ( resolve ) => {
+  return new Promise( ( prmResolve ) => {
     exec( command, ( error, stdout, stderror ) => {
       let diffData = Object.assign( {}, lastDiffData );
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
-        resolve( diffData );
+        prmResolve( diffData );
       }
       if ( stdout ) {
         const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
@@ -398,7 +398,7 @@ function _getGitDiffData( name, command, lastDiffData ) {
           diffData[ name ][ item[ 2 ] ] = { status: item[ 1 ] };
         }
       }
-      resolve( diffData );
+      prmResolve( diffData );
     } );
   } );
 }
