@@ -185,20 +185,20 @@ function _postPug() {
         continue;
       }
       promiseReplaceImgStringsAll.push( new Promise( ( resolve, reject ) => {
-        const preparedSrcPath = ( /^\//.test( srcPath ) )
+        const preparedSrcPath = ( /^\//.test( srcPath ) ) ?
         // ルートパスであれば
-          ? join( path.resolve( process.cwd(), config.base ), srcPath )
+          path.join( path.resolve( process.cwd(), config.base ), srcPath ) :
         // 相対パスであれば
-          : path.resolve( file.dirname, srcPath )
+          path.resolve( file.dirname, srcPath )
         ;
         sizeOf( preparedSrcPath, ( error, dm ) => {
           if ( error ) {
             return reject( error );
           }
           const
-            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } `
-                  + `width=${ q }${ dm.width }${ q } `
-                  + `height=${ q }${ dm.height }${ q }${ rearPart }>`
+            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } ` +
+                  `width=${ q }${ dm.width }${ q } ` +
+                  `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
           resolve();
