@@ -80,9 +80,7 @@ function diff_build( options, collect, select ) {
 
 function _retTransform( shared, settings, collect ) {
   return function _transform( file, enc, callBack ) {
-    if ( file.isNull && file.isNull() ) {
-      return callBack( null, file );
-    }
+
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
       return callBack();
@@ -234,7 +232,6 @@ function _retFlush( shared, settings, select ) {
       .then( () => {
         _log( name, shared.targets.size, destFiles.size );
         lastDiff.set( shared.currentDiffData );
-        shared = null;
         _writeDiffData();
         callBack();
       } )
@@ -382,7 +379,8 @@ function _includes( name, data, filePath ) {
 function _getGitDiffData( name, command, lastDiffData ) {
   return new Promise( ( prmResolve ) => {
     exec( command, ( error, stdout, stderror ) => {
-      let diffData = Object.assign( {}, lastDiffData );
+      const diffData = {};
+      Object.assign( diffData, lastDiffData );
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
         prmResolve( diffData );

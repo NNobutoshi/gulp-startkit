@@ -22,6 +22,7 @@ export default function html_pug() {
 
   return src( config.src )
     .pipe( plumber( options.plumber ) )
+    .pipe( src( config.subSrc, { read: false } ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', ( file ) => {
       if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
@@ -59,30 +60,18 @@ export default function html_pug() {
 function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
-    ,regex   = /^.*?(extends|include) *(.+)$|<(img|source).*?src|srcset=["'](.+?)["'].*?>/mg
+    ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["'](.+?)["'].*?\))/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
-    let dependentFilePath;
-
-    if ( match[ 2 ] ) {
-      if ( /^\//.test( match[ 2 ] ) ) {
+    const
+      filePath = match[ 3 ] || match[ 7 ]
+      ,dependentFilePath = ( /^\//.test( filePath ) )
       // ルートパスであれば
-        dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 2 ] );
-      } else {
+        ? join( resolve( process.cwd(), config.base ), filePath )
       // 相対パスであれば
-        dependentFilePath = resolve( file.dirname, match[ 2 ] );
-      }
-    }
-    if ( match[ 4 ] ) {
-      if ( /^\//.test( match[ 4 ] ) ) {
-      // ルートパスであれば
-        dependentFilePath = join( resolve( process.cwd(), config.base ), match[ 4 ] );
-      } else {
-      // 相対パスであれば
-        dependentFilePath = resolve( file.dirname, match[ 4 ] );
-      }
-    }
+        : resolve( file.dirname, filePath )
+    ;
     if ( dependentFilePath && !collection.get( dependentFilePath ) ) {
       collection.set( dependentFilePath, [] );
     }

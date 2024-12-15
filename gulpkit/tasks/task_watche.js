@@ -16,15 +16,20 @@ export default function task_watche( tasks, commonNextTask ) {
     let noWatchTask = true;
 
     for ( const [ taskName, task ] of Object.entries( tasks ) ) {
-      const
-        taskConfig = config[ taskName ]
-      ;
+      const taskConfig = config[ taskName ];
+      let watchSrc;
+
+      if ( taskConfig && taskConfig.src && taskConfig.subSrc ) {
+        watchSrc = [].concat( taskConfig.src, taskConfig.subSrc );
+      } else if ( taskConfig && taskConfig.src ) {
+        watchSrc = taskConfig.src;
+      }
       if ( taskConfig && taskConfig.watch === true && taskConfig.src ) {
         noWatchTask = false;
         if ( typeof commonNextTask === 'function' ) {
-          watch( taskConfig.src, watchOptions, series( task, commonNextTask ) );
+          watch( watchSrc, watchOptions, series( task, commonNextTask ) );
         } else {
-          watch( taskConfig.src, watchOptions, task );
+          watch( watchSrc, watchOptions, task );
         }
       }
     } // for

@@ -132,6 +132,8 @@ const
       src     : [
         ''  + SRC + '/**/*.pug',
         ''  + SRC + '/**/*_data.json',
+      ],
+      subSrc : [
         ''  + SRC + '/**/*.{png,jpg,svg}',
         '!' + SRC + '/**/_sprite*/*.{png,svg}',
         '!' + SRC + '/**/fonts/icons/*.svg',
