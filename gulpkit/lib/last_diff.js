@@ -5,10 +5,10 @@ import { resolve, dirname } from 'node:path';
 const
   FILEPATH  = resolve( process.cwd(), '.last_diff/.diffmap' )
   ,DIRNAME  = dirname( FILEPATH )
-  ,DATANAME = 'myProjectTasksLastDiff'
 ;
+
 let
-  envData = process.env[ DATANAME ]
+  diffData
 ;
 
 /*
@@ -26,27 +26,30 @@ export default  {
 /*
  * 環境変数に格納されている差分ファイルリストを優先して取得。
  */
-function _get() {
-  if ( envData ) {
-    return envData;
+function _get( name ) {
+  if ( diffData ) {
+    return diffData[ name ] || {};
   } else if ( existsSync( FILEPATH ) ) {
-    return JSON.parse( readFileSync( FILEPATH, 'utf-8' ) );
+    diffData = JSON.parse( readFileSync( FILEPATH, 'utf-8' ) );
+    return diffData[ name ] || {};
+  } else {
+    diffData = {};
+    return {};
   }
-  return {};
 }
 
 /*
  * 環境変数に格納する。
  */
-function _set( map ) {
-  envData = map;
+function _set( name, data ) {
+  diffData[ name ] = data;
 }
 
 /*
  * ファイルに書き込み、保存。
  */
 async function _write() {
-  if ( !envData  ) {
+  if ( !diffData  ) {
     return false;
   }
   if ( !existsSync( DIRNAME ) ) {
@@ -56,7 +59,7 @@ async function _write() {
       } )
     ;
   }
-  writeFile( FILEPATH, JSON.stringify( envData, null, 2 ), 'utf-8', ( error ) => {
+  writeFile( FILEPATH, JSON.stringify( diffData, null, 2 ), 'utf-8', ( error ) => {
     if ( error ) {
       throw error;
     }

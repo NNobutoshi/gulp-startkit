@@ -39,27 +39,23 @@ export {
  */
 function diff_build( options, collect, select ) {
   const
-    shared = {
+    settings = mergeWith( {}, defaultSettings, options )
+    ,shared = {
       allFiles         : new Map(), // 全chumk用
       collection       : new Map(), // 依存関係収集用
       targets          : new Map(), // 通過候補
       currentDiffData  : null,
-      lastDiffData     : lastDiff.get(),
+      lastDiffData     : lastDiff.get( settings.name ),
       promiseGetGitDiffData : null,
       promiseOnGitDiffData  : null,
-    },
-    settings = mergeWith( {}, defaultSettings, options )
+    }
   ;
 
   if ( settings.detection === false ) {
     return through.obj();
   }
 
-  shared.promiseGetGitDiffData = _getGitDiffData(
-    settings.name,
-    settings.command,
-    shared.lastDiffData,
-  );
+  shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
 
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, sep );
@@ -100,8 +96,8 @@ function _retTransform( shared, settings, collect ) {
     shared.promiseOnGitDiffData.then( () => {
 
       if (
-        _includes( settings.name, shared.currentDiffData, file.path ) ||
-        _includes( settings.name, shared.lastDiffData, file.path )
+        _includes( shared.currentDiffData, file.path ) ||
+        _includes( shared.lastDiffData, file.path )
       ) {
         shared.targets.set( file.path, 1 );
       }
@@ -144,20 +140,18 @@ function _retFlush( shared, settings, select ) {
     /*
      * 消去されたファイルもtargetに。
      */
-    for ( let [ filePath, value ] of Object.entries( shared.currentDiffData[ settings.name ] ) ) {
+    for ( let [ filePath, value ] of Object.entries( shared.currentDiffData ) ) {
       if ( value.status.indexOf( 'D' )  > -1 ) {
         shared.targets.set( resolve( process.cwd(), filePath ), 1 );
       }
     }
 
-    if ( shared.lastDiffData && shared.lastDiffData[ settings.name ] ) {
-      for ( let [ filePath, value ] of Object.entries( shared.lastDiffData[ settings.name ] ) ) {
-        if (
-          !shared.currentDiffData[ settings.name ][ filePath ] &&
+    for ( let [ filePath, value ] of Object.entries( shared.lastDiffData ) ) {
+      if (
+        !shared.currentDiffData[ filePath ] &&
         value.status.indexOf( '?' ) > -1
-        ) {
-          shared.targets.set( resolve( process.cwd(), filePath ), 1 );
-        }
+      ) {
+        shared.targets.set( resolve( process.cwd(), filePath ), 1 );
       }
     }
 
@@ -231,7 +225,7 @@ function _retFlush( shared, settings, select ) {
       .all( promiseReadFileAll )
       .then( () => {
         _log( name, shared.targets.size, destFiles.size );
-        lastDiff.set( shared.currentDiffData );
+        lastDiff.set( name, shared.currentDiffData );
         _writeDiffData();
         callBack();
       } )
@@ -261,34 +255,30 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  */
 function diff_1to1( options ) {
   const
-    shared = {
+    settings = mergeWith( {}, defaultSettings, options )
+    ,shared = {
       promiseGetGitDiffData : null,
-      lastDiffData          : lastDiff.get(),
+      lastDiffData          : lastDiff.get( settings.name ),
       currentDiffData       : null,
       totalFilesPassed      : 0,
     }
-    ,settings = mergeWith( {}, defaultSettings, options )
   ;
 
   if ( settings.detection === false ) {
     return through.obj();
   }
 
-  shared.promiseGetGitDiffData = _getGitDiffData(
-    settings.name,
-    settings.command,
-    shared.lastDiffData,
-  );
+  shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
 
 
   return through.obj(
-    _transformFor1to1( settings.name, shared ),
+    _transformFor1to1( shared ),
     _flushFor1to1( settings.name, shared ),
   );
 
 }
 
-function _transformFor1to1( name, shared ) {
+function _transformFor1to1( shared ) {
   return function _transFormFor1to1( file, enc, callBack ) {
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
@@ -297,8 +287,8 @@ function _transformFor1to1( name, shared ) {
     shared.promiseGetGitDiffData.then( ( diffData ) => {
       shared.currentDiffData = diffData;
       if (
-        _includes( name, shared.currentDiffData, file.path ) ||
-        _includes( name, shared.lastDiffData, file.path )
+        _includes( shared.currentDiffData, file.path ) ||
+        _includes( shared.lastDiffData, file.path )
       ) {
         ( async function() {
           try {
@@ -319,7 +309,7 @@ function _transformFor1to1( name, shared ) {
 
 function _flushFor1to1( name, shared ) {
   return function _flush( callBack ) {
-    lastDiff.set( shared.currentDiffData );
+    lastDiff.set( name, shared.currentDiffData );
     _writeDiffData();
     _log( name, shared.totalFilesPassed, shared.totalFilesPassed );
     callBack();
@@ -366,9 +356,9 @@ function _log( name, detected, total ) {
   }
 }
 
-function _includes( name, data, filePath ) {
+function _includes( data, filePath ) {
   filePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
-  return data[ name ] && Object.keys( data[ name ] ).includes( filePath );
+  return data && Object.keys( data ).includes( filePath );
 }
 
 /*
@@ -376,24 +366,22 @@ function _includes( name, data, filePath ) {
  * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
  * oject（差分ファイルリスト） の作成。
  */
-function _getGitDiffData( name, command, lastDiffData ) {
+function _getGitDiffData( command ) {
   return new Promise( ( prmResolve ) => {
     exec( command, ( error, stdout, stderror ) => {
       const diffData = {};
-      Object.assign( diffData, lastDiffData );
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
         prmResolve( diffData );
       }
       if ( stdout ) {
         const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
-        diffData[ name ] = {};
         for ( let item of matchedAll ) {
           // リネームの際の文字列をリネーム後のパスの形に変換する。
           if ( item[ 2 ].indexOf( ' -> ' ) > -1 ) {
             item[ 2 ] = item[ 2 ].split( ' -> ' )[ 1 ];
           }
-          diffData[ name ][ item[ 2 ] ] = { status: item[ 1 ] };
+          diffData[ item[ 2 ] ] = { status: item[ 1 ] };
         }
       }
       prmResolve( diffData );
