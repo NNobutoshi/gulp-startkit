@@ -180,10 +180,16 @@ function _beautify() {
       if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
         continue;
       }
-      promiseReplaceImgStringsAll.push( new Promise( ( prmResolve ) => {
-        sizeOf( resolve( file.dirname, srcPath ), ( error, dm ) => {
+      promiseReplaceImgStringsAll.push( new Promise( ( prmResolve, prmReject ) => {
+        const preparedSrcPath = ( /^\//.test( srcPath ) )
+        // ルートパスであれば
+          ? join( resolve( process.cwd(), config.base ), srcPath )
+        // 相対パスであれば
+          : resolve( file.dirname, srcPath )
+        ;
+        sizeOf( preparedSrcPath, ( error, dm ) => {
           if ( error ) {
-            stream.emit( 'error', error );
+            return prmReject( error );
           }
           const
             text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } `
@@ -204,6 +210,9 @@ function _beautify() {
         } );
         file.contents = new global.Buffer.from( contents );
         callBack( null, file );
+      } )
+      .catch( ( error ) =>{
+        callBack( error );
       } )
     ;
 
