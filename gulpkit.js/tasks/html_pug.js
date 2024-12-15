@@ -184,14 +184,21 @@ function _postPug() {
       if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
         continue;
       }
-      promiseReplaceImgStringsAll.push( new Promise( ( resolve ) => {
-        sizeOf( path.resolve( file.dirname, srcPath ), ( error, dm ) => {
+      promiseReplaceImgStringsAll.push( new Promise( ( resolve, reject ) => {
+        const preparedSrcPath = ( /^\//.test( srcPath ) )
+        // ルートパスであれば
+          ? join( path.resolve( process.cwd(), config.base ), srcPath )
+        // 相対パスであれば
+          : path.resolve( file.dirname, srcPath )
+        ;
+        sizeOf( preparedSrcPath, ( error, dm ) => {
           if ( error ) {
-            stream.emit( 'error', error );
+            return reject( error );
           }
           const
-            text  = `<${tagName}${frontPart}${attrName}=${q}${srcPath}${q} ` +
-                    `width=${q}${dm.width}${q} height=${q}${dm.height}${q}${rearPart}>`
+            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } `
+                  + `width=${ q }${ dm.width }${ q } `
+                  + `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
           objReplaceImgText[ match [ 0 ] ] = text;
           resolve();
@@ -207,6 +214,9 @@ function _postPug() {
         } );
         file.contents = new global.Buffer.from( contents );
         callBack( null, file );
+      } )
+      .catch( ( error ) => {
+        callBack( error );
       } )
     ;
 
