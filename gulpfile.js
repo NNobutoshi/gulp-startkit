@@ -11,20 +11,12 @@ import * as tasks from './gulpkit/tasks/index.js';
     watchTasks = {}
     ,args = process.argv.slice( 2 )
   ;
-  let enabled = true;
   if ( args.length === 0 ) {
     return;
   }
   args.forEach( ( taskName ) => {
     watchTasks[ taskName ] = tasks[ taskName ];
-    if ( !tasks[ taskName ] ) {
-      enabled = false;
-      return;
-    }
   } );
-  if ( enabled === false ) {
-    return;
-  }
   process.on( 'beforeExit',
     series(
       tasks.init_browse,
