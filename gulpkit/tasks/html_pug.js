@@ -16,33 +16,38 @@ import { html_pug as config } from '../config.js';
 const
   options  = config.options
 ;
+let
+  pugData
+;
 
 export default function html_pug() {
-  const pugData = JSON.parse( readFileSync( config.data ).toString() );
-
+  pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( src( config.subSrc, { read: false } ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
-    .on( 'data', ( file ) => {
-      if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
-        return;
-      }
-      const keyFilePath = file.path
-        .replace( resolve( process.cwd(), config.base ), '' )
-        .replace( /\\/g, '/' )
-        .replace( /\.pug$/, '.html' )
-      ;
-      file.data = {
-        siteData : pugData.defaults,
-        pageData : pugData[ keyFilePath ],
-      };
-    } )
+    .on( 'data', _setPugData )
     .pipe( _pugRender() )
     .pipe( _beautify() )
+    .pipe( _setImageSize() )
     .pipe( dest( config.dist ) )
     .pipe( renderingLog( '[html_pug]:' ) )
   ;
+}
+
+function _setPugData( file ) {
+  if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
+    return;
+  }
+  const keyFilePath = file.path
+    .replace( resolve( process.cwd(), config.base ), '' )
+    .replace( /\\/g, '/' )
+    .replace( /\.pug$/, '.html' )
+  ;
+  file.data = {
+    siteData : pugData.defaults,
+    pageData : pugData[ keyFilePath ],
+  };
 }
 
 /*
@@ -60,7 +65,7 @@ export default function html_pug() {
 function _collectTargetFiles( file, collection ) {
   const
     contents = String( file.contents )
-    ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["'](.+?)["'].*?\))/mg
+    ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
@@ -116,13 +121,11 @@ function _beautify() {
   const
     ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
     ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
-    ,imgRegEx          = /<(img|source)(.*?)(src|srcset)=(["'])(.+?)["'](.*?)>/g
   ;
-  const stream = through.obj( ( file, enc, callBack ) => {
-    const
-      promiseReplaceImgStringsAll = []
-      ,objReplaceImgText = {}
-    ;
+
+  return through.obj( _transform );
+
+  function _transform( file, enc, callBack ) {
     let contents = String( file.contents );
 
     /*
@@ -134,7 +137,7 @@ function _beautify() {
      *  </div></a>     \   </div>
      *                 \ </a>
      */
-    if ( options.assistPretty.assistAElement ) {
+    if ( options.format.repairAElement === true ) {
       contents = contents.replace(
         ugliyAElementRegEx
         ,function( _all, indent, element, linefeed ) {
@@ -150,37 +153,60 @@ function _beautify() {
     /*
      * オプションで指定があれば、インデントをトル。
      */
-    if ( options.assistPretty.indent === false ) {
+    if ( options.format.indent === false ) {
       contents = contents.replace( /^([\t ]+)/mg, '' );
     }
 
     /*
      * 閉じタグ付近に付けるコメントに関する体裁。
      */
-    if ( options.assistPretty.commentPosition ) {
+    if ( options.format.commentPosition ) {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
-    if ( options.imgSize === false ) {
-      file.contents = new global.Buffer.from( contents );
-      return callBack( null, file );
-    }
 
-    /*
-     * img サイズの自動挿入
-     */
+    file.contents = new global.Buffer.from( contents );
+    callBack( null, file );
+  }
+}
+
+
+/*
+ * img サイズの自動挿入
+ */
+function _setImageSize() {
+  const
+    promiseReplaceImgStringsAll = []
+    ,mapReplaceImgStrings = new Map()
+  ;
+  if ( options.imgSize === false ) {
+    return through.obj();
+  }
+
+  return through.obj( _transform );
+
+  function _transform( file, enc, callBack ) {
+    const
+      imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g
+    ;
+    let contents = String( file.contents );
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
-        tagName    = match[ 1 ]
+        fullStr    = match[ 0 ]
+        ,tagName   = match[ 1 ]
         ,frontPart = match[ 2 ]
         ,attrName  = match[ 3 ]
         ,q         = match[ 4 ]
         ,srcPath   = match[ 5 ]
-        ,rearPart  = match[ 6 ]
+        ,query     = match[ 6 ]
+        ,rearPart  = match[ 7 ]
       ;
-      if ( match[ 0 ].indexOf( 'width' ) > -1 || match[ 0 ].indexOf( 'height' ) > -1 ) {
+      if (
+        ( frontPart.indexOf( 'width' ) > -1 || frontPart.indexOf( 'height' ) > -1 ) ||
+        (  rearPart.indexOf( 'width' ) > -1 || rearPart.indexOf( 'height' ) > -1 )
+      ) {
         continue;
       }
-      promiseReplaceImgStringsAll.push( new Promise( ( prmResolve, prmReject ) => {
+      promiseReplaceImgStringsAll.push( new Promise( ( fulfill, reject ) => {
         const preparedSrcPath = ( /^\//.test( srcPath ) )
         // ルートパスであれば
           ? join( resolve( process.cwd(), config.base ), srcPath )
@@ -189,15 +215,16 @@ function _beautify() {
         ;
         sizeOf( preparedSrcPath, ( error, dm ) => {
           if ( error ) {
-            return prmReject( error );
+            return reject( error );
           }
           const
-            text  = `<${ tagName }${ frontPart }${ attrName }=${ q }${ srcPath }${ q } `
+            imgStrings  = `<${ tagName }${ frontPart }${ attrName }=`
+                  + `${ q }${ srcPath }${ query }${ q } `
                   + `width=${ q }${ dm.width }${ q } `
                   + `height=${ q }${ dm.height }${ q }${ rearPart }>`
           ;
-          objReplaceImgText[ match [ 0 ] ] = text;
-          prmResolve();
+          mapReplaceImgStrings.set( fullStr, imgStrings );
+          fulfill();
         } );
       } ) );
     } // for
@@ -205,22 +232,15 @@ function _beautify() {
     Promise
       .all( promiseReplaceImgStringsAll )
       .then( () => {
-        contents = contents.replace( imgRegEx, ( all ) => {
-          return objReplaceImgText[ all ] || all;
+        contents = contents.replace( imgRegEx, ( fullStr ) => {
+          return mapReplaceImgStrings.get( fullStr ) || fullStr;
         } );
         file.contents = new global.Buffer.from( contents );
         callBack( null, file );
       } )
-      .catch( ( error ) =>{
-        callBack( error );
-      } )
+      .catch( ( error ) => callBack( error ) )
     ;
-
-    return;
-
-  } );
-
-  return stream;
+  }
 }
 
 function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
@@ -229,7 +249,7 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   /*
    * コメントを閉じタグ内側に付けたい場合。
    */
-  if ( options.assistPretty.commentPosition === 'inside' ) {
+  if ( options.format.commentPosition === 'inside' ) {
 
     /*
      * コメントと閉じタグを1行にまとめるか否か。
@@ -238,12 +258,12 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * <!-- -->
      * </div>
      */
-    if ( options.assistPretty.commentOnOneLine === true ) {
+    if ( options.format.commentOnOneLine === true ) {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.assistPretty.emptyLine === true ) {
+      if ( options.format.blankLineAfterComment === true ) {
         return comment + endTag + lineFeed;
       } else {
         return comment + endTag;
@@ -253,7 +273,7 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.assistPretty.emptyLine === true ) {
+      if ( options.format.blankLineAfterComment === true ) {
         return comment + lineFeed + indent + endTag + lineFeed;
       } else {
         return comment + lineFeed + indent + endTag;
@@ -272,12 +292,12 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * </div>
      * <!-- -->
      */
-    if ( options.assistPretty.commentOnOneLine === true ) {
+    if ( options.format.commentOnOneLine === true ) {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.assistPretty.emptyLine === true ) {
+      if ( options.format.blankLineAfterComment === true ) {
         return endTag + comment + lineFeed;
       } else {
         return endTag + comment;
@@ -287,7 +307,7 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.assistPretty.emptyLine === true ) {
+      if ( options.format.blankLineAfterComment === true ) {
         return endTag + lineFeed + indent + comment + lineFeed;
       } else {
         return endTag + lineFeed + indent + comment;

@@ -144,12 +144,12 @@ const
       data    : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
       options : {
         imgSize : true,
-        assistPretty : {
-          assistAElement   : true,
-          commentPosition  : 'inside', // outside
-          commentOnOneLine : true,
-          emptyLine        : true,
-          indent           : true,
+        format : {
+          repairAElement        : true,
+          commentPosition       : 'inside', // inside or outside
+          commentOnOneLine      : true,
+          blankLineAfterComment : true,
+          indent                : true,
         },
         beautifyHtml : {
           indent_size : 2,
