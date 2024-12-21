@@ -38,7 +38,6 @@ if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
 }
 
-
 export default function js_webpack() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
@@ -61,7 +60,7 @@ function _webpackCompile() {
   /*
    * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
    */
-  function _transform( file, enc, callBack ) {
+  function _transform( file, enc, callback ) {
     let key, val;
 
     /*
@@ -81,7 +80,7 @@ function _webpackCompile() {
       val = /^\.?\.\//.test( val ) ? val : './' + val;
       entries[ key ] = val;
     }
-    callBack();
+    callback();
   }
 
   /*
@@ -89,7 +88,7 @@ function _webpackCompile() {
    * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
    * compiler を用意する。
    */
-  function _flush( callBackForStream ) {
+  function _flush( callbackForStream ) {
     if (
       compiler === null
       || !isEqual( webpackConfig.entry, entries )
@@ -109,17 +108,17 @@ function _webpackCompile() {
       } );
       compiler = webpack( webpackConfig );
     }
-    _runWebpackCompiler( callBackForStream, this, compiler );
+    _runWebpackCompiler( callbackForStream, this, compiler );
   }
 
 }
 
-function _runWebpackCompiler( callBackForStream, stream, compiler ) {
+function _runWebpackCompiler( callbackForStream, stream, compiler ) {
   const targetFiles = [];
   compiler.outputFileSystem = mfs;
   compiler.hooks.assetEmitted.tapAsync(
     'MyPlugin',
-    ( _file, { content, outputPath, targetPath }, cb ) => {
+    ( _file, { content, outputPath, targetPath }, callback ) => {
       const file = new File( {
         base: outputPath,
         path: targetPath,
@@ -129,13 +128,13 @@ function _runWebpackCompiler( callBackForStream, stream, compiler ) {
         targetFiles.push( targetPath );
         stream.push( file );
       }
-      cb();
+      callback();
     }
   );
-  compiler.run( _callBackForRunWebpackCompiler( callBackForStream, stream, targetFiles ) );
+  compiler.run( _callbackForRunWebpackCompiler( callbackForStream, stream, targetFiles ) );
 }
 
-function _callBackForRunWebpackCompiler( callBackForStream, stream ) {
+function _callbackForRunWebpackCompiler( callbackForStream, stream ) {
   return ( error, stats ) => {
     let errorMessages = [];
     if ( error ) {
@@ -156,7 +155,7 @@ function _callBackForRunWebpackCompiler( callBackForStream, stream ) {
         errors : false,
       } ) );
     }
-    callBackForStream();
+    callbackForStream();
   };
 }
 

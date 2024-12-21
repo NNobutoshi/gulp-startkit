@@ -68,11 +68,11 @@ function diff_build( options, collect, select ) {
 }
 
 function _retTransform( shared, settings, collect ) {
-  return async function _transform( file, enc, callBack ) {
+  return async function _transform( file, enc, callback ) {
 
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
-      return callBack();
+      return callback();
     }
 
     /*
@@ -111,16 +111,16 @@ function _retTransform( shared, settings, collect ) {
       if ( typeof collect === 'function' ) {
         collect.call( null, file, shared.collection );
       }
-      callBack();
+      callback();
     } catch ( error ) {
-      callBack( error );
+      callback( error );
     }
 
   };
 }
 
 function _retFlush( shared, settings, select ) {
-  return async function _flush( callBack ) {
+  return async function _flush( callback ) {
     const
       stream              = this
       ,destFiles          = new Map()
@@ -130,7 +130,7 @@ function _retFlush( shared, settings, select ) {
     ;
 
     if ( shared.currentDiffData === null ) {
-      return callBack();
+      return callback();
     }
 
     /*
@@ -222,9 +222,9 @@ function _retFlush( shared, settings, select ) {
       _log( name, shared.targets.size, destFiles.size );
       lastDiff.set( name, shared.currentDiffData );
       _writeDiffData();
-      callBack();
+      callback();
     } catch ( error ) {
-      callBack( error );
+      callback( error );
     }
 
   };
@@ -275,10 +275,10 @@ function diff_1to1( options ) {
 }
 
 function _transformFor1to1( shared ) {
-  return async function _transFormFor1to1( file, enc, callBack ) {
+  return async function _transFormFor1to1( file, enc, callback ) {
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
-      return callBack();
+      return callback();
     }
     shared.currentDiffData = await shared.promiseGetGitDiffData;
     shared.lastDiffData    = await shared.promiseGetLastDiffData;
@@ -290,28 +290,28 @@ function _transformFor1to1( shared ) {
         ( async function() {
           try {
             file.contents = await readFile( file.path );
-            callBack( null, file );
+            callback( null, file );
             shared.totalFilesPassed += 1;
           } catch ( error ) {
-            callBack( error );
+            callback( error );
           }
         } )();
       } else {
-        callBack();
+        callback();
       }
     } catch ( error ) {
-      callBack( error );
+      callback( error );
     }
   };
 
 }
 
 function _flushFor1to1( name, shared ) {
-  return function _flush( callBack ) {
+  return function _flush( callback ) {
     lastDiff.set( name, shared.currentDiffData );
     _writeDiffData();
     _log( name, shared.totalFilesPassed, shared.totalFilesPassed );
-    callBack();
+    callback();
   };
 }
 

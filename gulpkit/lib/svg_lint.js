@@ -9,16 +9,16 @@ export default function svg_lint() {
 
   return through.obj( _transform );
 
-  async function _transform( file, enc, callBack ) {
+  async function _transform( file, enc, callback ) {
     const
       contents = String( file.contents )
       ,linting = await SVGLint.lintSource( contents, { debug: true, config: {} } )
     ;
     linting.on( 'done', () => {
       if ( linting.state === 'error' || linting.valid === false ) {
-        return callBack( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
+        return callback( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
       }
-      callBack( null, file );
+      callback( null, file );
     } );
     linting.lint();
   }

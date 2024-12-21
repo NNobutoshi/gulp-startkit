@@ -95,9 +95,9 @@ function _pugRender() {
 
   return through.obj( _transform );
 
-  function _transform( file, enc, callBack ) {
+  function _transform( file, enc, callback ) {
     if ( ignoreFileRegEx.test( file.basename ) ) {
-      return callBack();
+      return callback();
     }
     Object.assign( options.pug, {
       filename : file.path,
@@ -107,11 +107,11 @@ function _pugRender() {
     } );
     pug.render( String( file.contents ), options.pug, ( error, contents ) => {
       if ( error ) {
-        return callBack( error );
+        return callback( error );
       }
       file.contents = new Buffer.from( contents );
       file.path = file.path.replace( /\.pug$/, '.html' );
-      callBack( null, file );
+      callback( null, file );
     } );
   }
 
@@ -129,7 +129,7 @@ function _beautify() {
 
   return through.obj( _transform );
 
-  function _transform( file, enc, callBack ) {
+  function _transform( file, enc, callback ) {
     let contents = String( file.contents );
 
     /*
@@ -169,7 +169,7 @@ function _beautify() {
     }
 
     file.contents = new Buffer.from( contents );
-    callBack( null, file );
+    callback( null, file );
   }
 }
 
@@ -188,7 +188,7 @@ function _setImageSize() {
 
   return through.obj( _transform );
 
-  async function _transform( file, enc, callBack ) {
+  async function _transform( file, enc, callback ) {
     const
       imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g
     ;
@@ -240,9 +240,9 @@ function _setImageSize() {
         return mapReplaceImgStrings.get( fullStr ) || fullStr;
       } );
       file.contents = new Buffer.from( contents );
-      callBack( null, file );
+      callback( null, file );
     } catch ( error ) {
-      callBack( error );
+      callback( error );
     }
 
   }

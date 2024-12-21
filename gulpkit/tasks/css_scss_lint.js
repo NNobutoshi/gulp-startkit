@@ -17,7 +17,7 @@ export default function css_scss_lint() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff_1to1( options.diff ) )
     .pipe( through.obj(
-      async function( file, enc, callBack ) {
+      async function( file, enc, callback ) {
         try {
           const { report } = await stylelint.lint( {
             code: String( file.contents ),
@@ -26,9 +26,9 @@ export default function css_scss_lint() {
           if ( report ) {
             log( report.replace( /<.+?>/, file.path ) );
           }
-          callBack( null, file );
+          callback( null, file );
         } catch ( error ) {
-          callBack( error );
+          callback( error );
         }
       },
     ) )

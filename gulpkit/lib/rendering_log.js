@@ -5,12 +5,12 @@ import fancyLog from 'fancy-log';
 
 export default function renderingLog( title ) {
   let renderedFileCounter = 0;
-  return through.obj( ( file, enc, callBack ) => {
+  return through.obj( ( file, enc, callback ) => {
     fancyLog( `${ title } rendered ${ relative( process.cwd(), file.path ) }` );
     renderedFileCounter += 1;
-    callBack( null, file );
-  }, ( callBack ) => {
+    callback( null, file );
+  }, ( callback ) => {
     fancyLog( `${ title } rendered ${ renderedFileCounter } files` );
-    callBack();
+    callback();
   } );
 }

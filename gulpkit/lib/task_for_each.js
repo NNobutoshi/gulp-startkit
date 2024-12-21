@@ -17,7 +17,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
 
   return through.obj( _transform, _flush );
 
-  function _transform( file, enc, callBack ) {
+  function _transform( file, enc, callback ) {
     const
       splits  = file.path.split( group )
       ,parent = splits[ 0 ] + group
@@ -30,14 +30,14 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
       } );
     }
     groupedSources.get( parent ).children.push( child );
-    callBack( null, file );
+    callback( null, file );
   }
 
   /*
-   * callBack は後の _forEach に渡し、全部の branchTask を実行後まで保留。
+   * callback は後の _forEach に渡し、全部の branchTask を実行後まで保留。
    */
-  function _flush( callBack ) {
-    _forEach( groupedSources, branchTask, callBack );
+  function _flush( callback ) {
+    _forEach( groupedSources, branchTask, callback );
   }
 
 }
@@ -46,7 +46,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
  * branchTask は、小分けしたグループ毎、Gulp.src 用の新しいsourceとdest 用のパスを渡し、
  * Gulp のストリームを受け取る。
  */
-function _forEach( groupedSources, branchTask, callBack ) {
+function _forEach( groupedSources, branchTask, callback ) {
   const streams = [];
   for ( let [ key ] of groupedSources ) {
     streams.push(
@@ -58,12 +58,12 @@ function _forEach( groupedSources, branchTask, callBack ) {
   }
 
   /*
-   * _groupSrc から渡された基のstream のcallBack をここで実行。
+   * _groupSrc から渡された基のstream のcallback をここで実行。
    */
   if ( streams.length > 0 ) {
-    mergeStream( ...streams ).on( 'finish', callBack );
+    mergeStream( ...streams ).on( 'finish', callback );
   } else {
-    callBack();
+    callback();
   }
 
 }

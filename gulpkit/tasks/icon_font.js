@@ -58,15 +58,15 @@ function _setTimestampOption( optIconfont ) {
     newer = new Date( 0 )
   ;
   return through.obj(
-    ( file, enc, callBack ) => {
+    ( file, enc, callback ) => {
       if ( file.stat && file.stat.birthtime > newer ) {
         newer = Math.round( file.stat.birthtime / 1000 );
       }
-      callBack( null, file );
+      callback( null, file );
     }
-    ,( callBack ) => {
+    ,( callback ) => {
       optIconfont.timestamp = newer;
-      callBack();
+      callback();
     }
   );
 }
