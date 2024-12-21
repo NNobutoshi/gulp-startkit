@@ -75,7 +75,7 @@ const
       options   : {
         plumber : {
           errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error.formatted ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( error.messageFormatted ) );
             this.emit( 'end' );
           },
         },
