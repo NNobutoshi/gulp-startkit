@@ -1,5 +1,5 @@
-import { mkdir } from 'node:fs/promises';
-import { readFileSync, writeFile, existsSync, rm } from 'node:fs';
+import { mkdir, readFile           } from 'node:fs/promises';
+import { writeFile, existsSync, rm } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
 const
@@ -26,11 +26,15 @@ export default  {
 /*
  * 環境変数に格納されている差分ファイルリストを優先して取得。
  */
-function _get( name ) {
+async function _get( name ) {
   if ( diffData ) {
     return diffData[ name ] || {};
   } else if ( existsSync( FILEPATH ) ) {
-    diffData = JSON.parse( readFileSync( FILEPATH, 'utf-8' ) );
+    try {
+      diffData = JSON.parse( await readFile( FILEPATH, 'utf-8' ) );
+    } catch ( error ) {
+      throw error;
+    }
     return diffData[ name ] || {};
   } else {
     diffData = {};

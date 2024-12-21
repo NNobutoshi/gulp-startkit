@@ -1,7 +1,8 @@
 import { src }   from 'gulp';
-import through   from 'through2';
 import plumber   from 'gulp-plumber';
+import through   from 'through2';
 import stylelint from 'stylelint';
+import log       from 'fancy-log';
 
 import { diff_1to1 } from '../lib/diff_build.js';
 
@@ -16,20 +17,19 @@ export default function css_scss_lint() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff_1to1( options.diff ) )
     .pipe( through.obj(
-      function( file, enc, callBack ) {
-        stylelint.lint( {
-          code: String( file.contents ),
-          formatter: 'string',
-        } )
-          .then( ( { report, errored } ) =>  {
-            if ( report ) {
-              console.log( report.replace( /<.+?>/, file.path ) );
-            }
-            callBack( null, file );
-          } )
-          .catch( ( error ) =>  {
-            callBack( error );
+      async function( file, enc, callBack ) {
+        try {
+          const { report } = await stylelint.lint( {
+            code: String( file.contents ),
+            formatter: 'string',
           } );
+          if ( report ) {
+            log( report.replace( /<.+?>/, file.path ) );
+          }
+          callBack( null, file );
+        } catch ( error ) {
+          callBack( error );
+        }
       },
     ) )
   ;

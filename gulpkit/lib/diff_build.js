@@ -28,7 +28,6 @@ export {
   diff_1to1,
 };
 
-
 /*
  * Git で管理する前提での差分ビルド。
  * /
@@ -45,9 +44,9 @@ function diff_build( options, collect, select ) {
       collection       : new Map(), // 依存関係収集用
       targets          : new Map(), // 通過候補
       currentDiffData  : null,
-      lastDiffData     : lastDiff.get( settings.name ),
-      promiseGetGitDiffData : null,
-      promiseOnGitDiffData  : null,
+      lastDiffData     : null,
+      promiseGetGitDiffData  : null,
+      promiseGetLastDiffData : null,
     }
   ;
 
@@ -56,17 +55,11 @@ function diff_build( options, collect, select ) {
   }
 
   shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
+  shared.promiseGetLastDiffData = lastDiff.get( settings.name );
 
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, sep );
   }
-
-  shared.promiseOnGitDiffData = shared.promiseGetGitDiffData.then( ( data ) => {
-    return new Promise( ( prmResolve ) => {
-      shared.currentDiffData = data;
-      prmResolve( data );
-    } );
-  } );
 
   return through.obj(
     _retTransform( shared, settings, collect ),
@@ -75,7 +68,7 @@ function diff_build( options, collect, select ) {
 }
 
 function _retTransform( shared, settings, collect ) {
-  return function _transform( file, enc, callBack ) {
+  return async function _transform( file, enc, callBack ) {
 
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
@@ -93,8 +86,9 @@ function _retTransform( shared, settings, collect ) {
      * リストになくても、直近最後の差分としてリストにあればそれも候補にする。
      * そうしないと、git のrevert などが未検知になってしまうため。
      */
-    shared.promiseOnGitDiffData.then( () => {
-
+    try {
+      shared.currentDiffData = await shared.promiseGetGitDiffData;
+      shared.lastDiffData    = await shared.promiseGetLastDiffData;
       if (
         _includes( shared.currentDiffData, file.path ) ||
         _includes( shared.lastDiffData, file.path )
@@ -118,13 +112,15 @@ function _retTransform( shared, settings, collect ) {
         collect.call( null, file, shared.collection );
       }
       callBack();
-    } );
+    } catch ( error ) {
+      callBack( error );
+    }
 
   };
 }
 
 function _retFlush( shared, settings, select ) {
-  return function _flush( callBack ) {
+  return async function _flush( callBack ) {
     const
       stream              = this
       ,destFiles          = new Map()
@@ -221,16 +217,15 @@ function _retFlush( shared, settings, select ) {
       );
     }
 
-    Promise
-      .all( promiseReadFileAll )
-      .then( () => {
-        _log( name, shared.targets.size, destFiles.size );
-        lastDiff.set( name, shared.currentDiffData );
-        _writeDiffData();
-        callBack();
-      } )
-      .catch( error => callBack( error ) )
-    ;
+    try {
+      await Promise.all( promiseReadFileAll );
+      _log( name, shared.targets.size, destFiles.size );
+      lastDiff.set( name, shared.currentDiffData );
+      _writeDiffData();
+      callBack();
+    } catch ( error ) {
+      callBack( error );
+    }
 
   };
 
@@ -257,10 +252,11 @@ function diff_1to1( options ) {
   const
     settings = mergeWith( {}, defaultSettings, options )
     ,shared = {
-      promiseGetGitDiffData : null,
-      lastDiffData          : lastDiff.get( settings.name ),
-      currentDiffData       : null,
-      totalFilesPassed      : 0,
+      currentDiffData        : null,
+      lastDiffData           : null,
+      totalFilesPassed       : 0,
+      promiseGetGitDiffData  : null,
+      promiseGetLastDiffData : null,
     }
   ;
 
@@ -269,7 +265,7 @@ function diff_1to1( options ) {
   }
 
   shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
-
+  shared.promiseGetLastDiffData = lastDiff.get( settings.name );
 
   return through.obj(
     _transformFor1to1( shared ),
@@ -279,13 +275,14 @@ function diff_1to1( options ) {
 }
 
 function _transformFor1to1( shared ) {
-  return function _transFormFor1to1( file, enc, callBack ) {
+  return async function _transFormFor1to1( file, enc, callBack ) {
     if ( file.isStream && file.isStream() ) {
       this.emit( 'error' , new Error( 'Streaming not supported' ) );
       return callBack();
     }
-    shared.promiseGetGitDiffData.then( ( diffData ) => {
-      shared.currentDiffData = diffData;
+    shared.currentDiffData = await shared.promiseGetGitDiffData;
+    shared.lastDiffData    = await shared.promiseGetLastDiffData;
+    try {
       if (
         _includes( shared.currentDiffData, file.path ) ||
         _includes( shared.lastDiffData, file.path )
@@ -302,7 +299,9 @@ function _transformFor1to1( shared ) {
       } else {
         callBack();
       }
-    } );
+    } catch ( error ) {
+      callBack( error );
+    }
   };
 
 }
@@ -367,12 +366,12 @@ function _includes( data, filePath ) {
  * oject（差分ファイルリスト） の作成。
  */
 function _getGitDiffData( command ) {
-  return new Promise( ( prmResolve ) => {
+  return new Promise( ( fulfill ) => {
     exec( command, ( error, stdout, stderror ) => {
       const diffData = {};
       if ( error || stderror ) {
         fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
-        prmResolve( diffData );
+        fulfill( diffData );
       }
       if ( stdout ) {
         const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
@@ -384,7 +383,7 @@ function _getGitDiffData( command ) {
           diffData[ item[ 2 ] ] = { status: item[ 1 ] };
         }
       }
-      prmResolve( diffData );
+      fulfill( diffData );
     } );
   } );
 }
