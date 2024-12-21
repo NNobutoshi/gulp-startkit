@@ -11,7 +11,7 @@ const
 
 export default function task_watche( tasks, commonNextTask ) {
 
-  return function watch_init( cb ) {
+  return function watch_init( done ) {
 
     let noWatchTask = true;
 
@@ -38,7 +38,7 @@ export default function task_watche( tasks, commonNextTask ) {
       fancyLog( chalk.gray( 'no task to watch' ) );
     }
 
-    cb();
+    done();
 
   };
 }

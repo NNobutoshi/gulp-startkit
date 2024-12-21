@@ -10,19 +10,19 @@ const
 
 export { init_browse, reload_browse };
 
-function init_browse( cb ) {
+function init_browse( done ) {
   if ( !config.enable ) {
     fancyLog( chalk.gray( 'no serve' ) );
-    return cb();
+    return done();
   }
   browserSync.init( options );
-  cb();
+  done();
 }
 
-function reload_browse( cb ) {
+function reload_browse( done ) {
   if ( browserSync.active ) {
     browserSync.reload();
   }
-  cb();
+  done();
 }
 

@@ -57,7 +57,7 @@ export * from './gulpkit/tasks/index.js';
 /*
  * html 関連タスク
  */
-export function html( cb ) {
+export function html( done ) {
   return series(
     tasks.img_min,
     tasks.html_pug,
@@ -69,13 +69,13 @@ export function html( cb ) {
       },
       tasks.reload_browse )
     ),
-  )( cb );
+  )( done );
 }
 
 /*
  * img 関連タスク
  */
-export function img( cb ) {
+export function img( done ) {
   series(
     tasks.img_min,
     tasks.img_sprite,
@@ -93,13 +93,13 @@ export function img( cb ) {
       },
       tasks.reload_browse )
     ),
-  )( cb );
+  )( done );
 }
 
 /*
  * CSS 関連タスク
  */
-export function css( cb ) {
+export function css( done ) {
   series(
     tasks.css_scss_lint,
     tasks.css_sass,
@@ -111,13 +111,13 @@ export function css( cb ) {
       },
       tasks.reload_browse )
     ),
-  )( cb );
+  )( done );
 }
 
 /*
  * JavaScript 関連タスク
  */
-export function js( cb ) {
+export function js( done ) {
   series(
     tasks.js_eslint,
     tasks.js_webpack,
@@ -129,5 +129,5 @@ export function js( cb ) {
       },
       tasks.reload_browse )
     ),
-  )( cb );
+  )( done );
 }
