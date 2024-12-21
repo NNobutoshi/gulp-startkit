@@ -71,11 +71,15 @@ function _collectTargetFiles( file, collection ) {
   for ( const match of matches ) {
     const
       filePath = match[ 3 ] || match[ 7 ]
-      ,dependentFilePath = ( /^\//.test( filePath ) )
+    ;
+    if ( _isExternalSrc( filePath ) === true ) {
+      continue;
+    }
+    const dependentFilePath = ( _isRootPath( filePath ) )
       // ルートパスであれば
-        ? join( resolve( process.cwd(), config.base ), filePath )
+      ? join( resolve( process.cwd(), config.base ), filePath )
       // 相対パスであれば
-        : resolve( file.dirname, filePath )
+      : resolve( file.dirname, filePath )
     ;
     if ( dependentFilePath && !collection.get( dependentFilePath ) ) {
       collection.set( dependentFilePath, [] );
@@ -164,7 +168,7 @@ function _beautify() {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
 
-    file.contents = new global.Buffer.from( contents );
+    file.contents = new Buffer.from( contents );
     callBack( null, file );
   }
 }
@@ -184,7 +188,7 @@ function _setImageSize() {
 
   return through.obj( _transform );
 
-  function _transform( file, enc, callBack ) {
+  async function _transform( file, enc, callBack ) {
     const
       imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g
     ;
@@ -201,13 +205,14 @@ function _setImageSize() {
         ,rearPart  = match[ 7 ]
       ;
       if (
-        ( frontPart.indexOf( 'width' ) > -1 || frontPart.indexOf( 'height' ) > -1 ) ||
-        (  rearPart.indexOf( 'width' ) > -1 || rearPart.indexOf( 'height' ) > -1 )
+        _isExternalSrc( srcPath ) === true
+        || ( frontPart.indexOf( 'width' ) > -1 || frontPart.indexOf( 'height' ) > -1 )
+        || (  rearPart.indexOf( 'width' ) > -1 || rearPart.indexOf( 'height' ) > -1 )
       ) {
         continue;
       }
       promiseReplaceImgStringsAll.push( new Promise( ( fulfill, reject ) => {
-        const preparedSrcPath = ( /^\//.test( srcPath ) )
+        const preparedSrcPath = ( _isRootPath( srcPath ) )
         // ルートパスであれば
           ? join( resolve( process.cwd(), config.base ), srcPath )
         // 相対パスであれば
@@ -229,17 +234,17 @@ function _setImageSize() {
       } ) );
     } // for
 
-    Promise
-      .all( promiseReplaceImgStringsAll )
-      .then( () => {
-        contents = contents.replace( imgRegEx, ( fullStr ) => {
-          return mapReplaceImgStrings.get( fullStr ) || fullStr;
-        } );
-        file.contents = new global.Buffer.from( contents );
-        callBack( null, file );
-      } )
-      .catch( ( error ) => callBack( error ) )
-    ;
+    try {
+      await Promise.all( promiseReplaceImgStringsAll );
+      contents = contents.replace( imgRegEx, ( fullStr ) => {
+        return mapReplaceImgStrings.get( fullStr ) || fullStr;
+      } );
+      file.contents = new Buffer.from( contents );
+      callBack( null, file );
+    } catch ( error ) {
+      callBack( error );
+    }
+
   }
 }
 
@@ -314,4 +319,12 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
       }
     }
   }
+}
+
+function _isExternalSrc( srcPath ) {
+  return /^\/\/|^https?:\/\//.test( srcPath );
+}
+
+function _isRootPath( srcPath ) {
+  return /^\//.test( srcPath );
 }
