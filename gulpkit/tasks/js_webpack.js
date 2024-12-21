@@ -1,20 +1,17 @@
 import path from 'node:path';
 
-import { src, dest }    from 'gulp';
-import plumber          from 'gulp-plumber';
-import webpack          from 'webpack';
-import MemoryFileSystem from 'memory-fs';
-import File             from 'vinyl';
-import log              from 'fancy-log';
-import through          from 'through2';
-import mergeWith        from 'lodash/mergeWith.js';
-import isEqual          from 'lodash/isEqual.js';
+import { src }   from 'gulp';
+import plumber   from 'gulp-plumber';
+import webpack   from 'webpack';
+import log       from 'fancy-log';
+import through   from 'through2';
+import mergeWith from 'lodash/mergeWith.js';
+import isEqual   from 'lodash/isEqual.js';
 
 import { js_webpack as config } from '../config.js';
 
 const
   options = config.options
-  ,mfs = new MemoryFileSystem()
 ;
 let
   compiler = null
@@ -32,7 +29,7 @@ let
 
 /*
  * config.js 側で'filesystem' の指定があれば、cacheDirectory はここで指定。
- * 'memory' が指定されているとcacheDirectory をそのままにしておけないため。
+ * 'memory' が指定されているとctacheDirectory をそのままにしておけないため。
  */
 if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
@@ -42,7 +39,6 @@ export default function js_webpack() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( _webpackCompile() )
-    .pipe( dest( config.dist ) )
   ;
 }
 
@@ -114,24 +110,7 @@ function _webpackCompile() {
 }
 
 function _runWebpackCompiler( callbackForStream, stream, compiler ) {
-  const targetFiles = [];
-  compiler.outputFileSystem = mfs;
-  compiler.hooks.assetEmitted.tapAsync(
-    'MyPlugin',
-    ( _file, { content, outputPath, targetPath }, callback ) => {
-      const file = new File( {
-        base: outputPath,
-        path: targetPath,
-        contents: content,
-      } );
-      if ( targetFiles.includes( targetPath ) === false ) {
-        targetFiles.push( targetPath );
-        stream.push( file );
-      }
-      callback();
-    }
-  );
-  compiler.run( _callbackForRunWebpackCompiler( callbackForStream, stream, targetFiles ) );
+  compiler.run( _callbackForRunWebpackCompiler( callbackForStream, stream ) );
 }
 
 function _callbackForRunWebpackCompiler( callbackForStream, stream ) {
