@@ -10,30 +10,39 @@ import TerserPlugin from 'terser-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 
 const
-  NODE_ENV = process.env.NODE_ENV
+  NODE_ENV        = process.env.NODE_ENV
+  ,WATCH_ENV      = process.env.WATCH_ENV
+  ,DIFF_ENV       = process.env.DIFF_ENV
+  ,BROWSE_ENV     = process.env.BROWSE_ENV
+  ,IS_PRODUCTION  = ( NODE_ENV === 'production' )
+  ,IS_DEVELOPMENT = ( NODE_ENV === 'development' )
 ;
 const
-  DIR_DEV = {
-    dist : 'dist/development/html',
-    src  : 'src',
-  }
-  ,DIR_PROD = {
-    dist : 'dist/production/html',
-    src  : 'src',
+  DIR_SRC =  {
+    'production'  : 'src',
+    'development' : 'src',
+  },
+  DIR_DIST = {
+    'production'  : 'dist/production/html',
+    'development' : 'dist/development/html',
   }
 ;
 const
-  SRC                 = ( NODE_ENV === 'production' ) ? DIR_PROD.src : DIR_DEV.src
+  SRC                 = DIR_SRC[ NODE_ENV ]
+  ,DIST               = DIR_DIST[ NODE_ENV ]
   ,DIRNAME            = dirname( fileURLToPath( import.meta.url ) )
-  ,DIST               = ( NODE_ENV === 'production' ) ? DIR_PROD.dist : DIR_DEV.dist
-  ,ENABLE_SOURCEMAP   = ( NODE_ENV === 'production' ) ? false : true
-  ,ENABLE_WATCH       = !!JSON.parse( process.env.WATCH_ENV || 'false' )
-  ,ENABLE_DIFF        = !!JSON.parse( process.env.DIFF_ENV || 'false' )
+  ,ENABLE_SOURCEMAP   = IS_DEVELOPMENT || !IS_PRODUCTION
+  ,ENABLE_WATCH       = ( WATCH_ENV ) ?  !!Number( WATCH_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION
+  ,ENABLE_DIFF        = ( DIFF_ENV ) ?   !!Number( DIFF_ENV )   : IS_DEVELOPMENT || !IS_PRODUCTION
+  ,ENABLE_BROWSE      = ( BROWSE_ENV ) ? !!Number( BROWSE_ENV ) : IS_DEVELOPMENT || IS_PRODUCTION
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
   ,GIT_DIFF_COMMAND   = `git status -suall gulpkit/ ${ SRC }/`
   ,BROWSE_CONF_PATH   = resolve( DIRNAME, './config_browse.json' )
+;
+const
+  config = {}
 ;
 const
   config_dev = {
@@ -512,8 +521,8 @@ const
 // 実装者毎で設定を自由にさせるため。
 if ( BROWSE_CONF_PATH && existsSync( BROWSE_CONF_PATH ) ) {
   const data = JSON.parse( readFileSync( BROWSE_CONF_PATH ) );
-  data.conf_dev.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_dev.enable );
-  data.conf_prod.enable = ( JSON.parse( process.env.BROWSE_ENV ) && data.conf_prod.enable );
+  data.conf_dev.enable = ( ENABLE_BROWSE && data.conf_dev.enable );
+  data.conf_prod.enable = ( ENABLE_BROWSE && data.conf_prod.enable );
   config_dev.browse = data.conf_dev;
   config_prod.browse = data.conf_prod;
 }
@@ -521,13 +530,15 @@ if ( BROWSE_CONF_PATH && existsSync( BROWSE_CONF_PATH ) ) {
 // 'production'用の設定は、'development' を基準にしてマージする
 switch ( NODE_ENV ) {
 case 'production':
-  merge( config_dev, config_prod );
+  merge( config, config_dev, config_prod );
   break;
 case 'development':
+  merge( config, config_dev );
 default:
 }
 
-export default config_dev;
+export default config;
+
 export const {
   clean,
   copy_to,
