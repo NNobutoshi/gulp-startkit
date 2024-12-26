@@ -11,7 +11,6 @@ const
   options = config.options
 ;
 
-
 export default function img_min() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )

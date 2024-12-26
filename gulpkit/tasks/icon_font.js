@@ -28,15 +28,10 @@ function _branchTask( subSrc, baseDir ) {
   const
     optIconfont     = Object.create( options.iconfont )
     ,optIconfontCss = Object.create( options.iconfontCss )
+    ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
   ;
-  if ( baseDir ) {
-    const fontSubName = baseDir.replace( /\//, '_' );
-    optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', fontSubName );
-    optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', fontSubName );
-  } else {
-    optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', '' );
-    optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', '' );
-  }
+  optIconfont.fontName = optIconfont.fontName.replace( '[subdir]', fontSubName );
+  optIconfontCss.fontName = optIconfontCss.fontName.replace( '[subdir]', fontSubName );
   return src( subSrc )
     .pipe( _setTimestampOption( optIconfont ) )
     .pipe( iconfontCss( optIconfontCss ) )

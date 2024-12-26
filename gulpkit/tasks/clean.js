@@ -14,10 +14,11 @@ export default async function clean() {
 }
 
 function _gitClean( comand ) {
-  return new Promise( ( resolve ) => {
+  return new Promise( ( resolve, reject ) => {
     exec( comand, ( error, stdout, stderror ) => {
       if ( error || stderror ) {
         log.error( chalk.hex( '#FF0000' )( 'clean.js \n' + error || stderror ) );
+        return reject();
       }
       if ( stdout ) {
         log( chalk.green( 'git clean:Removing untracked file' ) );

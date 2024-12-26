@@ -71,8 +71,7 @@ function _retTransform( shared, settings, collect ) {
   return async function _transform( file, enc, callback ) {
 
     if ( file.isStream && file.isStream() ) {
-      this.emit( 'error' , new Error( 'Streaming not supported' ) );
-      return callback();
+      return callback( new Error( 'Streaming not supported' ) );
     }
 
     /*
@@ -277,8 +276,7 @@ function diff_1to1( options ) {
 function _transformFor1to1( shared ) {
   return async function _transFormFor1to1( file, enc, callback ) {
     if ( file.isStream && file.isStream() ) {
-      this.emit( 'error' , new Error( 'Streaming not supported' ) );
-      return callback();
+      return callback( new Error( 'Streaming not supported' ) );
     }
     shared.currentDiffData = await shared.promiseGetGitDiffData;
     shared.lastDiffData    = await shared.promiseGetLastDiffData;

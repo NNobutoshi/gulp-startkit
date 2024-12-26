@@ -1,4 +1,5 @@
-import path from 'node:path';
+import { relative, resolve } from 'node:path';
+import { readFile }          from 'node:fs/promises';
 
 import { src }   from 'gulp';
 import plumber   from 'gulp-plumber';
@@ -16,8 +17,6 @@ const
 let
   compiler = null
   ,webpackConfig = config.webpackConfig
-  ,entries
-  ,cacheGroups
 ;
 
 /*
@@ -36,27 +35,26 @@ if ( webpackConfig.cache && webpackConfig.cache.type === 'filesystem' ) {
 }
 
 export default function js_webpack() {
-  return src( config.src )
+  return src( config.src, { read : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( _webpackCompile() )
   ;
 }
 
 function _webpackCompile() {
-  let
+  const
     regexTarget = config.targetEntry // /\.entry\.js$/
     ,regexShareFileConf = config.shareFileConf // /\.split\.json$/
+    ,entries = {}
+    ,cacheGroups = {}
   ;
-
-  entries = {};
-  cacheGroups = {};
 
   return through.obj( _transform, _flush );
 
   /*
    * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
    */
-  function _transform( file, enc, callback ) {
+  async function _transform( file, enc, callback ) {
     let key, val;
 
     /*
@@ -64,15 +62,15 @@ function _webpackCompile() {
      * chunk のcontentsを webpackConfig で使用可能な状態にする。
      */
     if ( regexShareFileConf && regexShareFileConf.test( file.path ) ) {
-      cacheGroups = _createSplitChunks( cacheGroups, file.contents );
+      await _createSplitChunks( cacheGroups, file.path, callback );
     }
 
     /*
      * entry であれば、webpackConfig で使用可能な状態にする。
      */
     if ( regexTarget.test( file.path ) ) {
-      key = path.relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
-      val = path.relative( process.cwd(), file.path ).replace( /\\/g , '/' );
+      key = relative( config.base, file.path ).replace( regexTarget, '' ).replace( /\\/g, '/' );
+      val = relative( process.cwd(), file.path ).replace( /\\/g , '/' );
       val = /^\.?\.\//.test( val ) ? val : './' + val;
       entries[ key ] = val;
     }
@@ -94,7 +92,7 @@ function _webpackCompile() {
         entry : entries,
         output : {
           filename : '[name].js',
-          path : path.resolve( process.cwd(), config.dist ),
+          path : resolve( process.cwd(), config.dist ),
         },
         optimization : {
           splitChunks : {
@@ -104,26 +102,26 @@ function _webpackCompile() {
       } );
       compiler = webpack( webpackConfig );
     }
-    _runWebpackCompiler( callbackForStream, this, compiler );
+    _runWebpackCompiler( callbackForStream, compiler );
   }
 
 }
 
-function _runWebpackCompiler( callbackForStream, stream, compiler ) {
-  compiler.run( _callbackForRunWebpackCompiler( callbackForStream, stream ) );
+function _runWebpackCompiler( callbackForStream, compiler ) {
+  compiler.run( _callbackForRunWebpackCompiler( callbackForStream ) );
 }
 
-function _callbackForRunWebpackCompiler( callbackForStream, stream ) {
+function _callbackForRunWebpackCompiler( callbackForStream ) {
   return ( error, stats ) => {
     let errorMessages = [];
     if ( error ) {
-      return stream.emit( 'error', error );
+      return callbackForStream( error );
     }
     if ( stats && stats.hasErrors && stats.hasErrors() ) {
       stats.toJson().errors.forEach( ( item ) => {
         errorMessages.push( item.message );
       } );
-      stream.emit( 'error', new Error( errorMessages.join( '\n' ) ) );
+      return callbackForStream( new Error( errorMessages.join( '\n' ) ) );
     }
     if ( stats ) {
       log( stats.toString( {
@@ -143,13 +141,18 @@ function _callbackForRunWebpackCompiler( callbackForStream, stream ) {
  * そのディレクトリ毎で設定が行えるようにする。
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
  */
-function _createSplitChunks( groups, subConfContents ) {
-  const
-    subConfObj = JSON.parse( subConfContents )
-  ;
-  for ( let [ key, value ] of Object.entries( subConfObj ) ) {
-    const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
-    subConfObj[ key ].test = new RegExp( test );
+async function _createSplitChunks( groups, subConfPath, callback ) {
+  try {
+    const
+      contents = await readFile( subConfPath )
+      ,subConfObj = JSON.parse( contents )
+    ;
+    for ( let [ key, value ] of Object.entries( subConfObj ) ) {
+      const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
+      subConfObj[ key ].test = new RegExp( test );
+    }
+    mergeWith( groups, subConfObj );
+  } catch ( error ) {
+    callback( error );
   }
-  return mergeWith( {}, groups, subConfObj );
 }
