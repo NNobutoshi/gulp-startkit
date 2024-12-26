@@ -1,30 +1,14 @@
 import { series, parallel } from 'gulp';
 
 import * as tasks from './gulpkit/tasks/index.js';
+import taskOnCommand from './gulpkit/lib/task_on_command.js';
+
 
 /*
  * コマンドライン上 Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
  */
-( function _taskOnCommand() {
-  const
-    watchTasks = {}
-    ,args = process.argv.slice( 2 )
-  ;
-  if ( args.length === 0 ) {
-    return;
-  }
-  args.forEach( ( taskName ) => {
-    watchTasks[ taskName ] = tasks[ taskName ];
-  } );
-  process.on( 'beforeExit',
-    series(
-      tasks.init_browse,
-      tasks.task_watche( watchTasks, tasks.reload_browse ),
-    )
-  );
-} )();
-
+taskOnCommand( tasks );
 
 /*
  * default 全タスク
@@ -53,12 +37,11 @@ export default series(
 
 export * from './gulpkit/tasks/index.js';
 
-
 /*
  * html 関連タスク
  */
 export function html( done ) {
-  return series(
+  series(
     tasks.img_min,
     tasks.html_pug,
     tasks.init_browse,
