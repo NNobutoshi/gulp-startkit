@@ -13,28 +13,35 @@ export default function task_watche( tasks, commonNextTask ) {
 
   return function watch_init( done ) {
 
-    let noWatchTask = true;
+    let enabled = false;
 
-    for ( const [ taskName, task ] of Object.entries( tasks ) ) {
-      const taskConfig = config[ taskName ];
-      let watchSrc;
+    for ( let i = 0, len = tasks.length; i < len; i++ ) {
+      const
+        task = tasks[ i ]
+        ,taskName = tasks[ i ].name
+        ,taskConfig = config[ taskName ]
+      ;
+      let
+        watchSrc
+      ;
 
       if ( taskConfig && taskConfig.src && taskConfig.subSrc ) {
         watchSrc = [].concat( taskConfig.src, taskConfig.subSrc );
       } else if ( taskConfig && taskConfig.src ) {
         watchSrc = taskConfig.src;
       }
-      if ( taskConfig && taskConfig.watch === true && taskConfig.src ) {
-        noWatchTask = false;
-        if ( typeof commonNextTask === 'function' ) {
-          watch( watchSrc, watchOptions, series( task, commonNextTask ) );
-        } else {
-          watch( watchSrc, watchOptions, task );
-        }
-      }
-    } // for
 
-    if ( noWatchTask ) {
+      if ( taskConfig && taskConfig.watch === true && watchSrc ) {
+        enabled = true;
+        watch(
+          watchSrc,
+          watchOptions,
+          ( typeof commonNextTask === 'function' ) ? series( task, commonNextTask ) : task
+        );
+      }
+    } //for
+
+    if ( enabled === false ) {
       fancyLog( chalk.gray( 'no task to watch' ) );
     }
 
