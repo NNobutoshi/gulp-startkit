@@ -553,4 +553,4 @@ export const {
   js_webpack,
   browse,
   task_watche,
-} = config_dev;
+} = config;
