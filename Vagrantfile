@@ -4,13 +4,13 @@
 _conf_defaults = {
   "ip" => "192.168.33.10",
   "name" => "project_A",
-  "box" => "generic/ubuntu2010",
+  "box" => "bento/ubuntu-22.04",
   "guestPort" => 22,
   "hostPort" => 2222,
   "bsPort" => 3000,
 }
 
-if File.exists?("./vagrant_config.yml")
+if File.exist?("./vagrant_config.yml")
   _conf_custom = YAML.load(
     File.open(
       "./vagrant_config.yml",
