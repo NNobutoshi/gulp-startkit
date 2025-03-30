@@ -2,12 +2,17 @@
 # vi: set ft=ruby :
 
 _conf_defaults = {
-  "ip" => "192.168.33.10",
   "name" => "project_A",
-  "box" => "bento/ubuntu-22.04",
-  "guestPort" => 22,
-  "hostPort" => 2222,
-  "bsPort" => 3000,
+  "box" => "bento/ubuntu-24.04",
+  "ip" => "192.168.33.10",
+  "hostIp" => "127.0.0.1",
+  "hostSshIp" => "127.0.0.1",
+  "guestPort" => 80,
+  "hostPort" => 8080,
+  "guestSshPort" => 22,
+  "hostSshPort" => 2222,
+  "guestBsPort" => 3000, # browser-sync
+  "hostBsPort" => 3000 # browser-sync
 }
 
 if File.exist?("./vagrant_config.yml")
@@ -43,11 +48,13 @@ Vagrant.configure("2") do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  config.vm.network "forwarded_port", guest: _conf["guestPort"], host: _conf["hostPort"], auto_correct: true, host_ip:"127.0.0.1", id: "ssh"
+  config.vm.network "forwarded_port", guest: _conf["guestPort"], host: _conf["hostPort"], host_ip: _conf["hostIp"]
+  config.vm.network "forwarded_port", guest: _conf["guestBsPort"], host: _conf["hostBsPort"], host_ip: _conf["hostIp"]
+  config.vm.network "forwarded_port", guest: _conf["guestSshPort"], host: _conf["hostSshPort"], auto_correct: true, host_ip: _conf["hostSshIp"], id: "ssh"
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: _conf["ip"]
+  config.vm.network "private_network", ip: _conf["ip"], auto_correct: false
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -74,7 +81,7 @@ Vagrant.configure("2") do |config|
     # Display the VirtualBox GUI when booting the machine
     # vb.gui = true
     # Customize the amount of memory on the VM:
-    vb.memory = "4096"
+    vb.memory = "2048"
   end
   #
   # View the documentation for the provider you are using for more
@@ -99,13 +106,17 @@ Vagrant.configure("2") do |config|
     # nodejs
     curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
     sudo apt install -y nodejs
+    sudo npm install n -g && n 20.19.0
 
     # nginx
     sudo apt install -y nginx
     yes | sudo ufw enable
     sudo ufw allow #{ _conf["guestPort"] }
     sudo ufw allow #{ _conf["hostPort"] }
-    sudo ufw allow #{ _conf["bsPort"] }
+    sudo ufw allow #{ _conf["guestSshPort"] }
+    sudo ufw allow #{ _conf["hostSshPort"] }
+    sudo ufw allow #{ _conf["guestBsPort"] }
+    sudo ufw allow #{ _conf["hostBsPort"] }
     sudo ufw allow 'Nginx Full'
     sudo ufw reload
 
