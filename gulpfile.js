@@ -7,7 +7,7 @@ import taskOnCommand from './gulpkit/lib/task_on_command.js';
  * コマンドライン上 Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
  */
-taskOnCommand( Object.values( tasks ) );
+taskOnCommand( tasks );
 
 /*
  * default 全タスク

@@ -6,7 +6,7 @@ import { series } from 'gulp';
  */
 export default function _taskOnCommand( tasks ) {
   const
-    watchTasks = {}
+    watchTasks = []
     ,args = process.argv.slice( 2 )
   ;
   if ( args.length === 0 ) {
@@ -15,10 +15,10 @@ export default function _taskOnCommand( tasks ) {
   for ( let i = 0, len = args.length; i < len; i++ ) {
     const taskName = args[ i ];
     if ( tasks[ taskName ] ) {
-      watchTasks[ taskName ] = tasks[ taskName ];
+      watchTasks.push( tasks[ taskName ] );
     }
   }
-  if ( Object.keys( watchTasks ).length === 0 ) {
+  if ( watchTasks.length === 0 ) {
     return;
   }
   process.on( 'beforeExit',
