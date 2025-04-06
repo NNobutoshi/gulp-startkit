@@ -189,8 +189,10 @@ const
       watch         : true && ENABLE_WATCH,
       fontsDist     : DIST +  '[subdir]/fonts',
       scssDist      : SRC + '[subdir]/css',
-      fontsCopyFrom : SRC +  '[subdir]/fonts/*.*',
-      fontsCopyTo   : DIST + '[subdir]/fonts',
+      fontPath      : '../fonts/',
+      scssFileName  : '_icons.scss',
+      cssClass      : 'icon',
+      templatePath  : SRC + '/css/_templates/_icons.scss.handlebars',
       options       : {
         iconfont : {
           fontName       : 'icons[subdir]',
@@ -199,13 +201,6 @@ const
           normalize      : true,
           fontHeight     : 1001,
           startUnicode   : 0xF001,
-        },
-        iconfontCss : {
-          fontName   : 'icons[subdir]',
-          path       : SRC + '/css/_templates/_icons.scss',
-          targetPath : '../css/_icons.scss',
-          fontPath   : '../fonts/',
-          firstGlyph : 0xF001,
         },
         plumber : {
           errorHandler : function( error ) {

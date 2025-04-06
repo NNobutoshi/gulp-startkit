@@ -37,7 +37,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
    * callback は後の _forEach に渡し、全部の branchTask を実行後まで保留。
    */
   function _flush( callback ) {
-    _forEach( groupedSources, branchTask, callback );
+    _forEach.bind( this )( groupedSources, branchTask, callback );
   }
 
 }
@@ -47,12 +47,16 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
  * Gulp のストリームを受け取る。
  */
 function _forEach( groupedSources, branchTask, callback ) {
-  const streams = [];
+  const
+    trunkStream = this
+    ,branchStreams = []
+  ;
   for ( let [ key ] of groupedSources ) {
-    streams.push(
+    branchStreams.push(
       branchTask(
         groupedSources.get( key ).children.map( ( item ) => key + item ),
         groupedSources.get( key ).baseDir.replace( /[/\\]/g, '/' ),
+        trunkStream,
       )
     );
   }
@@ -60,8 +64,8 @@ function _forEach( groupedSources, branchTask, callback ) {
   /*
    * _groupSrc から渡された基のstream のcallback をここで実行。
    */
-  if ( streams.length > 0 ) {
-    mergeStream( ...streams ).on( 'finish', callback );
+  if ( branchStreams.length > 0 ) {
+    mergeStream( ...branchStreams ).on( 'finish', callback );
   } else {
     callback();
   }

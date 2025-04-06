@@ -26,7 +26,6 @@
 
 @function icon-char($filename) {
   $char: "";
-  
   @if $filename == arrow_down {
     $char: "\F001";
   }
@@ -39,7 +38,6 @@
   @if $filename == arrow_up {
     $char: "\F004";
   }
-
   @return $char;
 }
 
@@ -53,7 +51,6 @@
     content: icon-char($filename);
   }
 }
-
 .icon-arrow_down {
   @include icon(arrow_down);
 }
