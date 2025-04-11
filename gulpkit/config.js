@@ -53,7 +53,7 @@ const
       src   : [ SRC + '/**/*.{mp4,webm}' ],
       base  : SRC,
       dist  : DIST,
-      watch : true && ENABLE_WATCH,
+      watch : ENABLE_WATCH,
       options :{
         plumber : {
           errorHandler : function( error ) {
@@ -64,12 +64,12 @@ const
         diff : {
           name      : 'copy_to',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
         src : {
           base     : SRC,
           encoding : false,
-          read     : false || !ENABLE_DIFF,
+          read     : !ENABLE_DIFF,
         },
       },
     },
@@ -77,9 +77,9 @@ const
       src           : [ SRC + '/**/*.scss' ],
       dist          : DIST,
       base          : SRC,
-      watch         : true && ENABLE_WATCH,
+      watch         : ENABLE_WATCH,
       cssMqpack     : true,
-      sourcemap     : true && ENABLE_SOURCEMAP,
+      sourcemap     : ENABLE_SOURCEMAP,
       sourcemap_dir : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
@@ -101,7 +101,7 @@ const
         diff : {
           name      : 'css_sass',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
       },
     },
@@ -113,7 +113,7 @@ const
         '!' + SRC + '/**/_templates/*.scss',
       ],
       dist      : DIST,
-      watch     : true && ENABLE_WATCH,
+      watch     : ENABLE_WATCH,
       options   : {
         plumber : {
           errorHandler : function( error ) {
@@ -130,10 +130,10 @@ const
         diff : {
           name      : 'css_scss_lint',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
         src : {
-          read : false || !ENABLE_DIFF,
+          read : !ENABLE_DIFF,
         },
       },
     },
@@ -149,7 +149,7 @@ const
       ],
       dist    : DIST,
       base    : SRC,
-      watch   : true && ENABLE_WATCH,
+      watch   : ENABLE_WATCH,
       data    : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
       options : {
         imgSize : true,
@@ -171,7 +171,7 @@ const
         diff : {
           name      : 'html_pug',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
         plumber : {
           errorHandler : function( error ) {
@@ -186,7 +186,7 @@ const
       dist          : DIST,
       group         : '/fonts/icons',
       base          : SRC,
-      watch         : true && ENABLE_WATCH,
+      watch         : ENABLE_WATCH,
       fontsDist     : DIST +  '[subdir]/fonts',
       scssDist      : SRC + '[subdir]/css',
       fontPath      : '../fonts/',
@@ -211,7 +211,7 @@ const
         diff : {
           name      : 'icon_font',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
           allForOne : '/fonts/icons',
         },
       },
@@ -223,7 +223,7 @@ const
         '!' + SRC + '/**/fonts/icons/*.svg',
       ],
       dist    : DIST,
-      watch   : true && ENABLE_WATCH,
+      watch   : ENABLE_WATCH,
       options : {
         plumber : {
           errorHandler : function( error ) {
@@ -251,12 +251,12 @@ const
         diff : {
           name      : 'img_min',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
         src : {
           base     : SRC,
           encoding : false,
-          read     : false || !ENABLE_DIFF,
+          read     : !ENABLE_DIFF,
         },
       },
     },
@@ -265,7 +265,7 @@ const
       dist     : DIST,
       base     : SRC,
       group    : '/img/_sprite',
-      watch    : true && ENABLE_WATCH,
+      watch    : ENABLE_WATCH,
       imgDist  : DIST + '[subdir]/img',
       scssDist : SRC + '[subdir]/css',
       options  : {
@@ -289,7 +289,7 @@ const
         diff : {
           name      : 'img_sprite',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
           allForOne : '/img/_sprite',
         },
       },
@@ -299,7 +299,7 @@ const
       base    : SRC,
       dist    : DIST,
       group   : '/img/_sprite_svg',
-      watch   : true && ENABLE_WATCH,
+      watch   : ENABLE_WATCH,
       options :  {
         plumber: {
           errorHandler : function( error ) {
@@ -361,7 +361,7 @@ const
         diff : {
           name      : 'img_sprite_svg',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
           allForOne : '/img/_sprite_svg',
         },
       },
@@ -373,7 +373,7 @@ const
         '!' + SRC + '/**/_vendor/*.js',
       ],
       dist    : DIST,
-      watch   : true && ENABLE_WATCH,
+      watch   : ENABLE_WATCH,
       options : {
         plumber : {
           errorHandler : function( error ) {
@@ -387,10 +387,10 @@ const
         diff : {
           name      : 'js_eslint',
           command   : GIT_DIFF_COMMAND,
-          detection : true && ENABLE_DIFF,
+          detection : ENABLE_DIFF,
         },
         src : {
-          read : false || !ENABLE_DIFF,
+          read : !ENABLE_DIFF,
         },
       },
     },
@@ -399,7 +399,7 @@ const
       dist           : DIST,
       targetEntry    : /\.entry\.js$/,
       shareFileConf  : /\.split\.json$/,
-      watch          : true && ENABLE_WATCH,
+      watch          : ENABLE_WATCH,
       base           : SRC,
       options        : {
         plumber : {
@@ -413,7 +413,7 @@ const
       webpackConfig  : {
         mode      : NODE_ENV,
         output    : {},
-        devtool   : ( true && ENABLE_SOURCEMAP ) ? 'source-map' : false,
+        devtool   : ( ENABLE_SOURCEMAP ) ? 'source-map' : false,
         module    : {
           rules : [
             {
@@ -464,7 +464,7 @@ const
     'clean' : {},
     'copy_to' : {},
     'css_sass' : {
-      sourcemap : false || ENABLE_SOURCEMAP,
+      sourcemap : ENABLE_SOURCEMAP,
       options   : {
         sass : {
           outputStyle : 'compressed', // nested, compact, compressed, expanded
@@ -516,8 +516,14 @@ const
 // 実装者毎で設定を自由にさせるため。
 if ( BROWSE_CONF_PATH && existsSync( BROWSE_CONF_PATH ) ) {
   const data = JSON.parse( readFileSync( BROWSE_CONF_PATH ) );
-  data.conf_dev.enable = ( ENABLE_BROWSE && data.conf_dev.enable );
-  data.conf_prod.enable = ( ENABLE_BROWSE && data.conf_prod.enable );
+  data.conf_dev.enable = ( data.conf_dev.hasOwnProperty( 'enable' ) === true )
+    ? data.conf_dev.enable
+    : ENABLE_BROWSE
+  ;
+  data.conf_prod.enable = ( data.conf_prod.hasOwnProperty( 'enable' ) === true )
+    ? data.conf_prod.enable
+    : ENABLE_BROWSE
+  ;
   config_dev.browse = data.conf_dev;
   config_prod.browse = data.conf_prod;
 }
