@@ -56,9 +56,10 @@ const
           },
         },
         diff : {
-          name    : 'copy_to',
-          command : GIT_DIFF_COMMAND,
-          enabled : DIFF_ENABLED,
+          name     : 'copy_to',
+          command  : GIT_DIFF_COMMAND,
+          enabled  : DIFF_ENABLED,
+          oneToOne : true,
         },
         src : {
           base     : SRC,
@@ -122,9 +123,10 @@ const
           debug          : true,
         },
         diff : {
-          name    : 'css_scss_lint',
-          command : GIT_DIFF_COMMAND,
-          enabled : DIFF_ENABLED,
+          name     : 'css_scss_lint',
+          command  : GIT_DIFF_COMMAND,
+          enabled  : DIFF_ENABLED,
+          oneToOne : true,
         },
         src : {
           read : !DIFF_ENABLED,
@@ -246,6 +248,7 @@ const
           name    : 'img_min',
           command : GIT_DIFF_COMMAND,
           enabled : DIFF_ENABLED,
+          oneToOne : true,
         },
         src : {
           base     : SRC,
@@ -382,6 +385,7 @@ const
           name    : 'js_eslint',
           command : GIT_DIFF_COMMAND,
           enabled : DIFF_ENABLED,
+          oneToOne : true,
         },
         src : {
           read : !DIFF_ENABLED,

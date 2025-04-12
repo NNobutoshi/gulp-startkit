@@ -25,7 +25,6 @@ let
 export {
   diff_build as default,
   selectTargetFiles,
-  diff_1to1,
 };
 
 /*
@@ -35,6 +34,9 @@ export {
 /*
  * いったんGulp.src を通った後なので
  * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
+ * @param {Object} options - オプション
+ * @param {Function} collect - 依存関係収集用コールバック
+ * @param {Function} select - 通過候補選択用コールバック
  */
 function diff_build( options, collect, select ) {
   const
@@ -59,6 +61,13 @@ function diff_build( options, collect, select ) {
 
   if ( typeof settings.allForOne === 'string' ) {
     settings.group = settings.allForOne.replace( /[/\\]/g, sep );
+  }
+
+  if ( settings.oneToOne === true ) {
+    return through.obj(
+      _transformFor1to1( shared ),
+      _flushFor1to1( shared, settings.name ),
+    );
   }
 
   return through.obj(
@@ -244,37 +253,13 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
 /*
  * one source → one destination 用。
  * Gulp.src のオプション、 { read: false } の速さに期待して。
- * Gulp.src() を{ read false } で Git のdiff の結果から対象ファイルのパスを取捨選択して、
- * 対象ファイルであれば、contents をfile.readFile で改めて読み込み、代入する。
+ * Gulp.src() { read: false } で得たfile.path がGit のdiff の結果の中に含まれているなら、
+ * contents をreadFile で改めて読み込み、file.contents に代入する。
+ * @param {Object} shared - 共有データ
+ * @returns {Function} - transform function
  */
-function diff_1to1( options ) {
-  const
-    settings = mergeWith( {}, defaultSettings, options )
-    ,shared = {
-      currentDiffData        : null,
-      lastDiffData           : null,
-      totalFilesPassed       : 0,
-      promiseGetGitDiffData  : null,
-      promiseGetLastDiffData : null,
-    }
-  ;
-
-  if ( settings.enabled === false ) {
-    return through.obj();
-  }
-
-  shared.promiseGetGitDiffData = _getGitDiffData( settings.command );
-  shared.promiseGetLastDiffData = lastDiff.get( settings.name );
-
-  return through.obj(
-    _transformFor1to1( shared ),
-    _flushFor1to1( settings.name, shared ),
-  );
-
-}
-
 function _transformFor1to1( shared ) {
-  return async function _transFormFor1to1( file, enc, callback ) {
+  return async function _transform( file, enc, callback ) {
     if ( file.isStream && file.isStream() ) {
       return callback( new Error( 'Streaming not supported' ) );
     }
@@ -288,8 +273,8 @@ function _transformFor1to1( shared ) {
         ( async function() {
           try {
             file.contents = await readFile( file.path );
+            shared.targets.set( file.path, 1 );
             callback( null, file );
-            shared.totalFilesPassed += 1;
           } catch ( error ) {
             callback( error );
           }
@@ -304,11 +289,15 @@ function _transformFor1to1( shared ) {
 
 }
 
-function _flushFor1to1( name, shared ) {
+/*
+ * @param {Object} shared - 共有データ
+ * @param {String} name - タスク名
+ */
+function _flushFor1to1( shared, name ) {
   return function _flush( callback ) {
     lastDiff.set( name, shared.currentDiffData );
     _writeDiffData();
-    _log( name, shared.totalFilesPassed, shared.totalFilesPassed );
+    _log( name, shared.targets.size, shared.targets.size );
     callback();
   };
 }
