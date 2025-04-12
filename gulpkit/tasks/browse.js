@@ -1,22 +1,39 @@
+import { existsSync }       from 'node:fs';
+import { fileURLToPath }    from 'node:url';
+import { dirname, resolve } from 'node:path';
+
 import browserSync from 'browser-sync';
 import fancyLog    from 'fancy-log';
 import chalk       from 'chalk';
 
-import config from '../config_browse.js';
-
-const
-  options = config.options
-;
-
 export { init_browse, reload_browse };
 
-function init_browse( done ) {
-  if ( config.enabled === false ) {
+const
+  RELATIVEFILEPATH  = '../config_browse.js'
+  ,FILEPATH         = resolve( dirname( fileURLToPath( import.meta.url ) ), RELATIVEFILEPATH )
+;
+
+async function init_browse( done ) {
+  if ( !existsSync( FILEPATH ) ) {
     fancyLog( chalk.gray( 'no serve' ) );
-    return done();
+    done();
+    return;
   }
-  browserSync.init( options );
-  done();
+  try {
+    const { enabled, options } = await import( RELATIVEFILEPATH );
+    if ( enabled === false ) {
+      fancyLog( chalk.gray( 'no serve' ) );
+      done();
+      return;
+    }
+    browserSync.init( options );
+    done();
+    return;
+  } catch ( error ) {
+    fancyLog( chalk.red( error ) );
+    done();
+    return;
+  }
 }
 
 function reload_browse( done ) {
@@ -25,4 +42,3 @@ function reload_browse( done ) {
   }
   done();
 }
-

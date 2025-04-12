@@ -32,4 +32,4 @@ case 'development':
 default:
 }
 
-export default config;
+export const { enabled, options } = config;
