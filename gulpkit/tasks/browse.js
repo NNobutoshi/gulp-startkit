@@ -2,7 +2,7 @@ import browserSync from 'browser-sync';
 import fancyLog    from 'fancy-log';
 import chalk       from 'chalk';
 
-import { browse as config } from '../config.js';
+import config from '../config_browse.js';
 
 const
   options = config.options
