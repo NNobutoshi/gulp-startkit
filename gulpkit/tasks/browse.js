@@ -11,7 +11,7 @@ const
 export { init_browse, reload_browse };
 
 function init_browse( done ) {
-  if ( !config.enable ) {
+  if ( config.enabled === false ) {
     fancyLog( chalk.gray( 'no serve' ) );
     return done();
   }

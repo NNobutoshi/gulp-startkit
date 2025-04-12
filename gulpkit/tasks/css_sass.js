@@ -21,16 +21,16 @@ const
 ;
 
 export default function css_sass() {
-  if ( config.cssMqpack ) {
+  if ( config.cssMqpackEnabled ) {
     options.postcss.plugins.push( mqpacker() );
   }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectTargetFiles, selectTargetFiles ) )
-    .pipe( gulpIf( config.sourcemap, sourcemaps.init() ) )
+    .pipe( gulpIf( ( config.sourcemapsEnabled === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( gulpIf( config.sourcemap, sourcemaps.write( config.sourcemap_dir ) ) )
+    .pipe( gulpIf( config.sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
     .pipe( renderingLog( '[css_sass]:' ) )
   ;

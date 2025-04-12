@@ -12,7 +12,7 @@ const
 ;
 const
   config_dev = {
-    'enable' : ENABLE_BROWSE,
+    'enabled' : ENABLE_BROWSE,
     'options' : {
       'port'           : 9039,
       'browser'        : 'Chrome',

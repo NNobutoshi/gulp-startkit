@@ -50,7 +50,7 @@ function diff_build( options, collect, select ) {
     }
   ;
 
-  if ( settings.detection === false ) {
+  if ( settings.enabled === false ) {
     return through.obj();
   }
 
@@ -259,7 +259,7 @@ function diff_1to1( options ) {
     }
   ;
 
-  if ( settings.detection === false ) {
+  if ( settings.enabled === false ) {
     return through.obj();
   }
 

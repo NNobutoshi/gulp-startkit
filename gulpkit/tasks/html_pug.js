@@ -24,7 +24,7 @@ export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( src( config.subSrc, { read: false } ) )
+    .pipe( src( config.imgSrc, { read: false } ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', _setPugData )
     .pipe( _pugRender() )
