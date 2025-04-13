@@ -38,12 +38,21 @@ const
   }
 } )();
 
+/*
+ * Excel のデータを JSON に変換する。
+ * @param {object} workBook - Excel のデータ
+ * @returns {object} JSON データ
+ */
 function _xlsxToJson( workBook ) {
   return _reJsonData(
     XLSX.utils.sheet_to_json( workBook.Sheets[ settings.sheetName ] )
   );
 }
 
+/*
+ * Pug の設定ファイルを読み込む。
+ * @returns {object} Pug の設定ファイルの内容
+ */
 async function _readConfigFile() {
   try {
     return await readFile( settings.configFile, CHARSET );
@@ -52,6 +61,12 @@ async function _readConfigFile() {
   }
 }
 
+/*
+ * Pug の設定ファイルの内容から、インデントを取得する。
+ * @param {string} configContent - Pug の設定ファイルの内容
+ * @param {RegExp} indentRegeX - インデントを取得するための正規表現
+ * @returns {string|boolean} インデントの文字列、または false
+ */
 function _getIndent( configContent, indentRegeX ) {
   const
     matches = configContent.match( indentRegeX )
@@ -59,6 +74,11 @@ function _getIndent( configContent, indentRegeX ) {
   return ( matches !== null &&  matches[ 1 ] ) ? matches[ 1 ] : false;
 }
 
+/*
+ * @param {object} jSONData - JSON データ
+ * @param {string} indent - インデント
+ * @returns {string} JSON データを文字列に変換したもの
+ */
 function _deleteWrapperParen( jSONData, indent ) {
   return JSON
     .stringify( jSONData, null, 2 )
@@ -68,6 +88,12 @@ function _deleteWrapperParen( jSONData, indent ) {
   ;
 }
 
+/*
+ * Pug の設定ファイルに書き込む。
+ * @param {string} content - Pug の設定ファイルの内容
+ * @param {string} newStrings - 新しい文字列
+ * @param {string} indent - インデント
+ */
 async function _writePugConfigFile( content, newStrings, indent ) {
   content = content.replace( /"{{": "",[\s\S]*?"}}": ""/, `"{{": "",${ settings.linefeed + newStrings + indent }"}}": ""` );
   try {
@@ -78,6 +104,11 @@ async function _writePugConfigFile( content, newStrings, indent ) {
   }
 }
 
+/*
+ * JSON データを変換する。
+ * @param {object} data - JSON データ
+ * @returns {object} 変換された JSON データ
+ */
 function _reJsonData( data ) {
   const
     res = {}
@@ -88,6 +119,11 @@ function _reJsonData( data ) {
   return res;
 }
 
+/*
+ * Pug のファイルを作成する。
+ * @param {object} props - Pug のプロパティ
+ * @param {Function} createPugFile - Pug ファイルを作成する関数
+ */
 function _createPugFileByProps( props, createPugFile ) {
   let
     url      = props.url
@@ -111,6 +147,12 @@ function _createPugFileByProps( props, createPugFile ) {
   ;
 }
 
+/*
+ * Pug ファイルを作成する。
+ * @param {string} pugUrl - Pug ファイルの URL
+ * @param {string} htmlUrl - HTML ファイルの URL
+ * @param {string} template - テンプレート
+ */
 async function _createPugFile( pugUrl, htmlUrl, template ) {
   let
     content
@@ -123,6 +165,11 @@ async function _createPugFile( pugUrl, htmlUrl, template ) {
   await _writePugFile( content, pugUrl, htmlUrl, isNew );
 }
 
+/*
+ * テンプレートファイルを読み込む。
+ * @param {string} template - テンプレートファイルの URL
+ * @returns {string} テンプレートファイルの内容
+ */
 async function _readTemplateFile( template ) {
   try {
     return await readFile( join( settings.src, template ), CHARSET );
@@ -131,6 +178,13 @@ async function _readTemplateFile( template ) {
   }
 }
 
+/*
+ * Pug ファイルを書き込む。
+ * @param {string} content - Pug ファイルの内容
+ * @param {string} pugUrl - Pug ファイルの URL
+ * @param {string} htmlUrl - HTML ファイルの URL
+ * @param {boolean} isNew - 新しいファイルかどうか
+ */
 async function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
   try {
     await writeFile( pugUrl, content.replace( '//{page}', `"${ htmlUrl }"` ), CHARSET );

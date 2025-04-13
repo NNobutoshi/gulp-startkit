@@ -46,7 +46,7 @@ export default function css_sass() {
 
 /*
  * 依存関係を調べ、Objectにまとめる。
- * through2 のtransformFunction 中で実行。
+ * through2 のtransformFunctionの内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
  * collection
@@ -55,6 +55,8 @@ export default function css_sass() {
  *     'chunk自身のパス'
  *    ]
  * }
+ * @param {object} file
+ * @param {object} collection
  */
 function _collectTargetFiles( file, collection ) {
   const

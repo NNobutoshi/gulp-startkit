@@ -10,7 +10,12 @@ const defaultSettings = {
   textColorHex : '#000088',
 };
 
-export default function renderingLog( title, subTitle, options ) {
+/*
+ * @param {string} title
+ * @param {string} subTitle
+ * @param {object} options
+ */
+export default function logSteamData( title, subTitle, options ) {
   const settings = Object.assign( {}, defaultSettings, options );
   let fileCounter = 0;
   if ( settings.onStream === false ) {

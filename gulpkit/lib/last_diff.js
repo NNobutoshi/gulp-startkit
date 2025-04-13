@@ -25,6 +25,8 @@ export default  {
 
 /*
  * 環境変数に格納されている差分ファイルリストを優先して取得。
+ * @param {string} name
+ * @returns {object} diff data
  */
 async function _get( name ) {
   if ( diffData ) {
@@ -44,6 +46,8 @@ async function _get( name ) {
 
 /*
  * 環境変数に格納する。
+ * @param {string} name
+ * @param {object} data
  */
 function _set( name, data ) {
   diffData[ name ] = data;

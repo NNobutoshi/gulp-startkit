@@ -32,8 +32,6 @@ export {
  * /
 
 /*
- * いったんGulp.src を通った後なので
- * Gulp.src( { since: Gulp.lastRun() } ) よりは遅い。
  * @param {Object} options - オプション
  * @param {Function} collect - 依存関係収集用コールバック
  * @param {Function} select - 通過候補選択用コールバック
@@ -65,18 +63,23 @@ function diff_build( options, collect, select ) {
 
   if ( settings.oneToOne === true ) {
     return through.obj(
-      _transformFor1to1( shared ),
-      _flushFor1to1( shared, settings.name ),
+      _setFileContentsByGitDiff( shared ),
+      _setTargetFiles( shared, settings.name ),
     );
   }
 
   return through.obj(
-    _retTransform( shared, settings, collect ),
-    _retFlush( shared, settings, select ),
+    _collectTargetFiles( shared, settings, collect ),
+    _pushSelectedFilesToStream( shared, settings, select ),
   );
 }
 
-function _retTransform( shared, settings, collect ) {
+/*
+ * @param {Object} shared - 共有データ
+ * @param {Object} settings - 設定
+ * @param {Function} collect - 依存関係収集用コールバック
+ */
+function _collectTargetFiles( shared, settings, collect ) {
   return async function _transform( file, enc, callback ) {
 
     if ( file.isStream && file.isStream() ) {
@@ -127,7 +130,12 @@ function _retTransform( shared, settings, collect ) {
   };
 }
 
-function _retFlush( shared, settings, select ) {
+/*
+ * @param {Object} shared - 共有データ
+ * @param {Object} settings - 設定
+ * @param {Function} select - 通過候補選択用コールバック
+ */
+function _pushSelectedFilesToStream( shared, settings, select ) {
   return async function _flush( callback ) {
     const
       stream              = this
@@ -239,6 +247,11 @@ function _retFlush( shared, settings, select ) {
 
 }
 
+/*
+ * @param {String} filePath - ファイルパス
+ * @param {Map} allFiles - 全chunk用
+ * @param {Stream} stream - Gulp stream
+ */
 async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
   try {
     const content = await readFile( filePath );
@@ -258,7 +271,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @param {Object} shared - 共有データ
  * @returns {Function} - transform function
  */
-function _transformFor1to1( shared ) {
+function _setFileContentsByGitDiff( shared ) {
   return async function _transform( file, enc, callback ) {
     if ( file.isStream && file.isStream() ) {
       return callback( new Error( 'Streaming not supported' ) );
@@ -293,7 +306,7 @@ function _transformFor1to1( shared ) {
  * @param {Object} shared - 共有データ
  * @param {String} name - タスク名
  */
-function _flushFor1to1( shared, name ) {
+function _setTargetFiles( shared, name ) {
   return function _flush( callback ) {
     lastDiff.set( name, shared.currentDiffData );
     _writeDiffData();
@@ -303,8 +316,11 @@ function _flushFor1to1( shared, name ) {
 }
 
 /*
- * through2.obj()の flush function 中で、実行。
+ * through2.obj()の flush function の内部で、実行。
  * 候補ファイルに依存するものを最終選択する。
+ * @param {String} filePath - ファイルパス
+ * @param {Object} collection - 収集した依存関係
+ * @param {Map} destFiles - 通過候補
  */
 function selectTargetFiles( filePath, collection, destFiles ) {
   ( function _run_recursive( filePath ) {
@@ -334,6 +350,9 @@ function _writeDiffData() {
 
 /*
  * 検知数と通過させた数のログ
+ * @param {String} name - タスク名
+ * @param {Number} detected - 検知数
+ * @param {Number} total - 通過数
  */
 function _log( name, detected, total ) {
   if ( name ) {
@@ -342,6 +361,12 @@ function _log( name, detected, total ) {
   }
 }
 
+/*
+ * 差分ファイルリストに、filePath が含まれているか調べる。
+ * @param {Object} data - 差分ファイルリスト
+ * @param {String} filePath - ファイルパス
+ * @returns {Boolean} - true or false
+ */
 function _includes( data, filePath ) {
   filePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
   return data && Object.keys( data ).includes( filePath );
@@ -351,6 +376,8 @@ function _includes( data, filePath ) {
  * 'git status -suall <dir>'
  * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
  * oject（差分ファイルリスト） の作成。
+ * @param {String} command - git コマンド
+ * @returns {Promise<Object>} - 差分ファイルリスト
  */
 function _getGitDiffData( command ) {
   return new Promise( ( fulfill ) => {

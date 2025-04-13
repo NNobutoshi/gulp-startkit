@@ -5,14 +5,14 @@ import chalk from 'chalk';
 
 import { clean as config } from '../config.js';
 
-/*
- * Git Command をつかってUntracked fileを、削除。
- * 戻り値はPromise。
- */
 export default async function clean() {
   await _gitClean( config.command );
 }
 
+/*
+ * Git Command をつかってUntracked fileを、削除。
+ * 戻り値はPromise。
+ */
 function _gitClean( comand ) {
   return new Promise( ( resolve, reject ) => {
     exec( comand, ( error, stdout, stderror ) => {

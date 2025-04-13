@@ -107,10 +107,20 @@ function _webpackCompile() {
 
 }
 
+/*
+ * Webpack のコンパイルを実行。
+ * Gulp のstream で使用するため、callback を受け取る。
+ * @param {Function} callbackForStream - Gulp のstream で使用するため、callback を受け取る。
+ * @param {object} compiler - webpack のコンパイラ
+ */
 function _runWebpackCompiler( callbackForStream, compiler ) {
   compiler.run( _callbackForRunWebpackCompiler( callbackForStream ) );
 }
 
+/*
+* webpack のコンパイラの実行後のcallback。
+* @param {Function} callbackForStream - Gulp のstream で使用するため、callback を受け取る。
+*/
 function _callbackForRunWebpackCompiler( callbackForStream ) {
   return ( error, stats ) => {
     let errorMessages = [];
@@ -140,6 +150,9 @@ function _callbackForRunWebpackCompiler( callbackForStream ) {
  * vendor など、ディレクトリで共通で使用するモジュールは、
  * そのディレクトリ毎で設定が行えるようにする。
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
+ * @param {object} groups - webpackConfig の cacheGroups
+ * @param {string} subConfPath - JSON data のpath
+ * @param {Function} callback - Gulp のstream で使用するため、callback を受け取る。
  */
 async function _createSplitChunks( groups, subConfPath, callback ) {
   try {

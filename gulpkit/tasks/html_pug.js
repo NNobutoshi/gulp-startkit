@@ -37,6 +37,10 @@ export default function html_pug() {
   ;
 }
 
+/*
+ * Pug の実行前に、Pug に渡すデータをセットする。
+ * @param {object} file
+ */
 function _setPugData( file ) {
   if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
     return;
@@ -54,7 +58,7 @@ function _setPugData( file ) {
 
 /*
  * 依存関係を調べ、Objectにまとめる。
- * through2 のtransformFunction 中で実行。
+ * through2 のtransformFunction の内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
  * collection
@@ -63,6 +67,8 @@ function _setPugData( file ) {
  *     'chunk自身のパス'
  *    ]
  * }
+ * @param {object} file
+ * @param {object} collection
  */
 function _collectTargetFiles( file, collection ) {
   const
@@ -92,6 +98,9 @@ function _collectTargetFiles( file, collection ) {
   }
 }
 
+/*
+ * Pug の実行。
+ */
 function _pugRender() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
 
