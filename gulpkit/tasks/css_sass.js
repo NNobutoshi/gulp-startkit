@@ -32,7 +32,7 @@ export default function css_sass() {
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf( config.sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
-    .pipe( renderingLog( '[css_sass]:' ) )
+    .pipe( renderingLog( '[css_sass]:', 'compiled' ) )
   ;
 }
 

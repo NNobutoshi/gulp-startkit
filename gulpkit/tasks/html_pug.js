@@ -31,7 +31,7 @@ export default function html_pug() {
     .pipe( _beautify() )
     .pipe( _setImageSize() )
     .pipe( dest( config.dist ) )
-    .pipe( renderingLog( '[html_pug]:' ) )
+    .pipe( renderingLog( '[html_pug]:', 'renderd' ) )
   ;
 }
 
