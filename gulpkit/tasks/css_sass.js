@@ -10,7 +10,7 @@ import postcss       from 'gulp-postcss';
 import mqpacker      from '@hail2u/css-mqpacker';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
-import renderingLog                from '../lib/rendering_log.js';
+import logStreamData               from '../lib/log_stream_data.js';
 
 import { css_sass as config } from '../config.js';
 
@@ -18,6 +18,13 @@ const sass = gulpSass( dartSass );
 
 const
   options = config.options
+  ,mapLogOptions = {
+    forEachFile: false
+  }
+  ,LOG_TITLE_CSS    = '[css_sass]:'
+  ,LOG_SUBTITLE_CSS = 'compiled'
+  ,LOG_TITLE_MAP    = '[css_sass:map]:'
+  ,LOG_SUBTITLE_MAP = 'created'
 ;
 
 export default function css_sass() {
@@ -32,7 +39,8 @@ export default function css_sass() {
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf( config.sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
-    .pipe( renderingLog( '[css_sass]:', 'compiled' ) )
+    .pipe( gulpIf( /\.map$/, logStreamData( LOG_TITLE_MAP, LOG_SUBTITLE_MAP, mapLogOptions ) ) )
+    .pipe( gulpIf( /\.css$/, logStreamData( LOG_TITLE_CSS, LOG_SUBTITLE_CSS ) ) )
   ;
 }
 

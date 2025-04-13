@@ -9,12 +9,14 @@ import beautify      from 'js-beautify';
 import sizeOf        from 'image-size';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
-import renderingLog                from '../lib/rendering_log.js';
+import logStreamData               from '../lib/log_stream_data.js';
 
 import { html_pug as config } from '../config.js';
 
 const
   options  = config.options
+  ,LOG_TITLE = '[html_pug]:'
+  ,LOG_SUBTITLE = 'renderd'
 ;
 let
   pugData
@@ -31,7 +33,7 @@ export default function html_pug() {
     .pipe( _beautify() )
     .pipe( _setImageSize() )
     .pipe( dest( config.dist ) )
-    .pipe( renderingLog( '[html_pug]:', 'renderd' ) )
+    .pipe( logStreamData( LOG_TITLE, LOG_SUBTITLE ) )
   ;
 }
 

@@ -6,16 +6,24 @@ import iconfont      from 'gulp-iconfont';
 import plumber       from 'gulp-plumber';
 import Handlebars    from 'handlebars';
 
-import svgLint      from '../lib/svg_lint.js';
-import taskForEach  from '../lib/task_for_each.js';
-import diff         from '../lib/diff_build.js';
-import renderingLog from '../lib/rendering_log.js';
+import svgLint       from '../lib/svg_lint.js';
+import taskForEach   from '../lib/task_for_each.js';
+import diff          from '../lib/diff_build.js';
+import logStreamData from '../lib/log_stream_data.js';
 
 import { icon_font as config } from '../config.js';
 
 const
   options  = config.options
-  ,CHARSET = 'utf-8'
+  ,logOptionsScss = {
+    forEachFile: false
+    ,onStream: false
+  }
+  ,CHARSET           = 'utf-8'
+  ,LOG_TITLE_FONT    = '[icon_font]:'
+  ,LOG_SUBTITLE_FONT = 'created'
+  ,LOG_TITLE_SCSS    = '[icon_font:scss]:'
+  ,LOG_SUBTITLE_SCSS = 'generated'
 ;
 
 export default function icon_font() {
@@ -51,7 +59,7 @@ function _branchTask( subSrc, baseDir, trunkStream ) {
   return iconfont( subSrc, optIconfont )
     .on( 'glyphs', _createScssByGlyphs( templateData, trunkStream ) )
     .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } ) )
-    .pipe( renderingLog( '[icon_font]:', 'created' ) )
+    .pipe( logStreamData( LOG_TITLE_FONT, LOG_SUBTITLE_FONT ) )
   ;
 }
 
@@ -95,7 +103,7 @@ async function _createScssFile( data, errorStream ) {
      ;
     await mkdir( data.scssDist, { recursive: true } );
     await writeFile( filePath, sourceCode, { encoding: CHARSET } );
-    renderingLog( `[icon_font:scss] ${ filePath }`, 'generated', { onStream: false } );
+    logStreamData( `${ LOG_TITLE_SCSS } ${ filePath }`, LOG_SUBTITLE_SCSS, logOptionsScss );
   } catch ( error ) {
     errorStream.emit( 'error', error );
   }
