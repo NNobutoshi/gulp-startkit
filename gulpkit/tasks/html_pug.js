@@ -1,12 +1,13 @@
 import { readFileSync }  from 'node:fs';
 import { resolve, join } from 'node:path';
+import { Buffer }        from 'node:buffer';
 
 import { src, dest } from 'gulp';
 import plumber       from 'gulp-plumber';
 import pug           from 'pug';
 import through       from 'through2';
 import beautify      from 'js-beautify';
-import sizeOf        from 'image-size';
+import { imageSizeFromFile } from 'image-size/fromFile';
 
 import diff, { selectTargetFiles } from '../lib/diff_build.js';
 import logStreamData               from '../lib/log_stream_data.js';
@@ -120,7 +121,11 @@ function _pugRender() {
       if ( error ) {
         return callback( error );
       }
-      file.contents = new Buffer.from( contents );
+      try {
+        file.contents = Buffer.from( contents );
+      } catch ( error ) {
+        return callback( error );
+      }
       file.path = file.path.replace( /\.pug$/, '.html' );
       callback( null, file );
     } );
@@ -179,7 +184,7 @@ function _beautify() {
       contents = contents.replace( endCommentRegEx, _replacementEndComment );
     }
 
-    file.contents = new Buffer.from( contents );
+    file.contents = Buffer.from( contents );
     callback( null, file );
   }
 }
@@ -190,8 +195,8 @@ function _beautify() {
  */
 function _setImageSize() {
   const
-    promiseReplaceImgStringsAll = []
-    ,mapReplaceImgStrings = new Map()
+    promiseReplaceImageElementStringsAll = []
+    ,mapImageElementStrings = new Map()
   ;
   if ( options.imgSize === false ) {
     return through.obj();
@@ -206,14 +211,9 @@ function _setImageSize() {
     let contents = String( file.contents );
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
-        fullStr    = match[ 0 ]
-        ,tagName   = match[ 1 ]
-        ,frontPart = match[ 2 ]
-        ,attrName  = match[ 3 ]
-        ,q         = match[ 4 ]
-        ,srcPath   = match[ 5 ]
-        ,query     = match[ 6 ]
-        ,rearPart  = match[ 7 ]
+        frontPart = match[ 2 ]
+        ,srcPath  = match[ 5 ]
+        ,rearPart = match[ 7 ]
       ;
       if (
         _isExternalSrc( srcPath ) === true
@@ -222,43 +222,72 @@ function _setImageSize() {
       ) {
         continue;
       }
-      promiseReplaceImgStringsAll.push( new Promise( ( fulfill, reject ) => {
-        const preparedSrcPath = ( _isRootPath( srcPath ) )
-        // ルートパスであれば
-          ? join( resolve( process.cwd(), config.base ), srcPath )
-        // 相対パスであれば
-          : resolve( file.dirname, srcPath )
-        ;
-        sizeOf( preparedSrcPath, ( error, dm ) => {
-          if ( error ) {
-            return reject( error );
-          }
-          const
-            imgStrings  = `<${ tagName }${ frontPart }${ attrName }=`
-                  + `${ q }${ srcPath }${ query }${ q } `
-                  + `width=${ q }${ dm.width }${ q } `
-                  + `height=${ q }${ dm.height }${ q }${ rearPart }>`
-          ;
-          mapReplaceImgStrings.set( fullStr, imgStrings );
-          fulfill();
-        } );
-      } ) );
+      promiseReplaceImageElementStringsAll.push(
+        addImageDimensionsToElementStrings( match, file, callback )
+      );
     } // for
 
     try {
-      await Promise.all( promiseReplaceImgStringsAll );
+      await Promise.all( promiseReplaceImageElementStringsAll );
       contents = contents.replace( imgRegEx, ( fullStr ) => {
-        return mapReplaceImgStrings.get( fullStr ) || fullStr;
+        return mapImageElementStrings.get( fullStr ) || fullStr;
       } );
-      file.contents = new Buffer.from( contents );
+      file.contents = Buffer.from( contents );
       callback( null, file );
     } catch ( error ) {
       callback( error );
     }
 
   }
+
+  /*
+   * img || source 要素に width と height を追加する。
+   * @param {object} match
+   * @param {object} file
+   * @param {function} errorCallback
+   */
+  async function addImageDimensionsToElementStrings( match, file, errorCallback ) {
+    const
+      fullStr    = match[ 0 ]
+      ,tagName   = match[ 1 ]
+      ,frontPart = match[ 2 ]
+      ,attrName  = match[ 3 ]
+      ,q         = match[ 4 ]
+      ,srcPath   = match[ 5 ]
+      ,query     = match[ 6 ]
+      ,rearPart  = match[ 7 ]
+      ,preparedSrcPath = ( _isRootPath( srcPath ) )
+      // ルートパスであれば
+        ? join( resolve( process.cwd(), config.base ), srcPath )
+      // 相対パスであれば
+        : resolve( file.dirname, srcPath )
+    ;
+    let
+      dimensions
+      ,imgStrings
+    ;
+    try {
+      dimensions = await imageSizeFromFile( preparedSrcPath );
+      imgStrings  = `<${ tagName }${ frontPart }${ attrName }=`
+                  + `${ q }${ srcPath }${ query }${ q } `
+                  + `width=${ q }${ dimensions.width }${ q } `
+                  // + `width=${ q }100${ q } `
+                  + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`;
+    } catch ( error ) {
+      errorCallback( error );
+    }
+    mapImageElementStrings.set( fullStr, imgStrings );
+  }
 }
 
+/*
+ * 閉じタグ付近に付けるコメントに関する体裁。
+ * @param {string} _all
+ * @param {string} endTag
+ * @param {string} lineFeed
+ * @param {string} indent
+ * @param {string} comment
+ */
 function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   comment = '<!--' + comment + '-->';
 
@@ -332,10 +361,20 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   }
 }
 
+/*
+ * srcPath が外部の src か否かを調べる。
+ * @param {string} srcPath
+ * @return {boolean}
+ */
 function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
 }
 
+/*
+ * srcPath がルートパスか否かを調べる。
+ * @param {string} srcPath
+ * @return {boolean}
+ */
 function _isRootPath( srcPath ) {
   return /^\//.test( srcPath );
 }
