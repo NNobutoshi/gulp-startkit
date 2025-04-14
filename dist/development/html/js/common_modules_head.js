@@ -16,8 +16,8 @@ __webpack_require__.r(__webpack_exports__);
 // Source: /src/main/ua-parser.js
 
 /////////////////////////////////////////////////////////////////////////////////
-/* UAParser.js v2.0.2
-   Copyright © 2012-2024 Faisal Salman <f@faisalman.com>
+/* UAParser.js v2.0.3
+   Copyright © 2012-2025 Faisal Salman <f@faisalman.com>
    AGPLv3 License *//*
    Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data.
    Supports browser & node.js environment. 
@@ -34,7 +34,7 @@ __webpack_require__.r(__webpack_exports__);
     // Constants
     /////////////
 
-    var LIBVERSION  = '2.0.2',
+    var LIBVERSION  = '2.0.3',
         UA_MAX_LENGTH = 500,
         USER_AGENT  = 'user-agent',
         EMPTY       = '',
@@ -368,11 +368,11 @@ __webpack_require__.r(__webpack_exports__);
             /(avant|iemobile|slim(?:browser|boat|jet))[\/ ]?([\d\.]*)/i,        // Avant/IEMobile/SlimBrowser/SlimBoat/Slimjet
             /(?:ms|\()(ie) ([\w\.]+)/i,                                         // Internet Explorer
 
-            // Blink/Webkit/KHTML based                                         // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon
-            /(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon)\/([-\w\.]+)/i,
+            // Blink/Webkit/KHTML based                                         // Flock/RockMelt/Midori/Epiphany/Silk/Skyfire/Bolt/Iron/Iridium/PhantomJS/Bowser/QupZilla/Falkon/LG Browser/Otter/qutebrowser/Dooble
+            /(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio|(?=comodo_)?dragon|otter|dooble|(?:lg |qute)browser)\/([-\w\.]+)/i,
                                                                                 // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ//Vivaldi/DuckDuckGo/Klar/Helio/Dragon
-            /(heytap|ovi|115)browser\/([\d\.]+)/i,                              // HeyTap/Ovi/115
-            /(weibo)__([\d\.]+)/i                                               // Weibo
+            /(heytap|ovi|115|surf)browser\/([\d\.]+)/i,                         // HeyTap/Ovi/115/Surf
+            /(ecosia|weibo)(?:__| \w+@)([\d\.]+)/i                              // Ecosia/Weibo
             ], [NAME, VERSION], [
             /quark(?:pc)?\/([-\w\.]+)/i                                         // Quark
             ], [VERSION, [NAME, 'Quark']], [
@@ -600,8 +600,11 @@ __webpack_require__.r(__webpack_exports__);
             /\b(opd2(\d{3}a?))(?: bui|\))/i
             ], [MODEL, [VENDOR, strMapper, { 'OnePlus' : ['304', '403', '203'], '*' : OPPO }], [TYPE, TABLET]], [
 
+            // BLU Vivo Series
+            /(vivo (5r?|6|8l?|go|one|s|x[il]?[2-4]?)[\w\+ ]*)(?: bui|\))/i
+            ], [MODEL, [VENDOR, 'BLU'], [TYPE, MOBILE]], [            
             // Vivo
-            /vivo (\w+)(?: bui|\))/i,
+            /; vivo (\w+)(?: bui|\))/i,
             /\b(v[12]\d{3}\w?[at])(?: bui|;)/i
             ], [MODEL, [VENDOR, 'Vivo'], [TYPE, MOBILE]], [
 
@@ -621,7 +624,7 @@ __webpack_require__.r(__webpack_exports__);
             /((?=lg)?[vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i
             ], [MODEL, [VENDOR, LG], [TYPE, TABLET]], [
             /(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,
-            /\blg[-e;\/ ]+((?!browser|netcast|android tv|watch)\w+)/i,
+            /\blg[-e;\/ ]+(?!.*(?:browser|netcast|android tv|watch))(\w+)/i,
             /\blg-?([\d\w]+) bui/i
             ], [MODEL, [VENDOR, LG], [TYPE, MOBILE]], [
 
@@ -728,6 +731,14 @@ __webpack_require__.r(__webpack_exports__);
             /droid.+; (a(?:015|06[35]|142p?))/i
             ], [MODEL, [VENDOR, 'Nothing'], [TYPE, MOBILE]], [
 
+            // Archos
+            /; (x67 5g|tikeasy \w+|ac[1789]\d\w+)( b|\))/i,
+            /archos ?(5|gamepad2?|([\w ]*[t1789]|hello) ?\d+[\w ]*)( b|\))/i
+            ], [MODEL, [VENDOR, 'Archos'], [TYPE, TABLET]], [
+            /archos ([\w ]+)( b|\))/i,
+            /; (ac[3-6]\d\w{2,8})( b|\))/i 
+            ], [MODEL, [VENDOR, 'Archos'], [TYPE, MOBILE]], [
+
             // MIXED
             /(imo) (tab \w+)/i,                                                 // IMO
             /(infinix) (x1101b?)/i                                              // Infinix XPad
@@ -735,7 +746,7 @@ __webpack_require__.r(__webpack_exports__);
 
             /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus(?! zenw)|dell|jolla|meizu|motorola|polytron|infinix|tecno|micromax|advan)[-_ ]?([-\w]*)/i,
                                                                                 // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron/Infinix/Tecno/Micromax/Advan
-            /; (hmd|imo) ([\w ]+?)(?: bui|\))/i,                                // HMD/IMO
+            /; (blu|hmd|imo|tcl)[_ ]([\w\+ ]+?)(?: bui|\)|; r)/i,               // BLU/HMD/IMO/TCL
             /(hp) ([\w ]+\w)/i,                                                 // HP iPAQ
             /(microsoft); (lumia[\w ]+)/i,                                      // Microsoft Lumia
             /(lenovo)[-_ ]?([-\w ]+?)(?: bui|\)|\/)/i,                          // Lenovo
@@ -743,7 +754,6 @@ __webpack_require__.r(__webpack_exports__);
             ], [VENDOR, MODEL, [TYPE, MOBILE]], [
 
             /(kobo)\s(ereader|touch)/i,                                         // Kobo
-            /(archos) (gamepad2?)/i,                                            // Archos
             /(hp).+(touchpad(?!.+tablet)|tablet)/i,                             // HP TouchPad
             /(kindle)\/([\w\.]+)/i                                              // Kindle
             ], [VENDOR, MODEL, [TYPE, TABLET]], [
@@ -771,7 +781,9 @@ __webpack_require__.r(__webpack_exports__);
             ], [VENDOR, [TYPE, SMARTTV]], [
             /hbbtv.+maple;(\d+)/i
             ], [[MODEL, /^/, 'SmartTV'], [VENDOR, SAMSUNG], [TYPE, SMARTTV]], [
-            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i        // LG SmartTV
+            /tcast.+(lg)e?. ([-\w]+)/i                                          // LG SmartTV
+            ], [VENDOR, MODEL, [TYPE, SMARTTV]], [
+            /(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i
             ], [[VENDOR, LG], [TYPE, SMARTTV]], [
             /(apple) ?tv/i                                                      // Apple TV
             ], [VENDOR, [MODEL, APPLE+' TV'], [TYPE, SMARTTV]], [
@@ -783,6 +795,8 @@ __webpack_require__.r(__webpack_exports__);
             ], [[MODEL, CHROMECAST+' Nest Hub'], [VENDOR, GOOGLE], [TYPE, SMARTTV]], [
             /crkey/i                                                            // Google Chromecast, Linux-based or unknown
             ], [[MODEL, CHROMECAST], [VENDOR, GOOGLE], [TYPE, SMARTTV]], [
+            /(portaltv)/i                                                       // Facebook Portal TV
+            ], [MODEL, [VENDOR, FACEBOOK], [TYPE, SMARTTV]], [
             /droid.+aft(\w+)( bui|\))/i                                         // Fire TV
             ], [MODEL, [VENDOR, AMAZON], [TYPE, SMARTTV]], [
             /(shield \w+ tv)/i                                                  // Nvidia Shield TV
@@ -851,7 +865,7 @@ __webpack_require__.r(__webpack_exports__);
             ], [MODEL, [VENDOR, GOOGLE], [TYPE, XR]], [
             /(pico) (4|neo3(?: link|pro)?)/i                                    // Pico
             ], [VENDOR, MODEL, [TYPE, XR]], [
-            /; (quest( \d| pro)?)/i                                             // Oculus Quest
+            /(quest( \d| pro)?s?).+vr/i                                         // Meta Quest
             ], [MODEL, [VENDOR, FACEBOOK], [TYPE, XR]], [
 
             ///////////////////
@@ -946,7 +960,7 @@ __webpack_require__.r(__webpack_exports__);
             /(ubuntu) ([\w\.]+) like android/i                                  // Ubuntu Touch
             ], [[NAME, /(.+)/, '$1 Touch'], VERSION], [
                                                                                 // Android/Blackberry/WebOS/QNX/Bada/RIM/KaiOS/Maemo/MeeGo/S40/Sailfish OS/OpenHarmony/Tizen
-            /(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen|webos)\w*[-\/; ]?([\d\.]*)/i
+            /(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen|webos)\w*[-\/\.; ]?([\d\.]*)/i
             ], [NAME, VERSION], [
             /\(bb(10);/i                                                        // BlackBerry 10
             ], [VERSION, [NAME, BLACKBERRY]], [
@@ -1228,7 +1242,11 @@ __webpack_require__.r(__webpack_exports__);
                                     'Chrome' : 'Google Chrome',
                                     'Edge' : 'Microsoft Edge',
                                     'Chrome WebView' : 'Android WebView',
-                                    'Chrome Headless' : 'HeadlessChrome'
+                                    'Chrome Headless' : 'HeadlessChrome',
+                                    'Huawei Browser' : 'HuaweiBrowser',
+                                    'MIUI Browser' : 'Miui Browser',
+                                    'Opera Mobi' : 'OperaMobile',
+                                    'Yandex' : 'YaBrowser'
                                 });
                                 this.set(NAME, brandName)
                                     .set(VERSION, brandVersion)
