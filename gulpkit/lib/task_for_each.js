@@ -55,14 +55,14 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
  * @param {function} branchTask
  * @param {function} callback
  */
-function _forEach( groupedSources, branchTask, callback ) {
+async function _forEach( groupedSources, branchTask, callback ) {
   const
     trunkStream = this
     ,branchStreams = []
   ;
   for ( let [ key ] of groupedSources ) {
     branchStreams.push(
-      branchTask(
+      await branchTask(
         groupedSources.get( key ).children.map( ( item ) => key + item ),
         groupedSources.get( key ).baseDir.replace( /[/\\]/g, '/' ),
         trunkStream,
