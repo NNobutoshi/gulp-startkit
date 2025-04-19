@@ -8,12 +8,14 @@ import logStreamData from '../lib/log_stream_data.js';
 import { js_eslint as config } from '../config.js';
 
 const
+  LOG_TITLE     = '[js_eslint]:'
+  ,LOG_SUBTITLE = 'linted'
+;
+const
   options = config.options
   ,logOptions = {
-    forEachFile: false
+    forEachFile : false,
   }
-  ,LOG_TITLE    = '[js_eslint]:'
-  ,LOG_SUBTITLE = 'linted'
 ;
 
 export default function js_eslint() {

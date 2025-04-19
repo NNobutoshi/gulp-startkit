@@ -8,12 +8,15 @@ import logStreamData from '../lib/log_stream_data.js';
 import { copy_to as config } from '../config.js';
 
 const
+  LOG_TITLE     = '[copy_to]:'
+  ,LOG_SUBTITLE = 'copied'
+;
+
+const
   options = config.options
   ,logOptions = {
-    forEachFile: false
+    forEachFile : false,
   }
-  ,LOG_TITLE    = '[copy_to]:'
-  ,LOG_SUBTITLE = 'copied'
 ;
 
 export default function copy_to() {

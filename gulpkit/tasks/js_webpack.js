@@ -122,10 +122,10 @@ function _runWebpackCompiler( callbackForStream, compiler ) {
 * @param {Function} callbackForStream - Gulp のstream で使用するため、callback を受け取る。
 */
 function _callbackForRunWebpackCompiler( callbackForStream ) {
-  return ( error, stats ) => {
+  return ( err, stats ) => {
     let errorMessages = [];
-    if ( error ) {
-      return callbackForStream( error );
+    if ( err ) {
+      return callbackForStream( err );
     }
     if ( stats && stats.hasErrors && stats.hasErrors() ) {
       stats.toJson().errors.forEach( ( item ) => {
@@ -165,7 +165,7 @@ async function _createSplitChunks( groups, subConfPath, callback ) {
       subConfObj[ key ].test = new RegExp( test );
     }
     mergeWith( groups, subConfObj );
-  } catch ( error ) {
-    callback( error );
+  } catch ( err ) {
+    callback( err );
   }
 }

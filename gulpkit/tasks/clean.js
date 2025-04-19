@@ -15,9 +15,9 @@ export default async function clean() {
  */
 function _gitClean( comand ) {
   return new Promise( ( resolve, reject ) => {
-    exec( comand, ( error, stdout, stderror ) => {
-      if ( error || stderror ) {
-        log.error( chalk.hex( '#FF0000' )( 'clean.js \n' + error || stderror ) );
+    exec( comand, ( err, stdout, stderr ) => {
+      if ( err || stderr ) {
+        log.error( chalk.red( 'clean.js \n' + err || stderr ) );
         return reject();
       }
       if ( stdout ) {

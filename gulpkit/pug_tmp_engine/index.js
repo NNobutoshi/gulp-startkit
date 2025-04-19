@@ -12,7 +12,9 @@ const
   ,PUG_CONFIG_FILE_PATH = '../../src/_data/_pug_data.json'
   ,SITE_MAP_FILE_PATH   = '../../src/_data/sitemap.xlsx'
   ,DIRNAME              = dirname( fileURLToPath( import.meta.url ) )
-  ,settings = {
+;
+const
+  settings = {
     src          : resolve( DIRNAME, SRC_DIR ),
     extension    : /\.pug?$/,
     configFile   : resolve( DIRNAME, PUG_CONFIG_FILE_PATH ),
@@ -56,8 +58,8 @@ function _xlsxToJson( workBook ) {
 async function _readConfigFile() {
   try {
     return await readFile( settings.configFile, CHARSET );
-  } catch ( error ) {
-    return console.error( error );
+  } catch ( err ) {
+    return console.error( err );
   }
 }
 
@@ -99,8 +101,8 @@ async function _writePugConfigFile( content, newStrings, indent ) {
   try {
     await writeFile( settings.configFile, content, CHARSET );
     log( `configed  "${ relative( process.cwd(), settings.configFile ) }"` );
-  } catch ( error ) {
-    console.error( error );
+  } catch ( err ) {
+    console.error( err );
   }
 }
 
@@ -138,9 +140,9 @@ function _createPugFileByProps( props, createPugFile ) {
     pugUrl = url.replace( /\.html?$/, '.pug' );
   }
   pugUrl = join( settings.src , pugUrl );
-  mkdir( dirname( pugUrl ),{ recursive: true }, ( error ) =>{
-    if ( error ) {
-      console.error( error );
+  mkdir( dirname( pugUrl ),{ recursive: true }, ( err ) =>{
+    if ( err ) {
+      console.error( err );
     }
     createPugFile( pugUrl, htmlUrl, temp );
   } )
@@ -173,8 +175,8 @@ async function _createPugFile( pugUrl, htmlUrl, template ) {
 async function _readTemplateFile( template ) {
   try {
     return await readFile( join( settings.src, template ), CHARSET );
-  } catch ( error ) {
-    return console.error( error );
+  } catch ( err ) {
+    return console.error( err );
   }
 }
 
@@ -193,7 +195,7 @@ async function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
     } else {
       log( `Updated       "${ relative( process.cwd(), pugUrl ) }"` );
     }
-  } catch ( error ) {
-    return console.error( error );
+  } catch ( err ) {
+    return console.error( err );
   }
 }

@@ -17,14 +17,17 @@ import { css_sass as config } from '../config.js';
 const sass = gulpSass( dartSass );
 
 const
-  options = config.options
-  ,mapLogOptions = {
-    forEachFile: false
-  }
-  ,LOG_TITLE_CSS    = '[css_sass]:'
+  LOG_TITLE_CSS     = '[css_sass]:'
   ,LOG_SUBTITLE_CSS = 'compiled'
   ,LOG_TITLE_MAP    = '[css_sass:map]:'
   ,LOG_SUBTITLE_MAP = 'created'
+;
+
+const
+  options = config.options
+  ,mapLogOptions = {
+    forEachFile : false,
+  }
 ;
 
 export default function css_sass() {

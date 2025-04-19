@@ -11,7 +11,9 @@ import lastDiff from './last_diff.js';
 
 const
   WRITING_DELAY_TIME = 2000
-  ,defaultSettings = {
+;
+const
+  defaultSettings = {
     name      : '',
     allForOne : false,
     detection : true,
@@ -19,7 +21,7 @@ const
   }
 ;
 let
-  writing_timeoutId = null
+  writingTimeoutId = null
 ;
 
 export {
@@ -87,7 +89,7 @@ function _collectTargetFiles( shared, settings, collect ) {
     }
 
     /*
-     * すべてのchunk の情報を収集しておく
+     * すべてのchunk の情報を収集しておく。
      */
     shared.allFiles.set( file.path, file.clone() );
     shared.allFiles.get( file.path ).contents = null;
@@ -112,25 +114,29 @@ function _collectTargetFiles( shared, settings, collect ) {
        * 自身のパスをkey に、所属するグループ（設定で指定されたポイントとなるディレクトリ）を値に。
        */
       if ( settings.group ) {
-        shared.allFiles.get( file.path ).group =
-          file.path.slice( 0, file.path.indexOf( settings.group ) + settings.group.length );
+        const groupPath = file.path.slice(
+          0,
+          file.path.indexOf( settings.group ) + settings.group.length,
+        );
+        shared.allFiles.get( file.path ).group = groupPath;
       }
 
       /*
        * ファイルの依存関係をcall back で収集してもらう。
        */
       if ( typeof collect === 'function' ) {
-        collect.call( null, file, shared.collection );
+        collect( file, shared.collection );
       }
       callback();
-    } catch ( error ) {
-      callback( error );
+    } catch ( err ) {
+      callback( err );
     }
 
   };
 }
 
 /*
+ * ストリームに通すファイルをけっていする。
  * @param {Object} shared - 共有データ
  * @param {Object} settings - 設定
  * @param {Function} select - 通過候補選択用コールバック
@@ -138,10 +144,9 @@ function _collectTargetFiles( shared, settings, collect ) {
 function _pushSelectedFilesToStream( shared, settings, select ) {
   return async function _flush( callback ) {
     const
-      stream              = this
-      ,destFiles          = new Map()
-      ,name               = settings.name
-      ,group              = settings.group
+      stream = this
+      ,destFiles = new Map()
+      ,{ name, group } = settings
       ,promiseReadFileAll = []
     ;
 
@@ -152,16 +157,16 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
     /*
      * 消去されたファイルもtargetに。
      */
-    for ( let [ filePath, value ] of Object.entries( shared.currentDiffData ) ) {
-      if ( value.status.indexOf( 'D' )  > -1 ) {
+    for ( const [ filePath, info ] of Object.entries( shared.currentDiffData ) ) {
+      if ( info.status.includes( 'D' ) ) {
         shared.targets.set( resolve( process.cwd(), filePath ), 1 );
       }
     }
 
-    for ( let [ filePath, value ] of Object.entries( shared.lastDiffData ) ) {
+    for ( const [ filePath, info ] of Object.entries( shared.lastDiffData ) ) {
       if (
         !shared.currentDiffData[ filePath ] &&
-        value.status.indexOf( '?' ) > -1
+        info.status.includes( '?' )
       ) {
         shared.targets.set( resolve( process.cwd(), filePath ), 1 );
       }
@@ -173,16 +178,19 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
      */
     if ( group ) {
 
-      for ( let [ filePath ] of shared.allFiles ) {
-        for ( let [ targetFilePath ] of shared.targets ) {
-          const myGroup = targetFilePath.slice( 0, targetFilePath.indexOf( group ) + group.length );
-          if (
-            (
-              shared.allFiles.get( targetFilePath )
-              && shared.allFiles.get( targetFilePath ).group
-              && filePath.indexOf( shared.allFiles.get( targetFilePath ).group ) === 0
+      for ( const [ filePath ] of shared.allFiles ) {
+        for ( const [ targetFilePath ] of shared.targets ) {
+          const
+            target = shared.allFiles.get( targetFilePath )
+            ,targetGroup = target?.group
+            ,myGroup = targetFilePath.slice(
+              0,
+              targetFilePath.indexOf( group ) + group.length
             )
-            || myGroup === shared.allFiles.get( filePath ).group
+          ;
+          if (
+            ( targetGroup && filePath.startsWith( targetGroup ) ) ||
+            myGroup === shared.allFiles.get( filePath )?.group
           ) {
             destFiles.set( filePath, 1 );
           }
@@ -193,7 +201,7 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
      * 全部道連れにする場合。
      */
     } else if ( settings.allForOne === true ) {
-      for ( let [ filePath ] of shared.allFiles ) {
+      for ( const [ filePath ] of shared.allFiles ) {
         destFiles.set( filePath, 1 );
       }
 
@@ -201,13 +209,12 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
      * 候補として収集したものを通す。
      */
     } else {
-      for ( let [ filePath ] of shared.targets ) {
-        if ( shared.collection.get( filePath ) ) {
-          shared.collection.get( filePath ).forEach( dependentFilePath => {
-            destFiles.set( dependentFilePath, 1 );
-          } );
+      for ( const [ filePath ] of shared.targets ) {
+        const collection = shared.collection.get( filePath );
+        if ( collection ) {
+          collection.forEach( ( depPath ) => destFiles.set( depPath, 1 ) );
         }
-        if ( shared.allFiles.get( filePath ) ) {
+        if ( shared.allFiles.has( filePath ) ) {
           destFiles.set( filePath,1 );
         } else {
           continue;
@@ -217,7 +224,7 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
          * 収集した依存関係から候補ファイルと関係のあるファイルの最終的な選択。
          */
         if ( typeof select === 'function' ) {
-          select.call( null, filePath, shared.collection, destFiles );
+          select( filePath, shared.collection, destFiles );
         }
       } //for
     }
@@ -226,8 +233,7 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
      * allFilesから destFiles （最終候補）のpath がkey になっている値を取得して、
      * その値からFile を生成してstream にプッシュする。
      */
-
-    for ( let [ filePath ] of destFiles ) {
+    for ( const [ filePath ] of destFiles ) {
       promiseReadFileAll.push(
         _promisePushReadFileToStream( filePath, shared.allFiles, stream )
       );
@@ -239,8 +245,8 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
       lastDiff.set( name, shared.currentDiffData );
       _writeDiffData();
       callback();
-    } catch ( error ) {
-      callback( error );
+    } catch ( err ) {
+      callback( err );
     }
 
   };
@@ -248,6 +254,7 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
 }
 
 /*
+ * ファイルを読み込みストリームにプッシュする。
  * @param {String} filePath - ファイルパス
  * @param {Map} allFiles - 全chunk用
  * @param {Stream} stream - Gulp stream
@@ -258,8 +265,8 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
     const file = allFiles.get( filePath );
     file.contents = content;
     stream.push( file );
-  } catch ( error ) {
-    stream.emit( 'error', error );
+  } catch ( err ) {
+    stream.emit( 'error', err );
   }
 }
 
@@ -288,15 +295,15 @@ function _setFileContentsByGitDiff( shared ) {
             file.contents = await readFile( file.path );
             shared.targets.set( file.path, 1 );
             callback( null, file );
-          } catch ( error ) {
-            callback( error );
+          } catch ( err ) {
+            callback( err );
           }
         } )();
       } else {
         callback();
       }
-    } catch ( error ) {
-      callback( error );
+    } catch ( err ) {
+      callback( err );
     }
   };
 
@@ -316,23 +323,25 @@ function _setTargetFiles( shared, name ) {
 }
 
 /*
+ * 候補ファイルに依存するファイルを再帰選択する。
  * through2.obj()の flush function の内部で、実行。
- * 候補ファイルに依存するものを最終選択する。
  * @param {String} filePath - ファイルパス
  * @param {Object} collection - 収集した依存関係
  * @param {Map} destFiles - 通過候補
  */
-function selectTargetFiles( filePath, collection, destFiles ) {
-  ( function _run_recursive( filePath ) {
-    if ( Array.isArray( collection.get( filePath ) ) && collection.get( filePath ).length > 0 ) {
-      collection.get( filePath ).forEach( ( item ) => {
-        destFiles.set( item, 1 );
-        if ( collection.has( item ) ) {
-          _run_recursive( item );
+function selectTargetFiles( filepath, collection, destFiles ) {
+  _recurse( filepath );
+  function _recurse( path ) {
+    const deps = collection.get( path );
+    if ( Array.isArray( deps ) ) {
+      deps.forEach( ( dep ) => {
+        destFiles.set( dep, 1 );
+        if ( collection.has( dep ) ) {
+          _recurse( dep );
         }
       } );
     }
-  } )( filePath );
+  }
 }
 
 /*
@@ -340,11 +349,11 @@ function selectTargetFiles( filePath, collection, destFiles ) {
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */
 function _writeDiffData() {
-  clearTimeout( writing_timeoutId );
-  writing_timeoutId = setTimeout( () => {
+  clearTimeout( writingTimeoutId );
+  writingTimeoutId = setTimeout( () => {
     lastDiff.write();
-    clearTimeout( writing_timeoutId );
-    writing_timeoutId  = null;
+    clearTimeout( writingTimeoutId );
+    writingTimeoutId  = null;
   }, WRITING_DELAY_TIME );
 }
 
@@ -368,36 +377,38 @@ function _log( name, detected, total ) {
  * @returns {Boolean} - true or false
  */
 function _includes( data, filePath ) {
-  filePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
-  return data && Object.keys( data ).includes( filePath );
+  const relPath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  return data && Object.keys( data ).includes( relPath );
 }
 
 /*
- * 'git status -suall <dir>'
- * 得られるファイルパスをkey に、属性（「M」 や「?」 など）を値にした、
+ * git status 結果を整形
+ * 'git status -suall <dir>'で得られるファイルパスをkey に、
+ * 属性（「M」 や「?」 など）をその値に、
  * oject（差分ファイルリスト） の作成。
  * @param {String} command - git コマンド
  * @returns {Promise<Object>} - 差分ファイルリスト
  */
 function _getGitDiffData( command ) {
-  return new Promise( ( fulfill ) => {
-    exec( command, ( error, stdout, stderror ) => {
+  return new Promise( ( resolvePromise ) => {
+    exec( command, ( err, stdout, stderr ) => {
       const diffData = {};
-      if ( error || stderror ) {
-        fancyLog.error( chalk.hex( '#FF0000' )( 'diff_build.js \n' + error || stderror ) );
-        fulfill( diffData );
+      if ( err || stderr ) {
+        fancyLog.error( chalk.red( 'diff_build.js \n' + ( err || stderr ) ) );
+        return resolvePromise( diffData );
       }
       if ( stdout ) {
-        const matchedAll = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
-        for ( let item of matchedAll ) {
+        const matches = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
+        for ( const match of matches ) {
+          let path = match[ 2 ];
           // リネームの際の文字列をリネーム後のパスの形に変換する。
-          if ( item[ 2 ].indexOf( ' -> ' ) > -1 ) {
-            item[ 2 ] = item[ 2 ].split( ' -> ' )[ 1 ];
+          if ( path.indexOf( ' -> ' ) > -1 ) {
+            path = path.split( ' -> ' )[ 1 ];
           }
-          diffData[ item[ 2 ] ] = { status: item[ 1 ] };
+          diffData[ path ] = { status: match[ 1 ] };
         }
       }
-      fulfill( diffData );
+      resolvePromise( diffData );
     } );
   } );
 }

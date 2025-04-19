@@ -50,8 +50,8 @@ const
       watchEnabled : WATCH_ENABLED,
       options :{
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -78,8 +78,8 @@ const
       sourcemap_dir     : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error.messageFormatted ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.messageFormatted ) );
             this.emit( 'end' );
           },
         },
@@ -111,8 +111,8 @@ const
       watchEnabled : WATCH_ENABLED,
       options   : {
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -170,8 +170,8 @@ const
           enabled : DIFF_ENABLED,
         },
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -199,8 +199,8 @@ const
           startUnicode   : 0xF001,
         },
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -222,7 +222,7 @@ const
       watchEnabled : WATCH_ENABLED,
       options : {
         plumber : {
-          errorHandler : function( error ) {
+          errorHandler : function( err ) {
             this.emit( 'end' );
           },
         },
@@ -267,8 +267,8 @@ const
       scssDist     : SRC + '[subdir]/css',
       options  : {
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -299,8 +299,8 @@ const
       watchEnabled : WATCH_ENABLED,
       options :  {
         plumber: {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -373,8 +373,8 @@ const
       watchEnabled : WATCH_ENABLED,
       options : {
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },
@@ -401,8 +401,8 @@ const
       base           : SRC,
       options        : {
         plumber : {
-          errorHandler : function( error ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( error ) );
+          errorHandler : function( err ) {
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
             this.emit( 'end' );
           },
         },

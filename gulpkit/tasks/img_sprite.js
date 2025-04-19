@@ -10,16 +10,17 @@ import logStreamData from '../lib/log_stream_data.js';
 import { img_sprite as config } from '../config.js';
 
 const
-  options = config.options
-  ,logOptions = {
-    forEachFile: false
-  }
-  ,LOG_TITLE_PNG     = '[img_sprite:png]:'
+  LOG_TITLE_PNG      = '[img_sprite:png]:'
   ,LOG_SUBTITLE_PNG  = 'created'
   ,LOG_TITLE_SCSS    = '[img_sprite:scss]:'
   ,LOG_SUBTITLE_SCSS = 'generated'
 ;
-
+const
+  options = config.options
+  ,logOptions = {
+    forEachFile : false,
+  }
+;
 export default function img_sprite() {
   return src( config.src, { encoding: false } )
     .pipe( plumber( options.plumber ) )

@@ -29,8 +29,8 @@ async function init_browse( done ) {
     browserSync.init( options );
     done();
     return;
-  } catch ( error ) {
-    fancyLog( chalk.red( error ) );
+  } catch ( err ) {
+    fancyLog( chalk.red( err ) );
     done();
     return;
   }

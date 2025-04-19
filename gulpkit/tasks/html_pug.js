@@ -15,9 +15,11 @@ import logStreamData               from '../lib/log_stream_data.js';
 import { html_pug as config } from '../config.js';
 
 const
-  options  = config.options
-  ,LOG_TITLE = '[html_pug]:'
+  LOG_TITLE = '[html_pug]:'
   ,LOG_SUBTITLE = 'renderd'
+;
+const
+  options = config.options
 ;
 let
   pugData
@@ -117,14 +119,14 @@ function _pugRender() {
       siteData : file.data.siteData,
       pageData : file.data.pageData,
     } );
-    pug.render( String( file.contents ), options.pug, ( error, contents ) => {
-      if ( error ) {
-        return callback( error );
+    pug.render( String( file.contents ), options.pug, ( err, contents ) => {
+      if ( err ) {
+        return callback( err );
       }
       try {
         file.contents = Buffer.from( contents );
-      } catch ( error ) {
-        return callback( error );
+      } catch ( err ) {
+        return callback( err );
       }
       file.path = file.path.replace( /\.pug$/, '.html' );
       callback( null, file );
@@ -234,8 +236,8 @@ function _setImageSize() {
       } );
       file.contents = Buffer.from( contents );
       callback( null, file );
-    } catch ( error ) {
-      callback( error );
+    } catch ( err ) {
+      callback( err );
     }
 
   }
@@ -273,8 +275,8 @@ function _setImageSize() {
                   + `width=${ q }${ dimensions.width }${ q } `
                   // + `width=${ q }100${ q } `
                   + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`;
-    } catch ( error ) {
-      errorCallback( error );
+    } catch ( err ) {
+      errorCallback( err );
     }
     mapImageElementStrings.set( fullStr, imgStrings );
   }

@@ -20,7 +20,7 @@ const
   ,LOG_SUBTITLE_SCSS = 'generated'
 ;
 const
-  options         = config.options
+  options = config.options
   ,logOptionsScss = {
     forEachFile : false,
     onStream    : false,
@@ -48,11 +48,11 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
     iconFontOptions  = Object.create( options.iconfont )
     ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
     ,templateData   = {
-      fontName: iconFontOptions.fontName.replace( '[subdir]', fontSubName )
-      ,cssClass: config.cssClass
-      ,fontPath: config.fontPath
-      ,templatePath: config.templatePath
-      ,scssDist: config.scssDist.replace( '[subdir]', baseDir )
+      fontName     : iconFontOptions.fontName.replace( '[subdir]', fontSubName ),
+      cssClass     : config.cssClass,
+      fontPath     : config.fontPath,
+      templatePath : config.templatePath,
+      scssDist     : config.scssDist.replace( '[subdir]', baseDir ),
     }
   ;
 
@@ -101,8 +101,8 @@ async function _createScssFile( data, errorStream ) {
     await mkdir( data.scssDist, { recursive: true } );
     await writeFile( filePath, sourceCode, { encoding: CHARSET } );
     logStreamData( `${ LOG_TITLE_SCSS } ${ filePath }`, LOG_SUBTITLE_SCSS, logOptionsScss );
-  } catch ( error ) {
-    errorStream.emit( 'error', error );
+  } catch ( err ) {
+    errorStream.emit( 'error', err );
   }
 }
 

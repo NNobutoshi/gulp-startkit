@@ -34,8 +34,8 @@ async function _get( name ) {
   } else if ( existsSync( FILEPATH ) ) {
     try {
       diffData = JSON.parse( await readFile( FILEPATH, 'utf-8' ) );
-    } catch ( error ) {
-      throw error;
+    } catch ( err ) {
+      throw err;
     }
     return diffData[ name ] || {};
   } else {
@@ -62,14 +62,14 @@ async function _write() {
   }
   if ( !existsSync( DIRNAME ) ) {
     await mkdir( DIRNAME, { recursive: true } )
-      .catch( ( error ) => {
-        throw error;
+      .catch( ( err ) => {
+        throw err;
       } )
     ;
   }
-  writeFile( FILEPATH, JSON.stringify( diffData, null, 2 ), 'utf-8', ( error ) => {
-    if ( error ) {
-      throw error;
+  writeFile( FILEPATH, JSON.stringify( diffData, null, 2 ), 'utf-8', ( err ) => {
+    if ( err ) {
+      throw err;
     }
   } );
 }
@@ -78,9 +78,9 @@ async function _write() {
  * 保存のディレクトリごと削除。
  */
 function _reset() {
-  rm( DIRNAME, { recursive: true }, ( error ) => {
-    if ( error ) {
-      throw error;
+  rm( DIRNAME, { recursive: true }, ( err ) => {
+    if ( err ) {
+      throw err;
     }
   } );
 }

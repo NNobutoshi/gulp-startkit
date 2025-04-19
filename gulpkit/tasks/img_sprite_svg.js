@@ -11,18 +11,19 @@ import logStreamData from '../lib/log_stream_data.js';
 import { img_sprite_svg as config } from '../config.js';
 
 const
-  options = config.options
-  ,logOptions = {
-    forEachFile: false
-  }
-  ,LOG_TITLE_SVG     = '[img_sprite_svg]:'
+  LOG_TITLE_SVG      = '[img_sprite_svg]:'
   ,LOG_SUBTITLE_SVG  = 'created'
   ,LOG_TITLE_SCSS    = '[img_sprite_svg:scss]:'
   ,LOG_SUBTITLE_SCSS = 'generated'
   ,LOG_TITLE_HTML    = '[img_sprite_svg:html]:'
   ,LOG_SUBTITLE_HTML = 'created'
 ;
-
+const
+  options = config.options
+  ,logOptions = {
+    forEachFile : false,
+  }
+;
 export default function img_sprite_svg() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )

@@ -10,14 +10,15 @@ import logStreamData from '../lib/log_stream_data.js';
 import { css_scss_lint as config } from '../config.js';
 
 const
-  options = config.options
-  ,logOptions = {
-    forEachFile: false
-  }
-  ,LOG_TITLE = '[css_scss_lint]:'
+  LOG_TITLE = '[css_scss_lint]:'
   ,LOG_SUBTITLE = 'linted'
 ;
-
+const
+  options = config.options
+  ,logOptions = {
+    forEachFile : false,
+  }
+;
 export default function css_scss_lint() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )
@@ -33,8 +34,8 @@ export default function css_scss_lint() {
             log( report.replace( /<.+?>/, file.path ) );
           }
           callback( null, file );
-        } catch ( error ) {
-          callback( error );
+        } catch ( err ) {
+          callback( err );
         }
       },
     ) )
