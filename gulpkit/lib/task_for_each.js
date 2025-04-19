@@ -28,7 +28,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
       ,parent = splits[ 0 ] + group
       ,child  = splits[ 1 ]
     ;
-    if ( !groupedSources.get( parent ) ) {
+    if ( groupedSources.has( parent ) === false ) {
       groupedSources.set( parent, {
         children : [],
         baseDir  : splits[ 0 ].replace( resolve( process.cwd(), base ), '' ),

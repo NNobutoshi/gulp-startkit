@@ -149,14 +149,20 @@ const
       data    : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
       options : {
         imgSize : true,
-        format : {
+        injectImageSize : {
+          imgRegEx : /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g,
+          enabled  : true,
+        },
+        formatHtml : {
           repairAElement        : true,
           commentPosition       : 'inside', // inside or outside
           commentOnOneLine      : true,
           blankLineAfterComment : true,
           indent                : true,
+          uglyAElementRegEx     : /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg,
+          endCommentRegEx       : /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg,
         },
-        beautifyHtml : {
+        beautify : {
           indent_size : 2,
           indent_char : ' ',
         },

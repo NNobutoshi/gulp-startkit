@@ -32,9 +32,9 @@ export default function html_pug() {
     .pipe( src( config.imgSrc, { read: false } ) )
     .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
     .on( 'data', _setPugData )
-    .pipe( _pugRender() )
-    .pipe( _beautify() )
-    .pipe( _setImageSize() )
+    .pipe( _renderPug() )
+    .pipe( _formatHtml() )
+    .pipe( _injectImageSize() )
     .pipe( dest( config.dist ) )
     .pipe( logStreamData( LOG_TITLE, LOG_SUBTITLE ) )
   ;
@@ -45,9 +45,10 @@ export default function html_pug() {
  * @param {object} file
  */
 function _setPugData( file ) {
-  if ( /\.(png|jpg|svg)$/.test( file.path ) ) {
+  if ( file.path.endsWith( '.pug' ) === false ) {
     return;
   }
+
   const keyFilePath = file.path
     .replace( resolve( process.cwd(), config.base ), '' )
     .replace( /\\/g, '/' )
@@ -104,53 +105,48 @@ function _collectTargetFiles( file, collection ) {
 /*
  * Pug の実行。
  */
-function _pugRender() {
+function _renderPug() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
 
-  return through.obj( _transform );
-
-  function _transform( file, enc, callback ) {
-    if ( ignoreFileRegEx.test( file.basename ) ) {
-      return callback();
-    }
-    Object.assign( options.pug, {
-      filename : file.path,
-      self     : true,
-      siteData : file.data.siteData,
-      pageData : file.data.pageData,
-    } );
-    pug.render( String( file.contents ), options.pug, ( err, contents ) => {
-      if ( err ) {
-        return callback( err );
+  return through.obj(
+    function _transform( file, enc, callback ) {
+      if ( ignoreFileRegEx.test( file.basename ) ) {
+        return callback();
       }
+      const pugOptions = {
+        ...options.pug,
+        filename: file.path,
+        self: true,
+        siteData: file.data.siteData,
+        pageData: file.data.pageData,
+      };
       try {
-        file.contents = Buffer.from( contents );
+        const html = pug.render( String( file.contents ), pugOptions );
+        file.contents = Buffer.from( html );
+        file.path = file.path.replace( /\.pug$/, '.html' );
+        callback( null, file );
       } catch ( err ) {
         return callback( err );
       }
-      file.path = file.path.replace( /\.pug$/, '.html' );
-      callback( null, file );
-    } );
-  }
-
+    }
+  );
 }
 
 /*
  * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
  */
-function _beautify() {
+function _formatHtml() {
   const
-    ugliyAElementRegEx = /^([\t ]*)([^\r\n]*?<a [^>]+>(\r?\n|\r)[\s\S]*?<\/a>[^\r\n]*)$/mg
-    ,endCommentRegEx   = /(<\/.+?>)(\r?\n|\r)(\s*)<!--(\/[.#].+?)-->/mg
+    uglyAElementRegEx = options.formatHtml.uglyAElementRegEx
+    ,endCommentRegEx  = options.formatHtml.endCommentRegEx
   ;
 
-  return through.obj( _transform );
+  return through.obj(
+    function( file, enc, callback ) {
+      let contents = String( file.contents );
 
-  function _transform( file, enc, callback ) {
-    let contents = String( file.contents );
-
-    /*
+      /*
      * オプションで指定があれば、
      * <div> などを内包する<a> の体裁を整える。
      *
@@ -159,56 +155,56 @@ function _beautify() {
      *  </div></a>     \   </div>
      *                 \ </a>
      */
-    if ( options.format.repairAElement === true ) {
-      contents = contents.replace(
-        ugliyAElementRegEx
-        ,function( _all, indent, element, linefeed ) {
-          element = element
-            .replace( '><a ', '>' + linefeed + '<a ' )
-            .replace( '</a>', '</a>' + linefeed )
-          ;
-          return beautify.html( element, options.beautifyHtml ).replace( /^/mg, indent );
-        } )
-      ;
-    }
+      if ( options.formatHtml.repairAElement === true ) {
+        contents = contents.replace(
+          uglyAElementRegEx,
+          ( _all, indent, element, linefeed ) => {
+            const fixed = element
+              .replace( '><a ', '>' + linefeed + '<a ' )
+              .replace( '</a>', '</a>' + linefeed )
+            ;
+            return beautify.html( fixed, options.beautify ).replace( /^/mg, indent );
+          },
+        )
+        ;
+      }
 
-    /*
+      /*
      * オプションで指定があれば、インデントをトル。
      */
-    if ( options.format.indent === false ) {
-      contents = contents.replace( /^([\t ]+)/mg, '' );
-    }
+      if ( options.formatHtml.indent === false ) {
+        contents = contents.replace( /^([\t ]+)/mg, '' );
+      }
 
-    /*
+      /*
      * 閉じタグ付近に付けるコメントに関する体裁。
      */
-    if ( options.format.commentPosition ) {
-      contents = contents.replace( endCommentRegEx, _replacementEndComment );
-    }
+      if ( options.formatHtml.commentPosition ) {
+        contents = contents.replace( endCommentRegEx, _replacementEndComment );
+      }
 
-    file.contents = Buffer.from( contents );
-    callback( null, file );
-  }
+      file.contents = Buffer.from( contents );
+      callback( null, file );
+    }
+  );
 }
 
 
 /*
  * img サイズの自動挿入
  */
-function _setImageSize() {
+function _injectImageSize() {
   const
-    promiseReplaceImageElementStringsAll = []
-    ,mapImageElementStrings = new Map()
+    mapImageElementStrings = new Map()
   ;
   if ( options.imgSize === false ) {
     return through.obj();
   }
 
-  return through.obj( _transform );
-
-  async function _transform( file, enc, callback ) {
+  return through.obj( async function( file, enc, callback ) {
     const
-      imgRegEx = /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g
+      imgRegEx = options.injectImageSize.imgRegEx
+      ,promiseReplaceImageElementStringsAll = []
     ;
     let contents = String( file.contents );
     for ( const match of contents.matchAll( imgRegEx ) ) {
@@ -219,28 +215,29 @@ function _setImageSize() {
       ;
       if (
         _isExternalSrc( srcPath ) === true
-        || ( frontPart.indexOf( 'width' ) > -1 || frontPart.indexOf( 'height' ) > -1 )
-        || (  rearPart.indexOf( 'width' ) > -1 || rearPart.indexOf( 'height' ) > -1 )
+        || ( frontPart.includes( 'width' ) === true || frontPart.includes( 'height' ) === true )
+        || ( rearPart.includes( 'width' ) === true || rearPart.includes( 'height' ) === true )
       ) {
         continue;
       }
       promiseReplaceImageElementStringsAll.push(
-        addImageDimensionsToElementStrings( match, file, callback )
+        addImageDimensionsToElementStrings( match, file, mapImageElementStrings, callback )
       );
     } // for
 
     try {
       await Promise.all( promiseReplaceImageElementStringsAll );
-      contents = contents.replace( imgRegEx, ( fullStr ) => {
-        return mapImageElementStrings.get( fullStr ) || fullStr;
-      } );
+      contents = contents.replace(
+        imgRegEx,
+        ( fullStr ) => mapImageElementStrings.get( fullStr ) || fullStr,
+      );
       file.contents = Buffer.from( contents );
       callback( null, file );
     } catch ( err ) {
       callback( err );
     }
-
-  }
+  } )
+  ;
 
   /*
    * img || source 要素に width と height を追加する。
@@ -248,7 +245,7 @@ function _setImageSize() {
    * @param {object} file
    * @param {function} errorCallback
    */
-  async function addImageDimensionsToElementStrings( match, file, errorCallback ) {
+  async function addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
     const
       fullStr    = match[ 0 ]
       ,tagName   = match[ 1 ]
@@ -264,21 +261,19 @@ function _setImageSize() {
       // 相対パスであれば
         : resolve( file.dirname, srcPath )
     ;
-    let
-      dimensions
-      ,imgStrings
-    ;
     try {
-      dimensions = await imageSizeFromFile( preparedSrcPath );
-      imgStrings  = `<${ tagName }${ frontPart }${ attrName }=`
+      const
+        dimensions = await imageSizeFromFile( preparedSrcPath )
+        ,elementWithSize  = `<${ tagName }${ frontPart }${ attrName }=`
                   + `${ q }${ srcPath }${ query }${ q } `
                   + `width=${ q }${ dimensions.width }${ q } `
                   // + `width=${ q }100${ q } `
-                  + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`;
+                  + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`
+      ;
+      map.set( fullStr, elementWithSize );
     } catch ( err ) {
       errorCallback( err );
     }
-    mapImageElementStrings.set( fullStr, imgStrings );
   }
 }
 
@@ -291,12 +286,17 @@ function _setImageSize() {
  * @param {string} comment
  */
 function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
-  comment = '<!--' + comment + '-->';
+  const
+    htmlComment = '<!--' + comment + '-->'
+    ,positionInside = options.formatHtml.commentPosition === 'inside'
+    ,oneLine = options.formatHtml.commentOnOneLine === true
+    ,blankLine = options.formatHtml.blankLineAfterComment === true
+  ;
 
   /*
    * コメントを閉じタグ内側に付けたい場合。
    */
-  if ( options.format.commentPosition === 'inside' ) {
+  if ( positionInside === true ) {
 
     /*
      * コメントと閉じタグを1行にまとめるか否か。
@@ -305,26 +305,24 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * <!-- -->
      * </div>
      */
-    if ( options.format.commentOnOneLine === true ) {
+    if ( oneLine === true ) {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.format.blankLineAfterComment === true ) {
-        return comment + endTag + lineFeed;
-      } else {
-        return comment + endTag;
-      }
+      return ( blankLine === true )
+        ? htmlComment + endTag + lineFeed
+        : htmlComment + endTag
+      ;
     } else {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.format.blankLineAfterComment === true ) {
-        return comment + lineFeed + indent + endTag + lineFeed;
-      } else {
-        return comment + lineFeed + indent + endTag;
-      }
+      return ( blankLine === true )
+        ? htmlComment + lineFeed + indent + endTag + lineFeed
+        : htmlComment + lineFeed + indent + endTag
+      ;
     }
 
   /*
@@ -339,26 +337,24 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * </div>
      * <!-- -->
      */
-    if ( options.format.commentOnOneLine === true ) {
+    if ( oneLine === true ) {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.format.blankLineAfterComment === true ) {
-        return endTag + comment + lineFeed;
-      } else {
-        return endTag + comment;
-      }
+      return ( blankLine === true )
+        ? endTag + htmlComment + lineFeed
+        : endTag + htmlComment
+      ;
     } else {
 
       /*
        * コメントの付いた閉じタグ後に空行をつけるか否か。
        */
-      if ( options.format.blankLineAfterComment === true ) {
-        return endTag + lineFeed + indent + comment + lineFeed;
-      } else {
-        return endTag + lineFeed + indent + comment;
-      }
+      return ( blankLine === true )
+        ? endTag + lineFeed + indent + htmlComment + lineFeed
+        : endTag + lineFeed + indent + htmlComment
+      ;
     }
   }
 }
