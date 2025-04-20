@@ -1,4 +1,4 @@
-# gulp_startkit
+# gulp_starter-kit
 
 静的な中規模Web サイトのGulp による製作用。
 
