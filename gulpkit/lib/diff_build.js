@@ -16,7 +16,7 @@ const
   defaultSettings = {
     name      : '',
     allForOne : false,
-    detection : true,
+    anabled   : true,
     command   : 'git status -suall',
   }
 ;
