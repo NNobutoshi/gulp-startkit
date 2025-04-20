@@ -1,9 +1,10 @@
 import SVGLint from 'svglint';
 import through from 'through2';
 
-/*
+/**
  * svg をsrc にするタスク用。
  * エラーが拾いにくいため。
+ * @returns {Object} - Gulp stream
  */
 export default function svg_lint() {
 

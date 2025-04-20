@@ -25,6 +25,10 @@ let
   pugData
 ;
 
+/**
+ * Pug を実行するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
@@ -40,7 +44,7 @@ export default function html_pug() {
   ;
 }
 
-/*
+/**
  * Pug の実行前に、Pug に渡すデータをセットする。
  * @param {object} file
  */
@@ -60,7 +64,7 @@ function _setPugData( file ) {
   };
 }
 
-/*
+/**
  * 依存関係を調べ、Objectにまとめる。
  * through2 のtransformFunction の内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
@@ -102,7 +106,7 @@ function _collectTargetFiles( file, collection ) {
   }
 }
 
-/*
+/**
  * Pug の実行。
  */
 function _renderPug() {
@@ -132,7 +136,7 @@ function _renderPug() {
   );
 }
 
-/*
+/**
  * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
  */
@@ -190,7 +194,7 @@ function _formatHtml() {
 }
 
 
-/*
+/**
  * img サイズの自動挿入
  */
 function _injectImageSize() {
@@ -239,7 +243,7 @@ function _injectImageSize() {
   } )
   ;
 
-  /*
+  /**
    * img || source 要素に width と height を追加する。
    * @param {object} match
    * @param {object} file
@@ -264,10 +268,10 @@ function _injectImageSize() {
     try {
       const
         dimensions = await imageSizeFromFile( preparedSrcPath )
-        ,elementWithSize  = `<${ tagName }${ frontPart }${ attrName }=`
+        ,elementWithSize  =
+                    `<${ tagName }${ frontPart }${ attrName }=`
                   + `${ q }${ srcPath }${ query }${ q } `
                   + `width=${ q }${ dimensions.width }${ q } `
-                  // + `width=${ q }100${ q } `
                   + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`
       ;
       map.set( fullStr, elementWithSize );
@@ -277,7 +281,7 @@ function _injectImageSize() {
   }
 }
 
-/*
+/**
  * 閉じタグ付近に付けるコメントに関する体裁。
  * @param {string} _all
  * @param {string} endTag

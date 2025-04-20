@@ -13,32 +13,35 @@ const
   ,FILEPATH         = resolve( dirname( fileURLToPath( import.meta.url ) ), RELATIVEFILEPATH )
 ;
 
+/**
+ * @param {Function} done gulp タスクのコールバック
+ * @returns
+ */
 async function init_browse( done ) {
   if ( !existsSync( FILEPATH ) ) {
     fancyLog( chalk.gray( 'no serve' ) );
-    done();
-    return;
+    return done();
   }
   try {
     const { enabled, options } = await import( RELATIVEFILEPATH );
     if ( enabled === false ) {
       fancyLog( chalk.gray( 'no serve' ) );
-      done();
-      return;
+      return done();
     }
     browserSync.init( options );
-    done();
-    return;
+    return done();
   } catch ( err ) {
     fancyLog( chalk.red( err ) );
-    done();
-    return;
+    return done();
   }
 }
 
+/**
+ * @param {Function} done gulp タスクのコールバック
+ */
 function reload_browse( done ) {
   if ( browserSync.active ) {
     browserSync.reload();
   }
-  done();
+  return done();
 }

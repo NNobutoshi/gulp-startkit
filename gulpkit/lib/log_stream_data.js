@@ -10,7 +10,8 @@ const defaultSettings = {
   textColorHex : '#000088',
 };
 
-/*
+/**
+ * gulp-stream のデータをログに出力する。
  * @param {string} title
  * @param {string} subTitle
  * @param {object} options

@@ -8,7 +8,7 @@ export default function taskForEach( group, base, branchTask ) {
   return _groupSrc( groupedSources, group, base, branchTask );
 }
 
-/*
+/**
  * 指定のグループに従ってsource を小分けする。
  * @param {Map} groupedSources
  * @param {string} group
@@ -48,7 +48,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
 
 }
 
-/*
+/**
  * branchTask は、小分けしたグループ毎、Gulp.src 用の新しいsourceとdest 用のパスを渡し、
  * Gulp のストリームを受け取る。
  * @param {Map} groupedSources

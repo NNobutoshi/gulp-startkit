@@ -21,6 +21,11 @@ const
     forEachFile : false,
   }
 ;
+
+/**
+ * PNGスプライトを作成するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function img_sprite() {
   return src( config.src, { encoding: false } )
     .pipe( plumber( options.plumber ) )
@@ -29,6 +34,12 @@ export default function img_sprite() {
   ;
 }
 
+/**
+ * 任意の各フォルダ毎に、PNGスプライトを作成する。
+ * @param {Array} subSrc - PNGスプライトのソース
+ * @param {String} baseDir - グループ名
+ * @returns {Object} - Gulp stream
+ */
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )

@@ -76,7 +76,7 @@ function diff_build( options, collect, select ) {
   );
 }
 
-/*
+/**
  * @param {Object} shared - 共有データ
  * @param {Object} settings - 設定
  * @param {Function} collect - 依存関係収集用コールバック
@@ -135,7 +135,7 @@ function _collectTargetFiles( shared, settings, collect ) {
   };
 }
 
-/*
+/**
  * ストリームに通すファイルをけっていする。
  * @param {Object} shared - 共有データ
  * @param {Object} settings - 設定
@@ -253,7 +253,7 @@ function _pushSelectedFilesToStream( shared, settings, select ) {
 
 }
 
-/*
+/**
  * ファイルを読み込みストリームにプッシュする。
  * @param {String} filePath - ファイルパス
  * @param {Map} allFiles - 全chunk用
@@ -270,7 +270,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
   }
 }
 
-/*
+/**
  * one source → one destination 用。
  * Gulp.src のオプション、 { read: false } の速さに期待して。
  * Gulp.src() { read: false } で得たfile.path がGit のdiff の結果の中に含まれているなら、
@@ -309,7 +309,7 @@ function _setFileContentsByGitDiff( shared ) {
 
 }
 
-/*
+/**
  * @param {Object} shared - 共有データ
  * @param {String} name - タスク名
  */
@@ -322,7 +322,7 @@ function _setTargetFiles( shared, name ) {
   };
 }
 
-/*
+/**
  * 候補ファイルに依存するファイルを再帰選択する。
  * through2.obj()の flush function の内部で、実行。
  * @param {String} filePath - ファイルパス
@@ -344,7 +344,7 @@ function selectTargetFiles( filepath, collection, destFiles ) {
   }
 }
 
-/*
+/**
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */
@@ -357,7 +357,7 @@ function _writeDiffData() {
   }, WRITING_DELAY_TIME );
 }
 
-/*
+/**
  * 検知数と通過させた数のログ
  * @param {String} name - タスク名
  * @param {Number} detected - 検知数
@@ -370,7 +370,7 @@ function _log( name, detected, total ) {
   }
 }
 
-/*
+/**
  * 差分ファイルリストに、filePath が含まれているか調べる。
  * @param {Object} data - 差分ファイルリスト
  * @param {String} filePath - ファイルパス
@@ -381,7 +381,7 @@ function _includes( data, filePath ) {
   return data && Object.keys( data ).includes( relPath );
 }
 
-/*
+/**
  * git status 結果を整形
  * 'git status -suall <dir>'で得られるファイルパスをkey に、
  * 属性（「M」 や「?」 など）をその値に、

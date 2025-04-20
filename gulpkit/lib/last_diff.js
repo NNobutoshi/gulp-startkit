@@ -23,7 +23,7 @@ export default  {
   reset : _reset,
 };
 
-/*
+/**
  * 環境変数に格納されている差分ファイルリストを優先して取得。
  * @param {string} name
  * @returns {object} diff data
@@ -44,7 +44,7 @@ async function _get( name ) {
   }
 }
 
-/*
+/**
  * 環境変数に格納する。
  * @param {string} name
  * @param {object} data
@@ -53,8 +53,9 @@ function _set( name, data ) {
   diffData[ name ] = data;
 }
 
-/*
+/**
  * ファイルに書き込み、保存。
+ * @returns {Promise}
  */
 async function _write() {
   if ( !diffData  ) {

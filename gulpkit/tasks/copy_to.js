@@ -19,6 +19,10 @@ const
   }
 ;
 
+/**
+ * 指定されたファイルをコピーするタスク。
+ * @returns {Object} - Gulp stream
+*/
 export default function copy_to() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )

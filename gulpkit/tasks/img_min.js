@@ -11,6 +11,10 @@ const
   options = config.options
 ;
 
+/*
+ * 画像を圧縮するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function img_min() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )

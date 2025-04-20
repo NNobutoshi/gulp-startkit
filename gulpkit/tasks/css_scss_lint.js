@@ -19,6 +19,11 @@ const
     forEachFile : false,
   }
 ;
+
+/**
+ * SCSSのLintを実行するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function css_scss_lint() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )

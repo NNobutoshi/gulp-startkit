@@ -27,6 +27,10 @@ const
   }
 ;
 
+/**
+ * アイコンフォントを作成するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function icon_font() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
@@ -36,7 +40,7 @@ export default function icon_font() {
   ;
 }
 
-/*
+/**
  * iconfontの設定を行い、アイコンフォントの作成を行う。
  * @param {Array} subSrc - iconfontのソース
  * @param {String} baseDir - グループ名
@@ -66,7 +70,8 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
   ;
 }
 
-/*
+/**
+ * iconfontの設定を行い、アイコンフォントの作成を行う。
  * SCSSファイル作成の準備を行う。
  * 引数にエラーを伝えるためのストリームを渡す。
  * @param {Object} templateData - iconfontの設定情報
@@ -84,7 +89,7 @@ function _generateScssFromGlyphs( templateData, trunkStream ) {
   };
 }
 
-/*
+/**
  * SCSSファイルを作成する
  * @param {Object} data - iconfontの設定情報
  * @param {Object} errorStream - エラーを伝えるストリーム
@@ -106,7 +111,7 @@ async function _createScssFile( data, errorStream ) {
   }
 }
 
-/*
+/**
  * ファイルのタイムスタンプ(stats.mtime)を取得し、最も新しいものを返す。
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @param {Array} filePaths - ファイルパスの配列

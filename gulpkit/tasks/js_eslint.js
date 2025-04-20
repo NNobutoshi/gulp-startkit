@@ -18,6 +18,10 @@ const
   }
 ;
 
+/**
+ * JavaScriptのLintを実行するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function js_eslint() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )

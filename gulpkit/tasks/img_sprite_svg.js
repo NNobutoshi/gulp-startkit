@@ -24,6 +24,11 @@ const
     forEachFile : false,
   }
 ;
+
+/**
+ * SVGスプライトを作成するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function img_sprite_svg() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
@@ -33,6 +38,13 @@ export default function img_sprite_svg() {
   ;
 }
 
+/**
+ * 任意の各フォルダ毎に、SVGスプライトを作成する。
+ * @param {Array} subSrc - SVGスプライトのソース
+ * @param {String} baseDir - グループ名
+ * @param {Object} trunkStream - エラーを伝えるストリーム
+ * @returns {Object} - Gulp stream
+ */
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )
     .pipe( svgSprite( options.svgSprite ) )

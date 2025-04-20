@@ -9,9 +9,10 @@ export default async function clean() {
   await _gitClean( config.command );
 }
 
-/*
+/**
  * Git Command をつかってUntracked fileを、削除。
- * 戻り値はPromise。
+ * @param {string} command - git clean コマンド
+ * @returns {Promise}
  */
 function _gitClean( comand ) {
   return new Promise( ( resolve, reject ) => {

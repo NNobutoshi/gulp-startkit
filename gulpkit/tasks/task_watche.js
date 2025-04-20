@@ -9,6 +9,12 @@ const
   ,watchOptions = config.task_watche.options.watch
 ;
 
+/**
+ * gulp watch タスクを生成する関数
+ * @param {Array} tasks タスク名の配列
+ * @param {Function} commonNextTask 共通の次のタスク
+ * @returns {Function} watch タスク
+ */
 export default function task_watche( tasks, commonNextTask ) {
 
   return function watch_init( done ) {

@@ -28,26 +28,34 @@ const
   ,mapLogOptions = {
     forEachFile : false,
   }
+  ,sourcemapsEnabled = config.sourcemapsEnabled
 ;
 
+/**
+ * Sass を実行するタスク。
+ * @returns {Object} - Gulp stream
+ */
 export default function css_sass() {
-  if ( config.cssMqpackEnabled ) {
+  if (
+    config.cssMqpackEnabled &&
+    options.postcss.plugins.some( ( p ) => p.postcssPlugin === 'mqpacker' ) === false
+  ) {
     options.postcss.plugins.push( mqpacker() );
   }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectTargetFiles, selectTargetFiles ) )
-    .pipe( gulpIf( ( config.sourcemapsEnabled === true ), sourcemaps.init() ) )
+    .pipe( gulpIf( ( sourcemapsEnabled === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( gulpIf( config.sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
+    .pipe( gulpIf( sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
     .pipe( gulpIf( /\.map$/, logStreamData( LOG_TITLE_MAP, LOG_SUBTITLE_MAP, mapLogOptions ) ) )
     .pipe( gulpIf( /\.css$/, logStreamData( LOG_TITLE_CSS, LOG_SUBTITLE_CSS ) ) )
   ;
 }
 
-/*
+/**
  * 依存関係を調べ、Objectにまとめる。
  * through2 のtransformFunctionの内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
@@ -69,21 +77,31 @@ function _collectTargetFiles( file, collection ) {
   ;
   for ( const match of matches ) {
     let
-      dependentFilePath
+      dependencyFilePath = resolve( file.dirname, match[ 2 ] )
+      ,targets
+      ,depFilePathBasename
     ;
-    dependentFilePath = resolve( file.dirname, match[ 2 ] );
-    if ( !match[ 3 ] ) {
-      dependentFilePath += '.scss';
+    const
+      extension = match[ 3 ]
+    ;
+    // 拡張子がない場合は .scss を追加。
+    if ( !extension ) {
+      dependencyFilePath += '.scss';
     }
-    if ( /^_/.test( basename( dependentFilePath ) ) === false ) {
-      dependentFilePath = join(
-        dirname( dependentFilePath ),
-        basename( dependentFilePath ).replace( /^/, '_' )
+    depFilePathBasename = basename( dependencyFilePath );
+    // アンダースコアがない場合は補う。
+    if ( depFilePathBasename.startsWith( '_' )  === false ) {
+      dependencyFilePath = join(
+        dirname( dependencyFilePath ),
+        '_' + depFilePathBasename
       );
     }
-    if ( !collection.get( dependentFilePath ) ) {
-      collection.set( dependentFilePath, [] );
+    if ( collection.has( dependencyFilePath ) === false ) {
+      collection.set( dependencyFilePath, [] );
     }
-    collection.get( dependentFilePath ).push( file.path );
+    targets = collection.get( dependencyFilePath );
+    if ( targets.includes( dependencyFilePath ) === false ) {
+      targets.push( file.path );
+    }
   } // for
 }
