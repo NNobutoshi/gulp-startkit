@@ -71,7 +71,7 @@ function diff_build( options, collect, select ) {
   }
 
   return through.obj(
-    _preparBeforSlectingFiles( shared, settings, collect ),
+    _prepareBeforeSelectingFiles( shared, settings, collect ),
     _pushSelectedFilesToStream( shared, settings, select ),
   );
 }
@@ -134,7 +134,7 @@ function _setTargetFilesToLastDiff( shared, name ) {
  * @param {Object} settings - 設定
  * @param {Function} collect - 依存関係収集用コールバック
  */
-function _preparBeforSlectingFiles( shared, settings, collect ) {
+function _prepareBeforeSelectingFiles( shared, settings, collect ) {
   return async function _transform( file, enc, callback ) {
 
     if ( file.isStream && file.isStream() ) {
