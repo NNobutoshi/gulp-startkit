@@ -65,15 +65,68 @@ function diff_build( options, collect, select ) {
 
   if ( settings.oneToOne === true ) {
     return through.obj(
-      _setFileContentsByGitDiff( shared ),
-      _setTargetFiles( shared, settings.name ),
+      _setFileContentsAndPushToStream( shared ),
+      _setTargetFilesToLastDiff( shared, settings.name ),
     );
   }
 
   return through.obj(
-    _collectTargetFiles( shared, settings, collect ),
+    _preparBeforSlectingFiles( shared, settings, collect ),
     _pushSelectedFilesToStream( shared, settings, select ),
   );
+}
+
+/**
+ * one source → one destination 用。
+ * Gulp.src のオプション、 { read: false } の速さに期待して。
+ * Gulp.src() { read: false } で得たfile.path がGit のdiff の結果の中に含まれているなら、
+ * contents をreadFile で改めて読み込み、file.contents に代入する。
+ * @param {Object} shared - 共有データ
+ * @returns {Function} - transform function
+ */
+function _setFileContentsAndPushToStream( shared ) {
+  return async function _transform( file, enc, callback ) {
+    if ( file.isStream && file.isStream() ) {
+      return callback( new Error( 'Streaming not supported' ) );
+    }
+    shared.currentDiffData = await shared.promiseGetGitDiffData;
+    shared.lastDiffData    = await shared.promiseGetLastDiffData;
+    try {
+      if (
+        _includes( shared.currentDiffData, file.path ) ||
+        _includes( shared.lastDiffData, file.path )
+      ) {
+        ( async function() {
+          try {
+            file.contents = await readFile( file.path );
+            shared.targets.set( file.path, -1 );
+            callback( null, file );
+          } catch ( err ) {
+            callback( err );
+          }
+        } )();
+      } else {
+        callback();
+      }
+    } catch ( err ) {
+      callback( err );
+    }
+  };
+
+}
+
+/**
+ * one source → one destination 用。
+ * @param {Object} shared - 共有データ
+ * @param {String} name - タスク名
+ */
+function _setTargetFilesToLastDiff( shared, name ) {
+  return function _flush( callback ) {
+    lastDiff.set( name, shared.currentDiffData );
+    _writeDiffData();
+    _log( name, shared.targets.size, shared.targets.size );
+    callback();
+  };
 }
 
 /**
@@ -81,7 +134,7 @@ function diff_build( options, collect, select ) {
  * @param {Object} settings - 設定
  * @param {Function} collect - 依存関係収集用コールバック
  */
-function _collectTargetFiles( shared, settings, collect ) {
+function _preparBeforSlectingFiles( shared, settings, collect ) {
   return async function _transform( file, enc, callback ) {
 
     if ( file.isStream && file.isStream() ) {
@@ -114,8 +167,7 @@ function _collectTargetFiles( shared, settings, collect ) {
        * 自身のパスをkey に、所属するグループ（設定で指定されたポイントとなるディレクトリ）を値に。
        */
       if ( settings.group ) {
-        const groupPath = file.path.slice(
-          0,
+        const groupPath = file.path.slice( 0,
           file.path.indexOf( settings.group ) + settings.group.length,
         );
         shared.allFiles.get( file.path ).group = groupPath;
@@ -136,7 +188,7 @@ function _collectTargetFiles( shared, settings, collect ) {
 }
 
 /**
- * ストリームに通すファイルをけっていする。
+ * ストリームに通すファイルを決定する。
  * @param {Object} shared - 共有データ
  * @param {Object} settings - 設定
  * @param {Function} select - 通過候補選択用コールバック
@@ -268,58 +320,6 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
   } catch ( err ) {
     stream.emit( 'error', err );
   }
-}
-
-/**
- * one source → one destination 用。
- * Gulp.src のオプション、 { read: false } の速さに期待して。
- * Gulp.src() { read: false } で得たfile.path がGit のdiff の結果の中に含まれているなら、
- * contents をreadFile で改めて読み込み、file.contents に代入する。
- * @param {Object} shared - 共有データ
- * @returns {Function} - transform function
- */
-function _setFileContentsByGitDiff( shared ) {
-  return async function _transform( file, enc, callback ) {
-    if ( file.isStream && file.isStream() ) {
-      return callback( new Error( 'Streaming not supported' ) );
-    }
-    shared.currentDiffData = await shared.promiseGetGitDiffData;
-    shared.lastDiffData    = await shared.promiseGetLastDiffData;
-    try {
-      if (
-        _includes( shared.currentDiffData, file.path ) ||
-        _includes( shared.lastDiffData, file.path )
-      ) {
-        ( async function() {
-          try {
-            file.contents = await readFile( file.path );
-            shared.targets.set( file.path, 1 );
-            callback( null, file );
-          } catch ( err ) {
-            callback( err );
-          }
-        } )();
-      } else {
-        callback();
-      }
-    } catch ( err ) {
-      callback( err );
-    }
-  };
-
-}
-
-/**
- * @param {Object} shared - 共有データ
- * @param {String} name - タスク名
- */
-function _setTargetFiles( shared, name ) {
-  return function _flush( callback ) {
-    lastDiff.set( name, shared.currentDiffData );
-    _writeDiffData();
-    _log( name, shared.targets.size, shared.targets.size );
-    callback();
-  };
 }
 
 /**
