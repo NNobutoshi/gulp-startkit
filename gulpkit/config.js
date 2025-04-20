@@ -399,13 +399,13 @@ const
       },
     },
     'js_webpack' : {
-      src            : [ SRC + '/**/*.{js,json}' ],
-      dist           : DIST,
-      targetEntry    : /\.entry\.js$/,
-      shareFileConf  : /\.split\.json$/,
-      watchEnabled   : WATCH_ENABLED,
-      base           : SRC,
-      options        : {
+      src          : [ SRC + '/**/*.{js,json}' ],
+      dist         : DIST,
+      entry        : /\.entry\.js$/,
+      splitChunks  : /\.split\.json$/,
+      watchEnabled : WATCH_ENABLED,
+      base         : SRC,
+      options      : {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
@@ -443,7 +443,7 @@ const
           ], //rules
         }, //module
         cache : {
-          type : ( SOURCEMAPS_ENABLED ) ? 'filesystem' : 'memory',
+          type : ( DIFF_ENABLED ) ? 'filesystem' : 'memory',
         },
         plugins : [
           new webpack.SourceMapDevToolPlugin( {

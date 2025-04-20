@@ -18,7 +18,7 @@ const
   options = config.options
 ;
 let
-  compiler = null
+  webpackCompiler = null
   ,webpackConfig = config.webpackConfig
 ;
 
@@ -44,62 +44,56 @@ if ( webpackConfig.cache?.type === 'filesystem' ) {
 export default function js_webpack() {
   return src( config.src, { read : false } )
     .pipe( plumber( options.plumber ) )
-    .pipe( _webpackCompile() )
+    .pipe( _prepareWebpackConfig() )
+    .pipe( _runWebpack() )
   ;
 }
 
 /**
- * webpack のコンパイルを実行する。
+ * webpack のconfig ファイルをstream のchunk 情報を元に整形し準備する。
  * @returns {Object} - Gulp stream
- * @description
  */
-function _webpackCompile() {
+function _prepareWebpackConfig() {
   const
-    regexTarget = config.targetEntry // /\.entry\.js$/
-    ,regexShareFileConf = config.shareFileConf // /\.split\.json$/
+    regexEntryFile = config.entry // /\.entry\.js$/
+    ,regexSplitChunkJsonFile = config.splitChunks // /\.split\.json$/
     ,entries = {}
-    ,cacheGroups = {}
+    ,splitChunksGroups = {}
   ;
-
-  return through.obj( _collectEntryAndChunks, _runWebpackWithConfig );
+  return through.obj( _transform, _flush );
 
   /*
    * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
    */
-  async function _collectEntryAndChunks( file, enc, callback ) {
+  async function _transform( file, enc, callback ) {
     try {
 
       /*
        * chunk のpath が、splitChunks用のJSON データであれば、
-       * chunk のcontentsを webpackConfig で使かえる形式に変換する。
+       * chunk のcontentsを webpackConfig で使える形式に変換する。
        */
-      if ( regexShareFileConf?.test( file.path ) ) {
-        await _createSplitChunks( cacheGroups, file.path );
+      if ( regexSplitChunkJsonFile?.test( file.path ) ) {
+        await _createSplitChunks( splitChunksGroups, file.path );
       }
 
       /*
-       * entry であれば、webpackConfig で使用可能な状態にする。
+       * entry ファイルであれば、webpackConfig で使える形式に変換して登録。
        */
-      if ( regexTarget.test( file.path ) ) {
-        const { key, val } = _createEntry( file.path );
-        entries[ key ] = val;
+      if ( regexEntryFile.test( file.path ) ) {
+        const { entryName, relEntryPath } = _createEntry( file.path );
+        entries[ entryName ] = relEntryPath;
       }
-      callback();
+      callback( null, file );
     } catch ( err ) {
       callback( err );
     }
   }
 
-  /*
-   * compiler がまだ無いか、
-   * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
-   * compiler を用意する。
-   */
-  function _runWebpackWithConfig( callbackForStream ) {
+  function _flush( callback ) {
     if (
-      compiler === null
+      webpackCompiler === null
       || !isEqual( webpackConfig.entry, entries )
-      || !isEqual( webpackConfig.optimization?.splitChunks?.cacheGroups, cacheGroups )
+      || !isEqual( webpackConfig.optimization?.splitChunks?.cacheGroups, splitChunksGroups )
     ) {
 
       /* 新しく構成された entry や splitChunks が既存のものと異なる場合に config を再構築*/
@@ -111,51 +105,52 @@ function _webpackCompile() {
         },
         optimization : {
           splitChunks : {
-            cacheGroups : cacheGroups,
+            cacheGroups : splitChunksGroups,
           }
         }
       } );
-      compiler = webpack( webpackConfig );
+      webpackCompiler = webpack( webpackConfig );
     }
-    _runWebpackCompiler( callbackForStream, compiler );
+    callback();
+  }
+}
+
+/**
+ * webpack のコンパイルを実行する。
+ * @returns {Object} - Gulp stream
+ */
+function _runWebpack() {
+  return through.obj( _transform, _flush );
+  function _transform( file, enc, callback ) {
+    callback( null, file );
   }
 
-}
-
-/**
- * Webpack のコンパイルを実行。
- * Gulp のstream で使用するため、callback を受け取る。
- * @param {Function} callbackForStream - Gulp のstream で使用するため、callback を受け取る。
- * @param {object} compiler - webpack のコンパイラ
- */
-function _runWebpackCompiler( callbackForStream, compiler ) {
-  compiler.run( _callbackForRunWebpackCompiler( callbackForStream ) );
-}
-
-/**
- * webpack のコンパイラの実行後のcallback。
- * @param {Function} callbackForStream - Gulp のstream で使用するため、callback を受け取る。
- */
-function _callbackForRunWebpackCompiler( callbackForStream ) {
-  return ( err, stats ) => {
-    if ( err ) {
-      return callbackForStream( err );
-    }
-    if ( stats?.hasErrors?.() ) {
-      const errorMessages = stats.toJson().errors.map( ( e ) => e.message );
-      return callbackForStream( new Error( errorMessages.join( '\n' ) ) );
-    }
-    if ( stats ) {
-      log( stats.toString( {
-        colors : true,
-        chunks : false,
-        assets : false,
-        hash   : true,
-        errors : false,
-      } ) );
-    }
-    callbackForStream();
-  };
+  /*
+   * webpackCompiler がまだ無いか、
+   * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
+   * webpackCompiler を用意する。
+   */
+  function _flush( callback ) {
+    webpackCompiler.run( ( err, stats ) => {
+      if ( err ) {
+        return callback( err );
+      }
+      if ( stats?.hasErrors?.() ) {
+        const messages = stats.toJson().errors.map( e => e.message );
+        return callback( new Error( messages.join( '\n' ) ) );
+      }
+      if ( stats ) {
+        log( stats.toString( {
+          colors: true,
+          chunks: false,
+          assets: false,
+          hash: true,
+          errors: false,
+        } ) );
+      }
+      callback();
+    } );
+  }
 }
 
 /**
@@ -163,30 +158,30 @@ function _callbackForRunWebpackCompiler( callbackForStream ) {
  * そのディレクトリ毎で設定が行えるようにする。
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
  * @param {object} groups - webpackConfig の cacheGroups
- * @param {string} subConfPath - JSON data のpath
+ * @param {string} chunkConfigPath - JSON data のpath
  */
-async function _createSplitChunks( groups, subConfPath ) {
+async function _createSplitChunks( groups, chunkConfigPath ) {
   const
-    contents = await readFile( subConfPath, CHARSET )
-    ,subConfObj = JSON.parse( contents )
+    contents = await readFile( chunkConfigPath, CHARSET )
+    ,chunkConfig = JSON.parse( contents )
   ;
-  for ( const [ key, value ] of Object.entries( subConfObj ) ) {
+  for ( const [ key, value ] of Object.entries( chunkConfig ) ) {
     const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
-    subConfObj[ key ].test = new RegExp( test );
+    chunkConfig[ key ].test = new RegExp( test );
   }
-  mergeWith( groups, subConfObj );
+  mergeWith( groups, chunkConfig );
 }
 
 /**
  * エントリーパスから Webpack 用の key と val を作成する
  * @param {string} filePath - 対象のファイルパス
- * @returns {{ key: string, val: string }}
+ * @returns {{ entryName: string, relEntryPath: string }}
  */
 function _createEntry( filePath ) {
-  const key = relative( config.base, filePath ).replace( config.targetEntry, '' ).replace( /\\/g, '/' );
+  const entryName = relative( config.base, filePath ).replace( config.entry, '' ).replace( /\\/g, '/' );
 
-  let val = relative( process.cwd(), filePath ).replace( /\\/g , '/' );
-  val = /^\.?\.\//.test( val ) ? val : './' + val;
+  let relEntryPath = relative( process.cwd(), filePath ).replace( /\\/g , '/' );
+  relEntryPath = /^\.?\.\//.test( relEntryPath ) ? relEntryPath : './' + relEntryPath;
 
-  return { key, val };
+  return { entryName, relEntryPath };
 }
