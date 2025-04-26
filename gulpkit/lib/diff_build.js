@@ -103,11 +103,15 @@ function diff_build( options, collect, select ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
+        // すべてのファイル情報を収集
         _collectAllFiles( shared, file );
+        // 対象ファイルを選定
         await _filterByGitDiff( shared, file );
+        // グループ情報を設定
         if ( group ) {
           _assignGroup( shared, settings, file, group );
         }
+        // 依存関係を収集
         _collectDependencies( shared, collect, file );
         callback();
       } catch ( err ) {
@@ -120,14 +124,19 @@ function diff_build( options, collect, select ) {
         return callback();
       }
       try {
+        // 削除されたファイルも対象にする。
         _collectFilesWithDeletedStatus( shared );
         if ( group ) {
+        // 所属する同じグループのファイルも選択。
           _setGroupedFilesToDest( shared, destFiles, settings );
         } else if ( settings.allForOne === true ) {
+          // すべてのファイルの情報を選択。
           _setAllfilesToDest( shared, destFiles );
         } else {
+          // 最終的にstream に渡したいファイルを選択。
           _selectAndSetDest( shared, destFiles, select );
         }
+        // 収集した依存ファイルからファイルを選択し、stream に渡す。
         await _pushDestFilesToStream( shared, destFiles, stream );
         _log( settings.name, shared.targets.size, destFiles.size );
         lastDiff.set( settings.name, shared.currentDiffData );
@@ -145,7 +154,7 @@ function diff_build( options, collect, select ) {
  * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
  * そうしなければ、git のrevert などが未検知になってしまうため。
  * @param {Object} shared - 共有データ
- * @param {file} file - ストリームのチャンクファイル
+ * @param {Object} file - ストリームのチャンクファイル
  */
 async function _filterByGitDiff( shared, file ) {
   shared.currentDiffData = await shared.promiseGetGitDiffData;
@@ -169,9 +178,9 @@ async function _setFileContents( file ) {
 }
 
 /**
- * すべてのファイル情報を収集
+ * すべてのファイル情報を収集。
  * @param {Object} shared - 共有データ
- * @param {file} file - ストリームのチャンクファイル
+ * @param {Object} file - ストリームのチャンクファイル
  */
 function _collectAllFiles( shared, file ) {
   shared.allFiles.set( file.path, file.clone() );
@@ -226,7 +235,7 @@ function _collectFilesWithDeletedStatus( shared ) {
 }
 
 /**
- * 例えば候補が1ファイルでも、所属している同じグループのファイルは、全部通す。
+ * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
  * 複数src ファイルを一つに束ねる様なタスク用。
  * @param {Object} shared - 共有データ
  * @param {Map} destFiles - 通過させるファイルパスの格納用
@@ -251,7 +260,7 @@ function _setGroupedFilesToDest( shared, destFiles, group ) {
 }
 
 /**
- * 収集したすべてのファイルをdestFiles にセットする。
+ * 収集したすべてのファイルパス情報をdestFiles にセットする。
  * @param {Object} shared - 共有データ
  * @param {Map} destFiles - 通過させるファイルパスの格納用
  */
@@ -262,7 +271,7 @@ function _setAllfilesToDest( shared, destFiles ) {
 }
 
 /**
- * 最終的にstream に渡したいファイルを選択。
+ * 収集した依存ファイルからstream に渡したいファイルを選択。
  * callback 関数で選択してもらう。
  * @param {Object} shared - 共有データ
  * @param {Map} destFiles - 通過させるファイルパスの格納用
