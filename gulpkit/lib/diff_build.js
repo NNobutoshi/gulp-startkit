@@ -2,9 +2,10 @@ import { resolve, relative, sep } from 'node:path';
 import { exec }                   from 'node:child_process';
 import { readFile }               from 'node:fs/promises';
 
-import through   from 'through2';
-import fancyLog  from 'fancy-log';
-import chalk     from 'chalk';
+import through  from 'through2';
+import fancyLog from 'fancy-log';
+import chalk    from 'chalk';
+import pLmit    from 'p-limit';
 
 import lastDiff from './last_diff.js';
 
@@ -323,15 +324,18 @@ class DiffBuildProcessor {
    * @returns {Promise} - プロミス
    */
   async #pushSelectedFilesToStream( stream ) {
-    const promiseReadFileAll = [];
+    const
+      limit = pLmit( 5 )
+      ,promiseReadFileAll = []
+    ;
     for ( const [ filePath ] of this.selectedFiles ) {
-      promiseReadFileAll.push(
-        _promisePushReadFileToStream( filePath, this.allFiles, stream )
+      const limitedTask = limit(
+        () => _promisePushReadFileToStream( filePath, this.allFiles, stream )
       );
+      promiseReadFileAll.push( limitedTask );
     }
     await Promise.all( promiseReadFileAll );
   }
-
 
 }
 
