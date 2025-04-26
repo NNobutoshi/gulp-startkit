@@ -9,8 +9,8 @@ import through       from 'through2';
 import beautify      from 'js-beautify';
 import { imageSizeFromFile } from 'image-size/fromFile';
 
-import diff, { selectTargetFiles } from '../lib/diff_build.js';
-import logStreamData               from '../lib/log_stream_data.js';
+import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
+import logStreamData                     from '../lib/log_stream_data.js';
 
 import { html_pug as config } from '../config.js';
 
@@ -34,7 +34,7 @@ export default function html_pug() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( src( config.imgSrc, { read: false } ) )
-    .pipe( diff( options.diff ,_collectTargetFiles ,selectTargetFiles ) )
+    .pipe( diff( options.diff ,_collectDependencyFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )
     .pipe( _formatHtml() )
@@ -78,7 +78,7 @@ function _setPugData( file ) {
  * @param {object} file
  * @param {object} collection
  */
-function _collectTargetFiles( file, collection ) {
+function _collectDependencyFiles( file, collection ) {
   const
     contents = String( file.contents )
     ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg

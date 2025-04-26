@@ -9,8 +9,8 @@ import plumber       from 'gulp-plumber';
 import postcss       from 'gulp-postcss';
 import mqpacker      from '@hail2u/css-mqpacker';
 
-import diff, { selectTargetFiles } from '../lib/diff_build.js';
-import logStreamData               from '../lib/log_stream_data.js';
+import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
+import logStreamData                     from '../lib/log_stream_data.js';
 
 import { css_sass as config } from '../config.js';
 
@@ -44,7 +44,7 @@ export default function css_sass() {
   }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff, _collectTargetFiles, selectTargetFiles ) )
+    .pipe( diff( options.diff, _collectDependencyFiles, organizeSelectedFileMap ) )
     .pipe( gulpIf( ( sourcemapsEnabled === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
@@ -69,7 +69,7 @@ export default function css_sass() {
  * @param {object} file
  * @param {object} collection
  */
-function _collectTargetFiles( file, collection ) {
+function _collectDependencyFiles( file, collection ) {
   const
     contents = String( file.contents )
     ,regex   = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg

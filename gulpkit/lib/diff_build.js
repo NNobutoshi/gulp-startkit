@@ -26,7 +26,7 @@ let
 
 export {
   diff_build as default,
-  selectTargetFiles,
+  organizeSelectedFileMap,
 };
 
 /*
@@ -40,17 +40,19 @@ function diff_build( options, collect, select ) {
   const
     settings = mergeWith( {}, defaultSettings, options )
     ,shared = {
-      allFiles         : new Map(), // 全chumk用
-      collection       : new Map(), // 依存関係収集用
-      targets          : new Map(), // 通過候補
-      currentDiffData  : null,
-      lastDiffData     : null,
+      allFiles        : new Map(), // 全chumk用
+      collection      : new Map(), // 依存関係収集用
+      targetFiles     : new Map(), // 対象ファイル用
+      currentDiffData : null,
+      lastDiffData    : null,
       promiseGetGitDiffData  : null,
       promiseGetLastDiffData : null,
     }
-    ,destFiles = new Map()
+    ,selectedFiles = new Map()
   ;
-  let group;
+  let
+    group
+  ;
 
   if ( settings.enabled === false ) {
     return through.obj();
@@ -69,7 +71,7 @@ function diff_build( options, collect, select ) {
       async function _transform( file, enc, callback ) {
         try {
           await _filterByGitDiff( shared, file );
-          if ( !shared.targets.get( file.path ) ) {
+          if ( !shared.targetFiles.get( file.path ) ) {
             return callback();
           }
           await _setFileContents( file );
@@ -81,7 +83,7 @@ function diff_build( options, collect, select ) {
       function _flush( callback ) {
         lastDiff.set( settings.name, shared.currentDiffData );
         _writeDiffData();
-        _log( settings.name, shared.targets.size, shared.targets.size );
+        _log( settings.name, shared.targetFiles.size, shared.targetFiles.size );
         callback();
       }
     );
@@ -125,20 +127,26 @@ function diff_build( options, collect, select ) {
       }
       try {
         // 削除されたファイルも対象にする。
-        _collectFilesWithDeletedStatus( shared );
+        _collectDeletedFiles( shared );
+        // Git が未検地のファイルも対象にする。
+        _collectUntrackedFiles( shared );
         if ( group ) {
         // 所属する同じグループのファイルも選択。
-          _setGroupedFilesToDest( shared, destFiles, settings );
+          _selectGroupedFiles( shared, selectedFiles, settings );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
-          _setAllfilesToDest( shared, destFiles );
+          _selectAllFiles( shared, selectedFiles );
         } else {
-          // 最終的にstream に渡したいファイルを選択。
-          _selectAndSetDest( shared, destFiles, select );
+          // 収集した依存ファイルからstream に渡したいファイルを選択。
+          _selectFilesFromCollection( shared, selectedFiles, select );
         }
         // 収集した依存ファイルからファイルを選択し、stream に渡す。
-        await _pushDestFilesToStream( shared, destFiles, stream );
-        _log( settings.name, shared.targets.size, destFiles.size );
+        try {
+          await _pushSelectedFilesToStream( shared, selectedFiles, stream );
+        } catch ( err ) {
+          callback( 'error', err );
+        }
+        _log( settings.name, shared.targetFiles.size, selectedFiles.size );
         lastDiff.set( settings.name, shared.currentDiffData );
         _writeDiffData();
         callback();
@@ -154,7 +162,7 @@ function diff_build( options, collect, select ) {
  * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
  * そうしなければ、git のrevert などが未検知になってしまうため。
  * @param {Object} shared - 共有データ
- * @param {Object} file - ストリームのチャンクファイル
+ * @param {Object} file - chunk
  */
 async function _filterByGitDiff( shared, file ) {
   shared.currentDiffData = await shared.promiseGetGitDiffData;
@@ -163,7 +171,7 @@ async function _filterByGitDiff( shared, file ) {
     _includes( shared.currentDiffData, file.path ) ||
     _includes( shared.lastDiffData, file.path )
   ) {
-    shared.targets.set( file.path, 1 );
+    shared.targetFiles.set( file.path, 1 );
   }
 }
 
@@ -171,7 +179,7 @@ async function _filterByGitDiff( shared, file ) {
  * one source → one destination 用。
  * Gulp.src のオプション、 { read: false } の速さに期待して。
  * contents をreadFile で改めて読み込み、file.contents に代入する。
- * @param {file} file - ストリームのチャンクファイル
+ * @param {file} file - chunk
  */
 async function _setFileContents( file ) {
   file.contents = await readFile( file.path );
@@ -180,7 +188,7 @@ async function _setFileContents( file ) {
 /**
  * すべてのファイル情報を収集。
  * @param {Object} shared - 共有データ
- * @param {Object} file - ストリームのチャンクファイル
+ * @param {Object} file - chunk
  */
 function _collectAllFiles( shared, file ) {
   shared.allFiles.set( file.path, file.clone() );
@@ -193,7 +201,7 @@ function _collectAllFiles( shared, file ) {
  * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
  * @param {Object} shared - 共有データ
  * @param {Object} settings - 設定
- * @param {Object} file - ストリームのチャンクファイル
+ * @param {Object} file - chunk
  * @param {String} group - グループ名
  */
 function _assignGroup( shared, settings, file, group ) {
@@ -206,7 +214,7 @@ function _assignGroup( shared, settings, file, group ) {
  * ファイルの依存関係をCallback で収集してもらう。
  * @param {Object} shared - 共有データ
  * @param {Function} collect - 依存関係収集用コールバック
- * @param {Object} file - ストリームのチャンクファイル
+ * @param {Object} file - chunk
  */
 function _collectDependencies( shared, collect, file ) {
   if ( typeof collect === 'function' ) {
@@ -215,21 +223,28 @@ function _collectDependencies( shared, collect, file ) {
 }
 
 /**
- * 消去されたファイルもtargetに。
+ * 消去されたファイルも対象にする。
  * @param {Object} shared - 共有データ
  */
-function _collectFilesWithDeletedStatus( shared ) {
+function _collectDeletedFiles( shared ) {
   for ( const [ filePath, info ] of Object.entries( shared.currentDiffData ) ) {
     if ( info.status.includes( 'D' ) ) {
-      shared.targets.set( resolve( process.cwd(), filePath ), 1 );
+      shared.targetFiles.set( resolve( process.cwd(), filePath ), 1 );
     }
   }
-  for ( const [ filePath, info ] of Object.entries( shared.lastDiffData ) ) {
+}
+
+/**
+ * Git が未追跡のファイルも対象にする。
+ * @param {Object} shared - 共有データ
+ */
+function _collectUntrackedFiles( shared ) {
+  for ( const [ filePath, info ] of Object.entries( shared.currentDiffData ) ) {
     if (
       !shared.currentDiffData[ filePath ] &&
       info.status.includes( '?' )
     ) {
-      shared.targets.set( resolve( process.cwd(), filePath ), 1 );
+      shared.targetFiles.set( resolve( process.cwd(), filePath ), 1 );
     }
   }
 }
@@ -238,12 +253,12 @@ function _collectFilesWithDeletedStatus( shared ) {
  * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
  * 複数src ファイルを一つに束ねる様なタスク用。
  * @param {Object} shared - 共有データ
- * @param {Map} destFiles - 通過させるファイルパスの格納用
+ * @param {Map} selectedFiles - 通過させるファイルパスの格納用
  * @param {String} group - グループ名
  */
-function _setGroupedFilesToDest( shared, destFiles, group ) {
+function _selectGroupedFiles( shared, selectedFiles, group ) {
   for ( const [ filePath ] of shared.allFiles ) {
-    for ( const [ targetFilePath ] of shared.targets ) {
+    for ( const [ targetFilePath ] of shared.targetFiles ) {
       const
         target = shared.allFiles.get( targetFilePath )
         ,targetGroup = target?.group
@@ -253,20 +268,20 @@ function _setGroupedFilesToDest( shared, destFiles, group ) {
         ( targetGroup && filePath.startsWith( targetGroup ) ) ||
         myGroup === shared.allFiles.get( filePath )?.group
       ) {
-        destFiles.set( filePath, 1 );
+        selectedFiles.set( filePath, 1 );
       }
     } // for
   } // for
 }
 
 /**
- * 収集したすべてのファイルパス情報をdestFiles にセットする。
+ * 収集したすべてのファイルパス情報をselectedFiles にセットする。
  * @param {Object} shared - 共有データ
- * @param {Map} destFiles - 通過させるファイルパスの格納用
+ * @param {Map} selectedFiles - 通過させるファイルパスの格納用
  */
-function _setAllfilesToDest( shared, destFiles ) {
+function _selectAllFiles( shared, selectedFiles ) {
   for ( const [ filePath ] of shared.allFiles ) {
-    destFiles.set( filePath, 1 );
+    selectedFiles.set( filePath, 1 );
   }
 }
 
@@ -274,22 +289,22 @@ function _setAllfilesToDest( shared, destFiles ) {
  * 収集した依存ファイルからstream に渡したいファイルを選択。
  * callback 関数で選択してもらう。
  * @param {Object} shared - 共有データ
- * @param {Map} destFiles - 通過させるファイルパスの格納用
+ * @param {Map} selectedFiles - 通過させるファイルパスの格納用
  * @param {Function} select - 通過ファイル選択用コールバック
  */
-function _selectAndSetDest( shared, destFiles, select ) {
-  for ( const [ filePath ] of shared.targets ) {
+function _selectFilesFromCollection( shared, selectedFiles, select ) {
+  for ( const [ filePath ] of shared.targetFiles ) {
     const collection = shared.collection.get( filePath );
     if ( collection ) {
-      collection.forEach( ( depPath ) => destFiles.set( depPath, 1 ) );
+      collection.forEach( ( depPath ) => selectedFiles.set( depPath, 1 ) );
     }
     if ( shared.allFiles.has( filePath ) ) {
-      destFiles.set( filePath, 1 );
+      selectedFiles.set( filePath, 1 );
     } else {
       continue;
     }
     if ( typeof select === 'function' ) {
-      select( filePath, shared.collection, destFiles );
+      select( filePath, shared.collection, selectedFiles );
     }
   }
 }
@@ -297,13 +312,13 @@ function _selectAndSetDest( shared, destFiles, select ) {
 /**
  * 選択された通過ファイルをstream にプッシュする。
  * @param {Object} shared - 共有データ
- * @param {Map} destFiles - 通過させるファイルパスの格納用
+ * @param {Map} selectedFiles - 通過させるファイルパスの格納用
  * @param {Stream} stream - Gulp stream
  * @returns {Promise} - プロミス
  */
-async function _pushDestFilesToStream( shared, destFiles, stream ) {
+async function _pushSelectedFilesToStream( shared, selectedFiles, stream ) {
   const promiseReadFileAll = [];
-  for ( const [ filePath ] of destFiles ) {
+  for ( const [ filePath ] of selectedFiles ) {
     promiseReadFileAll.push(
       _promisePushReadFileToStream( filePath, shared.allFiles, stream )
     );
@@ -318,14 +333,12 @@ async function _pushDestFilesToStream( shared, destFiles, stream ) {
  * @param {Stream} stream - Gulp stream
  */
 async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
-  try {
-    const contents = await readFile( filePath );
-    const file = allFiles.get( filePath );
-    file.contents = contents;
-    stream.push( file );
-  } catch ( err ) {
-    stream.emit( 'error', err );
-  }
+  const
+    contents = await readFile( filePath )
+    ,file = allFiles.get( filePath )
+  ;
+  file.contents = contents;
+  stream.push( file );
 }
 
 /**
@@ -333,15 +346,15 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * through2.obj()の flush function の内部で実行。
  * @param {String} filePath - ファイルパス
  * @param {Object} collection - 収集した依存関係
- * @param {Map} destFiles - 通過候補
+ * @param {Map} selectedFiles - 通過候補
  */
-function selectTargetFiles( filepath, collection, destFiles ) {
+function organizeSelectedFileMap( filepath, collection, selectedFiles ) {
   _recurse( filepath );
   function _recurse( path ) {
     const deps = collection.get( path );
     if ( Array.isArray( deps ) ) {
       deps.forEach( ( dep ) => {
-        destFiles.set( dep, 1 );
+        selectedFiles.set( dep, 1 );
         if ( collection.has( dep ) ) {
           _recurse( dep );
         }
