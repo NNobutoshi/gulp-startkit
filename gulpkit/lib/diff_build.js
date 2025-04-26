@@ -111,7 +111,7 @@ function diff_build( options, collect, select ) {
         await _filterByGitDiff( shared, file );
         // グループ情報を設定
         if ( group ) {
-          _assignGroup( shared, settings, file, group );
+          _assignGroup( shared, file, group );
         }
         // 依存関係を収集
         _collectDependencies( shared, collect, file );
@@ -132,7 +132,7 @@ function diff_build( options, collect, select ) {
         _collectUntrackedFiles( shared );
         if ( group ) {
         // 所属する同じグループのファイルも選択。
-          _selectGroupedFiles( shared, selectedFiles, settings );
+          _selectGroupedFiles( shared, selectedFiles, group );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
           _selectAllFiles( shared, selectedFiles );
@@ -200,12 +200,11 @@ function _collectAllFiles( shared, file ) {
  * 複数のsrc ファイルを一つのdist にするようなタスク用。
  * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
  * @param {Object} shared - 共有データ
- * @param {Object} settings - 設定
  * @param {Object} file - chunk
  * @param {String} group - グループ名
  */
-function _assignGroup( shared, settings, file, group ) {
-  const groupPath = file.path.slice( 0, file.path.indexOf( settings.group ) + group.length );
+function _assignGroup( shared, file, group ) {
+  const groupPath = file.path.slice( 0, file.path.indexOf( group ) + group.length );
   shared.allFiles.get( file.path ).group = groupPath;
 }
 
@@ -262,11 +261,14 @@ function _selectGroupedFiles( shared, selectedFiles, group ) {
       const
         target = shared.allFiles.get( targetFilePath )
         ,targetGroup = target?.group
-        ,myGroup = targetFilePath.slice( 0, targetFilePath.indexOf( group ) + group.length )
-      ;
+        ,myGroup = targetFilePath.slice(
+          0,
+          targetFilePath.indexOf( group ) + group.length
+        )
+          ;
       if (
         ( targetGroup && filePath.startsWith( targetGroup ) ) ||
-        myGroup === shared.allFiles.get( filePath )?.group
+            myGroup === shared.allFiles.get( filePath )?.group
       ) {
         selectedFiles.set( filePath, 1 );
       }
