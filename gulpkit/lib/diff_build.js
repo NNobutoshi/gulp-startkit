@@ -65,8 +65,7 @@ function _createOneToOneStream( processor, settings ) {
     },
     function _flush( callback ) {
       try {
-        _finalizeProcessor( processor, settings );
-        callback();
+        _finalizeProcessor( processor, settings, callback );
       } catch ( err ) {
         callback( err );
       }
@@ -89,8 +88,7 @@ function _createDependencyStream( processor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await processor.collectFiles( file );
-        callback();
+        await processor.collectFiles( file, callback );
       } catch ( err ) {
         callback( err );
       }
@@ -99,9 +97,8 @@ function _createDependencyStream( processor, settings ) {
       try {
         if ( processor.currentDiffData !== null ) {
           await processor.flushFiles( this );
-          _finalizeProcessor( processor, settings );
+          _finalizeProcessor( processor, settings, callback );
         }
-        callback();
       } catch ( err ) {
         callback( err );
       }
@@ -113,11 +110,13 @@ function _createDependencyStream( processor, settings ) {
  * プロセスの最終処理。
  * @param {Object} processor - DiffBuildProcessor
  * @param {Object} settings - 設定
+ * @pram {Function} callback - コールバック
  */
-function _finalizeProcessor( processor, settings ) {
+function _finalizeProcessor( processor, settings, callback ) {
   lastDiff.set( settings.name, processor.currentDiffData );
   _writeDiffData();
   _log( settings.name, processor.targetFiles.size, processor.selectedFiles.size );
+  callback();
 }
 
 class DiffBuildProcessor {
@@ -134,7 +133,7 @@ class DiffBuildProcessor {
     this.selectedFiles = new Map();
     this.collection = new Map();
     this.targetFiles = new Map();
-    this.promiseGetGitDiffData = _getGitDiffData( settings.command );
+    this.promiseGetGitDiffData = _getGitDiffData( settings.command, settings.name );
     this.promiseGetLastDiffData = lastDiff.get( settings.name );
   }
 
@@ -148,7 +147,7 @@ class DiffBuildProcessor {
     callback( null, file );
   }
 
-  async collectFiles( file ) {
+  async collectFiles( file, callback ) {
     if ( typeof this.settings.allForOne === 'string' ) {
       this.settings.group = this.settings.allForOne.replace( /[/\\]/g, sep );
     } else {
@@ -164,6 +163,7 @@ class DiffBuildProcessor {
     }
     // 依存関係を収集
     this.#collectDependencies( file );
+    callback();
   }
 
   async flushFiles( stream ) {
@@ -433,15 +433,19 @@ function _includes( data, filePath ) {
  * 属性（「M」 や「?」 など）をその値に、
  * oject（差分ファイルリスト） の作成。
  * @param {String} command - git コマンド
+ * @param {String} name - タスク名
  * @returns {Promise<Object>} - 差分ファイルリスト
  */
-function _getGitDiffData( command ) {
-  return new Promise( ( resolvePromise ) => {
+function _getGitDiffData( command, name ) {
+  return new Promise( ( resolvePromise, rejectPromise ) => {
     exec( command, ( err, stdout, stderr ) => {
       const diffData = {};
-      if ( err || stderr ) {
-        fancyLog.error( chalk.red( 'diff_build.js \n' + ( err || stderr ) ) );
-        return resolvePromise( diffData );
+      if ( err ) {
+        fancyLog.error( chalk.red( `${ name }\n${ err }` ) );
+        return rejectPromise( err );
+      }
+      if ( stderr ) {
+        fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
         const matches = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
