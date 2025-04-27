@@ -60,16 +60,16 @@ export default function css_sass() {
  * through2 のtransformFunctionの内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
- * collection
+ * collectedFiles
  * {
  *   '読み込んでいるパス': [
  *     'chunk自身のパス'
  *    ]
  * }
  * @param {object} file
- * @param {object} collection
+ * @param {object} collectedFiles
  */
-function _collectDependencyFiles( file, collection ) {
+function _collectDependencyFiles( file, collectedFiles ) {
   const
     contents = String( file.contents )
     ,regex   = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
@@ -96,10 +96,10 @@ function _collectDependencyFiles( file, collection ) {
         '_' + depFilePathBasename
       );
     }
-    if ( collection.has( dependencyFilePath ) === false ) {
-      collection.set( dependencyFilePath, [] );
+    if ( collectedFiles.has( dependencyFilePath ) === false ) {
+      collectedFiles.set( dependencyFilePath, [] );
     }
-    targets = collection.get( dependencyFilePath );
+    targets = collectedFiles.get( dependencyFilePath );
     if ( targets.includes( dependencyFilePath ) === false ) {
       targets.push( file.path );
     }

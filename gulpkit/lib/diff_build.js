@@ -88,7 +88,7 @@ function _createDependencyStream( processor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await processor.collectFiles( file, callback );
+        await processor.collectAndGroupFiles( file, callback );
       } catch ( err ) {
         callback( err );
       }
@@ -96,7 +96,7 @@ function _createDependencyStream( processor, settings ) {
     async function _flush( callback ) {
       try {
         if ( processor.currentDiffData !== null ) {
-          await processor.flushFiles( this );
+          await processor.finalizeFileStream( this );
           _finalizeProcessor( processor, settings, callback );
         }
       } catch ( err ) {
@@ -110,7 +110,7 @@ function _createDependencyStream( processor, settings ) {
  * プロセスの最終処理。
  * @param {Object} processor - DiffBuildProcessor
  * @param {Object} settings - 設定
- * @pram {Function} callback - コールバック
+ * @param {Function} callback - コールバック
  */
 function _finalizeProcessor( processor, settings, callback ) {
   lastDiff.set( settings.name, processor.currentDiffData );
@@ -119,6 +119,11 @@ function _finalizeProcessor( processor, settings, callback ) {
   callback();
 }
 
+/**
+ * 差分ビルド処理を行うクラス。
+ * Git の差分データを基に、対象ファイルの選定や依存関係の収集、グループ化などを行う。
+ * また、選定されたファイルをストリームに渡す処理も提供する。
+ */
 class DiffBuildProcessor {
 
   constructor( settings, collect, select ) {
@@ -131,45 +136,66 @@ class DiffBuildProcessor {
     this.gitDiffDataPromise = null;
     this.allFiles = new Map();
     this.selectedFiles = new Map();
-    this.collection = new Map();
+    this.collectedFiles = new Map();
     this.targetFiles = new Map();
     this.promiseGetGitDiffData = _getGitDiffData( settings.command, settings.name );
     this.promiseGetLastDiffData = lastDiff.get( settings.name );
   }
 
+  /**
+   * Git 差分データを基に、対象ファイルの内容を設定。
+   * 対象ファイルが差分リストに含まれている場合、その内容を読み込み、
+   * file.contents に代入し、選択されたファイルリストに追加する。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
+   */
   async setFileContentsByGitDiff( file, callback ) {
     // 対象ファイルを選定
     await this.#filterByGitDiff( file );
     if ( !this.targetFiles.get( file.path ) ) {
       return callback();
     }
+    // 改めてfile を読み込み、file.contents に代入する。
     await this.#setFileContents( file );
     callback( null, file );
   }
 
-  async collectFiles( file, callback ) {
+  /**
+   * ファイルを収集し、必要に応じてグループ化を行う。
+   * 対象ファイルを差分データに基づいて選定し、依存関係を収集する。
+   * グループ化が設定されている場合、ファイルにグループ情報を付与する。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
+   */
+  async collectAndGroupFiles( file, callback ) {
     if ( typeof this.settings.allForOne === 'string' ) {
       this.settings.group = this.settings.allForOne.replace( /[/\\]/g, sep );
     } else {
       this.settings.group = false;
     }
-    // すべてのファイル情報を収集
+    // すべてのファイル情報を収集。
     this.#collectAllFiles( file );
-    // 対象ファイルを選定
+    // 対象ファイルを選定。
     await this.#filterByGitDiff( file );
-    // グループ情報を設定
+    // グループ情報を設定。
     if ( this.settings.group ) {
       this.#assignGroup( file, this.settings.group );
     }
-    // 依存関係を収集
+    // 依存関係を収集。
     this.#collectDependencies( file );
     callback();
   }
 
-  async flushFiles( stream ) {
+  /**
+   * ストリームの最終処理を行う。
+   * 削除されたファイルや未追跡のファイルを対象に追加し、
+   * 必要に応じてグループ化や依存関係の選定を行い、選択されたファイルをストリームに渡す。
+   * @param {Stream} stream - Gulp ストリーム
+   */
+  async finalizeFileStream( stream ) {
     // 削除されたファイルも対象にする。
     this.#collectDeletedFiles();
-    // Git が未検知のファイルも対象にする。
+    // Git が未追跡のファイルも対象にする。
     this.#collectUntrackedFiles();
     if ( this.settings.group ) {
       // 所属する同じグループのファイルも選択。
@@ -189,7 +215,7 @@ class DiffBuildProcessor {
    * Git 差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
-   * @param {Object} file - chunk
+   * @param {Object} file - 処理対象のファイル (Vinylオブジェクト)
    */
   async #filterByGitDiff( file ) {
     this.currentDiffData = await this.promiseGetGitDiffData;
@@ -206,7 +232,7 @@ class DiffBuildProcessor {
    * one source → one destination 用。
    * Gulp.src のオプション、 { read: false } の速さに期待して。
    * contents をreadFile で改めて読み込み、file.contents に代入する。
-   * @param {Object} file - chunk
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   async #setFileContents( file ) {
     file.contents = await readFile( file.path );
@@ -215,7 +241,7 @@ class DiffBuildProcessor {
 
   /**
    * すべてのファイル情報を収集。
-   * @param {Object} file - chunk
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   #collectAllFiles( file ) {
     this.allFiles.set( file.path, file.clone() );
@@ -226,7 +252,7 @@ class DiffBuildProcessor {
    * グループ情報を設定。
    * 複数のsrc ファイルを一つのdist にするようなタスク用。
    * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
-   * @param {Object} file - chunk
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {String} group - グループ名
    */
   #assignGroup( file, group ) {
@@ -237,11 +263,11 @@ class DiffBuildProcessor {
   /**
    * 依存関係を収集。
    * ファイルの依存関係をCallback で収集してもらう。
-   * @param {Object} file - chunk
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   #collectDependencies( file ) {
     if ( typeof this.collect === 'function' ) {
-      this.collect( file, this.collection );
+      this.collect( file, this.collectedFiles );
     }
   }
 
@@ -299,24 +325,20 @@ class DiffBuildProcessor {
 
   /**
    * 収集したすべてのファイルパス情報をselectedFiles にセットする。
-   * @param {Object} shared - 共有データ
-   * @param {Map} selectedFiles - 通過させるファイルパスの格納用
    */
-  #selectAllFiles( shared, selectedFiles ) {
-    for ( const [ filePath ] of shared.allFiles ) {
-      selectedFiles.set( filePath, 1 );
+  #selectAllFiles() {
+    for ( const [ filePath ] of this.allFiles ) {
+      this.selectedFiles.set( filePath, 1 );
     }
   }
 
   /**
    * 収集した依存ファイルからstream に渡したいファイルを選択。
    * callback 関数で選択してもらう。
-   * @param {Map} selectedFiles - 通過させるファイルパスの格納用
-   * @param {Function} select - 通過ファイル選択用コールバック
    */
-  #selectFilesFromCollection( select ) {
+  #selectFilesFromCollection() {
     for ( const [ filePath ] of this.targetFiles ) {
-      const collection = this.collection.get( filePath );
+      const collection = this.collectedFiles.get( filePath );
       if ( collection ) {
         collection.forEach( ( depPath ) => this.selectedFiles.set( depPath, 1 ) );
       }
@@ -325,15 +347,14 @@ class DiffBuildProcessor {
       } else {
         continue;
       }
-      if ( typeof select === 'function' ) {
-        select( filePath, this.collection, this.selectedFiles );
+      if ( typeof this.select === 'function' ) {
+        this.select( filePath, this.collectedFiles, this.selectedFiles );
       }
     }
   }
 
   /**
    * 選択された通過ファイルをstream にプッシュする。
-   * @param {Map} selectedFiles - 通過させるファイルパスの格納用
    * @param {Stream} stream - Gulp stream
    * @returns {Promise} - プロミス
    */
@@ -357,17 +378,17 @@ class DiffBuildProcessor {
  * 候補ファイルに依存するファイルを再帰選択する。
  * through2.obj()の flush function の内部で実行。
  * @param {String} filePath - ファイルパス
- * @param {Object} collection - 収集した依存関係
+ * @param {Object} collectedFiles - 収集した依存関係
  * @param {Map} selectedFiles - 通過候補
  */
-function organizeSelectedFileMap( filepath, collection, selectedFiles ) {
+function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
   _recurse( filepath );
   function _recurse( path ) {
-    const deps = collection.get( path );
+    const deps = collectedFiles.get( path );
     if ( Array.isArray( deps ) ) {
       deps.forEach( ( dep ) => {
         selectedFiles.set( dep, 1 );
-        if ( collection.has( dep ) ) {
+        if ( collectedFiles.has( dep ) ) {
           _recurse( dep );
         }
       } );

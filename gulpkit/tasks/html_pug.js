@@ -69,16 +69,16 @@ function _setPugData( file ) {
  * through2 のtransformFunction の内部で実行。
  * chunk のcontents から読み込んでいるパスを調べる
  *
- * collection
+ * collectedFiles
  * {
  *   '読み込んでいるパス': [
  *     'chunk自身のパス'
  *    ]
  * }
  * @param {object} file
- * @param {object} collection
+ * @param {object} collectedFiles
  */
-function _collectDependencyFiles( file, collection ) {
+function _collectDependencyFiles( file, collectedFiles ) {
   const
     contents = String( file.contents )
     ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
@@ -97,11 +97,11 @@ function _collectDependencyFiles( file, collection ) {
       // 相対パスであれば
       : resolve( file.dirname, filePath )
     ;
-    if ( dependentFilePath && !collection.get( dependentFilePath ) ) {
-      collection.set( dependentFilePath, [] );
+    if ( dependentFilePath && !collectedFiles.get( dependentFilePath ) ) {
+      collectedFiles.set( dependentFilePath, [] );
     }
     if ( dependentFilePath ) {
-      collection.get( dependentFilePath ).push( file.path );
+      collectedFiles.get( dependentFilePath ).push( file.path );
     }
   }
 }
