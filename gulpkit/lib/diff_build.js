@@ -16,14 +16,13 @@ const
   defaultSettings = {
     name      : '',
     allForOne : false,
-    anabled   : true,
+    enabled   : true,
     command   : 'git status -suall',
   }
 ;
 let
   writingTimeoutId = null
 ;
-
 export {
   diff_build as default,
   organizeSelectedFileMap,
@@ -42,67 +41,83 @@ function diff_build( options, collect, select ) {
     return through.obj();
   }
   const processor = new DiffBuildProcessor( settings, collect, select );
+  return ( settings.oneToOne === true )
+    ? _createOneToOneStream( processor, settings )
+    : _createDependencyStream( processor, settings )
+  ;
+}
 
-  if ( settings.oneToOne === true ) {
+/**
+ * one source → one destination 用のストリーム作成。
+ * Git Diff で検知されたfile のみを対象にする。
+ * @param {DiffBuildProcessor} processor - 差分処理プロセッサ
+ * @param {Object} settings - 設定オブジェクト
+ * @returns {Stream} - 処理されたストリーム
+ */
+function _createOneToOneStream( processor, settings ) {
+  return through.obj(
+    async function _transform( file, enc, callback ) {
+      try {
+        await processor.setFileContentsByGitDiff( file, callback );
+      } catch ( err ) {
+        callback( err );
+      }
+    },
+    function _flush( callback ) {
+      try {
+        _finalizeProcessor( processor, settings );
+        callback();
+      } catch ( err ) {
+        callback( err );
+      }
+    },
+  );
+}
 
-    /**
-     * one source → one destination 用。
-     * Git Diff で検知されたfile のみを対象にする。
-     */
-    return through.obj(
-      async function( file, enc, callback ) {
-        try {
-          await processor.setFileContentsByGitDiff( file, callback );
-        } catch ( err ) {
-          callback( err );
-        }
-      },
-      async function( callback ) {
-        try {
-          lastDiff.set( settings.name, processor.currentDiffData );
-          _writeDiffData();
-          _log( settings.name, processor.targetFiles.size, processor.targetFiles.size );
-          callback();
-        } catch ( err ) {
-          callback( err );
-        }
-      },
-    );
-  } else {
-
-    /**
-     * 渡されてきたファイルが依存するその他のファイルを調べ、それらのファイルも一緒にstream に渡す。
-     * 例えば、pug、sass のコンパイルタスク用。
-     * or
-     * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
-     * 例えば、iconFont sprite.smithなどのタスク用。
-     */
-    return through.obj(
-      async function( file, enc, callback ) {
-        try {
-          await processor.collectFiles( file );
-          callback();
-        } catch ( err ) {
-          callback( err );
-        }
-      },
-      async function( callback ) {
-        if ( processor.currentDiffData === null ) {
-          return callback();
-        }
-        try {
+/**
+ * 依存関係用のストリームを作成。
+ * 渡されてきたファイルが依存するその他のファイルを調べ、それらのファイルも一緒にstream に渡す。
+ * 例えば、pug、sass のコンパイルタスク用。
+ * or
+ * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
+ * 例えば、iconFont sprite.smithなどのタスク用。
+ * @param {DiffBuildProcessor} processor - 差分処理プロセッサ
+ * @param {Object} settings - 設定オブジェクト
+ * @returns {Stream} - 処理されたストリーム
+ */
+function _createDependencyStream( processor, settings ) {
+  return through.obj(
+    async function _transform( file, enc, callback ) {
+      try {
+        await processor.collectFiles( file );
+        callback();
+      } catch ( err ) {
+        callback( err );
+      }
+    },
+    async function _flush( callback ) {
+      try {
+        if ( processor.currentDiffData !== null ) {
           await processor.flushFiles( this );
-          _log( settings.name, processor.targetFiles.size, processor.selectedFiles.size );
-          lastDiff.set( settings.name, processor.currentDiffData );
-          _writeDiffData();
-          callback();
-        } catch ( err ) {
-          callback( err );
+          _finalizeProcessor( processor, settings );
         }
-      },
-    );
+        callback();
+      } catch ( err ) {
+        callback( err );
+      }
+    }
+  );
+}
 
-  }
+/**
+ * プロセスの最終処理。
+ * @param {Object} processor - DiffBuildProcessor
+ * @param {Object} settings - 設定
+ */
+function _finalizeProcessor( processor, settings ) {
+  lastDiff.set( settings.name, processor.currentDiffData );
+  _writeDiffData();
+  _log( settings.name, processor.targetFiles.size, processor.selectedFiles.size );
 }
 
 class DiffBuildProcessor {
@@ -191,10 +206,11 @@ class DiffBuildProcessor {
    * one source → one destination 用。
    * Gulp.src のオプション、 { read: false } の速さに期待して。
    * contents をreadFile で改めて読み込み、file.contents に代入する。
-   * @param {file} file - chunk
+   * @param {Object} file - chunk
    */
   async #setFileContents( file ) {
     file.contents = await readFile( file.path );
+    this.selectedFiles.set( file.path, file );
   }
 
   /**
@@ -221,8 +237,6 @@ class DiffBuildProcessor {
   /**
    * 依存関係を収集。
    * ファイルの依存関係をCallback で収集してもらう。
-   * @param {Object} shared - 共有データ
-   * @param {Function} collect - 依存関係収集用コールバック
    * @param {Object} file - chunk
    */
   #collectDependencies( file ) {
