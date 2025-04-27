@@ -441,7 +441,6 @@ function _getGitDiffData( command, name ) {
     exec( command, ( err, stdout, stderr ) => {
       const diffData = {};
       if ( err ) {
-        fancyLog.error( chalk.red( `${ name }\n${ err }` ) );
         return rejectPromise( err );
       }
       if ( stderr ) {

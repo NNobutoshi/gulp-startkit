@@ -51,7 +51,7 @@ const
       options :{
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -79,7 +79,7 @@ const
       options   : {
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err.messageFormatted ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -112,7 +112,7 @@ const
       options   : {
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -177,7 +177,7 @@ const
         },
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -206,7 +206,7 @@ const
         },
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -274,7 +274,7 @@ const
       options  : {
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -306,7 +306,7 @@ const
       options :  {
         plumber: {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -380,7 +380,7 @@ const
       options : {
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
@@ -388,9 +388,9 @@ const
           useEslintrc: true,
         },
         diff : {
-          name    : 'js_eslint',
-          command : GIT_DIFF_COMMAND,
-          enabled : DIFF_ENABLED,
+          name     : 'js_eslint',
+          command  : GIT_DIFF_COMMAND,
+          enabled  : DIFF_ENABLED,
           oneToOne : true,
         },
         src : {
@@ -408,7 +408,7 @@ const
       options      : {
         plumber : {
           errorHandler : function( err ) {
-            log.error( chalk.hex( ERROR_COLOR_HEX )( err ) );
+            log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
           },
         },
