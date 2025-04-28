@@ -23,6 +23,8 @@
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
+    "@eslint/eslintrc": "*",
+    "@eslint/js": "*",
     "@hail2u/css-mqpacker": "github:hail2u/node-css-mqpacker",
     "autoprefixer": "*",
     "babel-loader": "*",
@@ -32,8 +34,8 @@
     "eslint": "*",
     "eslint-config-jquery": "*",
     "fancy-log": "*",
+    "globals": "*",
     "gulp": "*",
-    "gulp-eslint": "*",
     "gulp-iconfont": "*",
     "gulp-if": "*",
     "gulp-imagemin": "*",

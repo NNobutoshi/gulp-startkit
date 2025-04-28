@@ -1,6 +1,9 @@
 import { src } from 'gulp';
-import eslint  from 'gulp-eslint';
 import plumber from 'gulp-plumber';
+
+import { ESLint } from 'eslint';
+import through    from 'through2';
+import fancyLog   from 'fancy-log';
 
 import diff          from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
@@ -26,8 +29,42 @@ export default function js_eslint() {
   return src( config.src, options.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( eslint( options.eslint ) )
-    .pipe( eslint.format() )
+    .pipe( _runEsLint( options.eslint ) )
     .pipe( logStreamData( LOG_TITLE, LOG_SUBTITLE, logOptions ) )
   ;
+}
+
+/**
+ * ESLint を実行するためのストリーム処理を提供。
+ * 各ファイルに対して ESLint を実行し、結果をログに出力する。
+ * @param {Object} esLintOptions - ESLint のオプション設定
+ * @returns {Stream} - Gulp ストリーム
+ */
+function _runEsLint( esLintOptions ) {
+
+  /**
+   * 各ファイルに対して ESLint を実行。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {string} enc - エンコーディング
+   * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
+   */
+  return through.obj(
+    async function _transform( file, enc, callback ) {
+      try {
+        const
+          eslint = new ESLint( esLintOptions )
+          ,results = await eslint.lintText( String( file.contents ) )
+          ,formatter = await eslint.loadFormatter( 'stylish' )
+          ,filteredResults = ESLint.getErrorResults( results )
+          ,resultText = formatter.format( filteredResults )
+        ;
+        if ( resultText ) {
+          fancyLog( resultText.replace( '<text>', file.path ) );
+        }
+        callback( null, file );
+      } catch ( err ) {
+        callback( err );
+      }
+    }
+  );
 }
