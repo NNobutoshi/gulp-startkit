@@ -3,9 +3,9 @@ import spriteSmith   from 'gulp.spritesmith';
 import plumber       from 'gulp-plumber';
 import gulpIf        from 'gulp-if';
 
-import taskForEach   from '../lib/task_for_each.js';
-import diff          from '../lib/diff_build.js';
-import logStreamData from '../lib/log_stream_data.js';
+import handleTaskForEachGroup from '../lib/task_for_each.js';
+import diff                   from '../lib/diff_build.js';
+import logStreamData          from '../lib/log_stream_data.js';
 
 import { img_sprite as config } from '../config.js';
 
@@ -30,7 +30,7 @@ export default function img_sprite() {
   return src( config.src, { encoding: false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( taskForEach( config.group, config.base, _branchTask ) )
+    .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }
 

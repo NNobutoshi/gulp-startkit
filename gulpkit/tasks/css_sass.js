@@ -28,27 +28,31 @@ const
   ,mapLogOptions = {
     forEachFile : false,
   }
-  ,sourcemapsEnabled = config.sourcemapsEnabled
+  ,SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
+
+if ( config.enabledCssMqpack === true ) {
+  options.postcss.plugins.push( mqpacker() );
+}
 
 /**
  * Sass を実行するタスク。
  * @returns {Object} - Gulp stream
  */
 export default function css_sass() {
-  if (
-    config.cssMqpackEnabled &&
-    options.postcss.plugins.some( ( p ) => p.postcssPlugin === 'mqpacker' ) === false
-  ) {
-    options.postcss.plugins.push( mqpacker() );
-  }
+  // if (
+  //   config.enabledCssMqpack &&
+  //   options.postcss.plugins.some( ( p ) => p.postcssPlugin === 'mqpacker' ) === false
+  // ) {
+  //   options.postcss.plugins.push( mqpacker() );
+  // }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectDependencyFiles, organizeSelectedFileMap ) )
-    .pipe( gulpIf( ( sourcemapsEnabled === true ), sourcemaps.init() ) )
+    .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( gulpIf( sourcemapsEnabled, sourcemaps.write( config.sourcemap_dir ) ) )
+    .pipe( gulpIf( SOURCEMAPS_ENABLED, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
     .pipe( gulpIf( /\.map$/, logStreamData( LOG_TITLE_MAP, LOG_SUBTITLE_MAP, mapLogOptions ) ) )
     .pipe( gulpIf( /\.css$/, logStreamData( LOG_TITLE_CSS, LOG_SUBTITLE_CSS ) ) )
@@ -93,7 +97,7 @@ function _collectDependencyFiles( file, collectedFiles ) {
     if ( depFilePathBasename.startsWith( '_' )  === false ) {
       dependencyFilePath = join(
         dirname( dependencyFilePath ),
-        '_' + depFilePathBasename
+        '_' + depFilePathBasename,
       );
     }
     if ( collectedFiles.has( dependencyFilePath ) === false ) {

@@ -114,7 +114,7 @@ function _renderPug() {
 
   return through.obj(
     function _transform( file, enc, callback ) {
-      if ( ignoreFileRegEx.test( file.basename ) ) {
+      if ( ignoreFileRegEx.test( file.basename ) === true ) {
         return callback();
       }
       const pugOptions = {
@@ -151,14 +151,14 @@ function _formatHtml() {
       let contents = String( file.contents );
 
       /*
-     * オプションで指定があれば、
-     * <div> などを内包する<a> の体裁を整える。
-     *
-     * <a>             \ <a>
-     *  <div>          \   <div>
-     *  </div></a>     \   </div>
-     *                 \ </a>
-     */
+       * オプションで指定があれば、
+       * <div> などを内包する<a> の体裁を整える。
+       *
+       * <a>             \ <a>
+       *  <div>          \   <div>
+       *  </div></a>     \   </div>
+       *                 \ </a>
+       */
       if ( options.formatHtml.repairAElement === true ) {
         contents = contents.replace(
           uglyAElementRegEx,
@@ -172,27 +172,19 @@ function _formatHtml() {
         )
         ;
       }
-
-      /*
-     * オプションで指定があれば、インデントをトル。
-     */
+      // オプションで指定があれば、インデントをトル。
       if ( options.formatHtml.indent === false ) {
         contents = contents.replace( /^([\t ]+)/mg, '' );
       }
-
-      /*
-     * 閉じタグ付近に付けるコメントに関する体裁。
-     */
+      // 閉じタグ付近に付けるコメントに関する体裁。
       if ( options.formatHtml.commentPosition ) {
         contents = contents.replace( endCommentRegEx, _replacementEndComment );
       }
-
       file.contents = Buffer.from( contents );
       callback( null, file );
     }
   );
 }
-
 
 /**
  * img サイズの自動挿入
@@ -220,12 +212,12 @@ function _injectImageSize() {
       if (
         _isExternalSrc( srcPath ) === true
         || ( frontPart.includes( 'width' ) === true || frontPart.includes( 'height' ) === true )
-        || ( rearPart.includes( 'width' ) === true || rearPart.includes( 'height' ) === true )
+        || ( rearPart.includes( 'width' )  === true || rearPart.includes( 'height' )  === true )
       ) {
         continue;
       }
       promiseReplaceImageElementStringsAll.push(
-        addImageDimensionsToElementStrings( match, file, mapImageElementStrings, callback )
+        _addImageDimensionsToElementStrings( match, file, mapImageElementStrings, callback )
       );
     } // for
 
@@ -240,8 +232,7 @@ function _injectImageSize() {
     } catch ( err ) {
       callback( err );
     }
-  } )
-  ;
+  } );
 
   /**
    * img || source 要素に width と height を追加する。
@@ -249,7 +240,7 @@ function _injectImageSize() {
    * @param {object} file
    * @param {function} errorCallback
    */
-  async function addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
+  async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
     const
       fullStr    = match[ 0 ]
       ,tagName   = match[ 1 ]
@@ -260,9 +251,9 @@ function _injectImageSize() {
       ,query     = match[ 6 ]
       ,rearPart  = match[ 7 ]
       ,preparedSrcPath = ( _isRootPath( srcPath ) )
-      // ルートパスであれば
+        // ルートパスであれば
         ? join( resolve( process.cwd(), config.base ), srcPath )
-      // 相対パスであれば
+        // 相対パスであれば
         : resolve( file.dirname, srcPath )
     ;
     try {
@@ -296,10 +287,7 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
     ,oneLine = options.formatHtml.commentOnOneLine === true
     ,blankLine = options.formatHtml.blankLineAfterComment === true
   ;
-
-  /*
-   * コメントを閉じタグ内側に付けたい場合。
-   */
+  // コメントを閉じタグ内側に付けたい場合。
   if ( positionInside === true ) {
 
     /*
@@ -310,28 +298,20 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * </div>
      */
     if ( oneLine === true ) {
-
-      /*
-       * コメントの付いた閉じタグ後に空行をつけるか否か。
-       */
+      // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
         ? htmlComment + endTag + lineFeed
         : htmlComment + endTag
       ;
     } else {
-
-      /*
-       * コメントの付いた閉じタグ後に空行をつけるか否か。
-       */
+      //コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
         ? htmlComment + lineFeed + indent + endTag + lineFeed
         : htmlComment + lineFeed + indent + endTag
       ;
     }
 
-  /*
-   * コメントを閉じタグ外側に付けたい場合。
-   */
+  // コメントを閉じタグ外側に付けたい場合。
   } else {
 
     /*
@@ -342,19 +322,13 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
      * <!-- -->
      */
     if ( oneLine === true ) {
-
-      /*
-       * コメントの付いた閉じタグ後に空行をつけるか否か。
-       */
+      // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
         ? endTag + htmlComment + lineFeed
         : endTag + htmlComment
       ;
     } else {
-
-      /*
-       * コメントの付いた閉じタグ後に空行をつけるか否か。
-       */
+      // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
         ? endTag + lineFeed + indent + htmlComment + lineFeed
         : endTag + lineFeed + indent + htmlComment
@@ -363,7 +337,7 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   }
 }
 
-/*
+/**
  * srcPath が外部の src か否かを調べる。
  * @param {string} srcPath
  * @return {boolean}
@@ -372,7 +346,7 @@ function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
 }
 
-/*
+/**
  * srcPath がルートパスか否かを調べる。
  * @param {string} srcPath
  * @return {boolean}

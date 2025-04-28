@@ -5,10 +5,10 @@ import iconfont      from 'gulp-iconfont';
 import plumber       from 'gulp-plumber';
 import Handlebars    from 'handlebars';
 
-import svgLint       from '../lib/svg_lint.js';
-import taskForEach   from '../lib/task_for_each.js';
-import diff          from '../lib/diff_build.js';
-import logStreamData from '../lib/log_stream_data.js';
+import svgLint                from '../lib/svg_lint.js';
+import handleTaskForEachGroup from '../lib/task_for_each.js';
+import diff                   from '../lib/diff_build.js';
+import logStreamData          from '../lib/log_stream_data.js';
 
 import { icon_font as config } from '../config.js';
 
@@ -36,7 +36,7 @@ export default function icon_font() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( svgLint() )
-    .pipe( taskForEach( config.group, config.base, _branchTask ) )
+    .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }
 
@@ -49,7 +49,7 @@ export default function icon_font() {
  */
 async function _branchTask( subSrc, baseDir, trunkStream ) {
   const
-    iconFontOptions  = Object.create( options.iconfont )
+    iconFontOptions = Object.create( options.iconfont )
     ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
     ,templateData   = {
       fontName     : iconFontOptions.fontName.replace( '[subdir]', fontSubName ),
@@ -59,9 +59,13 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
       scssDist     : config.scssDist.replace( '[subdir]', baseDir ),
     }
   ;
-
-  iconFontOptions.fontName = templateData.fontName;
-  iconFontOptions.timestamp = await _getTimestamp( subSrc );
+  try {
+    iconFontOptions.fontName = templateData.fontName;
+    iconFontOptions.timestamp = await _getTimestamp( subSrc );
+  } catch ( err ) {
+    trunkStream.emit( 'error', err );
+    return;
+  }
 
   return iconfont( subSrc, iconFontOptions )
     .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )

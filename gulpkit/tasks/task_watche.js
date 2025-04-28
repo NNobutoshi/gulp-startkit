@@ -37,7 +37,7 @@ export default function task_watche( tasks, commonNextTask ) {
         watchSrc = taskConfig.src;
       }
 
-      if ( taskConfig && taskConfig.watchEnabled === true && watchSrc ) {
+      if ( taskConfig && taskConfig.enabledWatch === true && watchSrc ) {
         enabled = true;
         watch(
           watchSrc,

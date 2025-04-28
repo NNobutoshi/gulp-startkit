@@ -3,13 +3,13 @@ import { resolve, sep } from 'node:path';
 import through     from 'through2';
 import mergeStream from 'merge-stream';
 
-export default function taskForEach( group, base, branchTask ) {
+export default function handleTaskForEachGroup( group, base, branchTask ) {
   const groupedSources = new Map();
   return _groupSrc( groupedSources, group, base, branchTask );
 }
 
 /**
- * 指定のグループに従ってsource を小分けする。
+ * 指定のグループに従ってsource を小分けにする。
  * @param {Map} groupedSources
  * @param {string} group
  * @param {string} base

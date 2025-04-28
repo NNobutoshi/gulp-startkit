@@ -1,9 +1,10 @@
 import { mkdir, readFile           } from 'node:fs/promises';
 import { writeFile, existsSync, rm } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname }          from 'node:path';
 
 const
   FILEPATH  = resolve( process.cwd(), '.last_diff/.diffmap' )
+  ,CHARSET = 'utf-8'
   ,DIRNAME  = dirname( FILEPATH )
 ;
 
@@ -33,7 +34,7 @@ async function _get( name ) {
     return diffData[ name ] || {};
   } else if ( existsSync( FILEPATH ) ) {
     try {
-      diffData = JSON.parse( await readFile( FILEPATH, 'utf-8' ) );
+      diffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
     } catch ( err ) {
       throw err;
     }

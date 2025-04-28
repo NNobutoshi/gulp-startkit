@@ -28,7 +28,7 @@ export {
   organizeSelectedFileMap,
 };
 
-/*
+/**
 /* Git で管理する前提での差分ビルド。
  * diff コマンドで検知されたファイルのみを対象とする。
  * @param {Object} options - オプション

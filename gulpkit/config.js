@@ -28,8 +28,8 @@ const
   SRC                 = DIR_SRC[ NODE_ENV ]
   ,DIST               = DIR_DIST[ NODE_ENV ]
   ,SOURCEMAPS_ENABLED = IS_DEVELOPMENT || !IS_PRODUCTION
-  ,WATCH_ENABLED      = ( WATCH_ENV ) ? !!Number( WATCH_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION
-  ,DIFF_ENABLED       = ( DIFF_ENV )  ? !!Number( DIFF_ENV )   : IS_DEVELOPMENT || !IS_PRODUCTION
+  ,WATCH_ENABLED      = ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION
+  ,DIFF_ENABLED       = ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION
   ,SOURCEMAPS_DIR     = 'sourcemaps'
   ,WEBPACK_CACHE_PATH = resolve( process.cwd(), '.webpack_cache' )
   ,ERROR_COLOR_HEX    = '#FF0000'
@@ -47,7 +47,7 @@ const
       src  : [ SRC + '/**/*.{mp4,webm}' ],
       base : SRC,
       dist : DIST,
-      watchEnabled : WATCH_ENABLED,
+      enabledWatch : WATCH_ENABLED,
       options :{
         plumber : {
           errorHandler : function( err ) {
@@ -72,9 +72,9 @@ const
       src  : [ SRC + '/**/*.scss' ],
       dist : DIST,
       base : SRC,
-      watchEnabled      : WATCH_ENABLED,
-      cssMqpackEnabled  : true,
-      sourcemapsEnabled : SOURCEMAPS_ENABLED,
+      enabledWatch      : WATCH_ENABLED,
+      enabledCssMqpack  : true,
+      enabledSourcemaps : SOURCEMAPS_ENABLED,
       sourcemap_dir     : '/' + SOURCEMAPS_DIR,
       options   : {
         plumber : {
@@ -101,15 +101,15 @@ const
       },
     },
     'css_scss_lint' : {
-      src       : [
+      src : [
         ''  + SRC + '/**/*.scss',
         '!' + SRC + '/**/css/_sprite_svg.scss',
         '!' + SRC + '/**/_vendor/*.scss',
         '!' + SRC + '/**/_templates/*.scss',
       ],
-      dist         : DIST,
-      watchEnabled : WATCH_ENABLED,
-      options   : {
+      dist : DIST,
+      enabledWatch : WATCH_ENABLED,
+      options: {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
@@ -134,7 +134,7 @@ const
       },
     },
     'html_pug' : {
-      src     : [
+      src : [
         ''  + SRC + '/**/*.pug',
         ''  + SRC + '/**/*_data.json',
       ],
@@ -145,8 +145,8 @@ const
       ],
       dist : DIST,
       base : SRC,
-      watchEnabled : WATCH_ENABLED,
-      data    : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
+      data : resolve( process.cwd(), `${ SRC }/_data/_pug_data.json` ),
+      enabledWatch : WATCH_ENABLED,
       options : {
         imgSize : true,
         injectImageSize : {
@@ -184,18 +184,18 @@ const
       },
     },
     'icon_font' : {
-      src           : [ SRC + '/**/fonts/icons/*.svg' ],
-      base          : SRC,
-      dist          : DIST,
-      fontsDist     : DIST +  '[subdir]/fonts',
-      scssDist      : SRC + '[subdir]/css',
-      group         : '/fonts/icons',
-      fontPath      : '../fonts/',
-      scssFileName  : '_icons.scss',
-      cssClass      : 'icon',
-      templatePath  : SRC + '/css/_templates/_icons.scss.handlebars',
-      watchEnabled  : WATCH_ENABLED,
-      options       : {
+      src  : [ SRC + '/**/fonts/icons/*.svg' ],
+      base : SRC,
+      dist : DIST,
+      fontsDist : DIST +  '[subdir]/fonts',
+      scssDist  : SRC + '[subdir]/css',
+      group        : '/fonts/icons',
+      fontPath     : '../fonts/',
+      scssFileName : '_icons.scss',
+      cssClass     : 'icon',
+      templatePath : SRC + '/css/_templates/_icons.scss.handlebars',
+      enabledWatch : WATCH_ENABLED,
+      options : {
         iconfont : {
           fontName       : 'icons[subdir]',
           prependUnicode : false,
@@ -219,13 +219,13 @@ const
       },
     },
     'img_min' : {
-      src     : [
+      src : [
         ''  + SRC + '/**/*.{png,jpg,svg}',
         '!' + SRC + '/**/_sprite*/*.{png,svg}',
         '!' + SRC + '/**/fonts/icons/*.svg',
       ],
-      dist    : DIST,
-      watchEnabled : WATCH_ENABLED,
+      dist : DIST,
+      enabledWatch : WATCH_ENABLED,
       options : {
         plumber : {
           errorHandler : function( err ) {
@@ -264,14 +264,14 @@ const
       },
     },
     'img_sprite' : {
-      src          : [ SRC + '/**/img/_sprite/**/*.png' ],
-      dist         : DIST,
-      base         : SRC,
-      group        : '/img/_sprite',
-      watchEnabled : WATCH_ENABLED,
-      imgDist      : DIST + '[subdir]/img',
-      scssDist     : SRC + '[subdir]/css',
-      options  : {
+      src   : [ SRC + '/**/img/_sprite/**/*.png' ],
+      dist  : DIST,
+      base  : SRC,
+      group : '/img/_sprite',
+      imgDist  : DIST + '[subdir]/img',
+      scssDist : SRC + '[subdir]/css',
+      enabledWatch : WATCH_ENABLED,
+      options : {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
@@ -298,11 +298,11 @@ const
       },
     },
     'img_sprite_svg' : {
-      src     : [ SRC + '/**/img/_sprite_svg/**/*.svg' ],
-      base    : SRC,
-      dist    : DIST,
-      group   : '/img/_sprite_svg',
-      watchEnabled : WATCH_ENABLED,
+      src   : [ SRC + '/**/img/_sprite_svg/**/*.svg' ],
+      base  : SRC,
+      dist  : DIST,
+      group : '/img/_sprite_svg',
+      enabledWatch : WATCH_ENABLED,
       options :  {
         plumber: {
           errorHandler : function( err ) {
@@ -311,7 +311,7 @@ const
           },
         },
         svgSprite : {
-          mode  : {
+          mode : {
             symbol : {
               dest    : 'img',
               sprite  : 'common_symbols.svg',
@@ -330,8 +330,8 @@ const
                   dest: resolve( process.cwd(), 'css/_sprite_svg.scss' ),
                 },
               },
-              example: {
-                dest: resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
+              example : {
+                dest : resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
               }
             },
           },
@@ -375,8 +375,8 @@ const
         ''  + SRC + '/**/*.js',
         '!' + SRC + '/**/_vendor/*.js',
       ],
-      dist    : DIST,
-      watchEnabled : WATCH_ENABLED,
+      dist : DIST,
+      enabledWatch : WATCH_ENABLED,
       options : {
         plumber : {
           errorHandler : function( err ) {
@@ -385,7 +385,6 @@ const
           },
         },
         eslint : {
-          useEslintrc: true,
         },
         diff : {
           name     : 'js_eslint',
@@ -399,13 +398,13 @@ const
       },
     },
     'js_webpack' : {
-      src          : [ SRC + '/**/*.{js,json}' ],
-      dist         : DIST,
-      entry        : /\.entry\.js$/,
-      splitChunks  : /\.split\.json$/,
-      watchEnabled : WATCH_ENABLED,
-      base         : SRC,
-      options      : {
+      src  : [ SRC + '/**/*.{js,json}' ],
+      dist : DIST,
+      entry       : '.entry.js',
+      splitChunks : '.split.json',
+      enabledWatch : WATCH_ENABLED,
+      base : SRC,
+      options : {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
@@ -414,7 +413,7 @@ const
         },
       },
       cacheDirectory : WEBPACK_CACHE_PATH,
-      webpackConfig  : {
+      webpackConfig : {
         mode      : NODE_ENV,
         output    : {},
         devtool   : ( SOURCEMAPS_ENABLED ) ? 'source-map' : false,
