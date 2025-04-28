@@ -135,9 +135,9 @@ class DiffBuildProcessor {
     this.gitDiffData = null;
     this.gitDiffDataPromise = null;
     this.allFiles = new Map();
-    this.selectedFiles = new Map();
+    this.targetFiles = new Set();
+    this.selectedFiles = new Set();
     this.collectedFiles = new Map();
-    this.targetFiles = new Map();
     this.promiseGetGitDiffData = _getGitDiffData( settings.command, settings.name );
     this.promiseGetLastDiffData = lastDiff.get( settings.name );
   }
@@ -152,7 +152,7 @@ class DiffBuildProcessor {
   async setFileContentsByGitDiff( file, callback ) {
     // 対象ファイルを選定
     await this.#filterByGitDiff( file );
-    if ( !this.targetFiles.get( file.path ) ) {
+    if ( this.targetFiles.has( file.path ) === false ) {
       return callback();
     }
     // 改めてfile を読み込み、file.contents に代入する。
@@ -224,7 +224,7 @@ class DiffBuildProcessor {
       _includes( this.currentDiffData, file.path ) ||
       _includes( this.lastDiffData, file.path )
     ) {
-      this.targetFiles.set( file.path, 1 );
+      this.targetFiles.add( file.path );
     }
   }
 
@@ -236,7 +236,7 @@ class DiffBuildProcessor {
    */
   async #setFileContents( file ) {
     file.contents = await readFile( file.path );
-    this.selectedFiles.set( file.path, file );
+    this.selectedFiles.add( file.path );
   }
 
   /**
@@ -277,7 +277,7 @@ class DiffBuildProcessor {
   #collectDeletedFiles() {
     for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
       if ( info.status.includes( 'D' ) ) {
-        this.targetFiles.set( resolve( process.cwd(), filePath ), 1 );
+        this.targetFiles.add( resolve( process.cwd(), filePath ) );
       }
     }
   }
@@ -291,7 +291,7 @@ class DiffBuildProcessor {
         !this.currentDiffData[ filePath ] &&
         info.status.includes( '?' )
       ) {
-        this.targetFiles.set( resolve( process.cwd(), filePath ), 1 );
+        this.targetFiles.add( resolve( process.cwd(), filePath ) );
       }
     }
   }
@@ -299,12 +299,12 @@ class DiffBuildProcessor {
   /**
    * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
    * 複数src ファイルを一つに束ねる様なタスク用。
-   * @param {Map} selectedFiles - 通過させるファイルパスの格納用
+   * @param {Set} selectedFiles - 通過させるファイルパスの格納用
    * @param {String} group - グループ名
    */
   #selectGroupedFiles( group ) {
     for ( const [ filePath ] of this.allFiles ) {
-      for ( const [ targetFilePath ] of this.targetFiles ) {
+      for ( const targetFilePath of this.targetFiles ) {
         const
           target = this.allFiles.get( targetFilePath )
           ,targetGroup = target?.group
@@ -317,18 +317,18 @@ class DiffBuildProcessor {
           ( targetGroup && filePath.startsWith( targetGroup ) ) ||
               myGroup === this.allFiles.get( filePath )?.group
         ) {
-          this.selectedFiles.set( filePath, 1 );
+          this.selectedFiles.add( filePath );
         }
       } // for
     } // for
   }
 
   /**
-   * 収集したすべてのファイルパス情報をselectedFiles にセットする。
+   * 収集したすべてのファイルパス情報をselectedFiles に追加する。
    */
   #selectAllFiles() {
     for ( const [ filePath ] of this.allFiles ) {
-      this.selectedFiles.set( filePath, 1 );
+      this.selectedFiles.add( filePath );
     }
   }
 
@@ -337,13 +337,13 @@ class DiffBuildProcessor {
    * callback 関数で選択してもらう。
    */
   #selectFilesFromCollection() {
-    for ( const [ filePath ] of this.targetFiles ) {
+    for ( const filePath of this.targetFiles ) {
       const collection = this.collectedFiles.get( filePath );
       if ( collection ) {
-        collection.forEach( ( depPath ) => this.selectedFiles.set( depPath, 1 ) );
+        collection.forEach( ( depPath ) => this.selectedFiles.add( depPath ) );
       }
-      if ( this.allFiles.has( filePath ) ) {
-        this.selectedFiles.set( filePath, 1 );
+      if ( this.allFiles.has( filePath ) === true ) {
+        this.selectedFiles.add( filePath );
       } else {
         continue;
       }
@@ -363,7 +363,7 @@ class DiffBuildProcessor {
       limit = pLmit( 5 )
       ,promiseReadFileAll = []
     ;
-    for ( const [ filePath ] of this.selectedFiles ) {
+    for ( const filePath of this.selectedFiles ) {
       const limitedTask = limit(
         () => _promisePushReadFileToStream( filePath, this.allFiles, stream )
       );
@@ -379,7 +379,7 @@ class DiffBuildProcessor {
  * through2.obj()の flush function の内部で実行。
  * @param {String} filePath - ファイルパス
  * @param {Object} collectedFiles - 収集した依存関係
- * @param {Map} selectedFiles - 通過候補
+ * @param {Set} selectedFiles - 通過させるファイルパスの格納用。
  */
 function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
   _recurse( filepath );
@@ -387,8 +387,8 @@ function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
     const deps = collectedFiles.get( path );
     if ( Array.isArray( deps ) ) {
       deps.forEach( ( dep ) => {
-        selectedFiles.set( dep, 1 );
-        if ( collectedFiles.has( dep ) ) {
+        selectedFiles.add( dep );
+        if ( collectedFiles.has( dep ) === true ) {
           _recurse( dep );
         }
       } );

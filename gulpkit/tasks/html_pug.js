@@ -75,8 +75,8 @@ function _setPugData( file ) {
  *     'chunk自身のパス'
  *    ]
  * }
- * @param {object} file
- * @param {object} collectedFiles
+ * @param {Object} file
+ * @param {Map} collectedFiles - 依存関係を格納する Map
  */
 function _collectDependencyFiles( file, collectedFiles ) {
   const
@@ -91,23 +91,24 @@ function _collectDependencyFiles( file, collectedFiles ) {
     if ( _isExternalSrc( filePath ) === true ) {
       continue;
     }
-    const dependentFilePath = ( _isRootPath( filePath ) )
+    const dependencyFilePath = ( _isRootPath( filePath ) )
       // ルートパスであれば
       ? join( resolve( process.cwd(), config.base ), filePath )
       // 相対パスであれば
       : resolve( file.dirname, filePath )
     ;
-    if ( dependentFilePath && !collectedFiles.get( dependentFilePath ) ) {
-      collectedFiles.set( dependentFilePath, [] );
+    if ( dependencyFilePath && collectedFiles.has( dependencyFilePath ) === false ) {
+      collectedFiles.set( dependencyFilePath, [] );
     }
-    if ( dependentFilePath ) {
-      collectedFiles.get( dependentFilePath ).push( file.path );
+    if ( dependencyFilePath ) {
+      collectedFiles.get( dependencyFilePath ).push( file.path );
     }
   }
 }
 
 /**
  * Pug の実行。
+ * @returns {object} - Gulp stream
  */
 function _renderPug() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
@@ -139,6 +140,7 @@ function _renderPug() {
 /**
  * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
+ * @returns {object} - Gulp stream
  */
 function _formatHtml() {
   const
@@ -149,16 +151,13 @@ function _formatHtml() {
   return through.obj(
     function( file, enc, callback ) {
       let contents = String( file.contents );
-
-      /*
-       * オプションで指定があれば、
-       * <div> などを内包する<a> の体裁を整える。
-       *
-       * <a>             \ <a>
-       *  <div>          \   <div>
-       *  </div></a>     \   </div>
-       *                 \ </a>
-       */
+      // オプションで指定があれば、
+      // <div> などを内包する<a> の体裁を整える。
+      //
+      // <a>             \ <a>
+      //  <div>          \   <div>
+      //  </div></a>     \   </div>
+      //                 \ </a>
       if ( options.formatHtml.repairAElement === true ) {
         contents = contents.replace(
           uglyAElementRegEx,
@@ -188,6 +187,7 @@ function _formatHtml() {
 
 /**
  * img サイズの自動挿入
+ * @returns {object} - Gulp stream
  */
 function _injectImageSize() {
   const
@@ -289,14 +289,11 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
   ;
   // コメントを閉じタグ内側に付けたい場合。
   if ( positionInside === true ) {
-
-    /*
-     * コメントと閉じタグを1行にまとめるか否か。
-     * <!-- --></div>
-     * or
-     * <!-- -->
-     * </div>
-     */
+    // コメントと閉じタグを1行にまとめるか否か。
+    // <!-- --></div>
+    // or
+    // <!-- -->
+    // </div>
     if ( oneLine === true ) {
       // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
@@ -313,14 +310,11 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
 
   // コメントを閉じタグ外側に付けたい場合。
   } else {
-
-    /*
-     * コメントと閉じタグを1行にまとめるか否か。
-     * </div><!-- -->
-     * or
-     * </div>
-     * <!-- -->
-     */
+    // コメントと閉じタグを1行にまとめるか否か。
+    // </div><!-- -->
+    // or
+    // </div>
+    // <!-- -->
     if ( oneLine === true ) {
       // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )

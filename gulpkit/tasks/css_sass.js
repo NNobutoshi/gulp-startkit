@@ -71,7 +71,7 @@ export default function css_sass() {
  *    ]
  * }
  * @param {object} file
- * @param {object} collectedFiles
+ * @param {Map} collectedFiles
  */
 function _collectDependencyFiles( file, collectedFiles ) {
   const
@@ -80,13 +80,13 @@ function _collectDependencyFiles( file, collectedFiles ) {
     ,matches = contents.matchAll( regex )
   ;
   for ( const match of matches ) {
+    const
+      extension = match[ 3 ]
+    ;
     let
       dependencyFilePath = resolve( file.dirname, match[ 2 ] )
       ,targets
       ,depFilePathBasename
-    ;
-    const
-      extension = match[ 3 ]
     ;
     // 拡張子がない場合は .scss を追加。
     if ( !extension ) {
