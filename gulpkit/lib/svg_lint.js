@@ -13,7 +13,7 @@ export default function svg_lint() {
   async function _transform( file, enc, callback ) {
     const
       contents = String( file.contents )
-      ,linting = await SVGLint.lintSource( contents, { debug: true, config: {} } )
+      ,linting = await SVGLint.lintSource( contents, { debug : true, config : {} } )
     ;
     linting.on( 'done', () => {
       if ( linting.state === 'error' || linting.valid === false ) {

@@ -18,9 +18,9 @@ let
  */
 
 export default  {
-  get   : _get,
-  set   : _set,
-  write : _write,
+  get   : _getDiffData,
+  set   : _setDiffData,
+  write : _writeDiffDataToFile,
   reset : _reset,
 };
 
@@ -29,7 +29,7 @@ export default  {
  * @param {string} name
  * @returns {object} diff data
  */
-async function _get( name ) {
+async function _getDiffData( name ) {
   if ( diffData ) {
     return diffData[ name ] || {};
   } else if ( existsSync( FILEPATH ) ) {
@@ -50,7 +50,7 @@ async function _get( name ) {
  * @param {string} name
  * @param {object} data
  */
-function _set( name, data ) {
+function _setDiffData( name, data ) {
   diffData[ name ] = data;
 }
 
@@ -58,7 +58,7 @@ function _set( name, data ) {
  * ファイルに書き込み、保存。
  * @returns {Promise}
  */
-async function _write() {
+async function _writeDiffDataToFile() {
   if ( !diffData  ) {
     return false;
   }
