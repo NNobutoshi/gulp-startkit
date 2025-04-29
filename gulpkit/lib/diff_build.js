@@ -11,6 +11,8 @@ import lastDiff from './last_diff.js';
 
 const
   WRITING_DELAY_TIME = 2000
+  ,EVENT_NAME_WATCH_START = 'myWatchStart'
+  ,EVENT_NAME_WATCH_FINISH = 'myWatchFinish'
 ;
 const
   defaultSettings = {
@@ -22,6 +24,8 @@ const
 ;
 let
   writingTimeoutId = null
+  ,promiseGetGitDiffData = null
+  ,promiseGetLastDiffData = null
 ;
 export {
   diff_build as default,
@@ -40,32 +44,61 @@ function diff_build( options, collect, select ) {
   if ( settings.enabled === false ) {
     return through.obj();
   }
-  const processor = new DiffBuildProcessor( settings, collect, select );
+  if ( !promiseGetGitDiffData || !promiseGetLastDiffData ) {
+    promiseGetGitDiffData = _getGitDiffData( settings.command, settings.name );
+    promiseGetLastDiffData = lastDiff.get( settings.name );
+  }
+
+  const myProcessor = new DiffBuildProcessor( settings, collect, select );
+
+  /*
+   * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
+   */
+  process.removeListener( EVENT_NAME_WATCH_START, _resetPromiseData );
+  process.removeListener( EVENT_NAME_WATCH_FINISH, _resetPromiseData );
+
+  if ( process.listenerCount( EVENT_NAME_WATCH_START ) === 0 ) {
+    process.on( EVENT_NAME_WATCH_START, _resetPromiseData );
+  }
+
+  if ( process.listenerCount( EVENT_NAME_WATCH_FINISH ) === 0 ) {
+    process.on( EVENT_NAME_WATCH_FINISH,  _resetPromiseData );
+  }
+
   return ( settings.oneToOne === true )
-    ? _createOneToOneStream( processor, settings )
-    : _createDependencyStream( processor, settings )
+    ? _createOneToOneStream( myProcessor, settings )
+    : _createDependencyStream( myProcessor, settings )
   ;
+}
+
+/**
+ * exec は処理が重く、各タスクで共有させるが、
+ * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
+ */
+function _resetPromiseData() {
+  promiseGetGitDiffData = null;
+  promiseGetLastDiffData = null;
 }
 
 /**
  * one source → one destination 用のストリーム作成。
  * Git Diff で検知されたfile のみを対象にする。
- * @param {DiffBuildProcessor} processor - 差分処理プロセッサ
+ * @param {DiffBuildProcessor} myProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createOneToOneStream( processor, settings ) {
+function _createOneToOneStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await processor.setFileContentsByGitDiff( file, callback );
+        await myProcessor.setFileContentsByGitDiff( file, callback );
       } catch ( err ) {
         callback( err );
       }
     },
     function _flush( callback ) {
       try {
-        _finalizeProcessor( processor, settings, callback );
+        _finalizeProcessor( myProcessor, settings, callback );
       } catch ( err ) {
         callback( err );
       }
@@ -80,24 +113,24 @@ function _createOneToOneStream( processor, settings ) {
  * or
  * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
  * 例えば、iconFont sprite.smithなどのタスク用。
- * @param {DiffBuildProcessor} processor - 差分処理プロセッサ
+ * @param {DiffBuildProcessor} myProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createDependencyStream( processor, settings ) {
+function _createDependencyStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await processor.collectAndGroupFiles( file, callback );
+        await myProcessor.collectAndGroupFiles( file, callback );
       } catch ( err ) {
         callback( err );
       }
     },
     async function _flush( callback ) {
       try {
-        if ( processor.currentDiffData !== null ) {
-          await processor.finalizeFileStream( this );
-          _finalizeProcessor( processor, settings, callback );
+        if ( myProcessor.currentDiffData !== null ) {
+          await myProcessor.finalizeFileStream( this );
+          _finalizeProcessor( myProcessor, settings, callback );
         }
       } catch ( err ) {
         callback( err );
@@ -108,14 +141,14 @@ function _createDependencyStream( processor, settings ) {
 
 /**
  * プロセスの最終処理。
- * @param {Object} processor - DiffBuildProcessor
+ * @param {Object} myProcessor - DiffBuildProcessor
  * @param {Object} settings - 設定
  * @param {Function} callback - コールバック
  */
-function _finalizeProcessor( processor, settings, callback ) {
-  lastDiff.set( settings.name, processor.currentDiffData );
+function _finalizeProcessor( myProcessor, settings, callback ) {
+  lastDiff.set( settings.name, myProcessor.currentDiffData );
   _writeDiffData();
-  _log( settings.name, processor.targetFiles.size, processor.selectedFiles.size );
+  _log( settings.name, myProcessor.targetFiles.size, myProcessor.selectedFiles.size );
   callback();
 }
 
@@ -138,8 +171,8 @@ class DiffBuildProcessor {
     this.targetFiles = new Set();
     this.selectedFiles = new Set();
     this.collectedFiles = new Map();
-    this.promiseGetGitDiffData = _getGitDiffData( settings.command, settings.name );
-    this.promiseGetLastDiffData = lastDiff.get( settings.name );
+    this.promiseGetGitDiffData = promiseGetGitDiffData;
+    this.promiseGetLastDiffData = promiseGetLastDiffData;
   }
 
   /**
@@ -235,8 +268,12 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   async #setFileContents( file ) {
-    file.contents = await readFile( file.path );
-    this.selectedFiles.add( file.path );
+    try {
+      file.contents = await readFile( file.path );
+      this.selectedFiles.add( file.path );
+    } catch ( err ) {
+      throw err;
+    }
   }
 
   /**
@@ -403,12 +440,16 @@ function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
  * @param {Stream} stream - Gulp stream
  */
 async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
-  const
-    contents = await readFile( filePath )
-    ,file = allFiles.get( filePath )
-  ;
-  file.contents = contents;
-  stream.push( file );
+  try {
+    const
+      contents = await readFile( filePath )
+      ,file = allFiles.get( filePath )
+    ;
+    file.contents = contents;
+    stream.push( file );
+  } catch ( err ) {
+    throw err;
+  }
 }
 
 /**

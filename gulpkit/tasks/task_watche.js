@@ -17,10 +17,10 @@ const
  */
 export default function task_watche( tasks, commonNextTask ) {
 
-  return function watch_init( done ) {
-
+  return function init_watch( done ) {
     let enabled = false;
 
+    process.emit( 'myWatchStart' );
     for ( let i = 0, len = tasks.length; i < len; i++ ) {
       const
         task = tasks[ i ]
@@ -31,18 +31,20 @@ export default function task_watche( tasks, commonNextTask ) {
         watchSrc
       ;
 
-      if ( taskConfig && taskConfig.src && taskConfig.subSrc ) {
+      if ( taskConfig?.src && taskConfig?.subSrc ) {
         watchSrc = [].concat( taskConfig.src, taskConfig.subSrc );
-      } else if ( taskConfig && taskConfig.src ) {
+      } else if ( taskConfig?.src ) {
         watchSrc = taskConfig.src;
       }
 
-      if ( taskConfig && taskConfig.enabledWatch === true && watchSrc ) {
+      if ( taskConfig?.enabledWatch === true && watchSrc ) {
         enabled = true;
         watch(
           watchSrc,
           watchOptions,
-          ( typeof commonNextTask === 'function' ) ? series( task, commonNextTask ) : task
+          ( typeof commonNextTask === 'function' )
+            ? series( task, commonNextTask, finishWatch )
+            : task
         );
       }
     } //for
@@ -54,4 +56,8 @@ export default function task_watche( tasks, commonNextTask ) {
     done();
 
   };
+  function finishWatch( done ) {
+    process.emit( 'myWatchFinish' );
+    done();
+  }
 }
