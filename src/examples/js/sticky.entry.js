@@ -12,7 +12,7 @@ const
 ;
 
 mdls.scrollManager = new ScrollManager( {
-  catchPoint: 0,
+  catchPoint : 0,
 } );
 
 mdls.scrollManager
@@ -25,7 +25,7 @@ mdls.scrollManager
       }
     },
     elemPointer1,
-    { hookPoint: 0 },
+    { hookPoint : 0 },
   )
   .on(
     ( observed ) => {
@@ -39,8 +39,8 @@ mdls.scrollManager
     },
     elemPointer2,
     {
-      hookPoint: 0,
-      selectorOffsetTop: '.pl-nav'
+      hookPoint : 0,
+      selectorOffsetTop : '.pl-nav'
     },
   )
   .on(
@@ -55,8 +55,8 @@ mdls.scrollManager
     },
     elemPointer3,
     {
-      hookPoint: 0,
-      selectorOffsetTop: '.pl-nav'
+      hookPoint : 0,
+      selectorOffsetTop : '.pl-nav'
     },
   )
 ;

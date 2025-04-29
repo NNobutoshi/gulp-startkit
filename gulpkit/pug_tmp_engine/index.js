@@ -140,7 +140,7 @@ function _createPugFileByProps( props, createPugFile ) {
     pugUrl = url.replace( /\.html?$/, '.pug' );
   }
   pugUrl = join( settings.src , pugUrl );
-  mkdir( dirname( pugUrl ),{ recursive: true }, ( err ) =>{
+  mkdir( dirname( pugUrl ),{ recursive : true }, ( err ) =>{
     if ( err ) {
       console.error( err );
     }

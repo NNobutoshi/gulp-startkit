@@ -38,7 +38,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
     callback( null, file );
   }
 
-  /*
+  /**
    * callback は後の _forEach に渡し、全部の branchTask を実行後まで保留。
    * @param {function} callback
    */
@@ -70,9 +70,7 @@ async function _forEach( groupedSources, branchTask, callback ) {
     );
   }
 
-  /*
-   * _groupSrc から渡された基のstream のcallback をここで実行。
-   */
+  // _groupSrc から渡された基のstream のcallback をここで実行。
   if ( branchStreams.length > 0 ) {
     mergeStream( ...branchStreams ).on( 'finish', callback );
   } else {

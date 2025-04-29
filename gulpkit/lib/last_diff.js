@@ -63,7 +63,7 @@ async function _write() {
     return false;
   }
   if ( !existsSync( DIRNAME ) ) {
-    await mkdir( DIRNAME, { recursive: true } )
+    await mkdir( DIRNAME, { recursive : true } )
       .catch( ( err ) => {
         throw err;
       } )
@@ -76,11 +76,11 @@ async function _write() {
   } );
 }
 
-/*
+/**
  * 保存のディレクトリごと削除。
  */
 function _reset() {
-  rm( DIRNAME, { recursive: true }, ( err ) => {
+  rm( DIRNAME, { recursive : true }, ( err ) => {
     if ( err ) {
       throw err;
     }

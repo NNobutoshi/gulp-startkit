@@ -10,13 +10,13 @@ const accordion = new Accordion( {
   toggleHeight    : true,
 } )
   .on( {
-    before: function() {
+    before : function() {
       this.elemParent.classList.add( 'js-pl-accordion--isOpening' );
     },
-    after: function() {
+    after : function() {
       this.elemParent.classList.remove( 'js-pl-accordion--isOpening' );
     },
-    finish: function( e ) {
+    finish : function( e ) {
       if ( this.isChanged === true ) {
         this.elemParent.classList.add( 'js-pl-accordion--isOpen' );
       } else {

@@ -32,8 +32,8 @@ export default function css_scss_lint() {
       async function( file, enc, callback ) {
         try {
           const { report } = await stylelint.lint( {
-            code: String( file.contents ),
-            formatter: 'string',
+            code : String( file.contents ),
+            formatter : 'string',
           } );
           if ( report ) {
             log( report.replace( /<.+?>/, file.path ) );

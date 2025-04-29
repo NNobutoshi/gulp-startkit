@@ -50,7 +50,7 @@ export default class Accordion {
         elemTrigger     : elemParent.querySelector( this.selectorTrigger ),
         elemTarget      : elemParent.querySelector( this.selectorTarget ),
         toggleHeight    : this.settings.toggleHeight,
-        propertyTargetTransition: this.settings.propertyTargetTransition,
+        propertyTargetTransition : this.settings.propertyTargetTransition,
       } );
       this.toggles.push( toggle );
     } );

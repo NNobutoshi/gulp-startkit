@@ -475,7 +475,7 @@ function _getGitDiffData( command, name ) {
           if ( path.indexOf( ' -> ' ) > -1 ) {
             path = path.split( ' -> ' )[ 1 ];
           }
-          diffData[ path ] = { status: match[ 1 ] };
+          diffData[ path ] = { status : match[ 1 ] };
         }
       }
       resolvePromise( diffData );

@@ -23,7 +23,7 @@ videoground
       this.elemVideo.classList.add( CLASSNAME_VIDEO );
     },
     load : _fitPosAndSize,
-    destroy :function() {
+    destroy : function() {
       this.elemParent.classList.remove( CLASSNAME_PLAYING );
       this.elemParent.classList.add( CLASSNAME_DESTROYED );
     },

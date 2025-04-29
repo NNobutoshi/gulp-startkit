@@ -69,7 +69,7 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
 
   return iconfont( subSrc, iconFontOptions )
     .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )
-    .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding: false } ) )
+    .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding : false } ) )
     .pipe( logStreamData( LOG_TITLE_FONT, LOG_SUBTITLE_FONT ) )
   ;
 }
@@ -107,8 +107,8 @@ async function _createScssFile( data, errorStream ) {
       ,sourceCode = template( data )
       ,filePath = `${ data.scssDist }/${ config.scssFileName }`
      ;
-    await mkdir( data.scssDist, { recursive: true } );
-    await writeFile( filePath, sourceCode, { encoding: CHARSET } );
+    await mkdir( data.scssDist, { recursive : true } );
+    await writeFile( filePath, sourceCode, { encoding : CHARSET } );
     logStreamData( `${ LOG_TITLE_SCSS } ${ filePath }`, LOG_SUBTITLE_SCSS, logOptionsScss );
   } catch ( err ) {
     errorStream.emit( 'error', err );

@@ -27,7 +27,7 @@ const
  * @returns {Object} - Gulp stream
  */
 export default function img_sprite() {
-  return src( config.src, { encoding: false } )
+  return src( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
@@ -43,7 +43,7 @@ export default function img_sprite() {
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
-    .pipe( gulpIf( /\.png$/ ,  dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding :false } ) ) )
+    .pipe( gulpIf( /\.png$/ ,  dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding : false } ) ) )
     .pipe( gulpIf( /\.png$/,  logStreamData( LOG_TITLE_PNG, LOG_SUBTITLE_PNG, logOptions ) ) )
     .pipe( gulpIf( /\.scss$/ , dest( config.scssDist.replace( '[subdir]', baseDir ) ) ) )
     .pipe( gulpIf( /\.scss$/,  logStreamData( LOG_TITLE_SCSS, LOG_SUBTITLE_SCSS, logOptions ) ) )

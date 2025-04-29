@@ -48,7 +48,7 @@ const
       base : SRC,
       dist : DIST,
       enabledWatch : WATCH_ENABLED,
-      options :{
+      options : {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
@@ -91,7 +91,7 @@ const
           linefeed    : 'lf', // 'crlf', 'lf'
           indentType  : 'space', // 'space', 'tab'
           indentWidth : 2,
-          silenceDeprecations: [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
+          silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
         },
         diff : {
           name    : 'css_sass',
@@ -109,7 +109,7 @@ const
       ],
       dist : DIST,
       enabledWatch : WATCH_ENABLED,
-      options: {
+      options : {
         plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
@@ -119,7 +119,7 @@ const
         stylelint : {
           fix            : false,
           failAfterError : true,
-          reporters      : [ { formatter: 'string', console: true } ],
+          reporters      : [ { formatter : 'string', console : true } ],
           debug          : true,
         },
         diff : {
@@ -304,7 +304,7 @@ const
       group : '/img/_sprite_svg',
       enabledWatch : WATCH_ENABLED,
       options :  {
-        plumber: {
+        plumber : {
           errorHandler : function( err ) {
             log.error( chalk.hex( ERROR_COLOR_HEX )( err.stack ) );
             this.emit( 'end' );
@@ -327,7 +327,7 @@ const
               bust       : false,
               render     : {
                 scss : {
-                  dest: resolve( process.cwd(), 'css/_sprite_svg.scss' ),
+                  dest : resolve( process.cwd(), 'css/_sprite_svg.scss' ),
                 },
               },
               example : {
@@ -345,7 +345,7 @@ const
             // },
             transform : [
               {
-                svgo: {
+                svgo : {
                   plugins : [
                     {
                       name   : 'removeViewBox',
@@ -503,7 +503,7 @@ const
             } ),
           ],
         },
-        plugins: [
+        plugins : [
           function() {},
         ],
       }

@@ -17,11 +17,11 @@ mdls.scrollManager = new ScrollManager( {
 mdls.scrollManager
   .on( _handle,
     document.querySelector( '.pl-inviewTarget--1' ),
-    { hookPoint: 0 }
+    { hookPoint : 0 }
   )
   .on( _handle,
     document.querySelector( '.pl-inviewTarget--2' ),
-    { hookPoint: 0 }
+    { hookPoint : 0 }
   )
   .runCallbacksAll()
 ;

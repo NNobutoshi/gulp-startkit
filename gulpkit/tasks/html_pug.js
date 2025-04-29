@@ -33,7 +33,7 @@ export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( src( config.imgSrc, { read: false } ) )
+    .pipe( src( config.imgSrc, { read : false } ) )
     .pipe( diff( options.diff ,_collectDependencyFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )
@@ -120,10 +120,10 @@ function _renderPug() {
       }
       const pugOptions = {
         ...options.pug,
-        filename: file.path,
-        self: true,
-        siteData: file.data.siteData,
-        pageData: file.data.pageData,
+        filename : file.path,
+        self : true,
+        siteData : file.data.siteData,
+        pageData : file.data.pageData,
       };
       try {
         const html = pug.render( String( file.contents ), pugOptions );

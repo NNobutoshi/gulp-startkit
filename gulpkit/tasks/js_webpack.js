@@ -136,11 +136,11 @@ function _runWebpack() {
       }
       if ( stats ) {
         log( stats.toString( {
-          colors: true,
-          chunks: false,
-          assets: false,
-          hash: true,
-          errors: false,
+          colors : true,
+          chunks : false,
+          assets : false,
+          hash : true,
+          errors : false,
         } ) );
       }
       callback();
