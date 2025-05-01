@@ -248,7 +248,7 @@ class DiffBuildProcessor {
    * Git 差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
-   * @param {Object} file - 処理対象のファイル (Vinylオブジェクト)
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   async #filterByGitDiff( file ) {
     this.currentDiffData = await this.promiseGetGitDiffData;
@@ -282,6 +282,8 @@ class DiffBuildProcessor {
    */
   #collectAllFiles( file ) {
     this.allFiles.set( file.path, file.clone() );
+    // プロパティのなかで一番容量が大きいので。
+    // 後で必要なものだけ読み込み直す。
     this.allFiles.get( file.path ).contents = null;
   }
 
@@ -293,7 +295,10 @@ class DiffBuildProcessor {
    * @param {String} group - グループ名
    */
   #assignGroup( file, group ) {
-    const groupPath = file.path.slice( 0, file.path.indexOf( group ) + group.length );
+    const
+      groupIndex = file.path.indexOf( group )
+      ,groupPath = file.path.slice( 0, groupIndex + group.length )
+    ;
     this.allFiles.get( file.path ).group = groupPath;
   }
 
@@ -303,9 +308,7 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   #collectDependencies( file ) {
-    if ( typeof this.collect === 'function' ) {
-      this.collect( file, this.collectedFiles );
-    }
+    this.collect?.( file, this.collectedFiles );
   }
 
   /**
@@ -325,8 +328,7 @@ class DiffBuildProcessor {
   #collectUntrackedFiles() {
     for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
       if (
-        !this.currentDiffData[ filePath ] &&
-        info.status.includes( '?' )
+        !this.currentDiffData[ filePath ] && info.status.includes( '?' )
       ) {
         this.targetFiles.add( resolve( process.cwd(), filePath ) );
       }
@@ -340,19 +342,16 @@ class DiffBuildProcessor {
    * @param {String} group - グループ名
    */
   #selectGroupedFiles( group ) {
-    for ( const [ filePath ] of this.allFiles ) {
-      for ( const targetFilePath of this.targetFiles ) {
-        const
-          target = this.allFiles.get( targetFilePath )
-          ,targetGroup = target?.group
-          ,myGroup = targetFilePath.slice(
-            0,
-            targetFilePath.indexOf( group ) + group.length
-          )
-            ;
+    for ( const targetFilePath of this.targetFiles ) {
+      const
+        targetGroup = this.allFiles.get( targetFilePath )?.group
+        ,groupIndex = targetFilePath.indexOf( group )
+        ,myGroup    = targetFilePath.slice( 0, groupIndex + group.length )
+      ;
+      for ( const [ filePath, fileInfo ] of this.allFiles ) {
         if (
-          ( targetGroup && filePath.startsWith( targetGroup ) ) ||
-              myGroup === this.allFiles.get( filePath )?.group
+          ( targetGroup && filePath.startsWith( targetGroup ) )
+          || myGroup === fileInfo?.group
         ) {
           this.selectedFiles.add( filePath );
         }
@@ -384,9 +383,7 @@ class DiffBuildProcessor {
       } else {
         continue;
       }
-      if ( typeof this.select === 'function' ) {
-        this.select( filePath, this.collectedFiles, this.selectedFiles );
-      }
+      this.select?.( filePath, this.collectedFiles, this.selectedFiles );
     }
   }
 
