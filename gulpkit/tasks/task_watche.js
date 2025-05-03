@@ -9,6 +9,11 @@ const
   ,watchOptions = config.task_watche.options.watch
 ;
 
+const
+  EVENT_NAME_WATCH_INIT     = 'myWatchInit'
+  ,EVENT_NAME_WATCH_START = 'myWatchStart'
+;
+
 /**
  * gulp watch タスクを生成する関数
  * @param {Array} tasks タスク名の配列
@@ -20,7 +25,7 @@ export default function task_watche( tasks, commonNextTask ) {
   return function init_watch( done ) {
     let enabled = false;
 
-    process.emit( 'myWatchStart' );
+    process.emit( EVENT_NAME_WATCH_INIT );
     for ( let i = 0, len = tasks.length; i < len; i++ ) {
       const
         task = tasks[ i ]
@@ -43,7 +48,7 @@ export default function task_watche( tasks, commonNextTask ) {
           watchSrc,
           watchOptions,
           ( typeof commonNextTask === 'function' )
-            ? series( task, commonNextTask, finishWatch )
+            ? series( task, commonNextTask, watching )
             : task
         );
       }
@@ -56,8 +61,8 @@ export default function task_watche( tasks, commonNextTask ) {
     done();
 
   };
-  function finishWatch( done ) {
-    process.emit( 'myWatchFinish' );
+  function watching( done ) {
+    process.emit( EVENT_NAME_WATCH_START );
     done();
   }
 }

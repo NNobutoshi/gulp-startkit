@@ -11,8 +11,8 @@ import lastDiff from './last_diff.js';
 
 const
   WRITING_DELAY_TIME = 2000
+  ,EVENT_NAME_WATCH_INIT = 'myWatchInit'
   ,EVENT_NAME_WATCH_START = 'myWatchStart'
-  ,EVENT_NAME_WATCH_FINISH = 'myWatchFinish'
 ;
 const
   defaultSettings = {
@@ -24,9 +24,9 @@ const
 ;
 let
   writingTimeoutId = null
+  ,myProcessor = null
   ,promiseGetGitDiffData = null
   ,promiseGetLastDiffData = null
-  ,myProcessor = null
 ;
 export {
   diff_build as default,
@@ -48,12 +48,17 @@ function diff_build( options, collect, select ) {
     return through.obj();
   }
 
+  if ( typeof settings.allForOne === 'string' ) {
+    settings.group = settings.allForOne.replace( /[/\\]/g, sep );
+  } else {
+    settings.group = false;
+  }
+  myProcessor = myProcessor || new DiffBuildProcessor( settings, collect, select );
+
   if ( !promiseGetGitDiffData || !promiseGetLastDiffData ) {
     promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
-    promiseGetLastDiffData = lastDiff.get( settings.name );
+    promiseGetLastDiffData = lastDiff.get();
   }
-
-  myProcessor = myProcessor || new DiffBuildProcessor( settings, collect, select );
 
   if ( myProcessor.collector.has( settings.name ) === false ) {
     myProcessor.collector.set( settings.name, collect );
@@ -63,19 +68,8 @@ function diff_build( options, collect, select ) {
     myProcessor.selector.set( settings.name, select );
   }
 
-  /*
-   * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
-   */
-  process.removeListener( EVENT_NAME_WATCH_START, _resetSharedObject );
-  process.removeListener( EVENT_NAME_WATCH_FINISH, _resetSharedObject );
-
-  if ( process.listenerCount( EVENT_NAME_WATCH_START ) === 0 ) {
-    process.on( EVENT_NAME_WATCH_START, _resetSharedObject );
-  }
-
-  if ( process.listenerCount( EVENT_NAME_WATCH_FINISH ) === 0 ) {
-    process.on( EVENT_NAME_WATCH_FINISH,  _resetSharedObject );
-  }
+  // myProcessor の共有する値の初期化
+  _handleResetListener( myProcessor );
 
   return ( settings.oneToOne === true )
     ? _createOneToOneStream( myProcessor, settings )
@@ -84,13 +78,17 @@ function diff_build( options, collect, select ) {
 }
 
 /**
- * exec は処理が重く、各タスクで共有させるが、
- * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
+ * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
  */
-function _resetSharedObject() {
-  myProcessor = null;
-  promiseGetGitDiffData = null;
-  promiseGetLastDiffData = null;
+function _handleResetListener( myProcessor ) {
+  process.removeListener( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
+  process.removeListener( EVENT_NAME_WATCH_START, myProcessor.resetSharedState );
+  if ( process.listenerCount( EVENT_NAME_WATCH_INIT ) === 0 ) {
+    process.on( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
+  }
+  if ( process.listenerCount( EVENT_NAME_WATCH_START ) === 0 ) {
+    process.on( EVENT_NAME_WATCH_START,  myProcessor.resetSharedState );
+  }
 }
 
 /**
@@ -159,17 +157,26 @@ function _createDependencyStream( myProcessor, settings ) {
  */
 class DiffBuildProcessor {
 
-  constructor( settings ) {
-    this.settings = settings;
+  constructor() {
     this.collector = new Map();
     this.selector  = new Map();
-    this.lastDiff = lastDiff;
     this.allFileMap = new Map();
     this.targetFileMap = new Map();
     this.selectedFileMap = new Map();
     this.collectedFileMap = new Map();
-    this.promiseGetGitDiffData = promiseGetGitDiffData;
-    this.promiseGetLastDiffData = promiseGetLastDiffData;
+    this.currentDiffData = null;
+    this.lastDiffData = null;
+  }
+
+  /**
+   * exec は処理が重く、各タスクでPromis を共有させるが、
+   * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
+   */
+  resetSharedState() {
+    this.currentDiffData = null;
+    this.lastDiffData = null;
+    promiseGetGitDiffData = null;
+    promiseGetLastDiffData = null;
   }
 
   /**
@@ -180,9 +187,9 @@ class DiffBuildProcessor {
    * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
    */
   async setFileContentsByGitDiff( name, file, callback ) {
-    // 対象ファイルを選定
     this.#setChildSetTo( name, this.targetFileMap );
     this.#setChildSetTo( name, this.selectedFileMap );
+    // 対象ファイルを選定
     await this.#filterByGitDiff( name, file );
     if ( this.targetFileMap.get( name ).has( file.path ) === false ) {
       return callback();
@@ -200,11 +207,6 @@ class DiffBuildProcessor {
    * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
    */
   async collectAndGroupFiles( file, settings, callback ) {
-    if ( typeof this.settings.allForOne === 'string' ) {
-      this.settings.group = this.settings.allForOne.replace( /[/\\]/g, sep );
-    } else {
-      this.settings.group = false;
-    }
     this.#setChildMapTo( settings.name, this.allFileMap );
     this.#setChildSetTo( settings.name, this.targetFileMap );
     this.#setChildMapTo( settings.name, this.collectedFileMap );
@@ -213,7 +215,7 @@ class DiffBuildProcessor {
     // 対象ファイルを選定。
     await this.#filterByGitDiff( settings.name, file );
     // グループ情報を設定。
-    if ( this.settings.group ) {
+    if ( settings.group ) {
       this.#assignGroup( file, settings.name, settings.group );
     }
     // 依存関係を収集。
@@ -235,8 +237,8 @@ class DiffBuildProcessor {
     this.#setChildSetTo( settings.name, this.selectedFileMap );
     if ( settings.group ) {
       // 所属する同じグループのファイルも選択。
-      this.#selectGroupedFiles( settings.name, this.settings.group );
-    } else if ( this.settings.allForOne === true ) {
+      this.#selectGroupedFiles( settings.name, settings.group );
+    } else if ( settings.allForOne === true ) {
       // すべてのファイルの情報を選択。
       this.#selectAllFiles( settings.name );
     } else {
@@ -254,8 +256,8 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   async #filterByGitDiff( name, file ) {
-    this.currentDiffData = await this.promiseGetGitDiffData;
-    this.lastDiffData    = await this.promiseGetLastDiffData;
+    this.currentDiffData = await promiseGetGitDiffData;
+    this.lastDiffData    = await promiseGetLastDiffData;
     if (
       _includes( this.currentDiffData, file.path ) ||
       _includes( this.lastDiffData, file.path )
@@ -281,6 +283,7 @@ class DiffBuildProcessor {
 
   /**
    * すべてのファイル情報を収集。
+   * @param {Sting} name - タスク名
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
   #collectAllFiles( name, file ) {
@@ -289,6 +292,11 @@ class DiffBuildProcessor {
     this.allFileMap.get( name ).get( file.path ).contents = null;
   }
 
+  /**
+   * 各タスク名をkey にしてMap を親のMap に追加する。
+   * @param {Sting} name - タスク名
+   * @param {Map} parentMap - 親のMap
+   */
   #setChildMapTo( name, parentMap ) {
     if ( parentMap.has( name ) === true ) {
       return;
@@ -296,6 +304,11 @@ class DiffBuildProcessor {
     parentMap.set( name, new Map() );
   }
 
+  /**
+   * 各タスク名をkey にしてSet を親のMap に追加する。
+   * @param {Sting} name - タスク名
+   * @param {Map} parentMap - 親のMap
+   */
   #setChildSetTo( name, parentMap ) {
     if ( parentMap.has( name ) === true ) {
       return;
@@ -364,10 +377,10 @@ class DiffBuildProcessor {
         ,groupIndex = targetFilePath.indexOf( group )
         ,myGroup    = targetFilePath.slice( 0, groupIndex + group.length )
       ;
-      for ( const [ filePath, fileInfo ] of this.allFiles ) {
+      for ( const [ filePath, file ] of this.allFileMap.get( name ) ) {
         if (
           ( targetGroup && filePath.startsWith( targetGroup ) )
-          || myGroup === fileInfo?.group
+          || myGroup === file?.group
         ) {
           this.selectedFileMap.get( name ).add( filePath );
         }
@@ -476,13 +489,17 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @param {Function} callback - コールバック
  */
 function _finalizeProcessor( myProcessor, settings, callback ) {
-  lastDiff.set( settings.name, myProcessor.currentDiffData );
+  lastDiff.set( myProcessor.currentDiffData );
   _writeDiffData();
   _log(
     settings.name,
     myProcessor.targetFileMap.get( settings.name ).size,
     myProcessor.selectedFileMap.get( settings.name ).size,
   );
+  myProcessor.allFileMap.delete( settings.name );
+  myProcessor.collectedFileMap.delete( settings.name );
+  myProcessor.targetFileMap.delete( settings.name );
+  myProcessor.selectedFileMap.delete( settings.name );
   callback();
 }
 

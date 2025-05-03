@@ -9,7 +9,7 @@ const
 ;
 
 let
-  diffData
+  lastDiffData = null
 ;
 
 /*
@@ -18,10 +18,11 @@ let
  */
 
 export default  {
-  get   : _getDiffData,
-  set   : _setDiffData,
+  get   : _getLastDiffData,
+  set   : _setLastDiffData,
   write : _writeDiffDataToFile,
   reset : _reset,
+  delete : _delete,
 };
 
 /**
@@ -29,29 +30,28 @@ export default  {
  * @param {string} name
  * @returns {object} diff data
  */
-async function _getDiffData( name ) {
-  if ( diffData ) {
-    return diffData[ name ] || {};
+async function _getLastDiffData() {
+  if ( lastDiffData ) {
+    return lastDiffData;
   } else if ( existsSync( FILEPATH ) ) {
     try {
-      diffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
+      lastDiffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
     } catch ( err ) {
       throw err;
     }
-    return diffData[ name ] || {};
+    return lastDiffData || {};
   } else {
-    diffData = {};
-    return {};
+    return lastDiffData = {};
   }
 }
 
 /**
- * 環境変数に格納する。
+ * モジュールスコープ変数に格納する。
  * @param {string} name
  * @param {object} data
  */
-function _setDiffData( name, data ) {
-  diffData[ name ] = data;
+function _setLastDiffData( data ) {
+  lastDiffData = data;
 }
 
 /**
@@ -59,7 +59,7 @@ function _setDiffData( name, data ) {
  * @returns {Promise}
  */
 async function _writeDiffDataToFile() {
-  if ( !diffData  ) {
+  if ( !lastDiffData ) {
     return false;
   }
   if ( !existsSync( DIRNAME ) ) {
@@ -69,17 +69,21 @@ async function _writeDiffDataToFile() {
       } )
     ;
   }
-  writeFile( FILEPATH, JSON.stringify( diffData, null, 2 ), 'utf-8', ( err ) => {
+  writeFile( FILEPATH, JSON.stringify( lastDiffData, null, 2 ), CHARSET, ( err ) => {
     if ( err ) {
       throw err;
     }
   } );
 }
 
+function _reset() {
+  lastDiffData = null;
+}
+
 /**
  * 保存のディレクトリごと削除。
  */
-function _reset() {
+function _delete() {
   rm( DIRNAME, { recursive : true }, ( err ) => {
     if ( err ) {
       throw err;
