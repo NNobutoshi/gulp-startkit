@@ -226,36 +226,6 @@ class DiffBuildProcessor {
   }
 
   /**
-   * グループ情報を設定。
-   * 複数のsrc ファイルを一つのdist にするようなタスク用。
-   * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   * @param {Object} settings - 設定オブジェクト
-   */
-  assignGroup( file, settings ) {
-    const
-      taskName    = settings.name
-      ,group      = settings.group
-      ,groupIndex = file.path.indexOf( group )
-      ,groupPath  = file.path.slice( 0, groupIndex + group.length )
-    ;
-    this.allFileMap.get( taskName ).get( file.path ).group = groupPath;
-  }
-
-  /**
-   * 依存関係を収集。
-   * ファイルの依存関係をCallback で収集してもらう。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   * @param {Object} settings - 設定オブジェクト
-   */
-  collectDependencies( file, settings ) {
-    const
-      taskName = settings.name
-    ;
-    this.collector.get( taskName )?.( file, this.collectedFileMap.get( taskName ) );
-  }
-
-  /**
    * Git 差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
@@ -308,27 +278,33 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 各タスク名をkey にしてMap を親のMap に追加する。
-   * @param {Sting} name - タスク名
-   * @param {Map} parentMap - 親のMap
+   * グループ情報を設定。
+   * 複数のsrc ファイルを一つのdist にするようなタスク用。
+   * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
-  #setChildMapTo( name, parentMap ) {
-    if ( parentMap.has( name ) === true ) {
-      return;
-    }
-    parentMap.set( name, new Map() );
+  assignGroup( file, settings ) {
+    const
+      taskName    = settings.name
+      ,group      = settings.group
+      ,groupIndex = file.path.indexOf( group )
+      ,groupPath  = file.path.slice( 0, groupIndex + group.length )
+    ;
+    this.allFileMap.get( taskName ).get( file.path ).group = groupPath;
   }
 
   /**
-   * 各タスク名をkey にしてSet を親のMap に追加する。
-   * @param {Sting} name - タスク名
-   * @param {Map} parentMap - 親のMap
+   * 依存関係を収集。
+   * ファイルの依存関係をCallback で収集してもらう。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
-  #setChildSetTo( name, parentMap ) {
-    if ( parentMap.has( name ) === true ) {
-      return;
-    }
-    parentMap.set( name, new Set() );
+  collectDependencies( file, settings ) {
+    const
+      taskName = settings.name
+    ;
+    this.collector.get( taskName )?.( file, this.collectedFileMap.get( taskName ) );
   }
 
   /**
@@ -442,6 +418,30 @@ class DiffBuildProcessor {
       promiseReadFileAll.push( limitedTask );
     }
     await Promise.all( promiseReadFileAll );
+  }
+
+  /**
+   * 各タスク名をkey にしてMap を親のMap に追加する。
+   * @param {Sting} name - タスク名
+   * @param {Map} parentMap - 親のMap
+   */
+  #setChildMapTo( name, parentMap ) {
+    if ( parentMap.has( name ) === true ) {
+      return;
+    }
+    parentMap.set( name, new Map() );
+  }
+
+  /**
+   * 各タスク名をkey にしてSet を親のMap に追加する。
+   * @param {Sting} name - タスク名
+   * @param {Map} parentMap - 親のMap
+   */
+  #setChildSetTo( name, parentMap ) {
+    if ( parentMap.has( name ) === true ) {
+      return;
+    }
+    parentMap.set( name, new Set() );
   }
 
 }
