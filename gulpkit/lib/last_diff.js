@@ -1,6 +1,5 @@
-import { mkdir, readFile           } from 'node:fs/promises';
-import { writeFile, existsSync, rm } from 'node:fs';
-import { resolve, dirname }          from 'node:path';
+import { mkdir, readFile, writeFile, rm, access } from 'node:fs/promises';
+import { resolve, dirname } from 'node:path';
 
 const
   FILEPATH  = resolve( process.cwd(), '.last_diff/.diffmap' )
@@ -12,28 +11,27 @@ let
   lastDiffData = null
 ;
 
-/*
- * Git コマンドで得たタスク終了時までの差分リストを環境変数に格納、取得、
+/**
+ * Git コマンドで得たタスク終了時までの差分データを取得。
  * また、ファイル保存する。
  */
 
 export default  {
-  get   : _getLastDiffData,
-  set   : _setLastDiffData,
-  write : _writeDiffDataToFile,
-  reset : _reset,
+  get    : _getLastDiffData,
+  set    : _setLastDiffData,
+  write  : _writeDiffDataToFile,
+  reset  : _reset,
   delete : _delete,
 };
 
 /**
  * 環境変数に格納されている差分ファイルリストを優先して取得。
- * @param {string} name
- * @returns {object} diff data
+ * @returns {object} - lastDiffData
  */
 async function _getLastDiffData() {
   if ( lastDiffData ) {
     return lastDiffData;
-  } else if ( existsSync( FILEPATH ) ) {
+  } else if ( await _exists( FILEPATH ) ) {
     try {
       lastDiffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
     } catch ( err ) {
@@ -42,6 +40,19 @@ async function _getLastDiffData() {
     return lastDiffData || {};
   } else {
     return lastDiffData = {};
+  }
+}
+
+/**
+ * ファイルの存在を確認する。
+ * @param {String} filePath - 差分を情報を書き込むファイルのパス
+ */
+async function _exists( filePath ) {
+  try {
+    await access( filePath );
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -55,38 +66,37 @@ function _setLastDiffData( data ) {
 }
 
 /**
- * ファイルに書き込み、保存。
+ * ファイルに書き込み。
  * @returns {Promise}
  */
 async function _writeDiffDataToFile() {
   if ( !lastDiffData ) {
     return false;
   }
-  if ( !existsSync( DIRNAME ) ) {
-    await mkdir( DIRNAME, { recursive : true } )
-      .catch( ( err ) => {
-        throw err;
-      } )
-    ;
-  }
-  writeFile( FILEPATH, JSON.stringify( lastDiffData, null, 2 ), CHARSET, ( err ) => {
-    if ( err ) {
-      throw err;
+  try {
+    if ( await _exists( DIRNAME ) ) {
+      await mkdir( DIRNAME, { recursive : true } );
     }
-  } );
+    await writeFile( FILEPATH, JSON.stringify( lastDiffData, null, 2 ), CHARSET );
+  } catch ( err ) {
+    throw err;
+  }
 }
 
+/**
+ * リセット。
+ */
 function _reset() {
   lastDiffData = null;
 }
 
 /**
- * 保存のディレクトリごと削除。
+ * 保存されたディレクトリごと削除。
  */
 function _delete() {
-  rm( DIRNAME, { recursive : true }, ( err ) => {
-    if ( err ) {
-      throw err;
-    }
-  } );
+  try {
+    rm( DIRNAME, { recursive : true } );
+  } catch ( err ) {
+    throw err;
+  }
 }
