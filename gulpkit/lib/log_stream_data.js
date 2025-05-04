@@ -15,35 +15,39 @@ const defaultSettings = {
  * @param {string} title
  * @param {string} subTitle
  * @param {object} options
+ * @returns {Stream} - 処理されたストリーム
  */
 export default function logSteamData( title, subTitle, options ) {
-  const settings = Object.assign( {}, defaultSettings, options );
+  const settings = { ...defaultSettings, ...options };
   let fileCounter = 0;
   if ( settings.onStream === false ) {
     fancyLog( chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` ) );
     return;
   }
-  return through.obj( ( file, enc, callback ) => {
-    fileCounter += 1;
-    if ( settings.forEachFile === false ) {
+  return through.obj(
+    function _transform( file, enc, callback ) {
+      fileCounter += 1;
+      if ( settings.forEachFile === false ) {
+        callback( null, file );
+        return;
+      }
+      fancyLog(
+        chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` )
+        + ` ${ relative( process.cwd(), file.path ) }`
+      );
       callback( null, file );
-      return;
-    }
-    fancyLog(
-      chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` ) +
-      ` ${ relative( process.cwd(), file.path ) }`
-    );
-    callback( null, file );
-  }, ( callback ) => {
-    if ( fileCounter === 0 ) {
+    },
+    function _flush( callback ) {
+      if ( fileCounter === 0 ) {
+        callback();
+        return;
+      }
+      fancyLog(
+        chalk.hex( settings.textColorHex )( title )
+        + ` ${ fileCounter } files `
+        + chalk.hex( settings.textColorHex )( subTitle )
+      );
       callback();
-      return;
-    }
-    fancyLog(
-      chalk.hex( settings.textColorHex )( title ) +
-      ` ${ fileCounter } files ` +
-      chalk.hex( settings.textColorHex )( subTitle )
-    );
-    callback();
-  } );
+    },
+  );
 }

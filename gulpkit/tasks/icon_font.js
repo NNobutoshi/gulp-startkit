@@ -125,14 +125,18 @@ async function _getTimestamp( filePaths ) {
   let
     latestTimeStamp = Math.round( new Date( 0 ) / 1000 )
   ;
-  for ( const filePath of filePaths ) {
-    const
-      stats = await stat( filePath )
-      ,fileTimestamp = Math.round( stats.mtime / 1000 )
-    ;
-    if ( fileTimestamp > latestTimeStamp ) {
-      latestTimeStamp = fileTimestamp;
+  try {
+    for ( const filePath of filePaths ) {
+      const
+        stats = await stat( filePath )
+        ,fileTimestamp = Math.round( stats.mtime / 1000 )
+      ;
+      if ( fileTimestamp > latestTimeStamp ) {
+        latestTimeStamp = fileTimestamp;
+      }
     }
+  } catch ( err ) {
+    throw err;
   }
   return latestTimeStamp;
 }

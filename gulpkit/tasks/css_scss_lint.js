@@ -21,7 +21,7 @@ const
 ;
 
 /**
- * SCSSのLintを実行するタスク。
+ * SCSS のLint を実行するタスク。
  * @returns {Object} - Gulp stream
  */
 export default function css_scss_lint() {

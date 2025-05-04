@@ -120,8 +120,8 @@ function _renderPug() {
       }
       const pugOptions = {
         ...options.pug,
+        self     : true,
         filename : file.path,
-        self : true,
         siteData : file.data.siteData,
         pageData : file.data.pageData,
       };

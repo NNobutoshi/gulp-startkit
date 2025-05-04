@@ -40,12 +40,6 @@ if ( config.enabledCssMqpack === true ) {
  * @returns {Object} - Gulp stream
  */
 export default function css_sass() {
-  // if (
-  //   config.enabledCssMqpack &&
-  //   options.postcss.plugins.some( ( p ) => p.postcssPlugin === 'mqpacker' ) === false
-  // ) {
-  //   options.postcss.plugins.push( mqpacker() );
-  // }
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectDependencyFiles, organizeSelectedFileMap ) )
