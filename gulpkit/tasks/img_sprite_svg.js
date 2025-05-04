@@ -33,7 +33,7 @@ export default function img_sprite_svg() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( svgLint() )
+    .pipe( svgLint( options.svgLint ) )
     .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }
