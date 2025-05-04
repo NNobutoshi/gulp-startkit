@@ -30,8 +30,7 @@ async function init_browse( done ) {
     }
     browserSync.init( options );
     return done();
-  } catch ( err ) {
-    fancyLog( chalk.red( err ) );
+  } catch {
     return done();
   }
 }
