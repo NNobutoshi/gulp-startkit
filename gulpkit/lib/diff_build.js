@@ -16,10 +16,10 @@ const
 ;
 const
   defaultSettings = {
-    name      : '',
-    allForOne : false,
-    enabled   : true,
-    command   : 'git status -suall',
+    name    : '',
+    group   : '',
+    enabled : true,
+    command : 'git status -suall',
   }
 ;
 let
@@ -47,12 +47,10 @@ function diff_build( options, collect, select ) {
   if ( settings.enabled === false ) {
     return through.obj();
   }
-
-  if ( typeof settings.allForOne === 'string' ) {
-    settings.group = settings.allForOne.replace( /[/\\]/g, sep );
-  } else {
-    settings.group = false;
+  if ( typeof settings.group !== '' ) {
+    settings.group = settings.group.replace( /[/\\]/g, sep );
   }
+
   myProcessor = myProcessor || new DiffBuildProcessor( settings, collect, select );
 
   if ( !promiseGetGitDiffData || !promiseGetLastDiffData ) {
@@ -69,7 +67,7 @@ function diff_build( options, collect, select ) {
   }
 
   // myProcessor の共有する値の初期化
-  _handleResetListener( myProcessor );
+  _addResetStateListeners( myProcessor );
 
   return ( settings.oneToOne === true )
     ? _createOneToOneStream( myProcessor, settings )
@@ -80,7 +78,7 @@ function diff_build( options, collect, select ) {
 /**
  * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
  */
-function _handleResetListener( myProcessor ) {
+function _addResetStateListeners( myProcessor ) {
   process.removeListener( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
   process.removeListener( EVENT_NAME_WATCH_START, myProcessor.resetSharedState );
   if ( process.listenerCount( EVENT_NAME_WATCH_INIT ) === 0 ) {
@@ -102,14 +100,24 @@ function _createOneToOneStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await myProcessor.setFileContentsByGitDiff( settings.name, file, callback );
+        // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
+        myProcessor.setUpChildMaps( settings );
+        // 対象ファイルを選定。
+        await myProcessor.filterByGitDiff( file, settings );
+        if ( myProcessor.targetFileMap.get( settings.name ).has( file.path ) === false ) {
+          return callback();
+        }
+        // 改めてfile を読み込み、file.contents に代入する。
+        await myProcessor.setFileContents( file, settings );
+        callback( null, file );
       } catch ( err ) {
         callback( err );
       }
     },
     function _flush( callback ) {
       try {
-        _finalizeProcessor( myProcessor, settings, callback );
+        _finalizeProcessor( myProcessor, settings );
+        callback();
       } catch ( err ) {
         callback( err );
       }
@@ -132,17 +140,43 @@ function _createDependencyStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
-        await myProcessor.collectAndGroupFiles( file, settings, callback );
+        // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
+        myProcessor.setUpChildMaps( settings );
+        // すべてのファイル情報を収集。
+        myProcessor.collectAllFiles( file, settings );
+        await myProcessor.filterByGitDiff( file, settings );
+        // グループ情報を設定。
+        if ( settings.group ) {
+          myProcessor.assignGroup( file, settings );
+        }
+        // 依存関係を収集。
+        myProcessor.collectDependencies( file, settings );
+        // 対象ファイルを選定。
+        callback();
       } catch ( err ) {
         callback( err );
       }
     },
     async function _flush( callback ) {
       try {
-        if ( myProcessor.currentDiffData !== null ) {
-          await myProcessor.finalizeFileStream( settings, this );
-          _finalizeProcessor( myProcessor, settings, callback );
+        // 削除されたファイルも対象にする。
+        myProcessor.collectDeletedFiles( settings );
+        // Git が未追跡のファイルも対象にする。
+        myProcessor.collectUntrackedFiles( settings );
+        if ( settings.group ) {
+          // 所属する同じグループのファイルも選択。
+          myProcessor.selectGroupedFiles( settings );
+        } else if ( settings.allForOne === true ) {
+          // すべてのファイルの情報を選択。
+          myProcessor.selectAllFiles( settings );
+        } else {
+          // 収集した依存ファイルからstream に渡したいファイルを選択。
+          myProcessor.selectFilesFromCollection( settings );
         }
+        // 収集した依存ファイルからファイルを選択し、stream に渡す。
+        await myProcessor.pushSelectedFilesToStream( this, settings );
+        _finalizeProcessor( myProcessor, settings );
+        callback();
       } catch ( err ) {
         callback( err );
       }
@@ -180,89 +214,67 @@ class DiffBuildProcessor {
   }
 
   /**
-   * Git 差分データを基に、対象ファイルの内容を設定。
-   * 対象ファイルが差分リストに含まれている場合、その内容を読み込み、
-   * file.contents に代入し、選択されたファイルリストに追加する。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
+   * 選定、収集、選択用のMap 及び Set オブジェクトを各タスク事に準備する。
+   * @param {Object} settings - 設定オブジェクト
    */
-  async setFileContentsByGitDiff( name, file, callback ) {
-    this.#setChildSetTo( name, this.targetFileMap );
-    this.#setChildSetTo( name, this.selectedFileMap );
-    // 対象ファイルを選定
-    await this.#filterByGitDiff( name, file );
-    if ( this.targetFileMap.get( name ).has( file.path ) === false ) {
-      return callback();
-    }
-    // 改めてfile を読み込み、file.contents に代入する。
-    await this.#setFileContents( name, file );
-    callback( null, file );
+  setUpChildMaps( settings ) {
+    const taskName = settings.name;
+    this.#setChildMapTo( taskName, this.allFileMap );
+    this.#setChildSetTo( taskName, this.targetFileMap );
+    this.#setChildMapTo( taskName, this.collectedFileMap );
+    this.#setChildSetTo( taskName, this.selectedFileMap );
   }
 
   /**
-   * ファイルを収集し、必要に応じてグループ化を行う。
-   * 対象ファイルを差分データに基づいて選定し、依存関係を収集する。
-   * グループ化が設定されている場合、ファイルにグループ情報を付与する。
+   * グループ情報を設定。
+   * 複数のsrc ファイルを一つのdist にするようなタスク用。
+   * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   * @param {Function} callback - 処理完了時に呼び出されるコールバック関数
+   * @param {Object} settings - 設定オブジェクト
    */
-  async collectAndGroupFiles( file, settings, callback ) {
-    this.#setChildMapTo( settings.name, this.allFileMap );
-    this.#setChildSetTo( settings.name, this.targetFileMap );
-    this.#setChildMapTo( settings.name, this.collectedFileMap );
-    // すべてのファイル情報を収集。
-    this.#collectAllFiles( settings.name, file );
-    // 対象ファイルを選定。
-    await this.#filterByGitDiff( settings.name, file );
-    // グループ情報を設定。
-    if ( settings.group ) {
-      this.#assignGroup( file, settings.name, settings.group );
-    }
-    // 依存関係を収集。
-    this.#collectDependencies( settings.name, file );
-    callback();
+  assignGroup( file, settings ) {
+    const
+      taskName    = settings.name
+      ,group      = settings.group
+      ,groupIndex = file.path.indexOf( group )
+      ,groupPath  = file.path.slice( 0, groupIndex + group.length )
+    ;
+    this.allFileMap.get( taskName ).get( file.path ).group = groupPath;
   }
 
   /**
-   * ストリームの最終処理を行う。
-   * 削除されたファイルや未追跡のファイルを対象に追加し、
-   * 必要に応じてグループ化や依存関係の選定を行い、選択されたファイルをストリームに渡す。
-   * @param {Stream} stream - Gulp ストリーム
+   * 依存関係を収集。
+   * ファイルの依存関係をCallback で収集してもらう。
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
-  async finalizeFileStream( settings, stream ) {
-    // 削除されたファイルも対象にする。
-    this.#collectDeletedFiles( settings.name );
-    // Git が未追跡のファイルも対象にする。
-    this.#collectUntrackedFiles( settings.name );
-    this.#setChildSetTo( settings.name, this.selectedFileMap );
-    if ( settings.group ) {
-      // 所属する同じグループのファイルも選択。
-      this.#selectGroupedFiles( settings.name, settings.group );
-    } else if ( settings.allForOne === true ) {
-      // すべてのファイルの情報を選択。
-      this.#selectAllFiles( settings.name );
-    } else {
-      // 収集した依存ファイルからstream に渡したいファイルを選択。
-      this.#selectFilesFromCollection( settings.name );
-    }
-    // 収集した依存ファイルからファイルを選択し、stream に渡す。
-    await this.#pushSelectedFilesToStream( settings.name, stream );
+  collectDependencies( file, settings ) {
+    const
+      taskName = settings.name
+    ;
+    this.collector.get( taskName )?.( file, this.collectedFileMap.get( taskName ) );
   }
 
   /**
    * Git 差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
+   * @param {Object} settings - 設定オブジェクト
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
-  async #filterByGitDiff( name, file ) {
-    this.currentDiffData = await promiseGetGitDiffData;
-    this.lastDiffData    = await promiseGetLastDiffData;
-    if (
-      _includes( this.currentDiffData, file.path ) ||
-      _includes( this.lastDiffData, file.path )
-    ) {
-      this.targetFileMap.get( name ).add( file.path );
+  async filterByGitDiff( file, settings ) {
+    try {
+      const taskName = settings.name;
+      this.currentDiffData = await promiseGetGitDiffData;
+      this.lastDiffData    = await promiseGetLastDiffData;
+      if (
+        _includes( this.currentDiffData, file.path ) ||
+        _includes( this.lastDiffData, file.path )
+      ) {
+        this.targetFileMap.get( taskName ).add( file.path );
+      }
+    } catch ( err ) {
+      throw err;
     }
   }
 
@@ -270,12 +282,14 @@ class DiffBuildProcessor {
    * one source → one destination 用。
    * Gulp.src のオプション、 { read: false } の速さに期待して。
    * contents をreadFile で改めて読み込み、file.contents に代入する。
+   * @param {Object} settings - 設定オブジェクト
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
-  async #setFileContents( name, file ) {
+  async setFileContents( file, settings ) {
+    const taskName = settings.name;
     try {
       file.contents = await readFile( file.path );
-      this.selectedFileMap.get( name ).add( file.path );
+      this.selectedFileMap.get( taskName ).add( file.path );
     } catch ( err ) {
       throw err;
     }
@@ -286,10 +300,11 @@ class DiffBuildProcessor {
    * @param {Sting} name - タスク名
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    */
-  #collectAllFiles( name, file ) {
-    this.allFileMap.get( name ).set( file.path, file.clone() );
+  collectAllFiles( file, settings ) {
+    const taskName = settings.name;
+    this.allFileMap.get( taskName ).set( file.path, file.clone() );
     // プロパティのなかで一番容量が大きいので。後で必要なものだけ読み込み直す。
-    this.allFileMap.get( name ).get( file.path ).contents = null;
+    this.allFileMap.get( taskName ).get( file.path ).contents = null;
   }
 
   /**
@@ -317,49 +332,29 @@ class DiffBuildProcessor {
   }
 
   /**
-   * グループ情報を設定。
-   * 複数のsrc ファイルを一つのdist にするようなタスク用。
-   * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   * @param {String} group - グループ名
-   */
-  #assignGroup( file, name, group ) {
-    const
-      groupIndex = file.path.indexOf( group )
-      ,groupPath = file.path.slice( 0, groupIndex + group.length )
-    ;
-    this.allFileMap.get( name ).get( file.path ).group = groupPath;
-  }
-
-  /**
-   * 依存関係を収集。
-   * ファイルの依存関係をCallback で収集してもらう。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
-   */
-  #collectDependencies( name, file ) {
-    this.collector.get( name )?.( file, this.collectedFileMap.get( name ) );
-  }
-
-  /**
    * 消去されたファイルも対象にする。
+   * @param {Sting} name - タスク名
    */
-  #collectDeletedFiles( name ) {
+  collectDeletedFiles( settings ) {
+    const taskName = settings.name;
     for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
       if ( info.status.includes( 'D' ) ) {
-        this.targetFileMap.get( name ).add( resolve( process.cwd(), filePath ) );
+        this.targetFileMap.get( taskName ).add( resolve( process.cwd(), filePath ) );
       }
     }
   }
 
   /**
    * Git が未追跡のファイルも対象にする。
+   * @param {Sting} name - タスク名
    */
-  #collectUntrackedFiles( name ) {
+  collectUntrackedFiles( settings ) {
+    const taskName = settings.name;
     for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
       if (
         !this.currentDiffData[ filePath ] && info.status.includes( '?' )
       ) {
-        this.targetFileMap.get( name ).add( resolve( process.cwd(), filePath ) );
+        this.targetFileMap.get( taskName ).add( resolve( process.cwd(), filePath ) );
       }
     }
   }
@@ -367,72 +362,82 @@ class DiffBuildProcessor {
   /**
    * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
    * 複数src ファイルを一つに束ねる様なタスク用。
-   * @param {Set} selectedFiles - 通過させるファイルパスの格納用
+   * @param {Sting} name - タスク名
    * @param {String} group - グループ名
    */
-  #selectGroupedFiles( name, group ) {
-    for ( const targetFilePath of this.targetFileMap.get( name ) ) {
+  selectGroupedFiles( settings ) {
+    const
+      taskName = settings.name
+      ,group = settings.group
+    ;
+    for ( const targetFilePath of this.targetFileMap.get( taskName ) ) {
       const
-        targetGroup = this.allFileMap.get( name ).get( targetFilePath )?.group
+        targetGroup = this.allFileMap.get( taskName ).get( targetFilePath )?.group
         ,groupIndex = targetFilePath.indexOf( group )
         ,myGroup    = targetFilePath.slice( 0, groupIndex + group.length )
       ;
-      for ( const [ filePath, file ] of this.allFileMap.get( name ) ) {
+      for ( const [ filePath, file ] of this.allFileMap.get( taskName ) ) {
         if (
           ( targetGroup && filePath.startsWith( targetGroup ) )
           || myGroup === file?.group
         ) {
-          this.selectedFileMap.get( name ).add( filePath );
+          this.selectedFileMap.get( taskName ).add( filePath );
         }
       } // for
     } // for
   }
 
   /**
-   * 収集したすべてのファイルパス情報をselectedFiles に追加する。
+   * 収集したすべてのファイルパス情報をselectedMap に追加する。
+   * @param {Sting} name - タスク名
    */
-  #selectAllFiles( name ) {
-    for ( const [ filePath ] of this.allFileMap.get( name ) ) {
-      this.selectedFileMap.get( name ).add( filePath );
+  selectAllFiles( settings ) {
+    const taskName = settings.name;
+    for ( const [ filePath ] of this.allFileMap.get( taskName ) ) {
+      this.selectedFileMap.get( taskName ).add( filePath );
     }
   }
 
   /**
    * 収集した依存ファイルからstream に渡したいファイルを選択。
    * callback 関数で選択してもらう。
+   * @param {Sting} name - タスク名
    */
-  #selectFilesFromCollection( name ) {
-    for ( const filePath of this.targetFileMap.get( name ) ) {
+  selectFilesFromCollection( settings ) {
+    const taskName = settings.name;
+    for ( const filePath of this.targetFileMap.get( taskName ) ) {
       const collection = this.collectedFileMap.get( filePath );
       if ( collection ) {
-        collection.forEach( ( depPath ) => this.selectedFileMap.get( name ).add( depPath ) );
+        collection.forEach( ( depPath ) => this.selectedFileMap.get( taskName ).add( depPath ) );
       }
-      if ( this.allFileMap.get( name ).has( filePath ) === true ) {
-        this.selectedFileMap.get( name ).add( filePath );
+      if ( this.allFileMap.get( taskName ).has( filePath ) === true ) {
+        this.selectedFileMap.get( taskName ).add( filePath );
       } else {
         continue;
       }
-      this.selector.get( name )?.(
+      this.selector.get( taskName )?.(
         filePath,
-        this.collectedFileMap.get( name ),
-        this.selectedFileMap.get( name ),
+        this.collectedFileMap.get( taskName ),
+        this.selectedFileMap.get( taskName ),
       );
-    }
+    } // for
   }
 
   /**
    * 選択された通過ファイルをstream にプッシュする。
+   * @param {Sting} name - タスク名
    * @param {Stream} stream - Gulp stream
    * @returns {Promise} - プロミス
    */
-  async #pushSelectedFilesToStream( name, stream ) {
+  async pushSelectedFilesToStream( stream, settings ) {
     const
-      limit = pLmit( 5 )
+      taskName = settings.name
+      ,limit = pLmit( 5 )
       ,promiseReadFileAll = []
     ;
-    for ( const filePath of this.selectedFileMap.get( name ) ) {
+    for ( const filePath of this.selectedFileMap.get( taskName ) ) {
       const limitedTask = limit(
-        () => _promisePushReadFileToStream( filePath, this.allFileMap.get( name ), stream )
+        () => _promisePushReadFileToStream( filePath, this.allFileMap.get( taskName ), stream )
       );
       promiseReadFileAll.push( limitedTask );
     }
@@ -446,7 +451,7 @@ class DiffBuildProcessor {
  * through2.obj()の flush function の内部で実行。
  * @param {String} filePath - ファイルパス
  * @param {Object} collectedFiles - 収集した依存関係
- * @param {Set} selectedFiles - 通過させるファイルパスの格納用。
+ * @param {Set} selectedFiles - 通過させるファイルパスの格納用
  */
 function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
   _recurse( filepath );
@@ -488,19 +493,20 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @param {Object} settings - 設定
  * @param {Function} callback - コールバック
  */
-function _finalizeProcessor( myProcessor, settings, callback ) {
+function _finalizeProcessor( myProcessor, settings ) {
+  const taskName = settings.name;
   lastDiff.set( myProcessor.currentDiffData );
   _writeDiffData();
   _log(
-    settings.name,
-    myProcessor.targetFileMap.get( settings.name ).size,
-    myProcessor.selectedFileMap.get( settings.name ).size,
+    taskName,
+    myProcessor.targetFileMap.get( taskName ).size,
+    myProcessor.selectedFileMap.get( taskName ).size,
   );
-  myProcessor.allFileMap.delete( settings.name );
-  myProcessor.collectedFileMap.delete( settings.name );
-  myProcessor.targetFileMap.delete( settings.name );
-  myProcessor.selectedFileMap.delete( settings.name );
-  callback();
+  // 各Map はタスク毎に消去する。
+  myProcessor.allFileMap.delete( taskName );
+  myProcessor.collectedFileMap.delete( taskName );
+  myProcessor.targetFileMap.delete( taskName );
+  myProcessor.selectedFileMap.delete( taskName );
 }
 
 /**
@@ -536,8 +542,8 @@ function _log( name, detected, total ) {
  * @returns {Boolean} - true or false
  */
 function _includes( data, filePath ) {
-  const relPath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
-  return data && Object.keys( data ).includes( relPath );
+  const relativePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  return data && Object.keys( data ).includes( relativePath );
 }
 
 /**
@@ -552,7 +558,6 @@ function _includes( data, filePath ) {
 function _getGitDiffData( command, name ) {
   return new Promise( ( resolvePromise, rejectPromise ) => {
     exec( command, ( err, stdout, stderr ) => {
-      const diffData = {};
       if ( err ) {
         return rejectPromise( err );
       }
@@ -560,17 +565,30 @@ function _getGitDiffData( command, name ) {
         fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
-        const matches = stdout.matchAll( /^(.{2})\s([^\n]+?)\n/mg );
-        for ( const match of matches ) {
-          let path = match[ 2 ];
-          // リネームの際の文字列をリネーム後のパスの形に変換する。
-          if ( path.indexOf( ' -> ' ) > -1 ) {
-            path = path.split( ' -> ' )[ 1 ];
-          }
-          diffData[ path ] = { status : match[ 1 ] };
-        }
+        return resolvePromise( _createObjectFromStrings( stdout ) );
       }
-      resolvePromise( diffData );
+      return resolve( {} );
     } );
   } );
+}
+
+/**
+ * 渡された文字列をObject にして返す。
+ * @param {string} str - 基にする文字列
+ * @returns {Object} 生成したObject
+ */
+function _createObjectFromStrings( str ) {
+  const
+    matches = str.matchAll( /^(.{2})\s([^\n]+?)\n/mg )
+    ,retObj = {}
+  ;
+  for ( const match of matches ) {
+    let path = match[ 2 ];
+    // リネームの際の文字列をリネーム後のパスの形に変換する。
+    if ( path.indexOf( ' -> ' ) > -1 ) {
+      path = path.split( ' -> ' )[ 1 ];
+    }
+    retObj[ path.replace( /"/g,'' ) ] = { status : match[ 1 ] };
+  }
+  return retObj;
 }
