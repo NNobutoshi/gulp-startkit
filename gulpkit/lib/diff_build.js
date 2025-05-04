@@ -13,13 +13,16 @@ const
   WRITING_DELAY_TIME = 2000
   ,EVENT_NAME_WATCH_INIT = 'myWatchInit'
   ,EVENT_NAME_WATCH_START = 'myWatchStart'
+  ,MAX_BUFFER_SIZE = 1024 * 1024 * 10
 ;
 const
   defaultSettings = {
-    name    : '',
-    group   : '',
-    enabled : true,
-    command : 'git status -suall',
+    name      : '',
+    group     : '',
+    enabled   : true,
+    command   : 'git status -suall',
+    oneToOne  : false,
+    allForOne : false,
   }
 ;
 let
@@ -47,22 +50,27 @@ function diff_build( options, collect, select ) {
   if ( settings.enabled === false ) {
     return through.obj();
   }
+
   if ( typeof settings.group !== '' ) {
     settings.group = settings.group.replace( /[/\\]/g, sep );
   }
 
-  myProcessor = myProcessor || new DiffBuildProcessor( settings, collect, select );
+  if ( !myProcessor ) {
+    myProcessor = new DiffBuildProcessor();
+    myProcessor.resetSharedState = myProcessor.resetSharedState.bind( myProcessor );
+    _addResetStateListeners( myProcessor );
+  }
 
-  if ( !promiseGetGitDiffData || !promiseGetLastDiffData ) {
+  if ( !promiseGetGitDiffData ) {
     promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
     promiseGetLastDiffData = lastDiff.get();
   }
 
-  if ( myProcessor.collector.has( settings.name ) === false ) {
+  if ( collect ) {
     myProcessor.collector.set( settings.name, collect );
   }
 
-  if ( myProcessor.selector.has( settings.name ) === false ) {
+  if ( select ) {
     myProcessor.selector.set( settings.name, select );
   }
 
@@ -79,14 +87,14 @@ function diff_build( options, collect, select ) {
  * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
  */
 function _addResetStateListeners( myProcessor ) {
+  // 複数回呼び出される可能性を考慮して一度remove しておく。
   process.removeListener( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
   process.removeListener( EVENT_NAME_WATCH_START, myProcessor.resetSharedState );
-  if ( process.listenerCount( EVENT_NAME_WATCH_INIT ) === 0 ) {
-    process.on( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
-  }
-  if ( process.listenerCount( EVENT_NAME_WATCH_START ) === 0 ) {
-    process.on( EVENT_NAME_WATCH_START,  myProcessor.resetSharedState );
-  }
+
+  // WatchInint は一回の呼び出し。
+  // watchStart は複数回呼び出される。
+  process.once( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
+  process.on( EVENT_NAME_WATCH_START,  myProcessor.resetSharedState );
 }
 
 /**
@@ -114,9 +122,9 @@ function _createOneToOneStream( myProcessor, settings ) {
         callback( err );
       }
     },
-    function _flush( callback ) {
+    async function _flush( callback ) {
       try {
-        _finalizeProcessor( myProcessor, settings );
+        await _finalizeProcessor( myProcessor, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -175,7 +183,7 @@ function _createDependencyStream( myProcessor, settings ) {
         }
         // 収集した依存ファイルからファイルを選択し、stream に渡す。
         await myProcessor.pushSelectedFilesToStream( this, settings );
-        _finalizeProcessor( myProcessor, settings );
+        await _finalizeProcessor( myProcessor, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -207,6 +215,10 @@ class DiffBuildProcessor {
    * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
    */
   resetSharedState() {
+    this.allFileMap = new Map();
+    this.targetFileMap = new Map();
+    this.selectedFileMap = new Map();
+    this.collectedFileMap = new Map();
     this.currentDiffData = null;
     this.lastDiffData = null;
     promiseGetGitDiffData = null;
@@ -229,8 +241,8 @@ class DiffBuildProcessor {
    * Git 差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
-   * @param {Object} settings - 設定オブジェクト
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
   async filterByGitDiff( file, settings ) {
     try {
@@ -252,8 +264,8 @@ class DiffBuildProcessor {
    * one source → one destination 用。
    * Gulp.src のオプション、 { read: false } の速さに期待して。
    * contents をreadFile で改めて読み込み、file.contents に代入する。
-   * @param {Object} settings - 設定オブジェクト
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
   async setFileContents( file, settings ) {
     const taskName = settings.name;
@@ -267,8 +279,8 @@ class DiffBuildProcessor {
 
   /**
    * すべてのファイル情報を収集。
-   * @param {Sting} name - タスク名
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} settings - 設定オブジェクト
    */
   collectAllFiles( file, settings ) {
     const taskName = settings.name;
@@ -290,8 +302,9 @@ class DiffBuildProcessor {
       ,group      = settings.group
       ,groupIndex = file.path.indexOf( group )
       ,groupPath  = file.path.slice( 0, groupIndex + group.length )
+      ,allFileMap = this.allFileMap.get( taskName )
     ;
-    this.allFileMap.get( taskName ).get( file.path ).group = groupPath;
+    allFileMap.get( file.path ).group = groupPath;
   }
 
   /**
@@ -309,7 +322,7 @@ class DiffBuildProcessor {
 
   /**
    * 消去されたファイルも対象にする。
-   * @param {Sting} name - タスク名
+   * @param {Object} settings - 設定オブジェクト
    */
   collectDeletedFiles( settings ) {
     const taskName = settings.name;
@@ -322,7 +335,7 @@ class DiffBuildProcessor {
 
   /**
    * Git が未追跡のファイルも対象にする。
-   * @param {Sting} name - タスク名
+   * @param {Object} settings - 設定オブジェクト
    */
   collectUntrackedFiles( settings ) {
     const taskName = settings.name;
@@ -338,26 +351,28 @@ class DiffBuildProcessor {
   /**
    * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
    * 複数src ファイルを一つに束ねる様なタスク用。
-   * @param {Sting} name - タスク名
-   * @param {String} group - グループ名
+   * @param {Object} settings - 設定オブジェクト
    */
   selectGroupedFiles( settings ) {
     const
-      taskName = settings.name
-      ,group = settings.group
+      taskName         = settings.name
+      ,group           = settings.group
+      ,targetFileMap   = this.targetFileMap.get( taskName )
+      ,allFileMap      = this.allFileMap.get( taskName )
+      ,selectedFileMap = this.selectedFileMap.get( taskName )
     ;
-    for ( const targetFilePath of this.targetFileMap.get( taskName ) ) {
+    for ( const targetFilePath of targetFileMap ) {
       const
-        targetGroup = this.allFileMap.get( taskName ).get( targetFilePath )?.group
+        targetGroup = allFileMap.get( targetFilePath )?.group
         ,groupIndex = targetFilePath.indexOf( group )
         ,myGroup    = targetFilePath.slice( 0, groupIndex + group.length )
       ;
-      for ( const [ filePath, file ] of this.allFileMap.get( taskName ) ) {
+      for ( const [ filePath, file ] of allFileMap ) {
         if (
           ( targetGroup && filePath.startsWith( targetGroup ) )
           || myGroup === file?.group
         ) {
-          this.selectedFileMap.get( taskName ).add( filePath );
+          selectedFileMap.add( filePath );
         }
       } // for
     } // for
@@ -365,44 +380,53 @@ class DiffBuildProcessor {
 
   /**
    * 収集したすべてのファイルパス情報をselectedMap に追加する。
-   * @param {Sting} name - タスク名
+   * @param {Object} settings - 設定オブジェクト
    */
   selectAllFiles( settings ) {
-    const taskName = settings.name;
+    const
+      taskName     = settings.name
+      ,selectedMap = this.selectedFileMap.get( taskName )
+    ;
     for ( const [ filePath ] of this.allFileMap.get( taskName ) ) {
-      this.selectedFileMap.get( taskName ).add( filePath );
+      selectedMap.get( taskName ).add( filePath );
     }
   }
 
   /**
    * 収集した依存ファイルからstream に渡したいファイルを選択。
    * callback 関数で選択してもらう。
-   * @param {Sting} name - タスク名
+   * @param {Object} settings - 設定オブジェクト
    */
   selectFilesFromCollection( settings ) {
-    const taskName = settings.name;
-    for ( const filePath of this.targetFileMap.get( taskName ) ) {
-      const collection = this.collectedFileMap.get( filePath );
-      if ( collection ) {
-        collection.forEach( ( depPath ) => this.selectedFileMap.get( taskName ).add( depPath ) );
+    const
+      taskName      = settings.name
+      ,targetMap    = this.targetFileMap.get( taskName )
+      ,collectedMap = this.collectedFileMap.get( taskName )
+      ,selectedMap  = this.selectedFileMap.get( taskName )
+      ,allFileMap   = this.allFileMap.get( taskName )
+    ;
+    for ( const filePath of targetMap ) {
+      const collection = collectedMap.get( filePath );
+      if ( Array.isArray( collection ) === true ) {
+        collection.forEach( ( depPath ) => selectedMap.add( depPath ) );
       }
-      if ( this.allFileMap.get( taskName ).has( filePath ) === true ) {
-        this.selectedFileMap.get( taskName ).add( filePath );
+      if ( allFileMap.has( filePath ) === true ) {
+        selectedMap.add( filePath );
       } else {
         continue;
       }
       this.selector.get( taskName )?.(
         filePath,
-        this.collectedFileMap.get( taskName ),
-        this.selectedFileMap.get( taskName ),
+        collectedMap,
+        selectedMap,
       );
     } // for
   }
 
   /**
    * 選択された通過ファイルをstream にプッシュする。
-   * @param {Sting} name - タスク名
    * @param {Stream} stream - Gulp stream
+   * @param {Object} settings - 設定オブジェクト
    * @returns {Promise} - プロミス
    */
   async pushSelectedFilesToStream( stream, settings ) {
@@ -493,32 +517,31 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @param {Object} settings - 設定
  * @param {Function} callback - コールバック
  */
-function _finalizeProcessor( myProcessor, settings ) {
+async function _finalizeProcessor( myProcessor, settings ) {
   const taskName = settings.name;
   lastDiff.set( myProcessor.currentDiffData );
-  _writeDiffData();
   _log(
     taskName,
     myProcessor.targetFileMap.get( taskName ).size,
     myProcessor.selectedFileMap.get( taskName ).size,
   );
-  // 各Map はタスク毎に消去する。
-  myProcessor.allFileMap.delete( taskName );
-  myProcessor.collectedFileMap.delete( taskName );
-  myProcessor.targetFileMap.delete( taskName );
-  myProcessor.selectedFileMap.delete( taskName );
+  await _writeDiffData();
 }
 
 /**
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  */
-function _writeDiffData() {
+async function _writeDiffData() { // Make async
   clearTimeout( writingTimeoutId );
-  writingTimeoutId = setTimeout( () => {
-    lastDiff.write();
-    clearTimeout( writingTimeoutId );
-    writingTimeoutId  = null;
+  writingTimeoutId = setTimeout( async() => {
+    try {
+      await lastDiff.write();
+    } catch ( err ) {
+      throw err;
+    } finally {
+      writingTimeoutId = null;
+    }
   }, WRITING_DELAY_TIME );
 }
 
@@ -557,7 +580,7 @@ function _includes( data, filePath ) {
  */
 function _getGitDiffData( command, name ) {
   return new Promise( ( resolvePromise, rejectPromise ) => {
-    exec( command, ( err, stdout, stderr ) => {
+    exec( command, { maxBuffer : MAX_BUFFER_SIZE }, ( err, stdout, stderr ) => {
       if ( err ) {
         return rejectPromise( err );
       }
