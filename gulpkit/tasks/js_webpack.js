@@ -90,17 +90,15 @@ function _prepareWebpackConfig() {
       || !isEqual( webpackConfig.optimization?.splitChunks?.cacheGroups, splitChunksGroups )
     ) {
 
-      // 新しく構成された entry や splitChunks が既存のものと異なる場合に config を再構築
-      mergeWith( webpackConfig, {
-        entry : entries,
-        output : {
-          filename : '[name].js',
-          path : resolve( process.cwd(), config.dist ),
-        },
-        optimization : {
-          splitChunks : {
-            cacheGroups : splitChunksGroups,
-          }
+      // 新しく構成された entry や splitChunks が既存のものと異なる場合、マージする。
+      webpackConfig.entry = entries;
+      mergeWith( webpackConfig.output, {
+        filename : '[name].js',
+        path : resolve( process.cwd(), config.dist ),
+      } );
+      mergeWith( webpackConfig.optimization, {
+        splitChunks : {
+          cacheGroups : splitChunksGroups,
         }
       } );
       webpackCompiler = webpack( webpackConfig );
