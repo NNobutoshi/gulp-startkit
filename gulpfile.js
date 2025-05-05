@@ -34,7 +34,7 @@ export default function( done ) {
       )
     ),
     tasks.init_browse,
-    tasks.task_watche( Object.values( tasks ), tasks.reload_browse ),
+    tasks.task_watch( Object.values( tasks ), tasks.reload_browse ),
   )( done );
 }
 
@@ -47,7 +47,7 @@ export function html( done ) {
     tasks.html_pug,
     tasks.init_browse,
     series(
-      tasks.task_watche( [
+      tasks.task_watch( [
         tasks.img_min,
         tasks.html_pug,
       ],
@@ -68,7 +68,7 @@ export function img( done ) {
     tasks.css_sass,
     tasks.init_browse,
     series(
-      tasks.task_watche( [
+      tasks.task_watch( [
         tasks.img_min,
         tasks.img_sprite,
         tasks.img_sprite_svg,
@@ -89,7 +89,7 @@ export function css( done ) {
     tasks.css_sass,
     tasks.init_browse,
     series(
-      tasks.task_watche( [
+      tasks.task_watch( [
         tasks.css_scss_lint,
         tasks.css_sass,
       ],
@@ -107,7 +107,7 @@ export function js( done ) {
     tasks.js_webpack,
     tasks.init_browse,
     series(
-      tasks.task_watche( [
+      tasks.task_watch( [
         tasks.js_eslint,
         tasks.js_webpack,
       ],

@@ -403,7 +403,7 @@ const
         optimization : {},
       }
     },
-    'task_watche' : {
+    'task_watch' : {
       watchInitEventName  : EVENT_NAME_WATCH_INIT,
       watchStartEventName : EVENT_NAME_WATCH_START,
       options : {
@@ -461,7 +461,7 @@ const
         ],
       }
     },
-    'task_watche' : {},
+    'task_watch' : {},
   }
 ;
 
@@ -490,5 +490,5 @@ export const {
   js_eslint,
   js_webpack,
   browse,
-  task_watche,
+  task_watch,
 } = config;

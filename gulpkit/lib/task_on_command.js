@@ -25,7 +25,7 @@ export default function _taskOnCommand( tasks ) {
   process.on( 'beforeExit',
     series(
       tasks.init_browse,
-      tasks.task_watche( watchTasks, tasks.reload_browse ),
+      tasks.task_watch( watchTasks, tasks.reload_browse ),
     )
   );
 }

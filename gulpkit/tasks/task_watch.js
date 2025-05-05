@@ -6,7 +6,7 @@ import configFile from '../config.js';
 
 const
   config        = configFile
-  ,watchConfig  = config.task_watche
+  ,watchConfig  = config.task_watch
   ,watchOptions = watchConfig.options.watch
 ;
 
@@ -16,7 +16,7 @@ const
  * @param {Function} commonNextTask 共通の次のタスク
  * @returns {Function} watch タスク
  */
-export default function task_watche( tasks, commonNextTask ) {
+export default function task_watch( tasks, commonNextTask ) {
   return function init_watch( done ) {
     let enabled = false;
     process.emit( watchConfig.watchInitEventName );
