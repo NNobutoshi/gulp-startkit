@@ -11,8 +11,6 @@ import lastDiff from './last_diff.js';
 
 const
   WRITING_DELAY_TIME = 2000
-  ,EVENT_NAME_WATCH_INIT = 'myWatchInit'
-  ,EVENT_NAME_WATCH_START = 'myWatchStart'
   ,MAX_BUFFER_SIZE = 1024 * 1024 * 10
 ;
 const
@@ -46,7 +44,6 @@ export {
 function diff_build( options, collect, select ) {
 
   const settings = { ...defaultSettings, ...options };
-
   if ( settings.enabled === false ) {
     return through.obj();
   }
@@ -54,28 +51,25 @@ function diff_build( options, collect, select ) {
   if ( typeof settings.group !== '' ) {
     settings.group = settings.group.replace( /[/\\]/g, sep );
   }
-
   if ( !myProcessor ) {
     myProcessor = new DiffBuildProcessor();
     myProcessor.resetSharedState = myProcessor.resetSharedState.bind( myProcessor );
-    _addResetStateListeners( myProcessor );
+    // myProcessor の共有する値の初期化
+    _addResetStateListeners( myProcessor, settings.eventNameOnInit, settings.eventNameOnReset );
   }
-
+  // 差分データ取得のPromise の共有。
   if ( !promiseGetGitDiffData ) {
     promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
     promiseGetLastDiffData = lastDiff.get();
   }
-
+  // 依存ファイル情報の収集用コールバックを各タスク毎保有する。
   if ( collect ) {
     myProcessor.collector.set( settings.name, collect );
   }
-
+  // 最終選択用コールバックを各タスク毎保有する。
   if ( select ) {
     myProcessor.selector.set( settings.name, select );
   }
-
-  // myProcessor の共有する値の初期化
-  _addResetStateListeners( myProcessor );
 
   return ( settings.oneToOne === true )
     ? _createOneToOneStream( myProcessor, settings )
@@ -86,15 +80,14 @@ function diff_build( options, collect, select ) {
 /**
  * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
  */
-function _addResetStateListeners( myProcessor ) {
+function _addResetStateListeners( myProcessor, eventNameOnInit, eventNameOnReset ) {
   // 複数回呼び出される可能性を考慮して一度remove しておく。
-  process.removeListener( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
-  process.removeListener( EVENT_NAME_WATCH_START, myProcessor.resetSharedState );
-
+  process.removeListener( eventNameOnInit, myProcessor.resetSharedState );
+  process.removeListener( eventNameOnReset, myProcessor.resetSharedState );
   // WatchInint は一回の呼び出し。
   // watchStart は複数回呼び出される。
-  process.once( EVENT_NAME_WATCH_INIT, myProcessor.resetSharedState );
-  process.on( EVENT_NAME_WATCH_START,  myProcessor.resetSharedState );
+  process.once( eventNameOnInit, myProcessor.resetSharedState );
+  process.on( eventNameOnReset,  myProcessor.resetSharedState );
 }
 
 /**
@@ -140,7 +133,7 @@ function _createOneToOneStream( myProcessor, settings ) {
  * or
  * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
  * 例えば、iconFont sprite.smithなどのタスク用。
- * @param {DiffBuildProcessor} myProcessor - 差分処理プロセッサ
+ * @param {Object} myProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
@@ -211,7 +204,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * exec は処理が重く、各タスクでPromis を共有させるが、
+   * exec は処理が重く、各タスクでPromis を共有させるが、その際、
    * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
    */
   resetSharedState() {
@@ -243,6 +236,7 @@ class DiffBuildProcessor {
    * そうしなければ、git のrevert などが未検知になってしまうため。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
+   * @returns {Promise<void>}
    */
   async filterByGitDiff( file, settings ) {
     try {
@@ -266,6 +260,7 @@ class DiffBuildProcessor {
    * contents をreadFile で改めて読み込み、file.contents に代入する。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
+   * @returns {Promise<void>}
    */
   async setFileContents( file, settings ) {
     const taskName = settings.name;
@@ -314,9 +309,7 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   collectDependencies( file, settings ) {
-    const
-      taskName = settings.name
-    ;
+    const taskName = settings.name;
     this.collector.get( taskName )?.( file, this.collectedFileMap.get( taskName ) );
   }
 
@@ -388,7 +381,7 @@ class DiffBuildProcessor {
       ,selectedMap = this.selectedFileMap.get( taskName )
     ;
     for ( const [ filePath ] of this.allFileMap.get( taskName ) ) {
-      selectedMap.get( taskName ).add( filePath );
+      selectedMap.add( filePath );
     }
   }
 
@@ -427,7 +420,7 @@ class DiffBuildProcessor {
    * 選択された通過ファイルをstream にプッシュする。
    * @param {Stream} stream - Gulp stream
    * @param {Object} settings - 設定オブジェクト
-   * @returns {Promise} - プロミス
+   * @returns {Promise<void>}
    */
   async pushSelectedFilesToStream( stream, settings ) {
     const
@@ -497,6 +490,7 @@ function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
  * @param {String} filePath - ファイルパス
  * @param {Map} allFiles - 全chunk用
  * @param {Stream} stream - Gulp stream
+ * @returns {Promise<void>}
  */
 async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
   try {
@@ -516,6 +510,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @param {Object} myProcessor - DiffBuildProcessor
  * @param {Object} settings - 設定
  * @param {Function} callback - コールバック
+ * @returns {Promise<void>}
  */
 async function _finalizeProcessor( myProcessor, settings ) {
   const taskName = settings.name;
@@ -531,8 +526,9 @@ async function _finalizeProcessor( myProcessor, settings ) {
 /**
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
+ * @returns {Promise<void>}
  */
-async function _writeDiffData() { // Make async
+async function _writeDiffData() {
   clearTimeout( writingTimeoutId );
   writingTimeoutId = setTimeout( async() => {
     try {
@@ -598,7 +594,7 @@ function _getGitDiffData( command, name ) {
 /**
  * 渡された文字列をObject にして返す。
  * @param {string} str - 基にする文字列
- * @returns {Object} 生成したObject
+ * @returns {Object} - 生成したObject
  */
 function _createObjectFromStrings( str ) {
   const
@@ -611,6 +607,7 @@ function _createObjectFromStrings( str ) {
     if ( path.indexOf( ' -> ' ) > -1 ) {
       path = path.split( ' -> ' )[ 1 ];
     }
+    // 属性が?? の場合パス文字列ににダブルクォーテーションが含まれるので削除しておく。
     retObj[ path.replace( /"/g,'' ) ] = { status : match[ 1 ] };
   }
   return retObj;

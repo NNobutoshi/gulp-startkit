@@ -6,12 +6,8 @@ import configFile from '../config.js';
 
 const
   config        = configFile
-  ,watchOptions = config.task_watche.options.watch
-;
-
-const
-  EVENT_NAME_WATCH_INIT     = 'myWatchInit'
-  ,EVENT_NAME_WATCH_START = 'myWatchStart'
+  ,watchConfig  = config.task_watche
+  ,watchOptions = watchConfig.options.watch
 ;
 
 /**
@@ -21,11 +17,9 @@ const
  * @returns {Function} watch タスク
  */
 export default function task_watche( tasks, commonNextTask ) {
-
   return function init_watch( done ) {
     let enabled = false;
-
-    process.emit( EVENT_NAME_WATCH_INIT );
+    process.emit( watchConfig.watchInitEventName );
     for ( let i = 0, len = tasks.length; i < len; i++ ) {
       const
         task = tasks[ i ]
@@ -50,6 +44,7 @@ export default function task_watche( tasks, commonNextTask ) {
           ( typeof commonNextTask === 'function' )
             ? series( task, commonNextTask, watching )
             : task
+          ,
         );
       }
     } //for
@@ -62,7 +57,7 @@ export default function task_watche( tasks, commonNextTask ) {
 
   };
   function watching( done ) {
-    process.emit( EVENT_NAME_WATCH_START );
+    process.emit( watchConfig.watchStartEventName );
     done();
   }
 }
