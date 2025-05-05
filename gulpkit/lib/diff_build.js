@@ -240,14 +240,17 @@ class DiffBuildProcessor {
    */
   async filterByGitDiff( file, settings ) {
     try {
-      const taskName = settings.name;
+      const
+        myTaskName = settings.name
+        ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+      ;
       this.currentDiffData = await promiseGetGitDiffData;
       this.lastDiffData    = await promiseGetLastDiffData;
       if (
         _includes( this.currentDiffData, file.path ) ||
         _includes( this.lastDiffData, file.path )
       ) {
-        this.targetFileMap.get( taskName ).add( file.path );
+        myTargetFileSet.add( file.path );
       }
     } catch ( err ) {
       throw err;
@@ -263,10 +266,13 @@ class DiffBuildProcessor {
    * @returns {Promise<void>}
    */
   async setFileContents( file, settings ) {
-    const taskName = settings.name;
+    const
+      myTaskName = settings.name
+      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+    ;
     try {
       file.contents = await readFile( file.path );
-      this.selectedFileMap.get( taskName ).add( file.path );
+      mySelectedFileSet.add( file.path );
     } catch ( err ) {
       throw err;
     }
@@ -278,10 +284,13 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   collectAllFiles( file, settings ) {
-    const taskName = settings.name;
-    this.allFileMap.get( taskName ).set( file.path, file.clone() );
+    const
+      myTaskName = settings.name
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
+    ;
+    myAllFileMap.set( file.path, file.clone() );
     // プロパティのなかで一番容量が大きいので。後で必要なものだけ読み込み直す。
-    this.allFileMap.get( taskName ).get( file.path ).contents = null;
+    myAllFileMap.get( file.path ).contents = null;
   }
 
   /**
@@ -293,13 +302,13 @@ class DiffBuildProcessor {
    */
   assignGroup( file, settings ) {
     const
-      taskName    = settings.name
-      ,group      = settings.group
+      myTaskName = settings.name
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      ,group = settings.group
       ,groupIndex = file.path.indexOf( group )
-      ,groupPath  = file.path.slice( 0, groupIndex + group.length )
-      ,allFileMap = this.allFileMap.get( taskName )
+      ,groupPath = file.path.slice( 0, groupIndex + group.length )
     ;
-    allFileMap.get( file.path ).group = groupPath;
+    myAllFileMap.get( file.path ).group = groupPath;
   }
 
   /**
@@ -309,8 +318,11 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   collectDependencies( file, settings ) {
-    const taskName = settings.name;
-    this.collector.get( taskName )?.( file, this.collectedFileMap.get( taskName ) );
+    const
+      myTaskName = settings.name
+      ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
+     ;
+    this.collector.get( myTaskName )?.( file, myCollectedFileMap );
   }
 
   /**
@@ -318,10 +330,13 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   collectDeletedFiles( settings ) {
-    const taskName = settings.name;
+    const
+      myTaskName = settings.name
+      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+    ;
     for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
       if ( info.status.includes( 'D' ) ) {
-        this.targetFileMap.get( taskName ).add( resolve( process.cwd(), filePath ) );
+        myTargetFileSet.add( resolve( process.cwd(), filePath ) );
       }
     }
   }
@@ -331,12 +346,13 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   collectUntrackedFiles( settings ) {
-    const taskName = settings.name;
-    for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
-      if (
-        !this.currentDiffData[ filePath ] && info.status.includes( '?' )
-      ) {
-        this.targetFileMap.get( taskName ).add( resolve( process.cwd(), filePath ) );
+    const
+      myTaskName = settings.name
+      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+    ;
+    for ( const [ filePath, info ] of Object.entries( this.lastDiffData ) ) {
+      if ( !this.currentDiffData[ filePath ] && info.status.includes( '?' ) > -1 ) {
+        myTargetFileSet.add( resolve( process.cwd(), filePath ) );
       }
     }
   }
@@ -348,24 +364,24 @@ class DiffBuildProcessor {
    */
   selectGroupedFiles( settings ) {
     const
-      taskName         = settings.name
-      ,group           = settings.group
-      ,targetFileMap   = this.targetFileMap.get( taskName )
-      ,allFileMap      = this.allFileMap.get( taskName )
-      ,selectedFileMap = this.selectedFileMap.get( taskName )
+      myTaskName = settings.name
+      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+      ,group = settings.group
     ;
-    for ( const targetFilePath of targetFileMap ) {
+    for ( const targetFilePath of myTargetFileSet ) {
       const
-        targetGroup = allFileMap.get( targetFilePath )?.group
+        targetGroup = myAllFileMap.get( targetFilePath )?.group
         ,groupIndex = targetFilePath.indexOf( group )
-        ,myGroup    = targetFilePath.slice( 0, groupIndex + group.length )
+        ,myGroup = targetFilePath.slice( 0, groupIndex + group.length )
       ;
-      for ( const [ filePath, file ] of allFileMap ) {
+      for ( const [ filePath, file ] of myAllFileMap ) {
         if (
           ( targetGroup && filePath.startsWith( targetGroup ) )
           || myGroup === file?.group
         ) {
-          selectedFileMap.add( filePath );
+          mySelectedFileSet.add( filePath );
         }
       } // for
     } // for
@@ -377,11 +393,12 @@ class DiffBuildProcessor {
    */
   selectAllFiles( settings ) {
     const
-      taskName     = settings.name
-      ,selectedMap = this.selectedFileMap.get( taskName )
+      myTaskName = settings.name
+      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
     ;
-    for ( const [ filePath ] of this.allFileMap.get( taskName ) ) {
-      selectedMap.add( filePath );
+    for ( const [ filePath ] of myAllFileMap ) {
+      mySelectedFileSet.add( filePath );
     }
   }
 
@@ -392,26 +409,26 @@ class DiffBuildProcessor {
    */
   selectFilesFromCollection( settings ) {
     const
-      taskName      = settings.name
-      ,targetMap    = this.targetFileMap.get( taskName )
-      ,collectedMap = this.collectedFileMap.get( taskName )
-      ,selectedMap  = this.selectedFileMap.get( taskName )
-      ,allFileMap   = this.allFileMap.get( taskName )
+      myTaskName = settings.name
+      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+      ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
+      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
     ;
-    for ( const filePath of targetMap ) {
-      const collection = collectedMap.get( filePath );
+    for ( const filePath of myTargetFileSet ) {
+      const collection = myCollectedFileMap.get( filePath );
       if ( Array.isArray( collection ) === true ) {
-        collection.forEach( ( depPath ) => selectedMap.add( depPath ) );
+        collection.forEach( ( depPath ) => mySelectedFileSet.add( depPath ) );
       }
-      if ( allFileMap.has( filePath ) === true ) {
-        selectedMap.add( filePath );
+      if ( myAllFileMap.has( filePath ) === true ) {
+        mySelectedFileSet.add( filePath );
       } else {
         continue;
       }
-      this.selector.get( taskName )?.(
+      this.selector.get( myTaskName )?.(
         filePath,
-        collectedMap,
-        selectedMap,
+        myCollectedFileMap,
+        mySelectedFileSet,
       );
     } // for
   }
@@ -424,13 +441,14 @@ class DiffBuildProcessor {
    */
   async pushSelectedFilesToStream( stream, settings ) {
     const
-      taskName = settings.name
+      myTaskName = settings.name
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
       ,limit = pLmit( 5 )
       ,promiseReadFileAll = []
     ;
-    for ( const filePath of this.selectedFileMap.get( taskName ) ) {
+    for ( const filePath of this.selectedFileMap.get( myTaskName ) ) {
       const limitedTask = limit(
-        () => _promisePushReadFileToStream( filePath, this.allFileMap.get( taskName ), stream )
+        () => _promisePushReadFileToStream( filePath, myAllFileMap, stream )
       );
       promiseReadFileAll.push( limitedTask );
     }
@@ -513,12 +531,17 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * @returns {Promise<void>}
  */
 async function _finalizeProcessor( myProcessor, settings ) {
-  const taskName = settings.name;
+  const
+    myTaskName = settings.name
+    ,myTargetFileSet = myProcessor.targetFileMap.get( myTaskName )
+    ,mySelectedFileSet = myProcessor.selectedFileMap.get( myTaskName )
+  ;
+
   lastDiff.set( myProcessor.currentDiffData );
   _log(
-    taskName,
-    myProcessor.targetFileMap.get( taskName ).size,
-    myProcessor.selectedFileMap.get( taskName ).size,
+    myTaskName,
+    myTargetFileSet.size,
+    mySelectedFileSet.size,
   );
   await _writeDiffData();
 }
