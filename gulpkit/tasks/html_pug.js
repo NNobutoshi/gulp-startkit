@@ -238,7 +238,9 @@ function _injectImageSize() {
    * img || source 要素に width と height を追加する。
    * @param {object} match
    * @param {object} file
+   * @param {Map} map
    * @param {function} errorCallback
+   * @returns {Promise<void>}
    */
   async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
     const

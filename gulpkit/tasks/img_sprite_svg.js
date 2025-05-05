@@ -43,7 +43,7 @@ export default function img_sprite_svg() {
  * @param {Array} subSrc - SVGスプライトのソース
  * @param {String} baseDir - グループ名
  * @param {Object} trunkStream - エラーを伝えるストリーム
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc )

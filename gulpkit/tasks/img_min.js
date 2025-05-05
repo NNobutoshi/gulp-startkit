@@ -13,7 +13,7 @@ const
 
 /**
  * 画像を圧縮するタスク。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 export default function img_min() {
   return src( config.src, options.src )

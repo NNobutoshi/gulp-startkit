@@ -46,6 +46,7 @@ async function _getLastDiffData() {
 /**
  * ファイルの存在を確認する。
  * @param {String} filePath - 差分を情報を書き込むファイルのパス
+ * @returns {Promise<void>}
  */
 async function _exists( filePath ) {
   try {
@@ -67,7 +68,7 @@ function _setLastDiffData( data ) {
 
 /**
  * ファイルに書き込み。
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 async function _writeDiffDataToFile() {
   if ( !lastDiffData ) {

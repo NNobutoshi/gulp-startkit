@@ -15,7 +15,7 @@ const
 
 /**
  * @param {Function} done gulp タスクのコールバック
- * @returns
+ * @returns {Promise<void>}
  */
 async function init_browse( done ) {
   if ( !existsSync( FILEPATH ) ) {
@@ -36,7 +36,8 @@ async function init_browse( done ) {
 }
 
 /**
- * @param {Function} done gulp タスクのコールバック
+ * @param {Function} done Gulp タスク完了のコールバック
+ * @returns {Function<void>}
  */
 function reload_browse( done ) {
   if ( browserSync.active ) {

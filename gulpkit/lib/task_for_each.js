@@ -11,10 +11,10 @@ export default function handleTaskForEachGroup( group, base, branchTask ) {
 /**
  * 指定のグループに従ってsource を小分けにする。
  * @param {Map} groupedSources
- * @param {string} group
- * @param {string} base
- * @param {function} branchTask
- * @returns {stream}
+ * @param {String} group
+ * @param {String} base
+ * @param {Function} branchTask
+ * @returns {Stream}
  */
 function _groupSrc( groupedSources, group, base, branchTask ) {
 
@@ -52,8 +52,9 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
  * branchTask は、小分けしたグループ毎、Gulp.src 用の新しいsourceとdest 用のパスを渡し、
  * Gulp のストリームを受け取る。
  * @param {Map} groupedSources
- * @param {function} branchTask
- * @param {function} callback
+ * @param {Function} branchTask
+ * @param {Function} callback
+ * @returns {Promise<void>}
  */
 async function _forEach( groupedSources, branchTask, callback ) {
   const

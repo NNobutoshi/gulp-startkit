@@ -29,7 +29,7 @@ const
 
 /**
  * アイコンフォントを作成するタスク。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 export default function icon_font() {
   return src( config.src )
@@ -44,12 +44,12 @@ export default function icon_font() {
  * iconfontの設定を行い、アイコンフォントの作成を行う。
  * @param {Array} subSrc - iconfontのソース
  * @param {String} baseDir - グループ名
- * @param {Object} trunkStream - エラーを伝えるストリーム
- * @returns {Object} - iconfontのストリーム
+ * @param {Stream} trunkStream - エラーを伝えるストリーム
+ * @returns {Stream} - iconfontのストリーム
  */
 async function _branchTask( subSrc, baseDir, trunkStream ) {
   const
-    iconFontOptions = Object.create( options.iconfont )
+    iconFontOptions = { ...options.iconfont }
     ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
     ,templateData   = {
       fontName     : iconFontOptions.fontName.replace( '[subdir]', fontSubName ),
@@ -120,6 +120,7 @@ async function _createScssFile( data, errorStream ) {
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @param {Array} filePaths - ファイルパスの配列
  * @returns {Number} - タイムスタンプ
+ * @returns {Promise<void>}
  */
 async function _getTimestamp( filePaths ) {
   let

@@ -37,7 +37,7 @@ if ( config.enabledCssMqpack === true ) {
 
 /**
  * Sass を実行するタスク。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 export default function css_sass() {
   return src( config.src )
@@ -64,7 +64,7 @@ export default function css_sass() {
  *     'chunk自身のパス'
  *    ]
  * }
- * @param {object} file
+ * @param {Object} file
  * @param {Map} collectedFiles
  */
 function _collectDependencyFiles( file, collectedFiles ) {
@@ -88,6 +88,7 @@ function _collectDependencyFiles( file, collectedFiles ) {
     }
     depFilePathBasename = basename( dependencyFilePath );
     // アンダースコアがない場合は補う。
+    // 制作ルールとしてパーシャルファイルには必ずアンダースコアをつけるという前提！
     if ( depFilePathBasename.startsWith( '_' )  === false ) {
       dependencyFilePath = join(
         dirname( dependencyFilePath ),

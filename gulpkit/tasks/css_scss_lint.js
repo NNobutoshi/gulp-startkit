@@ -22,7 +22,7 @@ const
 
 /**
  * SCSS のLint を実行するタスク。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 export default function css_scss_lint() {
   return src( config.src, options.src )

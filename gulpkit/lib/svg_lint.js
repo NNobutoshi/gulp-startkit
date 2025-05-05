@@ -11,7 +11,7 @@ const
 /**
  * svg をsrc にするタスク用。
  * エラーが拾いにくいため。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - 処理されたストリーム
  */
 export default function svg_lint( options ) {
   const settings = { ...defaultSettings, ...options };

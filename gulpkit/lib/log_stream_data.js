@@ -12,9 +12,9 @@ const defaultSettings = {
 
 /**
  * gulp-stream のデータをログに出力する。
- * @param {string} title
- * @param {string} subTitle
- * @param {object} options
+ * @param {String} title
+ * @param {String} subTitle
+ * @param {Object} options
  * @returns {Stream} - 処理されたストリーム
  */
 export default function logSteamData( title, subTitle, options ) {

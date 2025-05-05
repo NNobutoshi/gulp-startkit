@@ -64,6 +64,7 @@ function _prepareWebpackConfig() {
 
   /**
    * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
+   * @returns {Promise<void>}
    */
   async function _transform( file, enc, callback ) {
     try {
@@ -109,7 +110,7 @@ function _prepareWebpackConfig() {
 
 /**
  * webpack のコンパイルを実行する。
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 function _runWebpack() {
   return through.obj( _noop, _flush );
@@ -121,7 +122,7 @@ function _runWebpack() {
    * webpackCompiler がまだ無いか、
    * 新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、
    * webpackCompiler を用意する。
-   * @param {function} callback - Gulp stream のコールバック
+   * @param {Function} callback - Gulp stream のコールバック
    */
   function _flush( callback ) {
     webpackCompiler.run( ( err, stats ) => {
@@ -150,8 +151,9 @@ function _runWebpack() {
  * vendor など、ディレクトリで共通で使用するモジュールは、
  * そのディレクトリ毎で設定が行えるようにする。
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
- * @param {object} groups - webpackConfig の cacheGroups
- * @param {string} chunkConfigPath - JSON data のpath
+ * @param {Object} groups - webpackConfig の cacheGroups
+ * @param {String} chunkConfigPath - JSON data のpath
+ * @returns {Promise<void>}
  */
 async function _createSplitChunks( groups, chunkConfigPath ) {
   const

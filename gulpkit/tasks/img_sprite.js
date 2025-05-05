@@ -38,7 +38,7 @@ export default function img_sprite() {
  * 任意の各フォルダ毎に、PNGスプライトを作成する。
  * @param {Array} subSrc - PNGスプライトのソース
  * @param {String} baseDir - グループ名
- * @returns {Object} - Gulp stream
+ * @returns {Stream} - Gulp stream
  */
 function _branchTask( subSrc, baseDir ) {
   return src( subSrc, { encoding : false } )
