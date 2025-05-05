@@ -586,7 +586,7 @@ function _getGitDiffData( command, name ) {
       if ( stdout ) {
         return resolvePromise( _createObjectFromStrings( stdout ) );
       }
-      return resolve();
+      return resolvePromise( {} );
     } );
   } );
 }
