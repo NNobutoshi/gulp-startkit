@@ -29,13 +29,11 @@ export default function task_watch( tasks, commonNextTask ) {
       let
         watchSrc
       ;
-
       if ( taskConfig?.src && taskConfig?.subSrc ) {
         watchSrc = [].concat( taskConfig.src, taskConfig.subSrc );
       } else if ( taskConfig?.src ) {
         watchSrc = taskConfig.src;
       }
-
       if ( taskConfig?.enabledWatch === true && watchSrc ) {
         enabled = true;
         watch(
@@ -48,13 +46,10 @@ export default function task_watch( tasks, commonNextTask ) {
         );
       }
     } //for
-
     if ( enabled === false ) {
       fancyLog( chalk.gray( 'no task to watch' ) );
     }
-
     done();
-
   };
   function watching( done ) {
     process.emit( watchConfig.watchStartEventName );

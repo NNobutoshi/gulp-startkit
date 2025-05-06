@@ -26,8 +26,6 @@ const
 let
   writingTimeoutId = null
   ,myProcessor = null
-  ,promiseGetGitDiffData = null
-  ,promiseGetLastDiffData = null
 ;
 export {
   diff_build as default,
@@ -39,7 +37,7 @@ export {
  * diff コマンドで検知されたファイルのみを対象とする。
  * @param {Object} options - オプション
  * @param {Function} collect - 依存関係収集用コールバック
- * @param {Function} select - 通過候補選択用コールバック
+ * @param {Function} select - 通過ファイル選択用コールバック
  */
 function diff_build( options, collect, select ) {
 
@@ -49,20 +47,26 @@ function diff_build( options, collect, select ) {
   }
 
   if ( typeof settings.group !== '' ) {
-    settings.group = settings.group.replace( /[/\\]/g, sep );
+    settings.group = settings.group.replace( /\//g, sep );
   }
+  // モジュールスコープのmyProcessor がnull の場合にのみ初期化。
   if ( !myProcessor ) {
     myProcessor = new DiffBuildProcessor();
+    // リスナ-登録でthis の参照が代わらないようにmyProcessor にbind 。
     myProcessor.resetSharedState = myProcessor.resetSharedState.bind( myProcessor );
-    // myProcessor の共有する値の初期化
-    _addResetStateListeners( myProcessor, settings.eventNameOnInit, settings.eventNameOnReset );
+    // myProcessor の共有する値を初期化するメンバ関数をリスナー登録。
+    _addResetStateListeners(
+      myProcessor.resetSharedState,
+      settings.eventNameOnInit,
+      settings.eventNameOnReset,
+    );
   }
-  // 差分データ取得のPromise の共有。
-  if ( !promiseGetGitDiffData ) {
-    promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
-    promiseGetLastDiffData = lastDiff.get();
+  // 差分データ取得のPromise を共有。
+  if ( !myProcessor.promiseGetGitDiffData ) {
+    myProcessor.promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
+    myProcessor.promiseGetLastDiffData = lastDiff.get();
   }
-  // 依存ファイル情報の収集用コールバックを各タスク毎保有する。
+  // 被依存ファイル情報の収集用コールバックを各タスク毎保有する。
   if ( collect ) {
     myProcessor.collector.set( settings.name, collect );
   }
@@ -72,32 +76,35 @@ function diff_build( options, collect, select ) {
   }
 
   return ( settings.oneToOne === true )
-    ? _createOneToOneStream( myProcessor, settings )
-    : _createDependencyStream( myProcessor, settings )
+    ? _createOneToOneFilesStream( myProcessor, settings )
+    : _createDependencyFilesStream( myProcessor, settings )
   ;
 }
 
 /**
- * 各タスクの最初の実行後と、その後のWatch の実行の時にだけ差分データを取得する意図。
+ * 各タスクの最初の実行後と、その後のsrc 更新毎にだけ差分データを取得する意図。
+ * @param {Function} resetSharedState - リスナー関数
+ * @param {String} eventNameOnInit - 発行元のイベント名で、コマンドで最初の1度の呼び出しを想定。
+ * @param {String} eventNameOnReset - 発行元のイベント名で、Watch 等で待機中にSrc が更新される度に呼び出す想定。
  */
-function _addResetStateListeners( myProcessor, eventNameOnInit, eventNameOnReset ) {
-  // 複数回呼び出される可能性を考慮して一度remove しておく。
-  process.removeListener( eventNameOnInit, myProcessor.resetSharedState );
-  process.removeListener( eventNameOnReset, myProcessor.resetSharedState );
-  // WatchInint は一回の呼び出し。
-  // watchStart は複数回呼び出される。
-  process.once( eventNameOnInit, myProcessor.resetSharedState );
-  process.on( eventNameOnReset,  myProcessor.resetSharedState );
+function _addResetStateListeners( resetSharedState, eventNameOnInit, eventNameOnReset ) {
+  // 多重回数の呼び出しを抑止するため、1度remove しておく。
+  process.removeListener( eventNameOnInit, resetSharedState );
+  process.removeListener( eventNameOnReset, resetSharedState );
+  // eventNameOnInit のリスナーは1回の呼び出し。
+  // eventNameOnReset のリスナーはSrc の更新毎の呼び出し。
+  process.once( eventNameOnInit, resetSharedState );
+  process.on( eventNameOnReset,  resetSharedState );
 }
 
 /**
- * one source → one destination 用のストリーム作成。
+ * One source → One destination 用のストリーム作成。
  * Git Diff で検知されたfile のみを対象にする。
  * @param {DiffBuildProcessor} myProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createOneToOneStream( myProcessor, settings ) {
+function _createOneToOneFilesStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
@@ -108,6 +115,7 @@ function _createOneToOneStream( myProcessor, settings ) {
         if ( myProcessor.targetFileMap.get( settings.name ).has( file.path ) === false ) {
           return callback();
         }
+        // Gulp src のオプション、{read :false } でfile.contents はnull なので、
         // 改めてfile を読み込み、file.contents に代入する。
         await myProcessor.setFileContents( file, settings );
         callback( null, file );
@@ -127,9 +135,8 @@ function _createOneToOneStream( myProcessor, settings ) {
 }
 
 /**
- * 依存関係用のストリームを作成。
- * 渡されてきたファイルが依存するその他のファイルを調べ、それらのファイルも一緒にstream に渡す。
- * 例えば、pug、sass のコンパイルタスク用。
+ * 依存関を伴う他のファイルも含めるストリームを作成。
+ * 例えば、Pug、Sass のコンパイルタスク用。
  * or
  * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
  * 例えば、iconFont sprite.smithなどのタスク用。
@@ -137,22 +144,22 @@ function _createOneToOneStream( myProcessor, settings ) {
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createDependencyStream( myProcessor, settings ) {
+function _createDependencyFilesStream( myProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
         myProcessor.setUpChildMaps( settings );
-        // すべてのファイル情報を収集。
+        // いったんすべてのファイル情報を収集。
         myProcessor.collectAllFiles( file, settings );
+        // 対象ファイルを選定。
         await myProcessor.filterByGitDiff( file, settings );
-        // グループ情報を設定。
+        // グループ情報を整理。
         if ( settings.group ) {
           myProcessor.assignGroup( file, settings );
         }
-        // 依存関係を収集。
-        myProcessor.collectDependencies( file, settings );
-        // 対象ファイルを選定。
+        // 依存関係にあるファイルを収集。
+        myProcessor.collectImporterFiles( file, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -171,10 +178,10 @@ function _createDependencyStream( myProcessor, settings ) {
           // すべてのファイルの情報を選択。
           myProcessor.selectAllFiles( settings );
         } else {
-          // 収集した依存ファイルからstream に渡したいファイルを選択。
+          // 収集した依存関係にあるファイルからstream に渡したいファイルを選択。
           myProcessor.selectFilesFromCollection( settings );
         }
-        // 収集した依存ファイルからファイルを選択し、stream に渡す。
+        // 選択されたファイルをstream に渡す。
         await myProcessor.pushSelectedFilesToStream( this, settings );
         await _finalizeProcessor( myProcessor, settings );
         callback();
@@ -201,11 +208,15 @@ class DiffBuildProcessor {
     this.collectedFileMap = new Map();
     this.currentDiffData = null;
     this.lastDiffData = null;
+    this.promiseGetGitDiffData = null;
+    this.promiseGetLastDiffData = null;
   }
 
   /**
    * exec は処理が重く、各タスクでPromis を共有させるが、その際、
    * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
+   * 新たな差分データ取得に伴い、各共有データも初期化する。
+   * 各タスクの最初の実行後と、その後のsrc 更新毎に初期化する。
    */
   resetSharedState() {
     this.allFileMap = new Map();
@@ -214,8 +225,8 @@ class DiffBuildProcessor {
     this.collectedFileMap = new Map();
     this.currentDiffData = null;
     this.lastDiffData = null;
-    promiseGetGitDiffData = null;
-    promiseGetLastDiffData = null;
+    this.promiseGetGitDiffData = null;
+    this.promiseGetLastDiffData = null;
   }
 
   /**
@@ -231,7 +242,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * Git 差分データを取得して対象ファイルを選定。
+   * Git で差分データを取得して対象ファイルを選定。
    * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
    * そうしなければ、git のrevert などが未検知になってしまうため。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
@@ -244,8 +255,8 @@ class DiffBuildProcessor {
         myTaskName = settings.name
         ,myTargetFileSet = this.targetFileMap.get( myTaskName )
       ;
-      this.currentDiffData = await promiseGetGitDiffData;
-      this.lastDiffData    = await promiseGetLastDiffData;
+      this.currentDiffData = await this.promiseGetGitDiffData;
+      this.lastDiffData    = await this.promiseGetLastDiffData;
       if (
         _includes( this.currentDiffData, file.path ) ||
         _includes( this.lastDiffData, file.path )
@@ -289,14 +300,17 @@ class DiffBuildProcessor {
       ,myAllFileMap = this.allFileMap.get( myTaskName )
     ;
     myAllFileMap.set( file.path, file.clone() );
-    // プロパティのなかで一番容量が大きいので。後で必要なものだけ読み込み直す。
+    // file.contents プロパティのなかで一番容量が大きいので、
+    // このライフサイクル中はいったんnull を代入する。
+    // 最終的に選択された際に再代入する。
     myAllFileMap.get( file.path ).contents = null;
   }
 
   /**
    * グループ情報を設定。
-   * 複数のsrc ファイルを一つのdist にするようなタスク用。
-   * 自身のパスをkey に、所属するグループ（設定ファイルで付けられた任意のディレクトリ名）を値に。
+   * 複数のsrc ファイルを1つのdist にするようなタスク用。
+   * 自身のパスがkey の値（file オブジェクト）に、
+   * group プロパティを追加する。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
@@ -308,16 +322,17 @@ class DiffBuildProcessor {
       ,groupIndex = file.path.indexOf( group )
       ,groupPath = file.path.slice( 0, groupIndex + group.length )
     ;
+    // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つフルのパス。
     myAllFileMap.get( file.path ).group = groupPath;
   }
 
   /**
-   * 依存関係を収集。
+   * 依存関係からインポート元のファイルを収集。
    * ファイルの依存関係をCallback で収集してもらう。
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
-  collectDependencies( file, settings ) {
+  collectImporterFiles( file, settings ) {
     const
       myTaskName = settings.name
       ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
@@ -359,7 +374,7 @@ class DiffBuildProcessor {
 
   /**
    * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
-   * 複数src ファイルを一つに束ねる様なタスク用。
+   * 複数src ファイルを1つに束ねる様なタスク用。
    * @param {Object} settings - 設定オブジェクト
    */
   selectGroupedFiles( settings ) {
@@ -403,8 +418,8 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 収集した依存ファイルからstream に渡したいファイルを選択。
-   * callback 関数で選択してもらう。
+   * 収集した依存関係ファイルからstream に渡したいファイルを選択。
+   * Callback で選択してもらう。
    * @param {Object} settings - 設定オブジェクト
    */
   selectFilesFromCollection( settings ) {
@@ -485,17 +500,22 @@ class DiffBuildProcessor {
  * 候補ファイルに依存するファイルを再帰選択する。
  * through2.obj()の flush function の内部で実行。
  * @param {String} filePath - ファイルパス
- * @param {Object} collectedFiles - 収集した依存関係
- * @param {Set} selectedFiles - 通過させるファイルパスの格納用
+ * @param {Object} collectedFileMap - 収集した依存関係
+ * @param {Set} selectedFileMap - 通過させるファイルパスの格納用
  */
-function organizeSelectedFileMap( filepath, collectedFiles, selectedFiles ) {
+function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) {
+  const visited = new Set();
   _recurse( filepath );
   function _recurse( path ) {
-    const deps = collectedFiles.get( path );
+    if ( visited.has( path ) === true ) {
+      return;
+    }
+    visited.add( path );
+    const deps = collectedFileMap.get( path );
     if ( Array.isArray( deps ) ) {
       deps.forEach( ( dep ) => {
-        selectedFiles.add( dep );
-        if ( collectedFiles.has( dep ) === true ) {
+        selectedFileMap.add( dep );
+        if ( collectedFileMap.has( dep ) === true ) {
           _recurse( dep );
         }
       } );
@@ -527,7 +547,6 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * プロセスの最終処理。
  * @param {Object} myProcessor - DiffBuildProcessor
  * @param {Object} settings - 設定
- * @param {Function} callback - コールバック
  * @returns {Promise<void>}
  */
 async function _finalizeProcessor( myProcessor, settings ) {
@@ -579,13 +598,13 @@ function _log( name, detected, total ) {
 
 /**
  * 差分ファイルリストに、filePath が含まれているか調べる。
- * @param {Object} data - 差分ファイルリスト
+ * @param {Object} diffData - 差分ファイルリスト
  * @param {String} filePath - ファイルパス
  * @returns {Boolean} - true or false
  */
-function _includes( data, filePath ) {
+function _includes( diffData, filePath ) {
   const relativePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
-  return data && Object.keys( data ).includes( relativePath );
+  return diffData && Object.keys( diffData ).includes( relativePath );
 }
 
 /**

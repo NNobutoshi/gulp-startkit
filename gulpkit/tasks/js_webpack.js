@@ -64,7 +64,9 @@ function _prepareWebpackConfig() {
 
   /**
    * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
-   * @returns {Promise<void>}
+   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {string} enc - エンコーディングの種類
+   * @param {Function} callback - 実行して処理の完了を伝える
    */
   async function _transform( file, enc, callback ) {
     try {
@@ -84,13 +86,16 @@ function _prepareWebpackConfig() {
     }
   }
 
+  /**
+   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
+   * @param {Function} callback - 実行して処理の完了を伝える
+   */
   function _flush( callback ) {
     if (
       webpackCompiler === null
       || !isEqual( webpackConfig.entry, entries )
       || !isEqual( webpackConfig.optimization?.splitChunks?.cacheGroups, splitChunksGroups )
     ) {
-
       // 新しく構成された entry や splitChunks が既存のものと異なる場合、マージする。
       webpackConfig.entry = entries;
       mergeWith( webpackConfig.output, {

@@ -11,6 +11,7 @@ export default async function clean() {
 
 /**
  * Git Command をつかってUntracked fileを、削除。
+ * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。
  * @param {string} command - git clean コマンド
  * @returns {Promise<void>}
  */

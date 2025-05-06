@@ -192,6 +192,8 @@ const
           fontHeight     : 1001,
           startUnicode   : 0xF001,
         },
+        svgLint : {
+        },
         plumber : plumberCommonOptions,
         diff : { ...diffCommonOtions,
           name  : 'icon_font',

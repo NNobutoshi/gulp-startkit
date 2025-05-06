@@ -34,7 +34,7 @@ export default function html_pug() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( src( config.imgSrc, { read : false } ) )
-    .pipe( diff( options.diff ,_collectDependencyFiles ,organizeSelectedFileMap ) )
+    .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )
     .pipe( _formatHtml() )
@@ -65,9 +65,9 @@ function _setPugData( file ) {
 }
 
 /**
- * 依存関係を調べ、Objectにまとめる。
+ * インポート元のファイルを収集してMap に追加する。
  * through2 のtransformFunction の内部で実行。
- * chunk のcontents から読み込んでいるパスを調べる
+ * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。
  *
  * collectedFiles
  * {
@@ -78,7 +78,7 @@ function _setPugData( file ) {
  * @param {Object} file
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */
-function _collectDependencyFiles( file, collectedFiles ) {
+function _collectImporterFiles( file, collectedFiles ) {
   const
     contents = String( file.contents )
     ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg

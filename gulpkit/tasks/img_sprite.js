@@ -3,7 +3,7 @@ import spriteSmith   from 'gulp.spritesmith';
 import plumber       from 'gulp-plumber';
 import gulpIf        from 'gulp-if';
 
-import handleTaskForEachGroup from '../lib/task_for_each.js';
+import assignTaskForEachGroup from '../lib/task_for_each.js';
 import diff                   from '../lib/diff_build.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
@@ -30,18 +30,18 @@ export default function img_sprite() {
   return src( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
+    .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }
 
 /**
- * 任意の各フォルダ毎に、PNGスプライトを作成する。
- * @param {Array} subSrc - PNGスプライトのソース
- * @param {String} baseDir - グループ名
+ * 任意の各フォルダ毎に、PNG スプライトを作成する。
+ * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
+ * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp stream
  */
-function _branchTask( subSrc, baseDir ) {
-  return src( subSrc, { encoding : false } )
+function _branchTask( branchSrc, baseDir ) {
+  return src( branchSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
     .pipe( gulpIf( /\.png$/ ,  dest( config.imgDist.replace( '[subdir]', baseDir ), { encoding : false } ) ) )
     .pipe( gulpIf( /\.png$/,  logStreamData( LOG_TITLE_PNG, LOG_SUBTITLE_PNG, logOptions ) ) )

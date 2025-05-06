@@ -42,7 +42,7 @@ if ( config.enabledCssMqpack === true ) {
 export default function css_sass() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( diff( options.diff, _collectDependencyFiles, organizeSelectedFileMap ) )
+    .pipe( diff( options.diff, _collectImporterFiles, organizeSelectedFileMap ) )
     .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
@@ -54,9 +54,9 @@ export default function css_sass() {
 }
 
 /**
- * 依存関係を調べ、Objectにまとめる。
- * through2 のtransformFunctionの内部で実行。
- * chunk のcontents から読み込んでいるパスを調べる
+ * インポート元のファイルを収集してMap に追加する。
+ * through2 のtransformFunction の内部で実行。
+ * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。
  *
  * collectedFiles
  * {
@@ -67,7 +67,7 @@ export default function css_sass() {
  * @param {Object} file
  * @param {Map} collectedFiles
  */
-function _collectDependencyFiles( file, collectedFiles ) {
+function _collectImporterFiles( file, collectedFiles ) {
   const
     contents = String( file.contents )
     ,regex   = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg

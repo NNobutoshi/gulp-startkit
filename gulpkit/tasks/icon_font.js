@@ -6,7 +6,7 @@ import plumber       from 'gulp-plumber';
 import Handlebars    from 'handlebars';
 
 import svgLint                from '../lib/svg_lint.js';
-import handleTaskForEachGroup from '../lib/task_for_each.js';
+import assignTaskForEachGroup from '../lib/task_for_each.js';
 import diff                   from '../lib/diff_build.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
@@ -35,19 +35,19 @@ export default function icon_font() {
   return src( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( svgLint() )
-    .pipe( handleTaskForEachGroup( config.group, config.base, _branchTask ) )
+    .pipe( svgLint( options.svgLint ) )
+    .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }
 
 /**
  * iconfontの設定を行い、アイコンフォントの作成を行う。
- * @param {Array} subSrc - iconfontのソース
- * @param {String} baseDir - グループ名
+ * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
+ * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @param {Stream} trunkStream - エラーを伝えるストリーム
  * @returns {Stream} - iconfontのストリーム
  */
-async function _branchTask( subSrc, baseDir, trunkStream ) {
+async function _branchTask( branchSrc, baseDir, trunkStream ) {
   const
     iconFontOptions = { ...options.iconfont }
     ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
@@ -61,13 +61,13 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
   ;
   try {
     iconFontOptions.fontName = templateData.fontName;
-    iconFontOptions.timestamp = await _getTimestamp( subSrc );
+    iconFontOptions.timestamp = await _getTimestamp( branchSrc );
   } catch ( err ) {
     trunkStream.emit( 'error', err );
     return;
   }
 
-  return iconfont( subSrc, iconFontOptions )
+  return iconfont( branchSrc, iconFontOptions )
     .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )
     .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding : false } ) )
     .pipe( logStreamData( LOG_TITLE_FONT, LOG_SUBTITLE_FONT ) )
@@ -75,11 +75,11 @@ async function _branchTask( subSrc, baseDir, trunkStream ) {
 }
 
 /**
- * iconfontの設定を行い、アイコンフォントの作成を行う。
- * SCSSファイル作成の準備を行う。
+ * iconfont の設定と、アイコンフォントの作成を行う。
+ * SCSS ファイル作成の準備を行う。
  * 引数にエラーを伝えるためのストリームを渡す。
  * @param {Object} templateData - iconfontの設定情報
- * @param {Object} trunkStream - エラーを伝えるストリーム
+ * @param {Object} trunkStream - エラーを伝えるために必要
  * @returns {Function} - glyphsを受け取る関数
  */
 function _generateScssFromGlyphs( templateData, trunkStream ) {

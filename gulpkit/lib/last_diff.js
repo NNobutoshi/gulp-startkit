@@ -15,7 +15,6 @@ let
  * Git コマンドで得たタスク終了時までの差分データを取得。
  * また、ファイル保存する。
  */
-
 export default  {
   get    : _getLastDiffData,
   set    : _setLastDiffData,
@@ -25,27 +24,31 @@ export default  {
 };
 
 /**
- * 環境変数に格納されている差分ファイルリストを優先して取得。
+ * モジュールスコープ変数に代入されている差分ファイルリスト（Object）を優先して取得。
+ * 未代入であれば、保存先ファイルから取得。
+ * 保存ファイルが存在しなければ、空のObject を返す。
  * @returns {object} - lastDiffData
  */
 async function _getLastDiffData() {
   if ( lastDiffData ) {
     return lastDiffData;
-  } else if ( await _exists( FILEPATH ) ) {
+  }
+  if ( await _exists( FILEPATH ) ) {
     try {
-      lastDiffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
+      const fileContent =  await readFile( FILEPATH, CHARSET );
+      lastDiffData = JSON.parse( fileContent );
     } catch ( err ) {
       throw err;
     }
-    return lastDiffData || {};
   } else {
-    return lastDiffData = {};
+    lastDiffData = {};
   }
+  return lastDiffData;
 }
 
 /**
  * ファイルの存在を確認する。
- * @param {String} filePath - 差分を情報を書き込むファイルのパス
+ * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
  * @returns {Promise<void>}
  */
 async function _exists( filePath ) {
@@ -58,8 +61,7 @@ async function _exists( filePath ) {
 }
 
 /**
- * モジュールスコープ変数に格納する。
- * @param {string} name
+ * モジュールスコープ変数に代入する。
  * @param {object} data
  */
 function _setLastDiffData( data ) {
