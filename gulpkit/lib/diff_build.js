@@ -1,4 +1,4 @@
-import { resolve, relative, sep } from 'node:path';
+import { resolve, relative, sep, dirname } from 'node:path';
 import { exec }                   from 'node:child_process';
 import { readFile }               from 'node:fs/promises';
 
@@ -169,8 +169,6 @@ function _createDependencyFilesStream( myProcessor, settings ) {
       try {
         // 削除されたファイルも対象にする。
         myProcessor.collectDeletedFiles( settings );
-        // Git が未追跡のファイルも対象にする。
-        myProcessor.collectUntrackedFiles( settings );
         if ( settings.group ) {
           // 所属する同じグループのファイルも選択。
           myProcessor.selectGroupedFiles( settings );
@@ -348,26 +346,24 @@ class DiffBuildProcessor {
     const
       myTaskName = settings.name
       ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
     ;
-    for ( const [ filePath, info ] of Object.entries( this.currentDiffData ) ) {
-      if ( info.status.includes( 'D' ) ) {
-        myTargetFileSet.add( resolve( process.cwd(), filePath ) );
+    for ( const [ filePathOfDiffData, info ] of Object.entries( mergeDiffData ) ) {
+      if ( info.status.includes( 'D' ) === false && info.status.includes( '?' ) === false ) {
+        continue;
       }
-    }
-  }
-
-  /**
-   * Git が未追跡のファイルも対象にする。
-   * @param {Object} settings - 設定オブジェクト
-   */
-  collectUntrackedFiles( settings ) {
-    const
-      myTaskName = settings.name
-      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
-    ;
-    for ( const [ filePath, info ] of Object.entries( this.lastDiffData ) ) {
-      if ( !this.currentDiffData[ filePath ] && info.status.includes( '?' ) > -1 ) {
-        myTargetFileSet.add( resolve( process.cwd(), filePath ) );
+      const
+        resolveFilePathOfDiffData = resolve( process.cwd(), filePathOfDiffData )
+        ,dirNameOfDiffData = dirname( resolveFilePathOfDiffData )
+      ;
+      for ( const [ , fileOfMap ] of myAllFileMap ) {
+        if ( myTargetFileSet.has( resolveFilePathOfDiffData ) === true ) {
+          continue;
+        }
+        if ( dirNameOfDiffData === fileOfMap?.group ) {
+          myTargetFileSet.add( resolveFilePathOfDiffData );
+        }
       }
     }
   }
