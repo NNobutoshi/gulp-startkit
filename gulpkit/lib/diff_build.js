@@ -297,13 +297,13 @@ class DiffBuildProcessor {
   setAnyFileInfoToAllFileMap( file, settings ) {
     const
       name = settings.name
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
     ;
-    myAllFileMap.set( file.path, file.clone() );
+    allFileMap.set( file.path, file.clone() );
     // file.contents はプロパティのなかで一番容量が大きいので、
     // このライフサイクル中はいったんnull を代入する。
     // 最終的に選択された際に再代入する。
-    myAllFileMap.get( file.path ).contents = null;
+    allFileMap.get( file.path ).contents = null;
   }
 
   /**
@@ -317,13 +317,13 @@ class DiffBuildProcessor {
   setAssignedGroupToAllFileMap( file, settings ) {
     const
       name = settings.name
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
       ,group = settings.group
       ,groupIndex = file.path.indexOf( group )
       ,groupPath = file.path.slice( 0, groupIndex + group.length )
     ;
     // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つフルのパス。
-    myAllFileMap.get( file.path ).group = groupPath;
+    allFileMap.get( file.path ).group = groupPath;
   }
 
   /**
@@ -348,7 +348,7 @@ class DiffBuildProcessor {
     const
       name = settings.name
       ,targetFileSet = this.targetFileMap.get( name )
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
       ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
     ;
     for ( const [ filePathOfDiffData, info ] of Object.entries( mergeDiffData ) ) {
@@ -359,7 +359,7 @@ class DiffBuildProcessor {
         resolveFilePathOfDiffData = resolve( process.cwd(), filePathOfDiffData )
         ,dirNameOfDiffData = dirname( resolveFilePathOfDiffData )
       ;
-      for ( const [ , fileOfMap ] of myAllFileMap ) {
+      for ( const [ , fileOfMap ] of allFileMap ) {
         if ( targetFileSet.has( resolveFilePathOfDiffData ) === true ) {
           continue;
         }
@@ -379,17 +379,17 @@ class DiffBuildProcessor {
     const
       name = settings.name
       ,targetFileSet = this.targetFileMap.get( name )
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
       ,selectedFileSet = this.selectedFileMap.get( name )
       ,group = settings.group
     ;
     for ( const targetFilePath of targetFileSet ) {
       const
-        targetGroup = myAllFileMap.get( targetFilePath )?.group
+        targetGroup = allFileMap.get( targetFilePath )?.group
         ,groupIndex = targetFilePath.indexOf( group )
         ,myGroup = targetFilePath.slice( 0, groupIndex + group.length )
       ;
-      for ( const [ filePath, file ] of myAllFileMap ) {
+      for ( const [ filePath, file ] of allFileMap ) {
         if (
           ( targetGroup && filePath.startsWith( targetGroup ) )
           || myGroup === file?.group
@@ -408,9 +408,9 @@ class DiffBuildProcessor {
     const
       name = settings.name
       ,selectedFileSet = this.selectedFileMap.get( name )
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
     ;
-    for ( const [ filePath ] of myAllFileMap ) {
+    for ( const [ filePath ] of allFileMap ) {
       selectedFileSet.add( filePath );
     }
   }
@@ -426,14 +426,14 @@ class DiffBuildProcessor {
       ,targetFileSet = this.targetFileMap.get( name )
       ,myCollectedFileMap = this.collectedFileMap.get( name )
       ,selectedFileSet = this.selectedFileMap.get( name )
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
     ;
     for ( const filePath of targetFileSet ) {
       const collection = myCollectedFileMap.get( filePath );
       if ( Array.isArray( collection ) === true ) {
         collection.forEach( ( depPath ) => selectedFileSet.add( depPath ) );
       }
-      if ( myAllFileMap.has( filePath ) === true ) {
+      if ( allFileMap.has( filePath ) === true ) {
         selectedFileSet.add( filePath );
       } else {
         continue;
@@ -455,13 +455,13 @@ class DiffBuildProcessor {
   async pushSelectedFilesToStream( stream, settings ) {
     const
       name = settings.name
-      ,myAllFileMap = this.allFileMap.get( name )
+      ,allFileMap = this.allFileMap.get( name )
       ,limit = pLmit( 5 )
       ,promiseReadFileAll = []
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
       const limitedTask = limit(
-        () => _promisePushReadFileToStream( filePath, myAllFileMap, stream )
+        () => _promisePushReadFileToStream( filePath, allFileMap, stream )
       );
       promiseReadFileAll.push( limitedTask );
     }
