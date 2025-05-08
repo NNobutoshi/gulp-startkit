@@ -25,7 +25,7 @@ const
 ;
 let
   writingTimeoutId = null
-  ,myProcessor = null
+  ,diffBuildProcessor = null
 ;
 export {
   diff_build as default,
@@ -49,35 +49,37 @@ function diff_build( options, collect, select ) {
   if ( typeof settings.group !== '' ) {
     settings.group = settings.group.replace( /\//g, sep );
   }
-  // モジュールスコープのmyProcessor がnull の場合にのみ初期化。
-  if ( !myProcessor ) {
-    myProcessor = new DiffBuildProcessor();
-    // リスナ-登録でthis の参照が代わらないようにmyProcessor にbind 。
-    myProcessor.resetSharedState = myProcessor.resetSharedState.bind( myProcessor );
-    // myProcessor の共有する値を初期化するメンバ関数をリスナー登録。
+  // モジュールスコープのdiffBuildProcessor がnull の場合にのみ初期化。
+  if ( !diffBuildProcessor ) {
+    diffBuildProcessor = new DiffBuildProcessor();
+    // リスナ-登録でthis の参照が代わらないようにdiffBuildProcessor にbind 。
+    diffBuildProcessor.resetSharedState = diffBuildProcessor
+      .resetSharedState.bind( diffBuildProcessor )
+    ;
+    // diffBuildProcessor の共有する値を初期化するメンバ関数をリスナー登録。
     _addResetStateListeners(
-      myProcessor.resetSharedState,
+      diffBuildProcessor.resetSharedState,
       settings.eventNameOnInit,
       settings.eventNameOnReset,
     );
   }
   // 差分データ取得のPromise を共有。
-  if ( !myProcessor.promiseGetGitDiffData ) {
-    myProcessor.promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
-    myProcessor.promiseGetLastDiffData = lastDiff.get();
+  if ( !diffBuildProcessor.promiseGetGitDiffData ) {
+    diffBuildProcessor.promiseGetGitDiffData  = _getGitDiffData( settings.command, settings.name );
+    diffBuildProcessor.promiseGetLastDiffData = lastDiff.get();
   }
   // 被依存ファイル情報の収集用コールバックを各タスク毎保有する。
   if ( collect ) {
-    myProcessor.collector.set( settings.name, collect );
+    diffBuildProcessor.collector.set( settings.name, collect );
   }
   // 最終選択用コールバックを各タスク毎保有する。
   if ( select ) {
-    myProcessor.selector.set( settings.name, select );
+    diffBuildProcessor.selector.set( settings.name, select );
   }
 
   return ( settings.oneToOne === true )
-    ? _createOneToOneFilesStream( myProcessor, settings )
-    : _createDependencyFilesStream( myProcessor, settings )
+    ? _createOneToOneFilesStream( diffBuildProcessor, settings )
+    : _createDependencyFilesStream( diffBuildProcessor, settings )
   ;
 }
 
@@ -100,24 +102,24 @@ function _addResetStateListeners( resetSharedState, eventNameOnInit, eventNameOn
 /**
  * One source → One destination 用のストリーム作成。
  * Git Diff で検知されたfile のみを対象にする。
- * @param {DiffBuildProcessor} myProcessor - 差分処理プロセッサ
+ * @param {DiffBuildProcessor} diffBuildProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createOneToOneFilesStream( myProcessor, settings ) {
+function _createOneToOneFilesStream( diffBuildProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-        myProcessor.setUpChildMaps( settings );
+        diffBuildProcessor.setUpChildMaps( settings );
         // 対象ファイルを選定。
-        await myProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
-        if ( myProcessor.targetFileMap.get( settings.name ).has( file.path ) === false ) {
+        await diffBuildProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
+        if ( diffBuildProcessor.targetFileMap.get( settings.name ).has( file.path ) === false ) {
           return callback();
         }
         // Gulp src のオプション、{read :false } でfile.contents はnull なので、
         // 改めてfile を読み込み、file.contents に代入する。
-        await myProcessor.setContentsToFile( file, settings );
+        await diffBuildProcessor.setContentsToFile( file, settings );
         callback( null, file );
       } catch ( err ) {
         callback( err );
@@ -125,7 +127,7 @@ function _createOneToOneFilesStream( myProcessor, settings ) {
     },
     async function _flush( callback ) {
       try {
-        await _finalizeProcessor( myProcessor, settings );
+        await _finalizeProcessor( diffBuildProcessor, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -140,26 +142,26 @@ function _createOneToOneFilesStream( myProcessor, settings ) {
  * or
  * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
  * 例えば、iconFont sprite.smithなどのタスク用。
- * @param {Object} myProcessor - 差分処理プロセッサ
+ * @param {Object} diffBuildProcessor - 差分処理プロセッサ
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createDependencyFilesStream( myProcessor, settings ) {
+function _createDependencyFilesStream( diffBuildProcessor, settings ) {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-        myProcessor.setUpChildMaps( settings );
+        diffBuildProcessor.setUpChildMaps( settings );
         // いったんすべてのファイル情報を収集。
-        myProcessor.setAnyFileInfoToAllFileMap( file, settings );
+        diffBuildProcessor.setAnyFileInfoToAllFileMap( file, settings );
         // 対象ファイルを選定。
-        await myProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
+        await diffBuildProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
         // グループ情報を整理。
         if ( settings.group ) {
-          myProcessor.setAssignedGroupToAllFileMap( file, settings );
+          diffBuildProcessor.setAssignedGroupToAllFileMap( file, settings );
         }
         // 依存関係にあるファイルを収集。
-        myProcessor.setImporterFileToCollectionMap( file, settings );
+        diffBuildProcessor.setImporterFileToCollectionMap( file, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -168,20 +170,20 @@ function _createDependencyFilesStream( myProcessor, settings ) {
     async function _flush( callback ) {
       try {
         // 削除されたファイルも対象にする。
-        myProcessor.addFilesByDeletiveStatusToTargetSet( settings );
+        diffBuildProcessor.addFilesByDeletiveStatusToTargetSet( settings );
         if ( settings.group ) {
           // 所属する同じグループのファイルも選択。
-          myProcessor.addFilesFromGroupToSelectionSet( settings );
+          diffBuildProcessor.addFilesFromGroupToSelectionSet( settings );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
-          myProcessor.addAllFilesToSelectionSet( settings );
+          diffBuildProcessor.addAllFilesToSelectionSet( settings );
         } else {
           // 収集した依存関係にあるファイルからstream に渡したいファイルを選択。
-          myProcessor.addFilesFromCollectionToSelectionSet( settings );
+          diffBuildProcessor.addFilesFromCollectionToSelectionSet( settings );
         }
         // 選択されたファイルをstream に渡す。
-        await myProcessor.pushSelectedFilesToStream( this, settings );
-        await _finalizeProcessor( myProcessor, settings );
+        await diffBuildProcessor.pushSelectedFilesToStream( this, settings );
+        await _finalizeProcessor( diffBuildProcessor, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -250,8 +252,8 @@ class DiffBuildProcessor {
   async addFileFilteredByDiffDataToTargetSet( file, settings ) {
     try {
       const
-        myTaskName = settings.name
-        ,myTargetFileSet = this.targetFileMap.get( myTaskName )
+        name = settings.name
+        ,targetFileSet = this.targetFileMap.get( name )
       ;
       this.currentDiffData = await this.promiseGetGitDiffData;
       this.lastDiffData    = await this.promiseGetLastDiffData;
@@ -259,7 +261,7 @@ class DiffBuildProcessor {
         _includes( this.currentDiffData, file.path ) ||
         _includes( this.lastDiffData, file.path )
       ) {
-        myTargetFileSet.add( file.path );
+        targetFileSet.add( file.path );
       }
     } catch ( err ) {
       throw err;
@@ -276,12 +278,12 @@ class DiffBuildProcessor {
    */
   async setContentsToFile( file, settings ) {
     const
-      myTaskName = settings.name
-      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+      name = settings.name
+      ,selectedFileSet = this.selectedFileMap.get( name )
     ;
     try {
       file.contents = await readFile( file.path );
-      mySelectedFileSet.add( file.path );
+      selectedFileSet.add( file.path );
     } catch ( err ) {
       throw err;
     }
@@ -294,8 +296,8 @@ class DiffBuildProcessor {
    */
   setAnyFileInfoToAllFileMap( file, settings ) {
     const
-      myTaskName = settings.name
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,myAllFileMap = this.allFileMap.get( name )
     ;
     myAllFileMap.set( file.path, file.clone() );
     // file.contents はプロパティのなかで一番容量が大きいので、
@@ -314,8 +316,8 @@ class DiffBuildProcessor {
    */
   setAssignedGroupToAllFileMap( file, settings ) {
     const
-      myTaskName = settings.name
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,myAllFileMap = this.allFileMap.get( name )
       ,group = settings.group
       ,groupIndex = file.path.indexOf( group )
       ,groupPath = file.path.slice( 0, groupIndex + group.length )
@@ -332,10 +334,10 @@ class DiffBuildProcessor {
    */
   setImporterFileToCollectionMap( file, settings ) {
     const
-      myTaskName = settings.name
-      ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
+      name = settings.name
+      ,myCollectedFileMap = this.collectedFileMap.get( name )
      ;
-    this.collector.get( myTaskName )?.( file, myCollectedFileMap );
+    this.collector.get( name )?.( file, myCollectedFileMap );
   }
 
   /**
@@ -344,9 +346,9 @@ class DiffBuildProcessor {
    */
   addFilesByDeletiveStatusToTargetSet( settings ) {
     const
-      myTaskName = settings.name
-      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,targetFileSet = this.targetFileMap.get( name )
+      ,myAllFileMap = this.allFileMap.get( name )
       ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
     ;
     for ( const [ filePathOfDiffData, info ] of Object.entries( mergeDiffData ) ) {
@@ -358,11 +360,11 @@ class DiffBuildProcessor {
         ,dirNameOfDiffData = dirname( resolveFilePathOfDiffData )
       ;
       for ( const [ , fileOfMap ] of myAllFileMap ) {
-        if ( myTargetFileSet.has( resolveFilePathOfDiffData ) === true ) {
+        if ( targetFileSet.has( resolveFilePathOfDiffData ) === true ) {
           continue;
         }
         if ( dirNameOfDiffData === fileOfMap?.group ) {
-          myTargetFileSet.add( resolveFilePathOfDiffData );
+          targetFileSet.add( resolveFilePathOfDiffData );
         }
       }
     }
@@ -375,13 +377,13 @@ class DiffBuildProcessor {
    */
   addFilesFromGroupToSelectionSet( settings ) {
     const
-      myTaskName = settings.name
-      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
-      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
+      name = settings.name
+      ,targetFileSet = this.targetFileMap.get( name )
+      ,myAllFileMap = this.allFileMap.get( name )
+      ,selectedFileSet = this.selectedFileMap.get( name )
       ,group = settings.group
     ;
-    for ( const targetFilePath of myTargetFileSet ) {
+    for ( const targetFilePath of targetFileSet ) {
       const
         targetGroup = myAllFileMap.get( targetFilePath )?.group
         ,groupIndex = targetFilePath.indexOf( group )
@@ -392,7 +394,7 @@ class DiffBuildProcessor {
           ( targetGroup && filePath.startsWith( targetGroup ) )
           || myGroup === file?.group
         ) {
-          mySelectedFileSet.add( filePath );
+          selectedFileSet.add( filePath );
         }
       } // for
     } // for
@@ -404,12 +406,12 @@ class DiffBuildProcessor {
    */
   addAllFilesToSelectionSet( settings ) {
     const
-      myTaskName = settings.name
-      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,selectedFileSet = this.selectedFileMap.get( name )
+      ,myAllFileMap = this.allFileMap.get( name )
     ;
     for ( const [ filePath ] of myAllFileMap ) {
-      mySelectedFileSet.add( filePath );
+      selectedFileSet.add( filePath );
     }
   }
 
@@ -420,26 +422,26 @@ class DiffBuildProcessor {
    */
   addFilesFromCollectionToSelectionSet( settings ) {
     const
-      myTaskName = settings.name
-      ,myTargetFileSet = this.targetFileMap.get( myTaskName )
-      ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
-      ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,targetFileSet = this.targetFileMap.get( name )
+      ,myCollectedFileMap = this.collectedFileMap.get( name )
+      ,selectedFileSet = this.selectedFileMap.get( name )
+      ,myAllFileMap = this.allFileMap.get( name )
     ;
-    for ( const filePath of myTargetFileSet ) {
+    for ( const filePath of targetFileSet ) {
       const collection = myCollectedFileMap.get( filePath );
       if ( Array.isArray( collection ) === true ) {
-        collection.forEach( ( depPath ) => mySelectedFileSet.add( depPath ) );
+        collection.forEach( ( depPath ) => selectedFileSet.add( depPath ) );
       }
       if ( myAllFileMap.has( filePath ) === true ) {
-        mySelectedFileSet.add( filePath );
+        selectedFileSet.add( filePath );
       } else {
         continue;
       }
-      this.selector.get( myTaskName )?.(
+      this.selector.get( name )?.(
         filePath,
         myCollectedFileMap,
-        mySelectedFileSet,
+        selectedFileSet,
       );
     } // for
   }
@@ -452,12 +454,12 @@ class DiffBuildProcessor {
    */
   async pushSelectedFilesToStream( stream, settings ) {
     const
-      myTaskName = settings.name
-      ,myAllFileMap = this.allFileMap.get( myTaskName )
+      name = settings.name
+      ,myAllFileMap = this.allFileMap.get( name )
       ,limit = pLmit( 5 )
       ,promiseReadFileAll = []
     ;
-    for ( const filePath of this.selectedFileMap.get( myTaskName ) ) {
+    for ( const filePath of this.selectedFileMap.get( name ) ) {
       const limitedTask = limit(
         () => _promisePushReadFileToStream( filePath, myAllFileMap, stream )
       );
@@ -541,22 +543,22 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
 
 /**
  * プロセスの最終処理。
- * @param {Object} myProcessor - DiffBuildProcessor
+ * @param {Object} diffBuildProcessor - DiffBuildProcessor
  * @param {Object} settings - 設定
  * @returns {Promise<void>}
  */
-async function _finalizeProcessor( myProcessor, settings ) {
+async function _finalizeProcessor( diffBuildProcessor, settings ) {
   const
-    myTaskName = settings.name
-    ,myTargetFileSet = myProcessor.targetFileMap.get( myTaskName )
-    ,mySelectedFileSet = myProcessor.selectedFileMap.get( myTaskName )
+    name = settings.name
+    ,targetFileSet = diffBuildProcessor.targetFileMap.get( name )
+    ,selectedFileSet = diffBuildProcessor.selectedFileMap.get( name )
   ;
 
-  lastDiff.set( myProcessor.currentDiffData );
+  lastDiff.set( diffBuildProcessor.currentDiffData );
   _log(
-    myTaskName,
-    myTargetFileSet.size,
-    mySelectedFileSet.size,
+    name,
+    targetFileSet.size,
+    selectedFileSet.size,
   );
   await _writeDiffData();
 }
