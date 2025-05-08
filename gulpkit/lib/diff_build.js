@@ -111,13 +111,13 @@ function _createOneToOneFilesStream( myProcessor, settings ) {
         // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
         myProcessor.setUpChildMaps( settings );
         // 対象ファイルを選定。
-        await myProcessor.filterByGitDiff( file, settings );
+        await myProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
         if ( myProcessor.targetFileMap.get( settings.name ).has( file.path ) === false ) {
           return callback();
         }
         // Gulp src のオプション、{read :false } でfile.contents はnull なので、
         // 改めてfile を読み込み、file.contents に代入する。
-        await myProcessor.setFileContents( file, settings );
+        await myProcessor.setContentsToFile( file, settings );
         callback( null, file );
       } catch ( err ) {
         callback( err );
@@ -151,15 +151,15 @@ function _createDependencyFilesStream( myProcessor, settings ) {
         // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
         myProcessor.setUpChildMaps( settings );
         // いったんすべてのファイル情報を収集。
-        myProcessor.collectAllFiles( file, settings );
+        myProcessor.setAnyFileInfoToAllFileMap( file, settings );
         // 対象ファイルを選定。
-        await myProcessor.filterByGitDiff( file, settings );
+        await myProcessor.addFileFilteredByDiffDataToTargetSet( file, settings );
         // グループ情報を整理。
         if ( settings.group ) {
-          myProcessor.assignGroup( file, settings );
+          myProcessor.setAssignedGroupToAllFileMap( file, settings );
         }
         // 依存関係にあるファイルを収集。
-        myProcessor.collectImporterFiles( file, settings );
+        myProcessor.setImporterFileToCollectionMap( file, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -168,16 +168,16 @@ function _createDependencyFilesStream( myProcessor, settings ) {
     async function _flush( callback ) {
       try {
         // 削除されたファイルも対象にする。
-        myProcessor.collectDeletedFiles( settings );
+        myProcessor.addFilesByDeletiveStatusToTargetSet( settings );
         if ( settings.group ) {
           // 所属する同じグループのファイルも選択。
-          myProcessor.selectGroupedFiles( settings );
+          myProcessor.addFilesFromGroupToSelectionSet( settings );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
-          myProcessor.selectAllFiles( settings );
+          myProcessor.addAllFilesToSelectionSet( settings );
         } else {
           // 収集した依存関係にあるファイルからstream に渡したいファイルを選択。
-          myProcessor.selectFilesFromCollection( settings );
+          myProcessor.addFilesFromCollectionToSelectionSet( settings );
         }
         // 選択されたファイルをstream に渡す。
         await myProcessor.pushSelectedFilesToStream( this, settings );
@@ -247,7 +247,7 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
-  async filterByGitDiff( file, settings ) {
+  async addFileFilteredByDiffDataToTargetSet( file, settings ) {
     try {
       const
         myTaskName = settings.name
@@ -274,7 +274,7 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
-  async setFileContents( file, settings ) {
+  async setContentsToFile( file, settings ) {
     const
       myTaskName = settings.name
       ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
@@ -292,13 +292,13 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
-  collectAllFiles( file, settings ) {
+  setAnyFileInfoToAllFileMap( file, settings ) {
     const
       myTaskName = settings.name
       ,myAllFileMap = this.allFileMap.get( myTaskName )
     ;
     myAllFileMap.set( file.path, file.clone() );
-    // file.contents プロパティのなかで一番容量が大きいので、
+    // file.contents はプロパティのなかで一番容量が大きいので、
     // このライフサイクル中はいったんnull を代入する。
     // 最終的に選択された際に再代入する。
     myAllFileMap.get( file.path ).contents = null;
@@ -312,7 +312,7 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
-  assignGroup( file, settings ) {
+  setAssignedGroupToAllFileMap( file, settings ) {
     const
       myTaskName = settings.name
       ,myAllFileMap = this.allFileMap.get( myTaskName )
@@ -330,7 +330,7 @@ class DiffBuildProcessor {
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
-  collectImporterFiles( file, settings ) {
+  setImporterFileToCollectionMap( file, settings ) {
     const
       myTaskName = settings.name
       ,myCollectedFileMap = this.collectedFileMap.get( myTaskName )
@@ -342,7 +342,7 @@ class DiffBuildProcessor {
    * 消去されたファイルも対象にする。
    * @param {Object} settings - 設定オブジェクト
    */
-  collectDeletedFiles( settings ) {
+  addFilesByDeletiveStatusToTargetSet( settings ) {
     const
       myTaskName = settings.name
       ,myTargetFileSet = this.targetFileMap.get( myTaskName )
@@ -373,7 +373,7 @@ class DiffBuildProcessor {
    * 複数src ファイルを1つに束ねる様なタスク用。
    * @param {Object} settings - 設定オブジェクト
    */
-  selectGroupedFiles( settings ) {
+  addFilesFromGroupToSelectionSet( settings ) {
     const
       myTaskName = settings.name
       ,myTargetFileSet = this.targetFileMap.get( myTaskName )
@@ -402,7 +402,7 @@ class DiffBuildProcessor {
    * 収集したすべてのファイルパス情報をselectedMap に追加する。
    * @param {Object} settings - 設定オブジェクト
    */
-  selectAllFiles( settings ) {
+  addAllFilesToSelectionSet( settings ) {
     const
       myTaskName = settings.name
       ,mySelectedFileSet = this.selectedFileMap.get( myTaskName )
@@ -418,7 +418,7 @@ class DiffBuildProcessor {
    * Callback で選択してもらう。
    * @param {Object} settings - 設定オブジェクト
    */
-  selectFilesFromCollection( settings ) {
+  addFilesFromCollectionToSelectionSet( settings ) {
     const
       myTaskName = settings.name
       ,myTargetFileSet = this.targetFileMap.get( myTaskName )
