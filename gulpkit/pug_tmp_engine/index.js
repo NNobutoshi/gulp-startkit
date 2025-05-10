@@ -1,27 +1,26 @@
-import { mkdir, existsSync }   from 'node:fs';
-import { readFile, writeFile } from 'node:fs/promises';
-import { dirname, resolve, relative, join } from 'node:path';
+import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import log        from 'fancy-log';
-import XLSX       from 'xlsx';
+import fanctLog from 'fancy-log';
+import XLSX     from 'xlsx';
 
 const
   CHARSET               = 'utf-8'
   ,SRC_DIR              = '../../src'
   ,PUG_CONFIG_FILE_PATH = '../../src/_data/_pug_data.json'
   ,SITE_MAP_FILE_PATH   = '../../src/_data/sitemap.xlsx'
-  ,DIRNAME              = dirname( fileURLToPath( import.meta.url ) )
+  ,DIRNAME              = path.dirname( fileURLToPath( import.meta.url ) )
 ;
 const
   settings = {
-    src          : resolve( DIRNAME, SRC_DIR ),
+    src          : path.resolve( DIRNAME, SRC_DIR ),
     extension    : /\.pug?$/,
-    configFile   : resolve( DIRNAME, PUG_CONFIG_FILE_PATH ),
+    configFile   : path.resolve( DIRNAME, PUG_CONFIG_FILE_PATH ),
     indexName    : 'index.pug',
     linefeed     : '\n', // '\r\n'
     sheetName    : 'Sheet1',
-    xlsxFilePath : resolve( DIRNAME, SITE_MAP_FILE_PATH ),
+    xlsxFilePath : path.resolve( DIRNAME, SITE_MAP_FILE_PATH ),
   }
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
@@ -34,13 +33,13 @@ const
     ,indent      = _getIndent( confStrings, /[\s\S]+?( +)"{{": "",/ )
     ,dataStrings = _deleteWrapperParen( jSONData, indent )
   ;
-  _writePugConfigFile( confStrings, dataStrings, indent );
+  await _writePugConfigFile( confStrings, dataStrings, indent );
   for ( let url in jSONData ) {
-    _createPugFileByProps( jSONData[ url ], _createPugFile );
+    await _createPugFileByProps( jSONData[ url ], _createPugFile );
   }
 } )();
 
-/*
+/**
  * Excel のデータを JSON に変換する。
  * @param {object} workBook - Excel のデータ
  * @returns {object} JSON データ
@@ -51,7 +50,7 @@ function _xlsxToJson( workBook ) {
   );
 }
 
-/*
+/**
  * Pug の設定ファイルを読み込む。
  * @returns {object} Pug の設定ファイルの内容
  */
@@ -59,11 +58,11 @@ async function _readConfigFile() {
   try {
     return await readFile( settings.configFile, CHARSET );
   } catch ( err ) {
-    return console.error( err );
+    return console.error( err.stack );
   }
 }
 
-/*
+/**
  * Pug の設定ファイルの内容から、インデントを取得する。
  * @param {string} configContent - Pug の設定ファイルの内容
  * @param {RegExp} indentRegeX - インデントを取得するための正規表現
@@ -76,10 +75,10 @@ function _getIndent( configContent, indentRegeX ) {
   return ( matches !== null &&  matches[ 1 ] ) ? matches[ 1 ] : false;
 }
 
-/*
+/**
  * @param {object} jSONData - JSON データ
  * @param {string} indent - インデント
- * @returns {string} JSON データを文字列に変換したもの
+ * @returns {string} JSON データから変換された文字列
  */
 function _deleteWrapperParen( jSONData, indent ) {
   return JSON
@@ -90,7 +89,7 @@ function _deleteWrapperParen( jSONData, indent ) {
   ;
 }
 
-/*
+/**
  * Pug の設定ファイルに書き込む。
  * @param {string} content - Pug の設定ファイルの内容
  * @param {string} newStrings - 新しい文字列
@@ -100,14 +99,15 @@ async function _writePugConfigFile( content, newStrings, indent ) {
   content = content.replace( /"{{": "",[\s\S]*?"}}": ""/, `"{{": "",${ settings.linefeed + newStrings + indent }"}}": ""` );
   try {
     await writeFile( settings.configFile, content, CHARSET );
-    log( `configed  "${ relative( process.cwd(), settings.configFile ) }"` );
+    fanctLog( `configed  "${ path.relative( process.cwd(), settings.configFile ) }"` );
   } catch ( err ) {
-    console.error( err );
+    return console.error( err.stack );
   }
 }
 
-/*
+/**
  * JSON データを変換する。
+ * データ中のurl をkey にするObject に作り変える。
  * @param {object} data - JSON データ
  * @returns {object} 変換された JSON データ
  */
@@ -121,12 +121,12 @@ function _reJsonData( data ) {
   return res;
 }
 
-/*
+/**
  * Pug のファイルを作成する。
  * @param {object} props - Pug のプロパティ
  * @param {Function} createPugFile - Pug ファイルを作成する関数
  */
-function _createPugFileByProps( props, createPugFile ) {
+async function _createPugFileByProps( props, createFile ) {
   let
     url      = props.url
     ,temp    = props.template
@@ -139,48 +139,48 @@ function _createPugFileByProps( props, createPugFile ) {
   if ( url.match( /\.html?$/ ) ) {
     pugUrl = url.replace( /\.html?$/, '.pug' );
   }
-  pugUrl = join( settings.src , pugUrl );
-  mkdir( dirname( pugUrl ),{ recursive : true }, ( err ) =>{
-    if ( err ) {
-      console.error( err );
-    }
-    createPugFile( pugUrl, htmlUrl, temp );
-  } )
-  ;
+  pugUrl = path.join( settings.src , pugUrl );
+  try {
+    await mkdir( path.dirname( pugUrl ),{ recursive : true } );
+    createFile( pugUrl, htmlUrl, temp );
+  } catch ( err ) {
+    console.error( err.stack );
+  }
 }
 
-/*
+/**
  * Pug ファイルを作成する。
  * @param {string} pugUrl - Pug ファイルの URL
  * @param {string} htmlUrl - HTML ファイルの URL
  * @param {string} template - テンプレート
  */
 async function _createPugFile( pugUrl, htmlUrl, template ) {
-  let
-    content
-    ,isNew = !existsSync( pugUrl )
-  ;
-  if ( !isNew && force === false ) {
-    return;
+  try {
+    const isNew = !await _exists( pugUrl );
+    if ( !isNew && force === false ) {
+      return;
+    }
+    const content = await _readTemplateFile( template );
+    await _writePugFile( content, pugUrl, htmlUrl, isNew );
+  } catch ( err ) {
+    return console.error( err.stack );
   }
-  content = await _readTemplateFile( template );
-  await _writePugFile( content, pugUrl, htmlUrl, isNew );
 }
 
-/*
+/**
  * テンプレートファイルを読み込む。
  * @param {string} template - テンプレートファイルの URL
  * @returns {string} テンプレートファイルの内容
  */
 async function _readTemplateFile( template ) {
   try {
-    return await readFile( join( settings.src, template ), CHARSET );
+    return await readFile( path.join( settings.src, template ), CHARSET );
   } catch ( err ) {
-    return console.error( err );
+    return console.error( err.stack );
   }
 }
 
-/*
+/**
  * Pug ファイルを書き込む。
  * @param {string} content - Pug ファイルの内容
  * @param {string} pugUrl - Pug ファイルの URL
@@ -191,11 +191,25 @@ async function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
   try {
     await writeFile( pugUrl, content.replace( '//{page}', `"${ htmlUrl }"` ), CHARSET );
     if ( isNew ) {
-      log( `newly created "${ relative( process.cwd(), pugUrl ) }"` );
+      fanctLog( `newly created "${ path.relative( process.cwd(), pugUrl ) }"` );
     } else {
-      log( `Updated       "${ relative( process.cwd(), pugUrl ) }"` );
+      fanctLog( `Updated       "${ path.relative( process.cwd(), pugUrl ) }"` );
     }
   } catch ( err ) {
-    return console.error( err );
+    return console.error( err.stack );
+  }
+}
+
+/**
+ * ファイルの存在を確認する。
+ * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
+ * @returns {Promise<void>}
+ */
+async function _exists( filePath ) {
+  try {
+    await access( filePath );
+    return true;
+  } catch {
+    return false;
   }
 }

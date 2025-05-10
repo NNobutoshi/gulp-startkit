@@ -1,5 +1,5 @@
-import { relative, resolve } from 'node:path';
-import { readFile }          from 'node:fs/promises';
+import path         from 'node:path';
+import { readFile } from 'node:fs/promises';
 
 import { src }   from 'gulp';
 import plumber   from 'gulp-plumber';
@@ -100,7 +100,7 @@ function _prepareWebpackConfig() {
       webpackConfig.entry = entries;
       mergeWith( webpackConfig.output, {
         filename : '[name].js',
-        path : resolve( process.cwd(), config.dist ),
+        path : path.resolve( process.cwd(), config.dist ),
       } );
       mergeWith( webpackConfig.optimization, {
         splitChunks : {
@@ -178,9 +178,9 @@ async function _createSplitChunks( groups, chunkConfigPath ) {
  * @returns {{ entryName: string, relativeEntryPath: string }}
  */
 function _createEntry( filePath ) {
-  const entryName = relative( config.base, filePath ).replace( config.entry, '' ).replace( /\\/g, '/' );
+  const entryName = path.relative( config.base, filePath ).replace( config.entry, '' ).replace( /\\/g, '/' );
 
-  let relativeEntryPath = relative( process.cwd(), filePath ).replace( /\\/g , '/' );
+  let relativeEntryPath = path.relative( process.cwd(), filePath ).replace( /\\/g , '/' );
   relativeEntryPath = /^\.?\.\//.test( relativeEntryPath ) ? relativeEntryPath : './' + relativeEntryPath;
 
   return { entryName, relativeEntryPath };

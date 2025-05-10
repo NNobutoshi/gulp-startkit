@@ -1,10 +1,10 @@
 import { mkdir, readFile, writeFile, rm, access } from 'node:fs/promises';
-import { resolve, dirname } from 'node:path';
+import path from 'node:path';
 
 const
-  FILEPATH  = resolve( process.cwd(), '.last_diff/.diffmap' )
+  FILEPATH  = path.resolve( process.cwd(), '.last_diff/.diffmap' )
   ,CHARSET = 'utf-8'
-  ,DIRNAME  = dirname( FILEPATH )
+  ,DIRNAME  = path.dirname( FILEPATH )
 ;
 
 let

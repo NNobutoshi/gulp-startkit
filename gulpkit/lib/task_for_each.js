@@ -1,4 +1,4 @@
-import { resolve, sep } from 'node:path';
+import path from 'node:path';
 
 import through     from 'through2';
 import mergeStream from 'merge-stream';
@@ -18,7 +18,7 @@ export default function assignTaskForEachGroup( group, base, branchTask ) {
  * @returns {Stream} - 処理されたストリーム
  */
 function _groupSrc( groupedSources, group, base, branchTask ) {
-  group = group.replace( /[/\\]/g, sep );
+  group = group.replace( /\//g, path.sep );
 
   return through.obj( _transform, _flush );
 
@@ -38,7 +38,7 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
     if ( groupedSources.has( parent ) === false ) {
       groupedSources.set( parent, {
         children : [],
-        baseDir  : splits[ 0 ].replace( resolve( process.cwd(), base ), '' ),
+        baseDir  : splits[ 0 ].replace( path.resolve( process.cwd(), base ), '' ),
       } );
     }
     groupedSources.get( parent ).children.push( child );

@@ -1,6 +1,6 @@
-import { existsSync }       from 'node:fs';
-import { fileURLToPath }    from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { access }        from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path              from 'node:path';
 
 import browserSync from 'browser-sync';
 import fancyLog    from 'fancy-log';
@@ -9,8 +9,9 @@ import chalk       from 'chalk';
 export { init_browse, reload_browse };
 
 const
-  RELATIVEFILEPATH  = '../config_browse.js'
-  ,FILEPATH         = resolve( dirname( fileURLToPath( import.meta.url ) ), RELATIVEFILEPATH )
+  RELATIVE_CONFIG_FILE_PATH = '../config_browse.js'
+  ,CONFIG_FILE_DIRNAME      = path.dirname( fileURLToPath( import.meta.url ) )
+  ,CONFIG_FILE_PATH         = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
 ;
 
 /**
@@ -18,12 +19,12 @@ const
  * @returns {Promise<void>}
  */
 async function init_browse( done ) {
-  if ( !existsSync( FILEPATH ) ) {
-    fancyLog( chalk.gray( 'no serve' ) );
-    return done();
-  }
   try {
-    const { enabled, options } = await import( RELATIVEFILEPATH );
+    if ( !await _exists( CONFIG_FILE_PATH ) ) {
+      fancyLog( chalk.gray( 'no serve' ) );
+      return done();
+    }
+    const { enabled, options } = await import( RELATIVE_CONFIG_FILE_PATH );
     if ( enabled === false ) {
       fancyLog( chalk.gray( 'no serve' ) );
       return done();
@@ -44,4 +45,18 @@ function reload_browse( done ) {
     browserSync.reload();
   }
   return done();
+}
+
+/**
+ * ファイルの存在を確認する。
+ * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
+ * @returns {Promise<void>}
+ */
+async function _exists( filePath ) {
+  try {
+    await access( filePath );
+    return true;
+  } catch {
+    return false;
+  }
 }

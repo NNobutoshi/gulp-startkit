@@ -1,6 +1,6 @@
-import { resolve, relative, sep, dirname } from 'node:path';
-import { exec }                   from 'node:child_process';
-import { readFile }               from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
+import { exec }     from 'node:child_process';
+import path         from 'node:path';
 
 import through  from 'through2';
 import fancyLog from 'fancy-log';
@@ -47,7 +47,7 @@ function diff_build( options, collect, select ) {
   }
 
   if ( typeof settings.group !== '' ) {
-    settings.group = settings.group.replace( /\//g, sep );
+    settings.group = settings.group.replace( /\//g, path.sep );
   }
   // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
   if ( !diffBuildProc ) {
@@ -361,8 +361,8 @@ class DiffBuildProcessor {
         continue;
       }
       const
-        resolveFilePathOfDiffData = resolve( process.cwd(), filePathOfDiffData )
-        ,dirNameOfDiffData = dirname( resolveFilePathOfDiffData )
+        resolveFilePathOfDiffData = path.resolve( process.cwd(), filePathOfDiffData )
+        ,dirNameOfDiffData = path.dirname( resolveFilePathOfDiffData )
       ;
       for ( const [ , fileOfMap ] of allFileMap ) {
         if ( targetFileSet.has( resolveFilePathOfDiffData ) === true ) {
@@ -606,7 +606,7 @@ function _log( name, detected, total ) {
  * @returns {Boolean} - true or false
  */
 function _includes( diffData, filePath ) {
-  const relativePath = relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  const relativePath = path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
   return diffData && Object.keys( diffData ).includes( relativePath );
 }
 

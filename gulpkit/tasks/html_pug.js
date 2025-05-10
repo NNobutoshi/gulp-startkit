@@ -1,6 +1,6 @@
-import { readFileSync }  from 'node:fs';
-import { resolve, join } from 'node:path';
-import { Buffer }        from 'node:buffer';
+import { readFileSync } from 'node:fs';
+import { Buffer }       from 'node:buffer';
+import path             from 'node:path';
 
 import { src, dest } from 'gulp';
 import plumber       from 'gulp-plumber';
@@ -54,7 +54,7 @@ function _setPugData( file ) {
   }
 
   const keyFilePath = file.path
-    .replace( resolve( process.cwd(), config.base ), '' )
+    .replace( path.resolve( process.cwd(), config.base ), '' )
     .replace( /\\/g, '/' )
     .replace( /\.pug$/, '.html' )
   ;
@@ -93,9 +93,9 @@ function _collectImporterFiles( file, collectedFiles ) {
     }
     const dependencyFilePath = ( _isRootPath( filePath ) )
       // ルートパスであれば
-      ? join( resolve( process.cwd(), config.base ), filePath )
+      ? path.join( path.resolve( process.cwd(), config.base ), filePath )
       // 相対パスであれば
-      : resolve( file.dirname, filePath )
+      : path.resolve( file.dirname, filePath )
     ;
     if ( dependencyFilePath && collectedFiles.has( dependencyFilePath ) === false ) {
       collectedFiles.set( dependencyFilePath, [] );
@@ -254,9 +254,9 @@ function _injectImageSize() {
       ,rearPart  = match[ 7 ]
       ,preparedSrcPath = ( _isRootPath( srcPath ) )
         // ルートパスであれば
-        ? join( resolve( process.cwd(), config.base ), srcPath )
+        ? path.join( path.resolve( process.cwd(), config.base ), srcPath )
         // 相対パスであれば
-        : resolve( file.dirname, srcPath )
+        : path.resolve( file.dirname, srcPath )
     ;
     try {
       const

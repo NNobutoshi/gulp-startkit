@@ -1,4 +1,4 @@
-import { relative } from 'node:path';
+import path from 'node:path';
 
 import through  from 'through2';
 import fancyLog from 'fancy-log';
@@ -36,7 +36,7 @@ export default function logSteamData( title, subTitle, options ) {
       // ファイルが何をされたかfile 毎の出力が必要な場合。
       fancyLog(
         chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` )
-        + ` ${ relative( process.cwd(), file.path ) }`
+        + ` ${ path.relative( process.cwd(), file.path ) }`
       );
       callback( null, file );
     },
