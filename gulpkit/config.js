@@ -41,8 +41,8 @@ const
   diffCommonOtions = {
     command  : GIT_DIFF_COMMAND,
     enabled  : DIFF_ENABLED,
-    eventNameOnInit  : EVENT_NAME_WATCH_INIT,
-    eventNameOnReset : EVENT_NAME_WATCH_START,
+    firstTasksEndedEventName : EVENT_NAME_WATCH_INIT,
+    tasksEndedEventName      : EVENT_NAME_WATCH_START,
   },
   plumberCommonOptions = {
     errorHandler : function( err ) {
