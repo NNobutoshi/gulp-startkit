@@ -15,10 +15,6 @@ import logStreamData                     from '../lib/log_stream_data.js';
 import { html_pug as config } from '../config.js';
 
 const
-  LOG_TITLE = '[html_pug]:'
-  ,LOG_SUBTITLE = 'renderd'
-;
-const
   options = config.options
 ;
 let
@@ -33,14 +29,14 @@ export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( src( config.imgSrc, { read : false } ) )
+    .pipe( src( config.imgSrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )
     .pipe( _formatHtml() )
     .pipe( _injectImageSize() )
     .pipe( dest( config.dist ) )
-    .pipe( logStreamData( LOG_TITLE, LOG_SUBTITLE ) )
+    .pipe( logStreamData( options.logStreamData ) )
   ;
 }
 
@@ -52,7 +48,6 @@ function _setPugData( file ) {
   if ( file.path.endsWith( '.pug' ) === false ) {
     return;
   }
-
   const keyFilePath = file.path
     .replace( path.resolve( process.cwd(), config.base ), '' )
     .replace( /\\/g, '/' )
@@ -80,30 +75,23 @@ function _setPugData( file ) {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = String( file.contents )
-    ,regex   = /(^.*?(extends|include) *(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
-    ,matches = contents.matchAll( regex )
+    contents         = String( file.contents )
+    ,importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
+    ,matches         = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const
-      filePath = match[ 3 ] || match[ 7 ]
+      srcPath = match[ 3 ] || match[ 7 ]
     ;
-    if ( _isExternalSrc( filePath ) === true ) {
+    if ( _isExternalSrc( srcPath ) === true || !srcPath ) {
       continue;
     }
-    const dependencyFilePath = ( _isRootPath( filePath ) )
-      // ルートパスであれば
-      ? path.join( path.resolve( process.cwd(), config.base ), filePath )
-      // 相対パスであれば
-      : path.resolve( file.dirname, filePath )
-    ;
-    if ( dependencyFilePath && collectedFiles.has( dependencyFilePath ) === false ) {
+    const dependencyFilePath = _absolutePath( srcPath, config.base, file.dirname );
+    if ( collectedFiles.has( dependencyFilePath ) === false ) {
       collectedFiles.set( dependencyFilePath, [] );
     }
-    if ( dependencyFilePath ) {
-      collectedFiles.get( dependencyFilePath ).push( file.path );
-    }
-  }
+    collectedFiles.get( dependencyFilePath )?.push( file.path );
+  } // for
 }
 
 /**
@@ -112,7 +100,6 @@ function _collectImporterFiles( file, collectedFiles ) {
  */
 function _renderPug() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
-
   return through.obj(
     function _transform( file, enc, callback ) {
       if ( ignoreFileRegEx.test( file.basename ) === true ) {
@@ -147,7 +134,6 @@ function _formatHtml() {
     uglyAElementRegEx = options.formatHtml.uglyAElementRegEx
     ,endCommentRegEx  = options.formatHtml.endCommentRegEx
   ;
-
   return through.obj(
     function( file, enc, callback ) {
       let contents = String( file.contents );
@@ -173,11 +159,11 @@ function _formatHtml() {
       }
       // オプションで指定があれば、インデントをトル。
       if ( options.formatHtml.indent === false ) {
-        contents = contents.replace( /^([\t ]+)/mg, '' );
+        contents = contents.replace( /^([^\S\n\r\f]+)/mg, '' );
       }
       // 閉じタグ付近に付けるコメントに関する体裁。
       if ( options.formatHtml.commentPosition ) {
-        contents = contents.replace( endCommentRegEx, _replacementEndComment );
+        contents = contents.replace( endCommentRegEx, _replaceEndComment );
       }
       file.contents = Buffer.from( contents );
       callback( null, file );
@@ -196,7 +182,6 @@ function _injectImageSize() {
   if ( options.imgSize === false ) {
     return through.obj();
   }
-
   return through.obj( async function( file, enc, callback ) {
     const
       imgRegEx = options.injectImageSize.imgRegEx
@@ -236,10 +221,10 @@ function _injectImageSize() {
 
   /**
    * img || source 要素に width と height を追加する。
-   * @param {object} match
-   * @param {object} file
+   * @param {Object} match
+   * @param {Object} file
    * @param {Map} map
-   * @param {function} errorCallback
+   * @param {Function} errorCallback
    * @returns {Promise<void>}
    */
   async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
@@ -252,15 +237,11 @@ function _injectImageSize() {
       ,srcPath   = match[ 5 ]
       ,query     = match[ 6 ]
       ,rearPart  = match[ 7 ]
-      ,preparedSrcPath = ( _isRootPath( srcPath ) )
-        // ルートパスであれば
-        ? path.join( path.resolve( process.cwd(), config.base ), srcPath )
-        // 相対パスであれば
-        : path.resolve( file.dirname, srcPath )
+      ,absoluteSrcPath = _absolutePath( srcPath, config.base, file.dirname )
     ;
     try {
       const
-        dimensions = await imageSizeFromFile( preparedSrcPath )
+        dimensions = await imageSizeFromFile( absoluteSrcPath )
         ,elementWithSize  =
                     `<${ tagName }${ frontPart }${ attrName }=`
                   + `${ q }${ srcPath }${ query }${ q } `
@@ -276,18 +257,19 @@ function _injectImageSize() {
 
 /**
  * 閉じタグ付近に付けるコメントに関する体裁。
- * @param {string} _all
- * @param {string} endTag
- * @param {string} lineFeed
- * @param {string} indent
- * @param {string} comment
+ * @param {String} _full
+ * @param {String} endTag
+ * @param {String} lineFeed
+ * @param {String} indent
+ * @param {String} comment
+ * @returns {String} 置換文字列
  */
-function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
+function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
   const
-    htmlComment = '<!--' + comment + '-->'
+    htmlComment     = '<!--' + comment + '-->'
     ,positionInside = options.formatHtml.commentPosition === 'inside'
-    ,oneLine = options.formatHtml.commentOnOneLine === true
-    ,blankLine = options.formatHtml.blankLineAfterComment === true
+    ,oneLine        = options.formatHtml.commentOnOneLine === true
+    ,blankLine      = options.formatHtml.blankLineAfterComment === true
   ;
   // コメントを閉じタグ内側に付けたい場合。
   if ( positionInside === true ) {
@@ -309,7 +291,6 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
         : htmlComment + lineFeed + indent + endTag
       ;
     }
-
   // コメントを閉じタグ外側に付けたい場合。
   } else {
     // コメントと閉じタグを1行にまとめるか否か。
@@ -335,18 +316,32 @@ function _replacementEndComment( _all, endTag, lineFeed, indent, comment ) {
 
 /**
  * srcPath が外部の src か否かを調べる。
- * @param {string} srcPath
- * @return {boolean}
+ * @param {String} srcPath
+ * @return {Boolean}
  */
 function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
 }
 
-/**
- * srcPath がルートパスか否かを調べる。
- * @param {string} srcPath
- * @return {boolean}
+/** srcPath がルートパスか否かを調べる。
+ * @param {String} srcPath
+ * @return {Boolean}
  */
 function _isRootPath( srcPath ) {
   return /^\//.test( srcPath );
+}
+
+/**
+ * srcPath を絶対パスにする。
+ * @param {String} srcPath
+ * @param {String} base
+ * @param {String} dirname
+ * @return {String} - 絶対パス
+ */
+function _absolutePath( srcPath, base, dirname ) {
+  return ( _isRootPath( srcPath ) )
+  // ルートパスであれば
+    ? path.join( path.resolve( process.cwd(), base ), srcPath )
+  // 相対パスであれば
+    : path.resolve( dirname, srcPath );
 }

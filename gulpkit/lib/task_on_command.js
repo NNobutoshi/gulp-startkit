@@ -22,7 +22,7 @@ export default function _taskOnCommand( tasks ) {
   if ( watchTasks.length === 0 ) {
     return;
   }
-  process.on( 'beforeExit',
+  process.once( 'beforeExit',
     series(
       tasks.init_browse,
       tasks.task_watch( watchTasks, tasks.reload_browse ),

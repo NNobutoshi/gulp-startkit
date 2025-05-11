@@ -11,18 +11,7 @@ import logStreamData          from '../lib/log_stream_data.js';
 import { img_sprite_svg as config } from '../config.js';
 
 const
-  LOG_TITLE_SVG      = '[img_sprite_svg]:'
-  ,LOG_SUBTITLE_SVG  = 'created'
-  ,LOG_TITLE_SCSS    = '[img_sprite_svg:scss]:'
-  ,LOG_SUBTITLE_SCSS = 'generated'
-  ,LOG_TITLE_HTML    = '[img_sprite_svg:html]:'
-  ,LOG_SUBTITLE_HTML = 'created'
-;
-const
   options = config.options
-  ,logOptions = {
-    forEachFile : false,
-  }
 ;
 
 /**
@@ -48,10 +37,10 @@ function _branchTask( branchSrc, baseDir ) {
   return src( branchSrc )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/,  dest( config.dist + baseDir ) ) )
-    .pipe( gulpIf( /\.svg$/,  logStreamData( LOG_TITLE_SVG, LOG_SUBTITLE_SVG, logOptions ) ) )
     .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
-    .pipe( gulpIf( /\.scss$/, logStreamData( LOG_TITLE_SCSS, LOG_SUBTITLE_SCSS, logOptions ) ) )
     .pipe( gulpIf( /\.html$/, dest( config.dist + baseDir ) ) )
-    .pipe( gulpIf( /\.html$/, logStreamData( LOG_TITLE_HTML, LOG_SUBTITLE_HTML, logOptions ) ) )
+    .pipe( gulpIf( /\.svg$/,  logStreamData( options.logStreamData.svg ) ) )
+    .pipe( gulpIf( /\.scss$/, logStreamData( options.logStreamData.scss ) ) )
+    .pipe( gulpIf( /\.html$/, logStreamData( options.logStreamData.html ) ) )
   ;
 }

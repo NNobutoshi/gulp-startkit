@@ -16,18 +16,9 @@ import { css_sass as config } from '../config.js';
 
 const sass = gulpSass( dartSass );
 
-const
-  LOG_TITLE_CSS     = '[css_sass]:'
-  ,LOG_SUBTITLE_CSS = 'compiled'
-  ,LOG_TITLE_MAP    = '[css_sass:map]:'
-  ,LOG_SUBTITLE_MAP = 'created'
-;
 
 const
   options = config.options
-  ,mapLogOptions = {
-    forEachFile : false,
-  }
   ,SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
@@ -48,8 +39,8 @@ export default function css_sass() {
     .pipe( postcss( options.postcss.plugins ) )
     .pipe( gulpIf( SOURCEMAPS_ENABLED, sourcemaps.write( config.sourcemap_dir ) ) )
     .pipe( dest( config.dist ) )
-    .pipe( gulpIf( /\.map$/, logStreamData( LOG_TITLE_MAP, LOG_SUBTITLE_MAP, mapLogOptions ) ) )
-    .pipe( gulpIf( /\.css$/, logStreamData( LOG_TITLE_CSS, LOG_SUBTITLE_CSS ) ) )
+    .pipe( gulpIf( /\.css$/, logStreamData( options.logStreamData.scss ) ) )
+    .pipe( gulpIf( /\.map$/, logStreamData( options.logStreamData.sourceMaps ) ) )
   ;
 }
 
@@ -69,17 +60,20 @@ export default function css_sass() {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = String( file.contents )
-    ,regex   = /^.*?@(use|forward) *['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
-    ,matches = contents.matchAll( regex )
+    contents         = String( file.contents )
+    ,importRuleRegEx = /^.*?@(use|forward)\s*['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
+    ,matches         = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const
       extension = match[ 3 ]
+      ,srcPath  = match[ 2 ]
     ;
+    if ( !srcPath ) {
+      continue;
+    }
     let
-      dependencyFilePath = resolve( file.dirname, match[ 2 ] )
-      ,targets
+      dependencyFilePath = resolve( file.dirname, srcPath )
       ,depFilePathBasename
     ;
     // 拡張子がない場合は .scss を追加。
@@ -92,15 +86,12 @@ function _collectImporterFiles( file, collectedFiles ) {
     if ( depFilePathBasename.startsWith( '_' )  === false ) {
       dependencyFilePath = join(
         dirname( dependencyFilePath ),
-        '_' + depFilePathBasename,
+        `_${ depFilePathBasename }`,
       );
     }
     if ( collectedFiles.has( dependencyFilePath ) === false ) {
       collectedFiles.set( dependencyFilePath, [] );
     }
-    targets = collectedFiles.get( dependencyFilePath );
-    if ( targets.includes( dependencyFilePath ) === false ) {
-      targets.push( file.path );
-    }
+    collectedFiles.get( dependencyFilePath )?.push( file.path );
   } // for
 }

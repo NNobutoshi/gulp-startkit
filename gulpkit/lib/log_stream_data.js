@@ -17,12 +17,16 @@ const defaultSettings = {
  * @param {Object} options - 色や出力の制限などが設定可能なオプション
  * @returns {Stream} - 処理されたストリーム
  */
-export default function logSteamData( title, subTitle, options ) {
-  const settings = { ...defaultSettings, ...options };
+export default function logSteamData( options ) {
+  const
+    settings = { ...defaultSettings, ...options }
+    ,title = settings.title
+    ,subtitle = settings.subtitle
+  ;
   let fileCounter = 0;
   // Stream データでは無い場合。
   if ( settings.onStream === false ) {
-    fancyLog( chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` ) );
+    fancyLog( chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` ) );
     return;
   }
   return through.obj(
@@ -35,7 +39,7 @@ export default function logSteamData( title, subTitle, options ) {
       }
       // ファイルが何をされたかfile 毎の出力が必要な場合。
       fancyLog(
-        chalk.hex( settings.textColorHex )( `${ title } ${ subTitle }` )
+        chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` )
         + ` ${ path.relative( process.cwd(), file.path ) }`
       );
       callback( null, file );
@@ -47,9 +51,9 @@ export default function logSteamData( title, subTitle, options ) {
       }
       // いくつのファイルが何をされたかを出力。
       fancyLog(
-        chalk.hex( settings.textColorHex )( title )
+        chalk.hex( settings.textColorHex )( `[${ title }]:` )
         + ` ${ fileCounter } files `
-        + chalk.hex( settings.textColorHex )( subTitle )
+        + chalk.hex( settings.textColorHex )( subtitle )
       );
       callback();
     },

@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { src, dest } from 'gulp';
 import iconfont      from 'gulp-iconfont';
 import plumber       from 'gulp-plumber';
+
 import Handlebars    from 'handlebars';
 
 import svgLint                from '../lib/svg_lint.js';
@@ -13,18 +14,11 @@ import logStreamData          from '../lib/log_stream_data.js';
 import { icon_font as config } from '../config.js';
 
 const
-  CHARSET            = 'utf-8'
-  ,LOG_TITLE_FONT    = '[icon_font]:'
-  ,LOG_SUBTITLE_FONT = 'created'
-  ,LOG_TITLE_SCSS    = '[icon_font:scss]:'
-  ,LOG_SUBTITLE_SCSS = 'generated'
+  CHARSET = 'utf-8'
 ;
 const
   options = config.options
-  ,logOptionsScss = {
-    forEachFile : false,
-    onStream    : false,
-  }
+  ,PLACEHOLDER = config.placeholder
 ;
 
 /**
@@ -50,28 +44,28 @@ export default function icon_font() {
 async function _branchTask( branchSrc, baseDir, trunkStream ) {
   const
     iconFontOptions = { ...options.iconfont }
+    ,logOptions     = options.logStreamData.iconFont
     ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
     ,templateData   = {
-      fontName     : iconFontOptions.fontName.replace( '[subdir]', fontSubName ),
+      fontName     : iconFontOptions.fontName.replace( PLACEHOLDER, fontSubName ),
       cssClass     : config.cssClass,
       fontPath     : config.fontPath,
       templatePath : config.templatePath,
-      scssDist     : config.scssDist.replace( '[subdir]', baseDir ),
+      scssDist     : config.scssDist.replace( PLACEHOLDER, baseDir ),
     }
   ;
   try {
     iconFontOptions.fontName = templateData.fontName;
     iconFontOptions.timestamp = await _getTimestamp( branchSrc );
+    return iconfont( branchSrc, iconFontOptions )
+      .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )
+      .pipe( dest( config.fontsDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) )
+      .pipe( logStreamData( logOptions ) )
+    ;
   } catch ( err ) {
     trunkStream.emit( 'error', err );
     return;
   }
-
-  return iconfont( branchSrc, iconFontOptions )
-    .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )
-    .pipe( dest( config.fontsDist.replace( '[subdir]', baseDir ), { encoding : false } ) )
-    .pipe( logStreamData( LOG_TITLE_FONT, LOG_SUBTITLE_FONT ) )
-  ;
 }
 
 /**
@@ -106,10 +100,12 @@ async function _createScssFile( data, errorStream ) {
       ,template = Handlebars.compile( content )
       ,sourceCode = template( data )
       ,filePath = `${ data.scssDist }/${ config.scssFileName }`
+      ,logOptions = options.logStreamData.scss
      ;
     await mkdir( data.scssDist, { recursive : true } );
     await writeFile( filePath, sourceCode, { encoding : CHARSET } );
-    logStreamData( `${ LOG_TITLE_SCSS } ${ filePath }`, LOG_SUBTITLE_SCSS, logOptionsScss );
+    logOptions.subtitle = `${ filePath } ${ logOptions.subtitle }`;
+    logStreamData( logOptions );
   } catch ( err ) {
     errorStream.emit( 'error', err );
   }
@@ -136,8 +132,8 @@ async function _getTimestamp( filePaths ) {
         latestTimeStamp = fileTimestamp;
       }
     }
+    return latestTimeStamp;
   } catch ( err ) {
     throw err;
   }
-  return latestTimeStamp;
 }
