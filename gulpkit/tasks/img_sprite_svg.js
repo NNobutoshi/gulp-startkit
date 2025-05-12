@@ -8,7 +8,7 @@ import assignTaskForEachGroup from '../lib/task_for_each.js';
 import svgLint                from '../lib/svg_lint.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
-import { img_sprite_svg as config } from '../config.js';
+import config from '../config/config_img_sprite_svg.js';
 
 const
   options = config.options

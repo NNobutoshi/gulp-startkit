@@ -5,7 +5,7 @@ import imageminPngquant                               from 'imagemin-pngquant';
 
 import diff from '../lib/diff_build.js';
 
-import { img_min as config } from '../config.js';
+import config from '../config/config_img_min.js';
 
 const
   options = config.options

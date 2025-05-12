@@ -3,10 +3,10 @@ import fancyLog          from 'fancy-log';
 import chalk             from 'chalk';
 
 import configFile from '../config.js';
+import watchConfig from '../config/config_task_watch.js';
 
 const
   config        = configFile
-  ,watchConfig  = config.task_watch
   ,watchOptions = watchConfig.options.watch
 ;
 
@@ -29,8 +29,8 @@ export default function task_watch( tasks, commonNextTask ) {
       let
         watchSrc
       ;
-      if ( taskConfig?.src && taskConfig?.subSrc ) {
-        watchSrc = [].concat( taskConfig.src, taskConfig.subSrc );
+      if ( taskConfig?.src && taskConfig?.imgSrc ) {
+        watchSrc = [].concat( taskConfig.src, taskConfig.imgSrc );
       } else if ( taskConfig?.src ) {
         watchSrc = taskConfig.src;
       }

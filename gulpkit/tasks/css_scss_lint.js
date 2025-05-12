@@ -7,7 +7,7 @@ import log       from 'fancy-log';
 import diff          from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
 
-import { css_scss_lint as config } from '../config.js';
+import config from '../config/config_css_scss_lint.js';
 
 const
   options = config.options

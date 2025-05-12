@@ -42,23 +42,23 @@ export default function icon_font() {
  * @returns {Stream} - iconfontのストリーム
  */
 async function _branchTask( branchSrc, baseDir, trunkStream ) {
-  const
-    iconFontOptions = { ...options.iconfont }
-    ,logOptions     = options.logStreamData.iconFont
-    ,fontSubName    = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
-    ,templateData   = {
-      fontName     : iconFontOptions.fontName.replace( PLACEHOLDER, fontSubName ),
-      cssClass     : config.cssClass,
-      fontPath     : config.fontPath,
-      templatePath : config.templatePath,
-      scssDist     : config.scssDist.replace( PLACEHOLDER, baseDir ),
-    }
-  ;
   try {
+    const
+      iconFontOptions = { ...options.iconfont }
+      ,logOptions     = options.logStreamData.iconFont
+      ,branchFontName = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
+      ,templateData   = {
+        fontName     : iconFontOptions.fontName.replace( PLACEHOLDER, branchFontName ),
+        fontPath     : config.fontPath,
+        cssClass     : config.cssClass,
+        templatePath : config.templatePath,
+        scssDist     : config.scssDist.replace( PLACEHOLDER, baseDir ),
+      }
+    ;
     iconFontOptions.fontName = templateData.fontName;
     iconFontOptions.timestamp = await _getTimestamp( branchSrc );
     return iconfont( branchSrc, iconFontOptions )
-      .on( 'glyphs', _generateScssFromGlyphs( templateData, trunkStream ) )
+      .on( 'glyphs', _createScssFromGlyphs( templateData, trunkStream ) )
       .pipe( dest( config.fontsDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) )
       .pipe( logStreamData( logOptions ) )
     ;
@@ -69,14 +69,13 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
 }
 
 /**
- * iconfont の設定と、アイコンフォントの作成を行う。
  * SCSS ファイル作成の準備を行う。
  * 引数にエラーを伝えるためのストリームを渡す。
  * @param {Object} templateData - iconfontの設定情報
  * @param {Object} trunkStream - エラーを伝えるために必要
  * @returns {Function} - glyphsを受け取る関数
  */
-function _generateScssFromGlyphs( templateData, trunkStream ) {
+function _createScssFromGlyphs( templateData, trunkStream ) {
   return function( glyphs ) {
     glyphs.forEach( ( glyph ) => {
       // unicodeを16進数のcodepointに変換
@@ -121,19 +120,15 @@ async function _createScssFile( data, errorStream ) {
 async function _getTimestamp( filePaths ) {
   let
     latestTimeStamp = Math.round( new Date( 0 ) / 1000 )
-  ;
-  try {
-    for ( const filePath of filePaths ) {
-      const
-        stats = await stat( filePath )
-        ,fileTimestamp = Math.round( stats.mtime / 1000 )
+    ;
+  for ( const filePath of filePaths ) {
+    const
+      stats = await stat( filePath )
+      ,fileTimestamp = Math.round( stats.mtime / 1000 )
       ;
-      if ( fileTimestamp > latestTimeStamp ) {
-        latestTimeStamp = fileTimestamp;
-      }
+    if ( fileTimestamp > latestTimeStamp ) {
+      latestTimeStamp = fileTimestamp;
     }
-    return latestTimeStamp;
-  } catch ( err ) {
-    throw err;
   }
+  return latestTimeStamp;
 }
