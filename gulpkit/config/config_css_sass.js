@@ -1,52 +1,58 @@
-import { config, options } from './common.js';
+import { commonConfig, commonOptions } from './common.js';
 import switchConfig        from './switch.js';
 import autoprefixer        from 'autoprefixer';
 
-const
-  devConfig = {
-    src  : [ config.SRC + '/**/*.scss' ],
-    dist : config.DIST,
-    base : config.SRC,
-    enabledWatch      : config.WATCH_ENABLED,
-    enabledCssMqpack  : true,
-    enabledSourcemaps : config.SOURCEMAPS_ENABLED,
-    sourcemap_dir     : '/' + config.SOURCEMAPS_DIR,
-    options   : {
-      plumber : options.plumber,
-      postcss : {
-        plugins : [ autoprefixer() ]
-      },
-      sass : {
-        outputStyle : 'expanded', // nested, compact, compressed, expanded
-        linefeed    : 'lf', // 'crlf', 'lf'
-        indentType  : 'space', // 'space', 'tab'
-        indentWidth : 2,
-        silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
-      },
-      diff : { ...options.diff,
-        name : 'css_sass',
-      },
-      logStreamData : {
-        scss : {
-          title    : 'css_sass',
-          subtitle : 'compiled',
-        },
-        sourceMaps : {
-          title       : 'css_sass:map',
-          subtitle    : 'created',
-          forEachFile : false,
-        },
-      },
-    },
-  }
-  ,prodConfig = {
-    sourcemapsEnabled : config.SOURCEMAPS_ENABLED,
-    options   : {
-      sass : {
-        outputStyle : 'compressed', // nested, compact, compressed, expanded
-      },
-    },
-  }
-;
+export { switchedConf as config, switchedOptions as options };
 
-export default switchConfig( config.NODE_ENV, devConfig, prodConfig );
+const devConfig = {
+  src  : [ commonConfig.SRC + '/**/*.scss' ],
+  dist : commonConfig.DIST,
+  base : commonConfig.SRC,
+  enabledWatch      : commonConfig.WATCH_ENABLED,
+  enabledCssMqpack  : true,
+  enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
+  sourcemap_dir     : '/' + commonConfig.SOURCEMAPS_DIR,
+  options   : {
+  },
+};
+const prodConfig = {
+  sourcemapsEnabled : commonConfig.SOURCEMAPS_ENABLED,
+};
+
+const devOptions = {
+  plumber : commonOptions.plumber,
+  postcss : {
+    plugins : [ autoprefixer() ]
+  },
+  sass : {
+    outputStyle : 'expanded', // nested, compact, compressed, expanded
+    linefeed    : 'lf', // 'crlf', 'lf'
+    indentType  : 'space', // 'space', 'tab'
+    indentWidth : 2,
+    silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
+  },
+  diff : { ...commonOptions.diff,
+    name : 'css_sass',
+  },
+  logStreamData : {
+    scss : {
+      title    : 'css_sass',
+      subtitle : 'compiled',
+    },
+    sourceMaps : {
+      title       : 'css_sass:map',
+      subtitle    : 'created',
+      forEachFile : false,
+    },
+  },
+};
+const prodOptions = {
+  sass : {
+    outputStyle : 'compressed', // nested, compact, compressed, expanded
+  },
+};
+
+const
+  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptions, prodOptions )
+;

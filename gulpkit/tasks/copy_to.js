@@ -5,11 +5,7 @@ import plumber from 'gulp-plumber';
 import diff from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
 
-import config from '../config/config_copy_to.js';
-
-const
-  options = config.options
-;
+import { config, options } from '../config/config_copy_to.js';
 
 /**
  * 指定されたファイルをコピーするタスク。

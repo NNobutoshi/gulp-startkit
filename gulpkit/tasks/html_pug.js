@@ -12,11 +12,8 @@ import { imageSizeFromFile } from 'image-size/fromFile';
 import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
 import logStreamData                     from '../lib/log_stream_data.js';
 
-import config from '../config/config_html_pug.js';
+import { config, options } from '../config/config_html_pug.js';
 
-const
-  options = config.options
-;
 let
   pugData
 ;

@@ -11,14 +11,13 @@ import assignTaskForEachGroup from '../lib/task_for_each.js';
 import diff                   from '../lib/diff_build.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
-import { icon_font as config } from '../config.js';
+import { config, options } from '../config/config_icon_font.js';
 
 const
   CHARSET = 'utf-8'
 ;
 const
-  options = config.options
-  ,PLACEHOLDER = config.placeholder
+  PLACEHOLDER = config.placeholder
 ;
 
 /**

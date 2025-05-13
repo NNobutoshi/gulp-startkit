@@ -7,11 +7,7 @@ import log       from 'fancy-log';
 import diff          from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
 
-import config from '../config/config_css_scss_lint.js';
-
-const
-  options = config.options
-;
+import { config, options } from '../config/config_css_scss_lint.js';
 
 /**
  * SCSS のLint を実行するタスク。

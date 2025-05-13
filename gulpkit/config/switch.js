@@ -2,14 +2,15 @@ import merge from 'lodash/mergeWith.js';
 
 // 'production'用の設定は、'development' を基準にしてマージする
 export default function switchConfig( environment, devConfig, prodConfig ) {
-  const config = {};
+  if ( !prodConfig ) {
+    return devConfig;
+  }
   switch ( environment ) {
   case 'production':
-    merge( config, devConfig, prodConfig );
-    break;
+    return merge( devConfig, prodConfig );
   case 'development':
-    merge( config, devConfig );
+    return devConfig;
   default:
   }
-  return config;
+  return devConfig;
 }

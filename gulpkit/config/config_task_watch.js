@@ -1,17 +1,28 @@
-import { config }   from './common.js';
+import { commonConfig } from './common.js';
 import switchConfig from './switch.js';
 
-const
-  devConfig = {
-    watchInitEventName  : config.EVENT_NAME_WATCH_INIT,
-    watchStartEventName : config.EVENT_NAME_WATCH_START,
-    options : {
-      watch : {
-        usePolling : true,
-      },
+export { switchedConf as config, switchedOptions as options };
+
+const devConfig = {
+  watchInitEventName  : commonConfig.EVENT_NAME_WATCH_INIT,
+  watchStartEventName : commonConfig.EVENT_NAME_WATCH_START,
+  options : {
+    watch : {
+      usePolling : true,
     },
-  }
-  ,prodConfig = {}
+  },
+};
+const prodConfig = null;
+
+const devOptions = {
+  watch : {
+    usePolling : true,
+  },
+};
+const prodOptions = null;
+
+const
+  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;
 
-export default switchConfig( config.NODE_ENV, devConfig, prodConfig );

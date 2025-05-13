@@ -7,11 +7,10 @@ import assignTaskForEachGroup from '../lib/task_for_each.js';
 import diff                   from '../lib/diff_build.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
-import config from '../config/config_img_sprite.js';
+import { config, options } from '../config/config_img_sprite.js';
 
 const
-  options = config.options
-  ,PLACEHOLDER = config.placeholder
+  PLACEHOLDER = config.placeholder
 ;
 
 /**

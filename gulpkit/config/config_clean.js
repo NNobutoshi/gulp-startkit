@@ -1,11 +1,12 @@
-import { config } from './common.js';
+import { commonConfig } from './common.js';
 import switchConfig     from './switch.js';
 
-const
-  devConfig = {
-    command : `git clean -f ${ config.DIST }/`,
-  }
-  ,prodConfig = {}
-;
+export { switchedConf as config };
 
-export default switchConfig( config.NODE_ENV,  devConfig, prodConfig );
+const devConfig = {
+  command : `git clean -f ${ commonConfig.DIST }/`,
+};
+
+const prodConfig = null;
+
+const switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig );

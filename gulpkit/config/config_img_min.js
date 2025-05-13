@@ -1,47 +1,55 @@
-import { config, options } from './common.js';
+import { commonConfig, commonOptions } from './common.js';
 import switchConfig        from './switch.js';
+
+export { switchedConf as config, switchedOptions as options };
 
 const
   devConfig = {
     src : [
-      ''  + config.SRC + '/**/*.{png,jpg,svg}',
-      '!' + config.SRC + '/**/_sprite*/*.{png,svg}',
-      '!' + config.SRC + '/**/fonts/icons/*.svg',
+      ''  + commonConfig.SRC + '/**/*.{png,jpg,svg}',
+      '!' + commonConfig.SRC + '/**/_sprite*/*.{png,svg}',
+      '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
     ],
-    dist : config.DIST,
-    enabledWatch : config.WATCH_ENABLED,
+    dist : commonConfig.DIST,
+    enabledWatch : commonConfig.WATCH_ENABLED,
     options : {
-      plumber : options.plumber,
-      imageminMozjpeg : {
-        quality : 90,
-      },
-      imageminPngquant : {
-        quality : [ 0.8, 0.9 ],
-      },
-      svgo : {
-        plugins : [
-          {
-            name   : 'removeViewBox',
-            active : true,
-          },
-          {
-            name   : 'cleanupIDs',
-            active : false,
-          },
-        ],
-      },
-      diff : { ...options.diff,
-        name     : 'img_min',
-        oneToOne : true,
-      },
-      src : {
-        base     : config.SRC,
-        encoding : false,
-        read     : !config.DIFF_ENABLED,
-      },
     },
-  }
-  ,prodConfig = {}
-;
+  };
+const prodConfig = null;
 
-export default switchConfig( config.NODE_ENV, devConfig, prodConfig );
+const devOptions = {
+  plumber : commonOptions.plumber,
+  imageminMozjpeg : {
+    quality : 90,
+  },
+  imageminPngquant : {
+    quality : [ 0.8, 0.9 ],
+  },
+  svgo : {
+    plugins : [
+      {
+        name   : 'removeViewBox',
+        active : true,
+      },
+      {
+        name   : 'cleanupIDs',
+        active : false,
+      },
+    ],
+  },
+  diff : { ...commonOptions.diff,
+    name     : 'img_min',
+    oneToOne : true,
+  },
+  src : {
+    base     : commonConfig.SRC,
+    encoding : false,
+    read     : !commonConfig.DIFF_ENABLED,
+  },
+};
+const prodOptions = null;
+
+const
+  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptions, prodOptions )
+;

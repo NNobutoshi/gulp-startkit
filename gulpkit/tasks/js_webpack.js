@@ -9,13 +9,10 @@ import through   from 'through2';
 import mergeWith from 'lodash/mergeWith.js';
 import isEqual   from 'lodash/isEqual.js';
 
-import config from '../config/config_js_wabpack.js';
+import { config, options } from '../config/config_js_wabpack.js';
 
 const
   CHARSET = 'utf-8'
-;
-const
-  options = config.options
 ;
 let
   webpackCompiler = null

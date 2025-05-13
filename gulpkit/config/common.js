@@ -20,7 +20,7 @@ const
     'development' : 'dist/development/html',
   }
 ;
-export const config = {
+export const commonConfig = {
   NODE_ENV           : NODE_ENV,
   SRC                : DIR_SRC[ NODE_ENV ],
   DIST               : DIR_DIST[ NODE_ENV ],
@@ -36,12 +36,12 @@ export const config = {
 }
 ;
 
-export const options = {
+export const commonOptions = {
   diff : {
-    command  : `git status -suall gulpkit/ ${ config.SRC }/`,
-    enabled  : config.DIFF_ENABLED,
-    firstTasksEndedEventName : config.EVENT_NAME_WATCH_INIT,
-    tasksEndedEventName      : config.EVENT_NAME_WATCH_START,
+    command  : `git status -suall gulpkit/ ${ commonConfig.SRC }/`,
+    enabled  : commonConfig.DIFF_ENABLED,
+    firstTasksEndedEventName : commonConfig.EVENT_NAME_WATCH_INIT,
+    tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_START,
   },
   plumber : {
     errorHandler : function( err ) {

@@ -3,7 +3,7 @@ import { exec } from 'node:child_process';
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 
-import config from '../config/config_clean.js';
+import { config } from '../config/config_clean.js';
 
 export default async function clean() {
   await _gitClean( config.command );

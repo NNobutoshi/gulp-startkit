@@ -5,11 +5,7 @@ import imageminPngquant                               from 'imagemin-pngquant';
 
 import diff from '../lib/diff_build.js';
 
-import config from '../config/config_img_min.js';
-
-const
-  options = config.options
-;
+import { config, options } from '../config/config_img_min.js';
 
 /**
  * 画像を圧縮するタスク。

@@ -12,13 +12,12 @@ import mqpacker      from '@hail2u/css-mqpacker';
 import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
 import logStreamData                     from '../lib/log_stream_data.js';
 
-import config from '../config/config_css_sass.js';
+import { config, options } from '../config/config_css_sass.js';
 
 const sass = gulpSass( dartSass );
 
 const
-  options = config.options
-  ,SOURCEMAPS_ENABLED = config.enabledSourcemaps
+  SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
 if ( config.enabledCssMqpack === true ) {
