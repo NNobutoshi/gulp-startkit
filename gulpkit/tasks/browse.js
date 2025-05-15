@@ -9,13 +9,13 @@ import chalk       from 'chalk';
 export { init_browse, reload_browse };
 
 const
-  RELATIVE_CONFIG_FILE_PATH = '../config_browse.js'
-  ,CONFIG_FILE_DIRNAME      = path.dirname( fileURLToPath( import.meta.url ) )
-  ,CONFIG_FILE_PATH         = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
+  RELATIVE_CONFIG_FILE_PATH = '../config/config_browse.js'
+  ,CONFIG_FILE_DIRNAME = path.dirname( fileURLToPath( import.meta.url ) )
+  ,CONFIG_FILE_PATH = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
 ;
 
 /**
- * @param {Function} done gulp タスクのコールバック
+ * @param {Function} done - Gulp タスク完了のコールバック
  * @returns {Promise<void>}
  */
 async function init_browse( done ) {
@@ -24,20 +24,20 @@ async function init_browse( done ) {
       fancyLog( chalk.gray( 'no serve' ) );
       return done();
     }
-    const { enabled, options } = await import( RELATIVE_CONFIG_FILE_PATH );
-    if ( enabled === false ) {
+    const { config, options } = await import( RELATIVE_CONFIG_FILE_PATH );
+    if ( config.enabled === false ) {
       fancyLog( chalk.gray( 'no serve' ) );
       return done();
     }
     browserSync.init( options );
-    return done();
-  } catch {
-    return done();
+    // return done();
+  } catch ( err ) {
+    throw err.stack;
   }
 }
 
 /**
- * @param {Function} done Gulp タスク完了のコールバック
+ * @param {Function} done - Gulp タスク完了のコールバック
  * @returns {Function<void>}
  */
 function reload_browse( done ) {

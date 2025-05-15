@@ -1,16 +1,24 @@
 import { commonConfig, commonOptions } from './common.js';
-import switchConfig from './switch.js';
+import mergeConfForEnv from './merge_conf.js';
 
-export { switchedConf as config, switchedOptions as options };
+export { mergedConf as config, mergedOptions as options };
 
+
+// 開発環境用。
 const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.{mp4,webm}' ],
   base : commonConfig.SRC,
   dist : commonConfig.DIST,
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
+// 本番環境用。
+// 開発環境と異なる設定を行う場合に、
+// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
+// 同一設定の場合はnull を明示的に代入。
 const prodConfig = null;
-const devOptionts = {
+
+// devConf に同じ。
+const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name     : 'copy_to',
@@ -28,8 +36,10 @@ const devOptionts = {
   },
 };
 const prodOptions = null;
+
+// すべては開発環境用の設定をベースにマージする。
 const
-  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptionts,prodOptions )
+  mergedConf     = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeConfForEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;
 

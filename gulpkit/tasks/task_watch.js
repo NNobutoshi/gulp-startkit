@@ -45,17 +45,20 @@ export default function task_watch( tasks, commonNextTask ) {
         ,taskName = tasks[ i ].name
         ,taskConfig = tasksConfig[ taskName ]
       ;
+      if ( !taskConfig ) {
+        continue;
+      }
       let
         watchSrc
       ;
-      if ( taskConfig?.src && tasksConfig?.imgSrc ) {
-        watchSrc = taskConfig.concat( taskConfig.imgSrc );
-      } else if ( taskConfig?.src ) {
+      if ( taskConfig.src && tasksConfig.subsrc ) {
+        watchSrc = taskConfig.concat( taskConfig.subsrc );
+      } else if ( taskConfig.src ) {
         watchSrc = taskConfig.src;
       } else {
         continue;
       }
-      if ( taskConfig?.enabledWatch === true && watchSrc ) {
+      if ( taskConfig.enabledWatch === true && watchSrc ) {
         enabled = true;
         watch(
           watchSrc,

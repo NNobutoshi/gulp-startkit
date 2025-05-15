@@ -3,10 +3,16 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const
+  NODE_ENV    = process.env.NODE_ENV
+  ,BROWSE_ENV = process.env.BROWSE_ENV
+  ,IS_PRODUCTION  = ( NODE_ENV === 'production' )
+  ,IS_DEVELOPMENT = ( NODE_ENV === 'development' )
+;
+
 // 開発環境用。
 const devConfig = {
-  watchInitEventName  : commonConfig.EVENT_NAME_WATCH_INIT,
-  watchStartEventName : commonConfig.EVENT_NAME_WATCH_START,
+  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION
 };
 // 本番環境用。
 // 開発環境と異なる設定を行う場合に、
@@ -16,9 +22,10 @@ const prodConfig = null;
 
 // devConf に同じ。
 const devOptions = {
-  watch : {
-    usePolling : true,
-  },
+  'port'           : 9039,
+  'browser'        : 'Chrome',
+  'reloadThrottle' : 100,
+  'proxy'          : 'localhost:8039'
 };
 const prodOptions = null;
 

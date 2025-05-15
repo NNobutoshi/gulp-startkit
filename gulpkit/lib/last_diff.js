@@ -2,9 +2,9 @@ import { mkdir, readFile, writeFile, rm, access } from 'node:fs/promises';
 import path from 'node:path';
 
 const
-  FILEPATH  = path.resolve( process.cwd(), '.last_diff/.diffmap' )
+  FILEPATH = path.resolve( process.cwd(), '.last_diff/.diffmap' )
   ,CHARSET = 'utf-8'
-  ,DIRNAME  = path.dirname( FILEPATH )
+  ,DIRNAME = path.dirname( FILEPATH )
 ;
 
 let

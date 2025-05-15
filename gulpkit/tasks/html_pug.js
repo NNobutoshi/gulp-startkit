@@ -26,7 +26,7 @@ export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
   return src( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( src( config.imgSrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
+    .pipe( src( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )

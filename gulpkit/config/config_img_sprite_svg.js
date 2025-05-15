@@ -1,20 +1,25 @@
 import path from 'node:path';
 
 import { commonConfig, commonOptions } from './common.js';
-import switchConfig        from './switch.js';
+import mergeConfForEnv from './merge_conf.js';
 
-export { switchedConf as config, switchedOptions as options };
+export { mergedConf as config, mergedOptions as options };
 
+// 開発環境用。
 const devConfig = {
   src   : [ commonConfig.SRC + '/**/img/_sprite_svg/**/*.svg' ],
   base  : commonConfig.SRC,
   dist  : commonConfig.DIST,
   group : '/img/_sprite_svg',// この命名ルールのディレクトリ毎に。
   enabledWatch : commonConfig.WATCH_ENABLED,
-}
-;
+};
+// 本番環境用。
+// 開発環境と異なる設定を行う場合に、
+// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
+// 同一設定の場合はnull を明示的に代入。
 const prodConfig = null;
 
+// devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
   svgSprite : {
@@ -39,7 +44,7 @@ const devOptions = {
         },
         example : {
           dest : path.resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
-        }
+        },
       },
     },
     shape : {
@@ -71,11 +76,11 @@ const devOptions = {
   svgLint : {
   },
   diff : { ...commonOptions.diff,
-    name    : 'img_sprite_svg',
-    group   : '/img/_sprite_svg',
+    name  : 'img_sprite_svg',
+    group : '/img/_sprite_svg',
   },
   logStreamData : {
-    svg :  {
+    svg : {
       title       : 'img_sprite_svg',
       subtitle    : 'created',
       forEachFile : false,
@@ -93,7 +98,7 @@ const devOptions = {
 };
 const prodOptions = {
   svgSprite : {
-    mode  : {
+    mode : {
       symbol : {
         example : false,
       },
@@ -104,7 +109,8 @@ const prodOptions = {
   },
 };
 
+// すべては開発環境用の設定をベースにマージする。
 const
-  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeConfForEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;

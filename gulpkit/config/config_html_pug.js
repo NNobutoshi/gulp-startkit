@@ -1,16 +1,17 @@
 import path from 'node:path';
 
 import { commonConfig, commonOptions } from './common.js';
-import switchConfig from './switch.js';
+import mergeConfForEnv from './merge_conf.js';
 
-export { switchedConf as config, switchedOptions as options };
+export { mergedConf as config, mergedOptions as options };
 
+// 開発環境用。
 const devConfig = {
   src : [
     ''  + commonConfig.SRC + '/**/*.pug',
     ''  + commonConfig.SRC + '/**/*_data.json',
   ],
-  imgSrc : [
+  subsrc : [
     ''  + commonConfig.SRC + '/**/*.{png,jpg,svg}',
     '!' + commonConfig.SRC + '/**/_sprite*/*.{png,svg}',
     '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
@@ -20,8 +21,13 @@ const devConfig = {
   data : path.resolve( process.cwd(), `${ commonConfig.SRC }/_data/_pug_data.json` ),
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
+// 本番環境用。
+// 開発環境と異なる設定を行う場合に、
+// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
+// 同一設定の場合はnull を明示的に代入。
 const prodConfig = null;
 
+// devConf に同じ。
 const devOptions = {
   imgSize : true,
   injectImageSize : {
@@ -56,7 +62,8 @@ const devOptions = {
 };
 const prodOptions = null;
 
+// すべては開発環境用の設定をベースにマージする。
 const
-  switchedConf = switchConfig( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,switchedOptions = switchConfig( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeConfForEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;

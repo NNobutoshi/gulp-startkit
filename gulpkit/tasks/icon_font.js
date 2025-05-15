@@ -43,23 +43,20 @@ export default function icon_font() {
 async function _branchTask( branchSrc, baseDir, trunkStream ) {
   try {
     const
-      iconFontOptions = { ...options.iconfont }
-      ,logOptions     = options.logStreamData.iconFont
-      ,branchFontName = ( baseDir ) ? baseDir.replace( /\//, '_' ) : ''
-      ,templateData   = {
-        fontName     : iconFontOptions.fontName.replace( PLACEHOLDER, branchFontName ),
-        fontPath     : config.fontPath,
-        cssClass     : config.cssClass,
-        templatePath : config.templatePath,
-        scssDist     : config.scssDist.replace( PLACEHOLDER, baseDir ),
+      branchFontName = options.iconfont.fontName.replace( PLACEHOLDER, baseDir.replace( /\//, '_' ) )
+      ,iconFontOptions = { ...options.iconfont,
+        fontName : branchFontName,
+        timeStamp : await _getTimestamp( branchSrc ),
+      }
+      ,templateData = { ...options.iconFontScss,
+        fontName : branchFontName,
+        scssDist : config.scssDist.replace( PLACEHOLDER, baseDir ),
       }
     ;
-    iconFontOptions.fontName = templateData.fontName;
-    iconFontOptions.timestamp = await _getTimestamp( branchSrc );
     return iconfont( branchSrc, iconFontOptions )
       .on( 'glyphs', _createScssFromGlyphs( templateData, trunkStream ) )
       .pipe( dest( config.fontsDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) )
-      .pipe( logStreamData( logOptions ) )
+      .pipe( logStreamData( options.logStreamData.iconFont ) )
     ;
   } catch ( err ) {
     trunkStream.emit( 'error', err );
@@ -91,16 +88,15 @@ function _createScssFromGlyphs( templateData, trunkStream ) {
  * @param {Object} errorStream - エラーを伝えるストリーム
  * @returns {Promise<void>}
  */
-async function _createScssFile( data, errorStream ) {
+async function _createScssFile( templateData, errorStream ) {
   try {
     const
-      content = await readFile( data.templatePath, CHARSET )
-      ,template = Handlebars.compile( content )
-      ,sourceCode = template( data )
-      ,filePath = `${ data.scssDist }/${ config.scssFileName }`
-      ,logOptions = options.logStreamData.scss
+      content     = await readFile( templateData.templatePath, CHARSET )
+      ,sourceCode = Handlebars.compile( content )( templateData )
+      ,filePath   = `${ templateData.scssDist }/${ templateData.scssFileName }`
+      ,logOptions = { ...options.logStreamData.scss }
      ;
-    await mkdir( data.scssDist, { recursive : true } );
+    await mkdir( templateData.scssDist, { recursive : true } );
     await writeFile( filePath, sourceCode, { encoding : CHARSET } );
     logOptions.subtitle = `${ filePath } ${ logOptions.subtitle }`;
     logStreamData( logOptions );
@@ -119,12 +115,12 @@ async function _createScssFile( data, errorStream ) {
 async function _getTimestamp( filePaths ) {
   let
     latestTimeStamp = Math.round( new Date( 0 ) / 1000 )
-    ;
+  ;
   for ( const filePath of filePaths ) {
     const
       stats = await stat( filePath )
       ,fileTimestamp = Math.round( stats.mtime / 1000 )
-      ;
+    ;
     if ( fileTimestamp > latestTimeStamp ) {
       latestTimeStamp = fileTimestamp;
     }

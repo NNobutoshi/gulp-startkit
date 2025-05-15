@@ -58,8 +58,8 @@ function _groupSrc( groupedSources, group, base, branchTask ) {
 /**
  * コールバックのbranchTask には、グループ毎に必要な、
  * Gulp.src 用の新しいsource（配列） とdest 用のパス、
- * 更にはの基のstream を渡す。
- * @param {Map} groupedSources - 任意のディレクトリ事分たソースの格納用
+ * 更には基のstream を渡す。
+ * @param {Map} groupedSources - 任意のディレクトリ毎に分たソースの格納用
  * @param {Function} branchTask - Callback で実行するGulp タスク
  * @param {Function} callback - through2 で処理終了を伝えるコールバック
  * @returns {Promise<void>}

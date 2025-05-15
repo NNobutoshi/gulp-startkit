@@ -1,4 +1,4 @@
-import { basename, dirname, resolve, join } from 'node:path';
+import path from 'node:path';
 
 import { src, dest } from 'gulp';
 import * as dartSass from 'sass';
@@ -58,9 +58,9 @@ export default function css_sass() {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents         = String( file.contents )
+    contents = String( file.contents )
     ,importRuleRegEx = /^.*?@(use|forward)\s*['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
-    ,matches         = contents.matchAll( importRuleRegEx )
+    ,matches = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const
@@ -71,19 +71,19 @@ function _collectImporterFiles( file, collectedFiles ) {
       continue;
     }
     let
-      dependencyFilePath = resolve( file.dirname, srcPath )
+      dependencyFilePath = path.resolve( file.dirname, srcPath )
       ,depFilePathBasename
     ;
     // 拡張子がない場合は .scss を追加。
     if ( !extension ) {
       dependencyFilePath += '.scss';
     }
-    depFilePathBasename = basename( dependencyFilePath );
+    depFilePathBasename = path.basename( dependencyFilePath );
     // アンダースコアがない場合は補う。
     // 制作ルールとしてパーシャルファイルには必ずアンダースコアをつけるという前提！
     if ( depFilePathBasename.startsWith( '_' )  === false ) {
-      dependencyFilePath = join(
-        dirname( dependencyFilePath ),
+      dependencyFilePath = path.join(
+        path.dirname( dependencyFilePath ),
         `_${ depFilePathBasename }`,
       );
     }

@@ -20,26 +20,37 @@ const
     'development' : 'dist/development/html',
   }
 ;
+
+/**
+ * 各タスクで共通の設定は環境変数に応じて各タスクの設定に先んじて、
+ * 切り替えを行う。
+ * ソースマップ、差分ビルド、watch などの有効の有無等。
+ */
 export const commonConfig = {
-  NODE_ENV           : NODE_ENV,
-  SRC                : DIR_SRC[ NODE_ENV ],
-  DIST               : DIR_DIST[ NODE_ENV ],
+  NODE_ENV : NODE_ENV,
+  SRC      : DIR_SRC[ NODE_ENV ],
+  DIST     : DIR_DIST[ NODE_ENV ],
   SOURCEMAPS_ENABLED : IS_DEVELOPMENT || !IS_PRODUCTION,
-  WATCH_ENABLED      : ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,
-  DIFF_ENABLED       : ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION,
-  SOURCEMAPS_DIR     : 'sourcemaps',
+  // WATCH 専用の環境変数を優先し、続いてNODE_ENV に応じて有効の有無を決める。
+  WATCH_ENABLED : ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,
+  // 差分ビルド専用の環境変数を優先し、続いてNODE_ENV に応じて有効の有無を決める。
+  DIFF_ENABLED  : ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION,
+  SOURCEMAPS_DIR : 'sourcemaps',
   WEBPACK_CACHE_PATH : path.resolve( process.cwd(), '.webpack_cache' ),
-  ERROR_COLOR_HEX    : '#FF0000',
-  PLACEHOLDER        : '[subdir]',
+  ERROR_COLOR_HEX : '#FF0000',
+  PLACEHOLDER : '[subdir]',
   EVENT_NAME_WATCH_INIT  : 'watchInit',
   EVENT_NAME_WATCH_START : 'watchStart',
 }
 ;
 
+/**
+ * 各タスクで共通して使用するプラグイン等の共通オプション用。
+ */
 export const commonOptions = {
   diff : {
-    command  : `git status -suall gulpkit/ ${ commonConfig.SRC }/`,
-    enabled  : commonConfig.DIFF_ENABLED,
+    command : `git status -suall gulpkit/ ${ commonConfig.SRC }/`,
+    enabled : commonConfig.DIFF_ENABLED,
     firstTasksEndedEventName : commonConfig.EVENT_NAME_WATCH_INIT,
     tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_START,
   },
