@@ -1,11 +1,11 @@
 import { series } from 'gulp';
 
 /**
- * コマンドライン上 Gulp <task>
+ * コマンドライン上、Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
  * @param {Object} tasks - Gulp タスク
  */
-export default function _taskOnCommand( tasks ) {
+export default function enableWatchForCommandLineTask( tasks ) {
   const
     watchTasks = []
     ,args = process.argv.slice( 2 )
