@@ -1,5 +1,7 @@
 import { series } from 'gulp';
 
+import { argv  } from 'node:process';
+
 /**
  * コマンドライン上、Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
@@ -8,7 +10,7 @@ import { series } from 'gulp';
 export default function enableWatchForCommandLineTask( tasks ) {
   const
     watchTasks = []
-    ,args = process.argv.slice( 2 )
+    ,args = argv.slice( 2 )
   ;
   if ( args.length === 0 ) {
     return;

@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { exec }     from 'node:child_process';
+import { argv  }    from 'node:process';
 import path         from 'node:path';
+
 
 import through  from 'through2';
 import fancyLog from 'fancy-log';
@@ -15,12 +17,13 @@ const
 ;
 const
   defaultSettings = {
-    name      : '',
-    group     : '',
-    enabled   : true,
-    command   : 'git status -suall',
-    oneToOne  : false,
-    allForOne : false,
+    name        : '',
+    group       : '',
+    enabled     : true,
+    enabledRefs : false,
+    command     : 'git status -suall',
+    oneToOne    : false,
+    allForOne   : false,
   }
 ;
 let
@@ -40,33 +43,42 @@ export {
  * @param {Function} select - 通過ファイル選択用コールバック
  */
 function diff_build( options, collect, select ) {
-
   const settings = { ...defaultSettings, ...options };
   if ( settings.enabled === false ) {
     return through.obj();
   }
-
+  let ref1, ref2;
   if ( typeof settings.group !== '' ) {
     settings.group = settings.group.replace( /\//g, path.sep );
+  }
+  if ( settings.enabledRefs === true ) {
+    [ ref1, ref2 ] = argv.slice( 2 );
   }
   // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
   if ( !diffBuildProc ) {
     diffBuildProc = new DiffBuildProcessor();
+
     // リスナ-登録でthis の参照が代わらないようにdiffBuildProc にbind 。
     diffBuildProc.resetSharedState = diffBuildProc
       .resetSharedState.bind( diffBuildProc )
     ;
+
     // diffBuildProc の共有する値を初期化するメンバ関数をリスナー登録。
     _addResetStateListeners(
       diffBuildProc.resetSharedState,
       settings.firstTasksEndedEventName,
       settings.tasksEndedEventName,
     );
-  }
+
+  } // if
+
   // 差分データ取得のPromise を共有。
   if ( !diffBuildProc.promiseToGetDiffData ) {
-    diffBuildProc.promiseToGetDiffData = _getGitDiffData( settings.command, settings.name );
-    diffBuildProc.promiseToGetLastDiffData = lastDiff.get();
+    diffBuildProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
+    // refs （ブランチ間、コミット間）比較が無効の場合。
+    if ( settings.enabledRefs === false ) {
+      diffBuildProc.promiseToGetLastDiffData = lastDiff.get();
+    }
   }
   // 被依存ファイル情報の収集用コールバックを各タスク毎保有する。
   if ( collect ) {
@@ -558,14 +570,15 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
     ,targetFileSet = diffBuildProc.targetFileMap.get( name )
     ,selectedFileSet = diffBuildProc.selectedFileMap.get( name )
   ;
-
-  lastDiff.set( diffBuildProc.currentDiffData );
   _log(
     name,
     targetFileSet.size,
     selectedFileSet.size,
   );
-  await _writeDiffData();
+  if ( settings.enabledRefs === false ) {
+    lastDiff.set( diffBuildProc.currentDiffData );
+    await _writeDiffData();
+  }
 }
 
 /**
@@ -619,7 +632,15 @@ function _includes( diffData, filePath ) {
  * @param {String} name - タスク名
  * @returns {Promise<Object>} - 差分ファイルリスト
  */
-function _getGitDiffData( command, name ) {
+function _getGitDiffData( settings, ref1, ref2 ) {
+  const name = settings.name;
+  let
+    command = settings.command
+    ,enabledRefs = ( ref1 && ref2 )
+  ;
+  if ( enabledRefs ) {
+    command = command.replace( '<ref1>', ref1 ).replace( '<ref2>', ref2 );
+  }
   return new Promise( ( resolvePromise, rejectPromise ) => {
     exec( command, { maxBuffer : MAX_BUFFER_SIZE }, ( err, stdout, stderr ) => {
       if ( err ) {
@@ -629,7 +650,7 @@ function _getGitDiffData( command, name ) {
         fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
-        return resolvePromise( _createObjectFromStrings( stdout ) );
+        return resolvePromise( _createObjectFromStrings( stdout, enabledRefs ) );
       }
       return resolvePromise( {} );
     } );
@@ -641,16 +662,18 @@ function _getGitDiffData( command, name ) {
  * @param {string} str - 基にする文字列
  * @returns {Object} - 生成したObject
  */
-function _createObjectFromStrings( str ) {
+function _createObjectFromStrings( str, enabledRefs ) {
   const
-    matches = str.matchAll( /^(.{2})\s([^\n]+?)\n/mg )
+    matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg )
+    ,renameSeparator = ( enabledRefs ) ? /\s+/ : /\s+->\s+/ //コマンドによって区切り文字が違うため。
     ,retObj = {}
   ;
   for ( const match of matches ) {
     let path = match[ 2 ];
-    // リネームの際の文字列をリネーム後のパスの形に変換する。
-    if ( path.indexOf( ' -> ' ) > -1 ) {
-      path = path.split( ' -> ' )[ 1 ];
+    // リネームのステータスは変更前と変更後の2つのパスを示す文字列になるので、
+    // リネーム後の文字列で置き換える。
+    if ( match[ 1 ].indexOf( 'R' ) > -1 ) {
+      path = path.split( renameSeparator )[ 1 ];
     }
     // 属性が?? の場合パス文字列ににダブルクォーテーションが含まれるので削除しておく。
     retObj[ path.replace( /"/g,'' ) ] = { status : match[ 1 ] };
