@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import webpack      from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 
@@ -10,11 +12,11 @@ export { mergedConf as config, mergedOptions as options };
 const devConfig = {
   src            : [ commonConfig.SRC + '/**/*.{js,json}' ],
   dist           : commonConfig.DIST,
+  base           : commonConfig.SRC,
   entry          : '.entry.js',
   splitChunks    : '.split.json',
   enabledWatch   : commonConfig.WATCH_ENABLED,
-  base           : commonConfig.SRC,
-  cacheDirectory : commonConfig.WEBPACK_CACHE_PATH,
+  cacheDirectory : path.resolve( process.cwd(), '.webpack_cache' ),
   webpackConfig  : {
     mode      : commonConfig.NODE_ENV,
     output    : {},

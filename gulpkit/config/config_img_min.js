@@ -24,6 +24,15 @@ const prodConfig = null;
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name     : 'img_min',
+    oneToOne : true,
+  },
+  gulpSrc : {
+    base     : commonConfig.SRC,
+    encoding : false,
+    read     : !commonConfig.DIFF_ENABLED,
+  },
   imageminMozjpeg : {
     quality : 90,
   },
@@ -41,15 +50,6 @@ const devOptions = {
         active : false,
       },
     ],
-  },
-  diff : { ...commonOptions.diff,
-    name     : 'img_min',
-    oneToOne : true,
-  },
-  src : {
-    base     : commonConfig.SRC,
-    encoding : false,
-    read     : !commonConfig.DIFF_ENABLED,
   },
 };
 const prodOptions = null;

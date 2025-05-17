@@ -1,7 +1,7 @@
-import { src, dest } from 'gulp';
-import svgSprite     from 'gulp-svg-sprite';
-import plumber       from 'gulp-plumber';
-import gulpIf        from 'gulp-if';
+import { src as gulpSrc, dest } from 'gulp';
+import svgSprite from 'gulp-svg-sprite';
+import plumber   from 'gulp-plumber';
+import gulpIf    from 'gulp-if';
 
 import diff                   from '../lib/diff_build.js';
 import assignTaskForEachGroup from '../lib/task_for_each.js';
@@ -15,7 +15,7 @@ import { config, options } from '../config/config_img_sprite_svg.js';
  * @returns {Object} - Gulp stream
  */
 export default function img_sprite_svg() {
-  return src( config.src )
+  return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( svgLint( options.svgLint ) )
@@ -30,7 +30,7 @@ export default function img_sprite_svg() {
  * @returns {Stream} - Gulp stream
  */
 function _branchTask( branchSrc, baseDir ) {
-  return src( branchSrc )
+  return gulpSrc( branchSrc )
     .pipe( svgSprite( options.svgSprite ) )
     .pipe( gulpIf( /\.svg$/,  dest( config.dist + baseDir ) ) )
     .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )

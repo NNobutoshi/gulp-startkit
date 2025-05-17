@@ -1,7 +1,7 @@
-import { src, dest } from 'gulp';
-import spriteSmith   from 'gulp.spritesmith';
-import plumber       from 'gulp-plumber';
-import gulpIf        from 'gulp-if';
+import { src as gulpSrc, dest } from 'gulp';
+import spriteSmith from 'gulp.spritesmith';
+import plumber     from 'gulp-plumber';
+import gulpIf      from 'gulp-if';
 
 import assignTaskForEachGroup from '../lib/task_for_each.js';
 import diff                   from '../lib/diff_build.js';
@@ -18,7 +18,7 @@ const
  * @returns {Object} - Gulp stream
  */
 export default function img_sprite() {
-  return src( config.src, { encoding : false } )
+  return gulpSrc( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
@@ -32,7 +32,7 @@ export default function img_sprite() {
  * @returns {Stream} - Gulp stream
  */
 function _branchTask( branchSrc, baseDir ) {
-  return src( branchSrc, { encoding : false } )
+  return gulpSrc( branchSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
     .pipe( gulpIf( /\.png$/,  dest( config.imgDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) ) )
     .pipe( gulpIf( /\.scss$/, dest( config.scssDist.replace( PLACEHOLDER, baseDir ) ) ) )

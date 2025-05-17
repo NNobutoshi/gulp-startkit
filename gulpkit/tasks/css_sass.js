@@ -1,13 +1,12 @@
 import path from 'node:path';
 
-import { src, dest } from 'gulp';
+import { src as gulpSrc, dest } from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass      from 'gulp-sass';
 import gulpIf        from 'gulp-if';
 import sourcemaps    from 'gulp-sourcemaps';
 import plumber       from 'gulp-plumber';
 import postcss       from 'gulp-postcss';
-import mqpacker      from '@hail2u/css-mqpacker';
 
 import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
 import logStreamData                     from '../lib/log_stream_data.js';
@@ -20,22 +19,18 @@ const
   SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
-if ( config.enabledCssMqpack === true ) {
-  options.postcss.plugins.push( mqpacker() );
-}
-
 /**
  * Sass を実行するタスク。
  * @returns {Stream} - Gulp stream
  */
 export default function css_sass() {
-  return src( config.src )
+  return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectImporterFiles, organizeSelectedFileMap ) )
     .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( gulpIf( SOURCEMAPS_ENABLED, sourcemaps.write( config.sourcemap_dir ) ) )
+    .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.write( config.sourcemaps_dir ) ) )
     .pipe( dest( config.dist ) )
     .pipe( gulpIf( /\.css$/, logStreamData( options.logStreamData.scss ) ) )
     .pipe( gulpIf( /\.map$/, logStreamData( options.logStreamData.sourceMaps ) ) )

@@ -23,6 +23,10 @@ const prodConfig = null;
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name  : 'img_sprite',
+    group : '/img/_sprite',
+  },
   sprite : {
     cssName     : '_mixins_sprite.scss',
     imgName     : 'common_pack.png',
@@ -33,10 +37,6 @@ const devOptions = {
     cssVarMap   : function( sprite ) {
       sprite.name = 'sheet-' + sprite.name;
     },
-  },
-  diff : { ...commonOptions.diff,
-    name  : 'img_sprite',
-    group : '/img/_sprite',
   },
   logStreamData : {
     png :  {

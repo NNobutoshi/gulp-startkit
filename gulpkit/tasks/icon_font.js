@@ -1,10 +1,10 @@
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 
-import { src, dest } from 'gulp';
-import iconfont      from 'gulp-iconfont';
-import plumber       from 'gulp-plumber';
+import { src as gulpSrc, dest } from 'gulp';
+import iconfont from 'gulp-iconfont';
+import plumber  from 'gulp-plumber';
 
-import Handlebars    from 'handlebars';
+import Handlebars from 'handlebars';
 
 import svgLint                from '../lib/svg_lint.js';
 import assignTaskForEachGroup from '../lib/task_for_each.js';
@@ -25,7 +25,7 @@ const
  * @returns {Stream} - Gulp stream
  */
 export default function icon_font() {
-  return src( config.src )
+  return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( svgLint( options.svgLint ) )

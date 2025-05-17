@@ -23,18 +23,15 @@ const prodConfig = null;
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
-  stylelint : {
-    fix            : false,
-    failAfterError : true,
-    reporters      : [ { formatter : 'string', console : true } ],
-    debug          : true,
-  },
   diff : { ...commonOptions.diff,
     name     : 'css_scss_lint',
     oneToOne : true,
   },
-  src : {
+  gulpSrc : {
     read : !commonConfig.DIFF_ENABLED,
+  },
+  stylelint : {
+    formatter : 'string',
   },
   logStreamData : {
     title       : 'css_scss_lint',

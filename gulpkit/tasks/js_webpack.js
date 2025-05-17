@@ -1,7 +1,7 @@
 import path         from 'node:path';
 import { readFile } from 'node:fs/promises';
 
-import { src }   from 'gulp';
+import { src as gulpSrc } from 'gulp';
 import plumber   from 'gulp-plumber';
 import webpack   from 'webpack';
 import log       from 'fancy-log';
@@ -39,7 +39,7 @@ if ( webpackConfig.cache?.type === 'filesystem' ) {
  * @returns {Object} - Gulp stream
  */
 export default function js_webpack() {
-  return src( config.src, { read : false } )
+  return gulpSrc( config.src, { read : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( _prepareWebpackConfig() )
     .pipe( _runWebpack() )

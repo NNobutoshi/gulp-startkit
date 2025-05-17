@@ -29,6 +29,10 @@ const prodConfig = null;
 
 // devConf に同じ。
 const devOptions = {
+  plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name : 'html_pug',
+  },
   imgSize : true,
   injectImageSize : {
     imgRegEx : /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g,
@@ -51,10 +55,6 @@ const devOptions = {
     pretty  : true,
     basedir : commonConfig.SRC,
   },
-  diff : { ...commonOptions.diff,
-    name : 'html_pug',
-  },
-  plumber : commonOptions.plumber,
   logStreamData : {
     title     : 'html_pug',
     subtitle  : 'renderd',

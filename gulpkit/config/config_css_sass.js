@@ -2,6 +2,7 @@ import { commonConfig, commonOptions } from './common.js';
 import mergeConfForEnv from './merge_conf.js';
 
 import autoprefixer from 'autoprefixer';
+import mqpacker     from '@hail2u/css-mqpacker';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -11,9 +12,8 @@ const devConfig = {
   dist : commonConfig.DIST,
   base : commonConfig.SRC,
   enabledWatch      : commonConfig.WATCH_ENABLED,
-  enabledCssMqpack  : true,
   enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
-  sourcemap_dir     : '/' + commonConfig.SOURCEMAPS_DIR,
+  sourcemaps_dir    : '/' + commonConfig.SOURCEMAPS_DIR,
 };
 // 本番環境用。
 // 開発環境と異なる設定を行う場合に、
@@ -26,8 +26,14 @@ const prodConfig = {
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name : 'css_sass',
+  },
   postcss : {
-    plugins : [ autoprefixer() ]
+    plugins : [
+      autoprefixer(),
+      mqpacker(),
+    ]
   },
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -35,9 +41,6 @@ const devOptions = {
     indentType  : 'space', // 'space', 'tab'
     indentWidth : 2,
     silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
-  },
-  diff : { ...commonOptions.diff,
-    name : 'css_sass',
   },
   logStreamData : {
     scss : {

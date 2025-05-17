@@ -2,11 +2,11 @@ import { readFileSync } from 'node:fs';
 import { Buffer }       from 'node:buffer';
 import path             from 'node:path';
 
-import { src, dest } from 'gulp';
-import plumber       from 'gulp-plumber';
-import pug           from 'pug';
-import through       from 'through2';
-import beautify      from 'js-beautify';
+import { src as gulpSrc, dest } from 'gulp';
+import plumber  from 'gulp-plumber';
+import pug      from 'pug';
+import through  from 'through2';
+import beautify from 'js-beautify';
 import { imageSizeFromFile } from 'image-size/fromFile';
 
 import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
@@ -24,9 +24,9 @@ let
  */
 export default function html_pug() {
   pugData = JSON.parse( readFileSync( config.data ).toString() );
-  return src( config.src )
+  return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( src( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
+    .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .on( 'data', _setPugData )
     .pipe( _renderPug() )

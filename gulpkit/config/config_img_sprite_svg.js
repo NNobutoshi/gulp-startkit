@@ -22,6 +22,10 @@ const prodConfig = null;
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name  : 'img_sprite_svg',
+    group : '/img/_sprite_svg',
+  },
   svgSprite : {
     mode : {
       symbol : {
@@ -74,10 +78,6 @@ const devOptions = {
     },
   },
   svgLint : {
-  },
-  diff : { ...commonOptions.diff,
-    name  : 'img_sprite_svg',
-    group : '/img/_sprite_svg',
   },
   logStreamData : {
     svg : {

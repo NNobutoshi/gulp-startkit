@@ -22,14 +22,14 @@ const prodConfig = null;
 // devConf に同じ。
 const devOptions = {
   plumber : commonOptions.plumber,
-  eslint : {
-  },
   diff : { ...commonOptions.diff,
     name     : 'js_eslint',
     oneToOne : true,
   },
-  src : {
+  gulpSrc : {
     read : !commonConfig.DIFF_ENABLED,
+  },
+  eslint : {
   },
   logStreamData : {
     title       : 'js_eslint',

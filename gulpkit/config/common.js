@@ -1,7 +1,5 @@
-import path from 'node:path';
-
-import log   from 'fancy-log';
-import chalk from 'chalk';
+import fancyLog from 'fancy-log';
+import chalk    from 'chalk';
 
 const
   NODE_ENV        = process.env.NODE_ENV
@@ -38,8 +36,6 @@ export const commonConfig = {
   // 差分ビルド専用の環境変数を優先し、続いてNODE_ENV に応じて有効の有無を決める。
   DIFF_ENABLED  : ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION,
   SOURCEMAPS_DIR : 'sourcemaps',
-  WEBPACK_CACHE_PATH : path.resolve( process.cwd(), '.webpack_cache' ),
-  ERROR_COLOR_HEX : '#FF0000',
   PLACEHOLDER : '[subdir]',
   EVENT_NAME_WATCH_INIT  : 'watchInit',
   EVENT_NAME_WATCH_START : 'watchStart',
@@ -63,7 +59,7 @@ export const commonOptions = {
   },
   plumber : {
     errorHandler : function( err ) {
-      log.error( chalk.hex( '#FF0000' )( err.stack ) );
+      fancyLog.error( chalk.hex( '#FF0000' )( err.stack ) );
       this.emit( 'end' );
     },
   }

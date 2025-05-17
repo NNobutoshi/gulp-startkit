@@ -1,4 +1,4 @@
-import { src } from 'gulp';
+import { src as gulpSrc } from 'gulp';
 import plumber from 'gulp-plumber';
 
 import { ESLint } from 'eslint';
@@ -15,7 +15,7 @@ import { config, options } from '../config/config_js_eslint.js';
  * @returns {Object} - Gulp stream
  */
 export default function js_eslint() {
-  return src( config.src, options.src )
+  return gulpSrc( config.src, options.gulplSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( _runEsLint( options.eslint ) )

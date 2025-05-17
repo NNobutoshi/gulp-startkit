@@ -22,6 +22,11 @@ const prodConfig = null;
 
 // devConf に同じ。
 const devOptions = {
+  plumber : commonOptions.plumber,
+  diff : { ...commonOptions.diff,
+    name  : 'icon_font',
+    group : '/fonts/icons',
+  },
   iconfont : {
     fontName       : `icons${ commonConfig.PLACEHOLDER }`,
     prependUnicode : false,
@@ -38,11 +43,6 @@ const devOptions = {
   },
   svgLint : {
   },
-  plumber : commonOptions.plumber,
-  diff : { ...commonOptions.diff,
-    name  : 'icon_font',
-    group : '/fonts/icons',
-  },
   logStreamData : {
     iconFont :  {
       title       : 'icon_font',
@@ -55,7 +55,6 @@ const devOptions = {
       onStream    : false,
     },
   },
-
 };
 const prodOptions = null;
 

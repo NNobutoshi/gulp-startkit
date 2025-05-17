@@ -24,7 +24,7 @@ const devOptions = {
     name     : 'copy_to',
     oneToOne : true,
   },
-  src : {
+  gulpSrc : {
     base     : commonConfig.SRC,
     encoding : false,
     read     : !commonConfig.DIFF_ENABLED,
