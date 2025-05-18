@@ -1,5 +1,5 @@
 import { commonConfig, commonOptions } from './common.js';
-import mergeConfForEnv from './merge_conf.js';
+import mergeByEnv from './merge_by_env.js';
 
 import autoprefixer from 'autoprefixer';
 import mqpacker     from '@hail2u/css-mqpacker';
@@ -64,6 +64,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeConfForEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;

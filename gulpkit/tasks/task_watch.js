@@ -2,10 +2,7 @@ import { watch, series } from 'gulp';
 import fancyLog          from 'fancy-log';
 import chalk             from 'chalk';
 
-import {
-  config as watchConfig,
-  options as watchOptions,
-} from '../config/config_task_watch.js';
+import {  config as watchConfig, options } from '../config/config_task_watch.js';
 
 import { config as copyToConfig }       from '../config/config_copy_to.js';
 import { config as cssSassConfig }      from '../config/config_css_sass.js';
@@ -17,7 +14,7 @@ import { config as imgSpriteConfig }    from '../config/config_img_sprite.js';
 import { config as imgSpriteSvgConfig } from '../config/config_img_sprite_svg.js';
 import { config as jsEslintConfig }     from '../config/config_js_eslint.js';
 
-const tasksConfig = {
+const taskConfigAll = {
   copy_to        : copyToConfig,
   css_sass       : cssSassConfig,
   css_scss_lint  : cssLintScssConfig,
@@ -28,6 +25,8 @@ const tasksConfig = {
   img_sprite_svg : imgSpriteSvgConfig,
   js_eslint      : jsEslintConfig,
 };
+
+const watchOptions = options.watch;
 
 /**
  * gulp watch タスクを生成する関数
@@ -43,7 +42,7 @@ export default function task_watch( tasks, commonNextTask ) {
       const
         task = tasks[ i ]
         ,taskName = tasks[ i ].name
-        ,taskConfig = tasksConfig[ taskName ]
+        ,taskConfig = taskConfigAll[ taskName ]
       ;
       if ( !taskConfig ) {
         continue;
@@ -51,8 +50,8 @@ export default function task_watch( tasks, commonNextTask ) {
       let
         watchSrc
       ;
-      if ( taskConfig.src && tasksConfig.subsrc ) {
-        watchSrc = taskConfig.concat( taskConfig.subsrc );
+      if ( taskConfig.src && taskConfig.subsrc ) {
+        watchSrc = taskConfig.src.concat( taskConfig.subsrc );
       } else if ( taskConfig.src ) {
         watchSrc = taskConfig.src;
       } else {

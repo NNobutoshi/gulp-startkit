@@ -1,5 +1,5 @@
 import { commonConfig } from './common.js';
-import mergeConfForEnv from './merge_conf.js';
+import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config };
 
@@ -14,4 +14,4 @@ const devConfig = {
 const prodConfig = null;
 
 // すべては開発環境用の設定をベースにする。
-const mergedConf = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig );
+const mergedConf = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig );

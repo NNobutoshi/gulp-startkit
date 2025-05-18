@@ -1,13 +1,12 @@
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
+import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
 
 const
   NODE_ENV        = process.env.NODE_ENV
   ,WATCH_ENV      = process.env.WATCH_ENV
   ,DIFF_ENV       = process.env.DIFF_ENV
   ,DIFF_REFS_ENV  = process.env.DIFF_REFS_ENV
-  ,PRODUCTION_ENV  = 'production'
-  ,DEVELOPMENT_ENV = 'development'
   ,IS_PRODUCTION  = ( NODE_ENV === PRODUCTION_ENV )
   ,IS_DEVELOPMENT = ( NODE_ENV === DEVELOPMENT_ENV )
   ,IS_DIFF_REFS   = !!Number( DIFF_REFS_ENV )
@@ -32,6 +31,8 @@ export const commonConfig = {
   NODE_ENV : NODE_ENV,
   SRC  : src_dir[ NODE_ENV ],
   DIST : dist_dir[ NODE_ENV ],
+  IS_PRODUCTION  : IS_PRODUCTION,
+  IS_DEVELOPMENT : IS_DEVELOPMENT,
   SOURCEMAPS_ENABLED : IS_DEVELOPMENT || !IS_PRODUCTION,
   // WATCH 専用の環境変数を優先し、続いてNODE_ENV に応じて有効の有無を決める。
   WATCH_ENABLED : ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,

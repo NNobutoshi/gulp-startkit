@@ -1,18 +1,15 @@
 import { commonConfig } from './common.js';
-import mergeConfForEnv from './merge_conf.js';
+import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const
-  NODE_ENV    = process.env.NODE_ENV
-  ,BROWSE_ENV = process.env.BROWSE_ENV
-  ,IS_PRODUCTION  = ( NODE_ENV === 'production' )
-  ,IS_DEVELOPMENT = ( NODE_ENV === 'development' )
-;
+const BROWSE_ENV = process.env.BROWSE_ENV;
 
 // 開発環境用。
 const devConfig = {
-  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION
+  'enabled' : ( BROWSE_ENV )
+    ? !!Number( BROWSE_ENV )
+    : commonConfig.IS_DEVELOPMENT || !commonConfig.IS_PRODUCTION
 };
 // 本番環境用。
 // 開発環境と異なる設定を行う場合に、
@@ -31,6 +28,6 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeConfForEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeConfForEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
 ;

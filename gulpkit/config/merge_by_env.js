@@ -1,4 +1,5 @@
 import merge from 'lodash/merge.js';
+import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
 
 /**
  * production 用のオブジェクトは、development を基準にしてマージする
@@ -7,14 +8,14 @@ import merge from 'lodash/merge.js';
  * @param {Object} devprod - production 用のオブジェクト
  * @returns {Object} - マージを行ったオブジェクト
  */
-export default function mergeConfForEnv( env, devObj, prodObj ) {
+export default function mergeByEnv( env, baseObj, sourceObj ) {
   const result = {};
   switch ( env ) {
-  case 'production':
-    merge( result, devObj, prodObj );
+  case PRODUCTION_ENV:
+    merge( result, baseObj, sourceObj );
     break;
-  case 'development':
-    merge( result, devObj );
+  case DEVELOPMENT_ENV:
+    merge( result, baseObj );
     break;
   default:
   }
