@@ -6,18 +6,20 @@ const
   ,WATCH_ENV      = process.env.WATCH_ENV
   ,DIFF_ENV       = process.env.DIFF_ENV
   ,DIFF_REFS_ENV  = process.env.DIFF_REFS_ENV
-  ,IS_PRODUCTION  = ( NODE_ENV === 'production' )
-  ,IS_DEVELOPMENT = ( NODE_ENV === 'development' )
+  ,PRODUCTION_ENV  = 'production'
+  ,DEVELOPMENT_ENV = 'development'
+  ,IS_PRODUCTION  = ( NODE_ENV === PRODUCTION_ENV )
+  ,IS_DEVELOPMENT = ( NODE_ENV === DEVELOPMENT_ENV )
   ,IS_DIFF_REFS   = !!Number( DIFF_REFS_ENV )
 ;
 const
-  DIR_SRC =  {
-    'production'  : 'src',
-    'development' : 'src',
+  src_dir  = {
+    [ PRODUCTION_ENV ]  : 'src',
+    [ DEVELOPMENT_ENV ] : 'src',
   },
-  DIR_DIST = {
-    'production'  : 'dist/production/html',
-    'development' : 'dist/development/html',
+  dist_dir = {
+    [ PRODUCTION_ENV ]  : 'dist/production/html',
+    [ DEVELOPMENT_ENV ] : 'dist/development/html',
   }
 ;
 
@@ -28,8 +30,8 @@ const
  */
 export const commonConfig = {
   NODE_ENV : NODE_ENV,
-  SRC  : DIR_SRC[ NODE_ENV ],
-  DIST : DIR_DIST[ NODE_ENV ],
+  SRC  : src_dir[ NODE_ENV ],
+  DIST : dist_dir[ NODE_ENV ],
   SOURCEMAPS_ENABLED : IS_DEVELOPMENT || !IS_PRODUCTION,
   // WATCH 専用の環境変数を優先し、続いてNODE_ENV に応じて有効の有無を決める。
   WATCH_ENABLED : ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,

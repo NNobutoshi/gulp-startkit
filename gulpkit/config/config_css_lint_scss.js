@@ -3,6 +3,8 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'css_lint_scss';
+
 // 開発環境用。
 const devConfig = {
   src : [
@@ -24,7 +26,7 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name     : 'css_scss_lint',
+    name     : TASK_NAME,
     oneToOne : true,
   },
   gulpSrc : {
@@ -34,7 +36,7 @@ const devOptions = {
     formatter : 'string',
   },
   logStreamData : {
-    title       : 'css_scss_lint',
+    title       : TASK_NAME,
     subtitle    : 'linted',
     forEachFile : false,
   },

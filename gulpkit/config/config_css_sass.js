@@ -6,6 +6,8 @@ import mqpacker     from '@hail2u/css-mqpacker';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'css_sass';
+
 // 開発環境用。
 const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.scss' ],
@@ -27,13 +29,7 @@ const prodConfig = {
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name : 'css_sass',
-  },
-  postcss : {
-    plugins : [
-      autoprefixer(),
-      mqpacker(),
-    ]
+    name : TASK_NAME,
   },
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -42,13 +38,19 @@ const devOptions = {
     indentWidth : 2,
     silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
   },
+  postcss : {
+    plugins : [
+      autoprefixer(),
+      mqpacker(),
+    ]
+  },
   logStreamData : {
     scss : {
-      title    : 'css_sass',
+      title    : TASK_NAME,
       subtitle : 'compiled',
     },
     sourceMaps : {
-      title       : 'css_sass:map',
+      title       : `${ TASK_NAME }:map`,
       subtitle    : 'created',
       forEachFile : false,
     },

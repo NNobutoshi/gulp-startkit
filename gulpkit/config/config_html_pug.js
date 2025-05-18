@@ -5,6 +5,8 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'html_pug';
+
 // 開発環境用。
 const devConfig = {
   src : [
@@ -31,7 +33,7 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name : 'html_pug',
+    name : TASK_NAME,
   },
   imgSize : true,
   injectImageSize : {
@@ -56,7 +58,7 @@ const devOptions = {
     basedir : commonConfig.SRC,
   },
   logStreamData : {
-    title     : 'html_pug',
+    title     : TASK_NAME,
     subtitle  : 'renderd',
   },
 };

@@ -3,6 +3,7 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'copy_to';
 
 // 開発環境用。
 const devConfig = {
@@ -21,7 +22,7 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name     : 'copy_to',
+    name     : TASK_NAME,
     oneToOne : true,
   },
   gulpSrc : {
@@ -30,7 +31,7 @@ const devOptions = {
     read     : !commonConfig.DIFF_ENABLED,
   },
   logStreamData : {
-    title       : 'copy_to',
+    title       : TASK_NAME,
     subtitle    : 'copied',
     forEachFile : false,
   },

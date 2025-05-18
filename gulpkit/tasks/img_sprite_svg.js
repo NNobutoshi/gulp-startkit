@@ -5,7 +5,7 @@ import gulpIf    from 'gulp-if';
 
 import diff                   from '../lib/diff_build.js';
 import assignTaskForEachGroup from '../lib/task_for_each.js';
-import svgLint                from '../lib/svg_lint.js';
+import lintSvg                from '../lib/lint_svg.js';
 import logStreamData          from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_img_sprite_svg.js';
@@ -18,7 +18,7 @@ export default function img_sprite_svg() {
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( svgLint( options.svgLint ) )
+    .pipe( lintSvg( options.lintSvg ) )
     .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
   ;
 }

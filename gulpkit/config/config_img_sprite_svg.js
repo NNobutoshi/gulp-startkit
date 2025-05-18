@@ -5,12 +5,15 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'img_sprite_svg';
+const GROUP_DIR = '/img/_sprite_svg';
+
 // 開発環境用。
 const devConfig = {
   src   : [ commonConfig.SRC + '/**/img/_sprite_svg/**/*.svg' ],
   base  : commonConfig.SRC,
   dist  : commonConfig.DIST,
-  group : '/img/_sprite_svg',// この命名ルールのディレクトリ毎に。
+  group : GROUP_DIR, // この命名ルールのディレクトリ毎に。
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
 // 本番環境用。
@@ -23,8 +26,8 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name  : 'img_sprite_svg',
-    group : '/img/_sprite_svg',
+    name  : TASK_NAME,
+    group : GROUP_DIR,
   },
   svgSprite : {
     mode : {
@@ -77,21 +80,21 @@ const devOptions = {
       doctypeDeclaration : false,
     },
   },
-  svgLint : {
+  lintSvg : {
   },
   logStreamData : {
     svg : {
-      title       : 'img_sprite_svg',
+      title       : TASK_NAME,
       subtitle    : 'created',
       forEachFile : false,
     },
     scss : {
-      title       : 'img_sprite_svg:scss',
+      title       : `${ TASK_NAME }:scss`,
       subtitle    : 'generated',
       forEachFile : false,
     },
     html : {
-      title       : 'img_sprite_svg:html',
+      title       : `${ TASK_NAME }:html`,
       subtitle    : 'created',
     },
   },

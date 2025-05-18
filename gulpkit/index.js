@@ -19,7 +19,7 @@ export default function main( done ) {
           tasks.img_sprite,
           tasks.img_sprite_svg
         ),
-        tasks.css_scss_lint,
+        tasks.css_lint_scss,
         tasks.css_sass,
         tasks.js_eslint,
         tasks.js_webpack,
@@ -53,18 +53,18 @@ export function html( done ) {
  */
 export function img( done ) {
   series(
+    tasks.css_lint_scss,
     tasks.img_min,
     tasks.img_sprite,
     tasks.img_sprite_svg,
-    tasks.css_scss_lint,
     tasks.css_sass,
     tasks.init_browse,
     series(
       tasks.task_watch( [
+        tasks.css_lint_scss,
         tasks.img_min,
         tasks.img_sprite,
         tasks.img_sprite_svg,
-        tasks.css_scss_lint,
         tasks.css_sass,
       ],
       tasks.reload_browse ),
@@ -77,12 +77,12 @@ export function img( done ) {
  */
 export function css( done ) {
   series(
-    tasks.css_scss_lint,
+    tasks.css_lint_scss,
     tasks.css_sass,
     tasks.init_browse,
     series(
       tasks.task_watch( [
-        tasks.css_scss_lint,
+        tasks.css_lint_scss,
         tasks.css_sass,
       ],
       tasks.reload_browse ),

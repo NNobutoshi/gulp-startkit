@@ -3,6 +3,8 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'js_eslint';
+
 // 開発環境用。
 const devConfig = {
   src : [
@@ -23,7 +25,7 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name     : 'js_eslint',
+    name     : TASK_NAME,
     oneToOne : true,
   },
   gulpSrc : {
@@ -32,7 +34,7 @@ const devOptions = {
   eslint : {
   },
   logStreamData : {
-    title       : 'js_eslint',
+    title       : TASK_NAME,
     subtitle    : 'linted',
     forEachFile : false,
   },

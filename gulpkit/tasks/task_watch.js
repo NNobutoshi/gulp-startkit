@@ -9,7 +9,7 @@ import {
 
 import { config as copyToConfig }       from '../config/config_copy_to.js';
 import { config as cssSassConfig }      from '../config/config_css_sass.js';
-import { config as cssScssLintConfig }  from '../config/config_css_scss_lint.js';
+import { config as cssLintScssConfig }  from '../config/config_css_lint_scss.js';
 import { config as htmlPugConfig }      from '../config/config_html_pug.js';
 import { config as iconFontConfig }     from '../config/config_icon_font.js';
 import { config as imgMinConfig }       from '../config/config_img_min.js';
@@ -20,7 +20,7 @@ import { config as jsEslintConfig }     from '../config/config_js_eslint.js';
 const tasksConfig = {
   copy_to        : copyToConfig,
   css_sass       : cssSassConfig,
-  css_scss_lint  : cssScssLintConfig,
+  css_scss_lint  : cssLintScssConfig,
   icon_font      : iconFontConfig,
   html_pug       : htmlPugConfig,
   img_min        : imgMinConfig,

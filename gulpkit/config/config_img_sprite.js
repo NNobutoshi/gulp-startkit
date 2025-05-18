@@ -3,13 +3,16 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'img_sprite';
+const GROUP_DIR = '/img/_sprite';
+
 // 開発環境用。
 const devConfig = {
   src          : [ commonConfig.SRC + '/**/img/_sprite/**/*.png' ],
   dist         : commonConfig.DIST,
   base         : commonConfig.SRC,
   placeholder  : commonConfig.PLACEHOLDER,
-  group        : '/img/_sprite',// この命名ルールのディレクトリ毎に。
+  group        : GROUP_DIR, // この命名ルールのディレクトリ毎に。
   imgDist      : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/img`,
   scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
   enabledWatch : commonConfig.WATCH_ENABLED,
@@ -24,8 +27,8 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name  : 'img_sprite',
-    group : '/img/_sprite',
+    name  : TASK_NAME,
+    group : GROUP_DIR,
   },
   sprite : {
     cssName     : '_mixins_sprite.scss',
@@ -40,12 +43,12 @@ const devOptions = {
   },
   logStreamData : {
     png :  {
-      title       : 'img_sprite:png',
+      title       : `${ TASK_NAME }:png`,
       subtitle    : 'created',
       forEachFile : false,
     },
     scss : {
-      title       : 'img_sprite:scss',
+      title       : `${ TASK_NAME }:scss`,
       subtitle    : 'generated',
       forEachFile : false,
     },

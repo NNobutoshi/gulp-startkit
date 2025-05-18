@@ -13,7 +13,7 @@ const
  * エラーが拾いにくいため。
  * @returns {Stream} - 処理されたストリーム
  */
-export default function svg_lint( options ) {
+export default function lint_svg( options ) {
   const settings = { ...defaultSettings, ...options };
   return through.obj(
     async function _transform( file, enc, callback ) {

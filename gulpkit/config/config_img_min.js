@@ -3,6 +3,8 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'img_min';
+
 // 開発環境用。
 const devConfig = {
   src : [
@@ -12,8 +14,6 @@ const devConfig = {
   ],
   dist : commonConfig.DIST,
   enabledWatch : commonConfig.WATCH_ENABLED,
-  options : {
-  },
 };
 // 本番環境用。
 // 開発環境と異なる設定を行う場合に、
@@ -25,7 +25,7 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name     : 'img_min',
+    name     : TASK_NAME,
     oneToOne : true,
   },
   gulpSrc : {

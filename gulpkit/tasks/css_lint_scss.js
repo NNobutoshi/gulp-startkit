@@ -7,13 +7,13 @@ import fancyLog  from 'fancy-log';
 import diff          from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
 
-import { config, options } from '../config/config_css_scss_lint.js';
+import { config, options } from '../config/config_css_lint_scss.js';
 
 /**
  * SCSS のLint を実行するタスク。
  * @returns {Stream} - Gulp stream
  */
-export default function css_scss_lint() {
+export default function css_lint_scss() {
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

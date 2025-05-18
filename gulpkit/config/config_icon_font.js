@@ -3,6 +3,9 @@ import mergeConfForEnv from './merge_conf.js';
 
 export { mergedConf as config, mergedOptions as options };
 
+const TASK_NAME = 'icon_font';
+const GROUP_DIR = '/fonts/icons';
+
 // 開発環境用。
 const devConfig = {
   src          : [ commonConfig.SRC + '/**/fonts/icons/*.svg' ],
@@ -11,7 +14,7 @@ const devConfig = {
   placeholder  : commonConfig.PLACEHOLDER,
   fontsDist    : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/fonts`,
   scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
-  group        : '/fonts/icons',// この命名ルールのディレクトリ毎に。
+  group        : GROUP_DIR, // この命名ルールのディレクトリ毎に。
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
 // 本番環境用。
@@ -24,8 +27,8 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name  : 'icon_font',
-    group : '/fonts/icons',
+    name  : TASK_NAME,
+    group : GROUP_DIR,
   },
   iconfont : {
     fontName       : `icons${ commonConfig.PLACEHOLDER }`,
@@ -41,15 +44,15 @@ const devOptions = {
     cssClass     : 'icon',
     templatePath : commonConfig.SRC + '/css/_templates/_icons.scss.handlebars',
   },
-  svgLint : {
+  lintSvg : {
   },
   logStreamData : {
     iconFont :  {
-      title       : 'icon_font',
+      title       : TASK_NAME,
       subtitle    : 'created',
     },
     scss : {
-      title       : 'icon_font:scss',
+      title       : `${ TASK_NAME }:scss`,
       subtitle    : 'generated',
       forEachFile : false,
       onStream    : false,
