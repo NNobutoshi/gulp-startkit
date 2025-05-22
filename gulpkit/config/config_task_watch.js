@@ -5,8 +5,8 @@ export { mergedConf as config, mergedOptions as options };
 
 // 開発環境用。
 const devConfig = {
-  watchInitEventName  : commonConfig.EVENT_NAME_WATCH_INIT,
-  watchStartEventName : commonConfig.EVENT_NAME_WATCH_START,
+  watchInitEventName    : commonConfig.EVENT_NAME_WATCH_INIT,
+  watchWaitingEventName : commonConfig.EVENT_NAME_WATCH_WAITING,
 };
 // 本番環境用。
 // 開発環境と異なる設定を行う場合に、
@@ -16,6 +16,7 @@ const prodConfig = null;
 
 // devConf に同じ。
 const devOptions = {
+  runChainedTsksDelayTime : 100,
   watch : {
     usePolling : true,
   },

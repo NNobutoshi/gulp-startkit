@@ -40,8 +40,8 @@ export const commonConfig = {
   DIFF_ENABLED  : ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION,
   SOURCEMAPS_DIR : 'sourcemaps',
   PLACEHOLDER : '[subdir]',
-  EVENT_NAME_WATCH_INIT  : 'watchInit',
-  EVENT_NAME_WATCH_START : 'watchStart',
+  EVENT_NAME_WATCH_INIT    : 'watchInit',
+  EVENT_NAME_WATCH_WAITING : 'watchWaiting',
 };
 
 const GIT_COMMAND = ( IS_DIFF_REFS )
@@ -58,7 +58,7 @@ export const commonOptions = {
     enabled     : commonConfig.DIFF_ENABLED,
     enabledRefs : IS_DIFF_REFS,
     firstTasksEndedEventName : commonConfig.EVENT_NAME_WATCH_INIT,
-    tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_START,
+    tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_WAITING,
   },
   plumber : {
     errorHandler : function( err ) {
