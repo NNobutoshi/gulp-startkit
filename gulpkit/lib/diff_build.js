@@ -250,11 +250,11 @@ class DiffBuildProcessor {
    * @param {Object} settings - 設定オブジェクト
    */
   setUpChildMaps( settings ) {
-    const taskName = settings.name;
-    this.#setChildMapTo( taskName, this.allFileMap );
-    this.#setChildSetTo( taskName, this.targetFileMap );
-    this.#setChildMapTo( taskName, this.collectedFileMap );
-    this.#setChildSetTo( taskName, this.selectedFileMap );
+    const name = settings.name;
+    this.#setChildMapTo( name, this.allFileMap );
+    this.#setChildSetTo( name, this.targetFileMap );
+    this.#setChildMapTo( name, this.collectedFileMap );
+    this.#setChildSetTo( name, this.selectedFileMap );
   }
 
   /**
@@ -541,9 +541,9 @@ function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) 
 /**
  * ファイルを読み込みストリームにプッシュする。
  * @param {String} filePath - ファイルパス
- * @param {Map} allFiles - 全chunk用
+ * @param {Map} allFiles - すべてのファイル情報
  * @param {Stream} stream - Gulp stream
- * @returns {Promise<void>}
+ * @returns {Promise<void>} - Promise
  */
 async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
   try {
@@ -562,7 +562,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * プロセスの最終処理。
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定
- * @returns {Promise<void>}
+ * @returns {Promise<void>} - Promise
  */
 async function _finalizeProcessor( diffBuildProc, settings ) {
   const
@@ -584,7 +584,7 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
 /**
  * 差分一覧のファイルへの書き込み。
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
- * @returns {Promise<void>}
+ * @returns {Promise<void>} - Promise
  */
 async function _writeDiffData() {
   clearTimeout( writingTimeoutId );
@@ -600,10 +600,10 @@ async function _writeDiffData() {
 }
 
 /**
- * 検知数と通過させた数のログ。
+ * 検知数と通過させた数のログを出力。
  * @param {String} name - タスク名
- * @param {Number} detected - 検知数
- * @param {Number} total - 通過数
+ * @param {Number} detected - 検知されたファイル数
+ * @param {Number} total - 通過したファイル数
  */
 function _log( name, detected, total ) {
   if ( name ) {
