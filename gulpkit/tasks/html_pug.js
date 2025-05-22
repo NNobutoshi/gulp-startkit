@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { Buffer }       from 'node:buffer';
 import path             from 'node:path';
 
@@ -23,37 +22,55 @@ let
  * @returns {Object} - Gulp stream
  */
 export default function html_pug() {
-  pugData = JSON.parse( readFileSync( config.data ).toString() );
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
+    .pipe( _loadPugData() )
     .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
-    .on( 'data', _setPugData )
+    .pipe( _setPugData() )
     .pipe( _renderPug() )
     .pipe( _formatHtml() )
     .pipe( _injectImageSize() )
-    .pipe( dest( config.dist ) )
     .pipe( logStreamData( options.logStreamData ) )
+    .pipe( dest( config.dist ) )
   ;
+}
+
+
+/**
+ * Gulp src で流れてくるPug 用JSON ファイルを読み込み、
+ * パースし、PugData に格納する。
+ * PugData は、Pug の実行時に、Pug に渡すデータとして使用する。
+ * @returns {Object} - Gulp stream
+ */
+function _loadPugData() {
+  return through.obj( function _transform( file, enc, callback ) {
+    if ( file.path === config.data ) {
+      pugData = JSON.parse( String( file.contents ) );
+    }
+    callback( null, file );
+  } );
 }
 
 /**
  * Pug の実行前に、Pug に渡すデータをセットする。
- * @param {object} file
+ * @returns {Object} - Gulp stream
  */
-function _setPugData( file ) {
-  if ( file.path.endsWith( '.pug' ) === false ) {
-    return;
-  }
-  const keyFilePath = file.path
-    .replace( path.resolve( process.cwd(), config.base ), '' )
-    .replace( /\\/g, '/' )
-    .replace( /\.pug$/, '.html' )
-  ;
-  file.data = {
-    siteData : pugData.defaults,
-    pageData : pugData[ keyFilePath ],
-  };
+function _setPugData() {
+  return through.obj( function _transform( file, enc, callback ) {
+    if ( file.path.endsWith( '.pug' ) === true ) {
+      const keyFilePath = file.path
+        .replace( path.resolve( process.cwd(), config.base ), '' )
+        .replace( /\\/g, '/' )
+        .replace( /\.pug$/, '.html' )
+      ;
+      file.data = {
+        siteData : pugData.defaults,
+        pageData : pugData[ keyFilePath ],
+      };
+    }
+    callback( null, file );
+  } );
 }
 
 /**
