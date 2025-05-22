@@ -9,7 +9,7 @@ import through   from 'through2';
 import mergeWith from 'lodash/mergeWith.js';
 import isEqual   from 'lodash/isEqual.js';
 
-import { config, options } from '../config/config_js_wabpack.js';
+import { config, options } from '../config/config_js_webpack.js';
 
 const
   CHARSET = 'utf-8'
