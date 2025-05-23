@@ -1,5 +1,6 @@
 import { Buffer }       from 'node:buffer';
 import path             from 'node:path';
+import { readFileSync } from 'node:fs';
 
 import { src as gulpSrc, dest } from 'gulp';
 import plumber  from 'gulp-plumber';
@@ -24,9 +25,9 @@ let pugData;
  * @returns {Object} - Gulp stream
  */
 function html_pug() {
+  pugData = JSON.parse( String( readFileSync( config.data ) ) );
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
-    .pipe( _loadPugData() )
     .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .pipe( _setPugData() )
@@ -38,25 +39,8 @@ function html_pug() {
   ;
 }
 
-
 /**
- * Gulp src で流れてくるPug 用JSON ファイルを読み込み、
- * パースし、PugData に格納する。
- * PugData は、Pug の実行時に、Pug に渡すデータとして使用する。
- * @returns {Object} - Gulp stream
- * @private
- */
-function _loadPugData() {
-  return through.obj( function _transform( file, enc, callback ) {
-    if ( file.path === config.data ) {
-      pugData = JSON.parse( String( file.contents ) );
-    }
-    callback( null, file );
-  } );
-}
-
-/**
- * Pug の実行前に、Pug に渡すデータをセットする。
+ * Pug の実行前に、Pug に渡すデータをセットする。<br>
  * @returns {Object} - Gulp stream
  */
 function _setPugData() {
@@ -77,17 +61,18 @@ function _setPugData() {
 }
 
 /**
- * インポート元のファイルを収集してMap に追加する。
- * through2 のtransformFunction の内部で実行。
+ * インポート元のファイルを収集してMap に追加する。<br>
+ * through2 のtransformFunction の内部で実行。<br>
  * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。
  *
+ * @example
  * collectedFiles
  * {
  *   '読み込んでいるパス': [
  *     'chunk自身のパス'
- *    ]
+ *   ]
  * }
- * @param {Object} file
+ * @param {Object} file - vinyl オブジェクト
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */
 function _collectImporterFiles( file, collectedFiles ) {
