@@ -10,11 +10,15 @@ import logStreamData          from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_img_sprite_svg.js';
 
+export { img_sprite_svg as default };
+
+/** @module tasks/img_sprite_svg */
 /**
  * SVGスプライトを作成するタスク。
+ * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
-export default function img_sprite_svg() {
+function img_sprite_svg() {
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

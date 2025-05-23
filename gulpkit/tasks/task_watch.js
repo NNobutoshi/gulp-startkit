@@ -5,6 +5,8 @@ import chalk             from 'chalk';
 import { config as watchConfig, options } from '../config/config_task_watch.js';
 import * as taskConfigAll from '../config/index.js';
 
+export { task_watch as default };
+
 const watchOptions = options.watch;
 
 let
@@ -12,13 +14,15 @@ let
   ,taskSet = new Set()
 ;
 
+/** @module tasks/task_watch */
 /**
  * gulp watch タスクを生成する関数
+ * default としてエクスポート。
  * @param {Array} tasks - タスクの配列
  * @param {Function} nextTask - 次に実行するタスク
  * @returns {Function} - gulp タスク
  */
-export default function task_watch( tasks, nextTask ) {
+function task_watch( tasks, nextTask ) {
   return function init_watch( done ) {
     let enabled = false;
     process.emit( watchConfig.watchInitEventName );
@@ -86,9 +90,9 @@ function _runChainedTasks( nextTask ) {
 }
 
 /**
-   * watch タスクの完了を待つ。
-   * @param {Function} done - gulp タスクの完了コールバック
-   */
+ * watch タスクの完了を待つ。
+ * @param {Function} done - gulp タスクの完了コールバック
+ */
 function watchWaiting( done ) {
   process.emit( watchConfig.watchWaitingEventName );
   done();

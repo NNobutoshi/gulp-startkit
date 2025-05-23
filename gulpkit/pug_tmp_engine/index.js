@@ -25,6 +25,13 @@ const
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
+/** @module pug_tmp_engine */
+/**
+ * Excel のデータを JSON に変換する。
+ * @function _run
+ * @param {object} workBook - Excel のデータ
+ * @returns {object} JSON データ
+ */
 ( async function _run() {
   const
     workBook     = XLSX.readFile( settings.xlsxFilePath )
@@ -64,6 +71,7 @@ async function _readConfigFile() {
 
 /**
  * Pug の設定ファイルの内容から、インデントを取得する。
+ * @private
  * @param {string} configContent - Pug の設定ファイルの内容
  * @param {RegExp} indentRegeX - インデントを取得するための正規表現
  * @returns {string|boolean} インデントの文字列、または false

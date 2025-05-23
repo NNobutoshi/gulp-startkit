@@ -26,6 +26,7 @@ const
  * 各タスクで共通の設定は環境変数に応じて各タスクの設定に先んじて、
  * 切り替えを行う。
  * ソースマップ、差分ビルド、watch などの有効の有無等。
+ * @module config/common:commonConfig
  */
 export const commonConfig = {
   NODE_ENV : NODE_ENV,
@@ -51,6 +52,7 @@ const GIT_COMMAND = ( IS_DIFF_REFS )
 
 /**
  * 各タスクで共通して使用するプラグイン等の共通オプション用。
+ * @module config/common:commonOptions
  */
 export const commonOptions = {
   diff : {

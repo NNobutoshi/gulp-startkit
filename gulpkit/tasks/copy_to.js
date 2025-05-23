@@ -6,11 +6,15 @@ import logStreamData from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_copy_to.js';
 
+export { copy_to as default };
+
+/** @module tasks/copy_to */
 /**
  * 指定されたファイルをコピーするタスク。
+ * default としてエクスポート。
  * @returns {Stream} - Gulp stream
-*/
-export default function copy_to() {
+ */
+function copy_to() {
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

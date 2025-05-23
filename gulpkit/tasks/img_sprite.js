@@ -9,15 +9,20 @@ import logStreamData          from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_img_sprite.js';
 
+export { img_sprite as default };
+
+
 const
   PLACEHOLDER = config.placeholder
 ;
 
+/** @module tasks/img_sprite */
 /**
  * PNGスプライトを作成するタスク。
+ * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
-export default function img_sprite() {
+function img_sprite() {
   return gulpSrc( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

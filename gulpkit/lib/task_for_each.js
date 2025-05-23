@@ -3,7 +3,19 @@ import path from 'node:path';
 import through     from 'through2';
 import mergeStream from 'merge-stream';
 
-export default function assignTaskForEachGroup( group, base, branchTask ) {
+export { assignTaskForEachGroup as default };
+
+/** @module lib/task_for_each
+ * @description 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させるユーティリティ。
+ */
+/**
+ * 指定のグループに従ってsource を小分けにする 。
+ * @function assignTaskForEachGroup
+ * @param {String} group - 任意のグループ名( 部分的ディレクトリ名)、例：'/fonts/icons/'
+ * @param {String} base - ソースファイルのベースディレクトリ
+ * @param {Function} branchTask - グループごと実行させるcallback
+ */
+function assignTaskForEachGroup( group, base, branchTask ) {
   const groupedSources = new Map();
   return _groupSrc( groupedSources, group, base, branchTask );
 }
@@ -12,8 +24,8 @@ export default function assignTaskForEachGroup( group, base, branchTask ) {
  * 指定のグループに従ってsource を小分けにする 。
  * 実際に指定のグループ名に則してディレクトリが構成されていることが大前提。
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {String} group - 任意のグループ名
- * @param {String} base - 開発環境内で任意のグループ名の手前までの、src とdist 共通の相対パス。
+ * @param {String} group - 任意のグループ名( 部分的ディレクトリ名)、例：'/fonts/icons/'
+ * @param {String} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  * @returns {Stream} - 処理されたストリーム
  */

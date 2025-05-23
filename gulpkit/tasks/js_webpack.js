@@ -11,6 +11,8 @@ import isEqual   from 'lodash/isEqual.js';
 
 import { config, options } from '../config/config_js_webpack.js';
 
+export { js_webpack as default };
+
 const
   CHARSET = 'utf-8'
 ;
@@ -19,6 +21,7 @@ let
   ,webpackConfig = config.webpackConfig
 ;
 
+/** @module tasks/js_webpack */
 /**
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。
  * watch はGulpのものを使用。
@@ -36,9 +39,10 @@ if ( webpackConfig.cache?.type === 'filesystem' ) {
 
 /**
  * webpack のコンパイルを実行するタスク。
+ * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
-export default function js_webpack() {
+function js_webpack() {
   return gulpSrc( config.src, { read : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( _prepareWebpackConfig() )

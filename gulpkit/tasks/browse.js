@@ -14,7 +14,9 @@ const
   ,CONFIG_FILE_PATH = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
 ;
 
+/** @module tasks/browse */
 /**
+ * BrowserSync を初期化する。
  * @param {Function} done - Gulp タスク完了のコールバック
  * @returns {Promise<void>}
  */
@@ -37,8 +39,9 @@ async function init_browse( done ) {
 }
 
 /**
+ * BrowserSync をリロードする。
  * @param {Function} done - Gulp タスク完了のコールバック
- * @returns {Function<void>}
+ * @returns {Function}
  */
 function reload_browse( done ) {
   if ( browserSync.active ) {

@@ -13,17 +13,21 @@ import logStreamData                     from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_css_sass.js';
 
+export { css_sass as default };
+
 const sass = gulpSass( dartSass );
 
 const
   SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
+/** @module tasks/css_sass */
 /**
  * Sass を実行するタスク。
+ * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
-export default function css_sass() {
+function css_sass() {
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectImporterFiles, organizeSelectedFileMap ) )

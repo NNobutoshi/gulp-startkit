@@ -3,10 +3,14 @@ import { series, parallel } from 'gulp';
 import * as tasks from './tasks/index.js';
 import enableWatchForCommandLineTask from './lib/enable_watch_for.js';
 
-/*
- * default 全タスク
+export { main as default, html, img, css, js, watchForCommanLineTask };
+
+/** @module gulpkit/index */
+/**
+ * Gulp 実行時のdefault 用で全タスクを実行する。
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export default function main( done ) {
+function main( done ) {
   series(
     tasks.clean,
     parallel(
@@ -30,10 +34,11 @@ export default function main( done ) {
   )( done );
 }
 
-/*
- * html 関連タスク
+/**
+ * html 関連タスク用。
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export function html( done ) {
+function html( done ) {
   series(
     tasks.img_min,
     tasks.html_pug,
@@ -48,10 +53,11 @@ export function html( done ) {
   )( done );
 }
 
-/*
+/**
  * img 関連タスク
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export function img( done ) {
+function img( done ) {
   series(
     tasks.css_lint_scss,
     tasks.img_min,
@@ -72,10 +78,11 @@ export function img( done ) {
   )( done );
 }
 
-/*
+/**
  * CSS 関連タスク
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export function css( done ) {
+function css( done ) {
   series(
     tasks.css_lint_scss,
     tasks.css_sass,
@@ -90,10 +97,11 @@ export function css( done ) {
   )( done );
 }
 
-/*
+/**
  * JavaScript 関連タスク
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export function js( done ) {
+function js( done ) {
   series(
     tasks.js_eslint,
     tasks.js_webpack,
@@ -108,10 +116,11 @@ export function js( done ) {
   )( done );
 }
 
-/*
+/**
  * コマンドライン上 Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
+ * @param {Function} done - gulp タスク完了のコールバック
  */
-export function watchForCommanLineTask() {
+function watchForCommanLineTask() {
   enableWatchForCommandLineTask( tasks );
 }

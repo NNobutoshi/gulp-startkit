@@ -13,18 +13,20 @@ import logStreamData          from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_icon_font.js';
 
+export { icon_font as default };
+
 const
   CHARSET = 'utf-8'
-;
-const
-  PLACEHOLDER = config.placeholder
+  ,PLACEHOLDER = config.placeholder
 ;
 
+/** @module tasks/icon_font */
 /**
  * アイコンフォントを作成するタスク。
+ * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
-export default function icon_font() {
+function icon_font() {
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

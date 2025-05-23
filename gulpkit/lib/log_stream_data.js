@@ -4,6 +4,9 @@ import through  from 'through2';
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 
+export { logSteamData as default };
+
+/** @module lib/log_stream_data */
 const defaultSettings = {
   onStream     : true,
   forEachFile  : true,
@@ -17,7 +20,7 @@ const defaultSettings = {
  * @param {Object} options - 色や出力の制限などが設定可能なオプション
  * @returns {Stream} - 処理されたストリーム
  */
-export default function logSteamData( options ) {
+function logSteamData( options ) {
   const
     settings = { ...defaultSettings, ...options }
     ,title = settings.title

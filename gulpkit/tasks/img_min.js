@@ -7,11 +7,15 @@ import diff from '../lib/diff_build.js';
 
 import { config, options } from '../config/config_img_min.js';
 
+export { img_min as default };
+
+/** @module tasks/img_min */
 /**
  * 画像を圧縮するタスク。
+ * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
-export default function img_min() {
+function img_min() {
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

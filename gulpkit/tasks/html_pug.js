@@ -13,15 +13,17 @@ import logStreamData                     from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_html_pug.js';
 
-let
-  pugData
-;
+export { html_pug as default };
 
+let pugData;
+
+/** @module tasks/html_pug */
 /**
  * Pug を実行するタスク。
+ * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
-export default function html_pug() {
+function html_pug() {
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( _loadPugData() )
@@ -42,6 +44,7 @@ export default function html_pug() {
  * パースし、PugData に格納する。
  * PugData は、Pug の実行時に、Pug に渡すデータとして使用する。
  * @returns {Object} - Gulp stream
+ * @private
  */
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {

@@ -5,13 +5,22 @@ import chalk    from 'chalk';
 
 import { config } from '../config/config_clean.js';
 
-export default async function clean() {
+export { clean as default };
+
+/** @module tasks/clean */
+/**
+ * dist 先のクリーンアップを行う。
+ * 削除するファイルは、Untracked file のみ。
+ * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。
+ * default としてエクスポート。
+ * @returns {Promise<void>}
+ */
+async function clean() {
   await _gitClean( config.command );
 }
 
 /**
  * Git Command をつかってUntracked fileを、削除。
- * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。
  * @param {string} command - git clean コマンド
  * @returns {Promise<void>}
  */

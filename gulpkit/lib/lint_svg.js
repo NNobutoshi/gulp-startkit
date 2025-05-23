@@ -1,6 +1,8 @@
 import SVGLint from 'svglint';
 import through from 'through2';
 
+export { lint_svg as default };
+
 const
   defaultSettings = {
     debug : true,
@@ -8,12 +10,14 @@ const
   }
 ;
 
+/** @module lib/lint_svg */
 /**
  * svg をsrc にするタスク用。
  * エラーが拾いにくいため。
+ * default としてエクスポート。
  * @returns {Stream} - 処理されたストリーム
  */
-export default function lint_svg( options ) {
+function lint_svg( options ) {
   const settings = { ...defaultSettings, ...options };
   return through.obj(
     async function _transform( file, enc, callback ) {

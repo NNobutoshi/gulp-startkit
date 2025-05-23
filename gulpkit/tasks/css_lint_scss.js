@@ -9,11 +9,15 @@ import logStreamData from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_css_lint_scss.js';
 
+export { css_lint_scss as default };
+
+/** @module tasks/css_lint_scss */
 /**
  * SCSS のLint を実行するタスク。
+ * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
-export default function css_lint_scss() {
+function css_lint_scss() {
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

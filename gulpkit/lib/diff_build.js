@@ -36,11 +36,18 @@ export {
 };
 
 /**
-/* Git で管理する前提での差分ビルド。
+ * @module lib/diff_build
+ * @description 差分用コマンドの出力に従ってファイルを選択し、
+ * その依存関係にあるものや任意のグループに所属する他のファイルなどをビルド対象にする。
+ */
+/**
+ * Git で管理する前提での差分ビルド。
  * diff コマンドで検知されたファイルのみを対象とする。
+ * default としてエクスポート。
  * @param {Object} options - オプション
  * @param {Function} collect - 依存関係収集用コールバック
  * @param {Function} select - 通過ファイル選択用コールバック
+ * @returns {Stream} - 処理されたストリーム
  */
 function diff_build( options, collect, select ) {
   const settings = { ...defaultSettings, ...options };
@@ -628,6 +635,7 @@ function _includes( diffData, filePath ) {
  * 'git status -suall <dir>'で得られるファイルパスをkey に、
  * 属性（「M」 や「?」 など）をその値に、
  * oject（差分ファイルリスト） の作成。
+ * @private
  * @param {String} command - git コマンド
  * @param {String} name - タスク名
  * @returns {Promise<Object>} - 差分ファイルリスト

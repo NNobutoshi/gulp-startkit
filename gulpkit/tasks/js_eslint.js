@@ -10,11 +10,15 @@ import logStreamData from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_js_eslint.js';
 
+export { js_eslint as default };
+
+/** @module tasks/js_eslint */
 /**
  * JavaScriptのLintを実行するタスク。
+ * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
-export default function js_eslint() {
+function js_eslint() {
   return gulpSrc( config.src, options.gulplSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
