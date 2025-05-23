@@ -5,12 +5,12 @@ import mergeStream from 'merge-stream';
 
 export { assignTaskForEachGroup as default };
 
-/** @module lib/task_for_each
+/**
+ * @module lib/task_for_each
  * @description 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させるユーティリティ。
  */
 /**
  * 指定のグループに従ってsource を小分けにする 。
- * @function assignTaskForEachGroup
  * @param {String} group - 任意のグループ名( 部分的ディレクトリ名)、例：'/fonts/icons/'
  * @param {String} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback

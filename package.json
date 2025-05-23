@@ -11,7 +11,7 @@
     "bld_cref": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/build_by_comparing_refs.js",
     "pug_tmp_engine": "node ./gulpkit/pug_tmp_engine/index.js & npm run dev html_pug",
     "pug_tmp_engine_rewrite": "node ./gulpkit/pug_tmp_engine/index.js force & npm run dev html_pug",
-    "jsdoc": "jsdoc -c jsdoc.json"
+    "jsdoc": "jsdoc -c jsdoc.conf.json"
   },
   "author": "",
   "repository": {

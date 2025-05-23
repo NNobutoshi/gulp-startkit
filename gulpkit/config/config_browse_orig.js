@@ -5,6 +5,25 @@ export { mergedConf as config, mergedOptions as options };
 
 const BROWSE_ENV = process.env.BROWSE_ENV;
 
+/**
+ * @module config/browse_orig
+ * @description live reload 機能は作業者各々でポート等の設定を自由に行えるようにする意図。<br>
+ * 機能を利用する場合は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。
+ * @example
+ * // 開発環境用設定例
+ * const devOptions = {
+ *   'port'           : 3000,
+ *   'browser'        : 'Chrome',
+ *   'reloadThrottle' : 100,
+ *   'server' : './dist/development/html',
+ * };
+ * // 本番環境用設定例
+ * // 上書きさせたい設定だけ
+ * const prodOptions = {
+ *   'port'           : 3001,
+ *   'server' : './dist/production/html',
+ * };
+ */
 // 開発環境用。
 const devConfig = {
   'enabled' : ( BROWSE_ENV )
@@ -19,12 +38,15 @@ const prodConfig = null;
 
 // devConf に同じ。
 const devOptions = {
-  'port'           : 9039,
+  'port'           : 3000,
   'browser'        : 'Chrome',
   'reloadThrottle' : 100,
-  'proxy'          : 'localhost:8039'
+  'server' : './dist/development/html',
 };
-const prodOptions = null;
+const prodOptions = {
+  'port'           : 3001,
+  'server' : './dist/production/html',
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const

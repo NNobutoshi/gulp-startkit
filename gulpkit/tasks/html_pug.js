@@ -16,6 +16,7 @@ import { config, options } from '../config/config_html_pug.js';
 
 export { html_pug as default };
 
+const CHARSET = 'utf-8';
 let pugData;
 
 /** @module tasks/html_pug */
@@ -25,7 +26,7 @@ let pugData;
  * @returns {Object} - Gulp stream
  */
 function html_pug() {
-  pugData = JSON.parse( String( readFileSync( config.data ) ) );
+  pugData = JSON.parse( readFileSync( config.data ,CHARSET ) );
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
@@ -34,8 +35,8 @@ function html_pug() {
     .pipe( _renderPug() )
     .pipe( _formatHtml() )
     .pipe( _injectImageSize() )
-    .pipe( logStreamData( options.logStreamData ) )
     .pipe( dest( config.dist ) )
+    .pipe( logStreamData( options.logStreamData ) )
   ;
 }
 

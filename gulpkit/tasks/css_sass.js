@@ -23,7 +23,7 @@ const
 
 /** @module tasks/css_sass */
 /**
- * Sass を実行するタスク。
+ * Sass を実行するタスク。<br>
  * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
@@ -42,18 +42,18 @@ function css_sass() {
 }
 
 /**
- * インポート元のファイルを収集してMap に追加する。
- * through2 のtransformFunction の内部で実行。
- * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。
- *
+ * インポート元のファイルを収集してMap に追加する。<br>
+ * through2 のtransformFunction の内部で実行。<br>
+ * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。<br>
+ * @example
  * collectedFiles
  * {
  *   '読み込んでいるパス': [
  *     'chunk自身のパス'
- *    ]
+ *   ]
  * }
- * @param {Object} file
- * @param {Map} collectedFiles
+ * @param {Object} file - vinyl オブジェクト
+ * @param {Map} collectedFiles - 依存関係を格納する Map
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const

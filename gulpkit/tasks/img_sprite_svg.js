@@ -14,7 +14,7 @@ export { img_sprite_svg as default };
 
 /** @module tasks/img_sprite_svg */
 /**
- * SVGスプライトを作成するタスク。
+ * SVGスプライトを作成するタスク。<br>
  * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */

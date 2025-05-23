@@ -22,7 +22,7 @@ const
 
 /** @module tasks/icon_font */
 /**
- * アイコンフォントを作成するタスク。
+ * アイコンフォントを作成するタスク。<br>
  * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
@@ -67,7 +67,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
 }
 
 /**
- * SCSS ファイル作成の準備を行う。
+ * SCSS ファイル作成の準備を行う。<br>
  * 引数にエラーを伝えるためのストリームを渡す。
  * @param {Object} templateData - iconfontの設定情報
  * @param {Object} trunkStream - エラーを伝えるために必要

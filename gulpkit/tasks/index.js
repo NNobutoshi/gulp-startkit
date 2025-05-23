@@ -1,6 +1,6 @@
 /**
  * Gulp タスクのエクスポート
- * @file gulpkit/tasks/index.js
+ * @module tasks/index
  */
 export { default as clean }           from './clean.js';
 export { default as copy_to }         from './copy_to.js';

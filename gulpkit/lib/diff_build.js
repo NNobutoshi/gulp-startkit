@@ -37,12 +37,12 @@ export {
 
 /**
  * @module lib/diff_build
- * @description 差分用コマンドの出力に従ってファイルを選択し、
- * その依存関係にあるものや任意のグループに所属する他のファイルなどをビルド対象にする。
+ * @description 差分用コマンドの出力に従ってファイルを選び、<br>
+ * 依存関係にあるファイルや任意の同じグループに属する他のファイルなどをビルド対象にする。
  */
 /**
- * Git で管理する前提での差分ビルド。
- * diff コマンドで検知されたファイルのみを対象とする。
+ * Git で管理する前提での差分ビルド。<br>
+ * diff コマンドで検知されたファイルのみを対象とする。<br>
  * default としてエクスポート。
  * @param {Object} options - オプション
  * @param {Function} collect - 依存関係収集用コールバック
@@ -64,21 +64,17 @@ function diff_build( options, collect, select ) {
   // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
   if ( !diffBuildProc ) {
     diffBuildProc = new DiffBuildProcessor();
-
     // リスナ-登録でthis の参照が代わらないようにdiffBuildProc にbind 。
     diffBuildProc.resetSharedState = diffBuildProc
       .resetSharedState.bind( diffBuildProc )
     ;
-
     // diffBuildProc の共有する値を初期化するメンバ関数をリスナー登録。
     _addResetStateListeners(
       diffBuildProc.resetSharedState,
       settings.firstTasksEndedEventName,
       settings.tasksEndedEventName,
     );
-
   } // if
-
   // 差分データ取得のPromise を共有。
   if ( !diffBuildProc.promiseToGetDiffData ) {
     diffBuildProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
@@ -123,8 +119,8 @@ function _addResetStateListeners(
 }
 
 /**
- * One source → One destination 用のストリーム作成。
- * Git Diff で検知されたfile のみを対象にする。
+ * One source → One destination 用のストリーム作成。<br>
+ * Git Diff で検知されたfile のみを対象にする。<br>
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
@@ -160,10 +156,10 @@ function _createOneToOneFilesStream( diffBuildProc, settings ) {
 }
 
 /**
- * 依存関を伴う他のファイルも含めるストリームを作成。
- * 例えば、Pug、Sass のコンパイルタスク用。
- * or
- * 渡されてきたファイル以外に必要な対象ファイルを併せてstream に渡す。
+ * 依存関を伴う他のファイルも含めるストリームを作成。<br>
+ * 例えば、Pug、Sass のコンパイルタスク用。<br>
+ * or<br>
+ * 渡されてきたファイル以外に必要な対象ファイルを併せてストリームに渡す。<br>
  * 例えば、iconFont sprite.smithなどのタスク用。
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定オブジェクト
@@ -201,11 +197,15 @@ function _createDependencyFilesStream( diffBuildProc, settings ) {
           // すべてのファイルの情報を選択。
           diffBuildProc.addAllFilesToSelectionSet( settings );
         } else {
-          // 収集した依存関係にあるファイルからstream に渡したいファイルを選択。
+          // 収集した依存関係にあるファイルからストリームに渡したいファイルを選択。
           diffBuildProc.addFilesFromCollectionToSelectionSet( settings );
         }
-        // 選択されたファイルをstream に渡す。
-        await diffBuildProc.pushSelectedFilesToStream( this, settings );
+        // 選択されたファイルをストリームに渡す。
+        await diffBuildProc.pushSelectedFilesToStream(
+          this,
+          settings,
+          _promisePushReadFileToStream,
+        );
         await _finalizeProcessor( diffBuildProc, settings );
         callback();
       } catch ( err ) {
@@ -216,9 +216,9 @@ function _createDependencyFilesStream( diffBuildProc, settings ) {
 }
 
 /**
- * 差分ビルド処理を行うクラス。
- * Git の差分データを基に、対象ファイルの選定や依存関係の収集、グループ化などを行う。
- * また、選定されたファイルをストリームに渡す処理も提供する。
+ * 差分ビルド処理を行うクラス。<br>
+ * Git の差分データを基に対象を絞り、対象ファイルと依存関係にあるファイルや所属する同グループのファイルを選定、選択。<br>
+ * 加えて、選択されたファイルをストリームに渡す。
  */
 class DiffBuildProcessor {
 
@@ -236,9 +236,9 @@ class DiffBuildProcessor {
   }
 
   /**
-   * exec は処理が重く、各タスクでPromis を共有させるが、その際、
-   * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。
-   * 新たな差分データ取得に伴い、各共有データも初期化する。
+   * exec は処理が重く、各タスクでPromis を共有させるが、その際、<br>
+   * すべてのタスクの実行後とその後のwatch タスクの開始時にだけ差分データを再取得させる意図。<br>
+   * 新たな差分データ取得に伴い、各共有データも初期化する。<br>
    * 各タスクの最初の実行後と、その後のsrc 更新毎に初期化する。
    */
   resetSharedState() {
@@ -265,10 +265,9 @@ class DiffBuildProcessor {
   }
 
   /**
-   * Git で差分データを取得して対象ファイルを選定。
-   * 差分データに無い場合も、直近の差分データにあれば対象ファイルにする。
-   * そうしなければ、git のrevert などが未検知になってしまうため。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * Git で差分データを取得して対象ファイルを絞る。<br>
+   * Git のrevert なども検知させるため、差分データに無い場合も直近の差分データにあれば対象ファイルにする。<br>
+   * @param {Object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
@@ -292,10 +291,10 @@ class DiffBuildProcessor {
   }
 
   /**
-   * one source → one destination 用。
-   * Gulp.src のオプション、 { read: false } の速さに期待して。
-   * contents をreadFile で改めて読み込み、file.contents に代入する。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * one source → one destination 用。<br>
+   * Gulp.src のオプション、 { read: false } の速さに期待して。<br>
+   * contents はreadFile で改めて読み込み、file.contents に代入する。
+   * @param {Object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
@@ -313,8 +312,10 @@ class DiffBuildProcessor {
   }
 
   /**
-   * すべてのファイル情報を収集。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * すべてのファイル情報を収集。<br>
+   * 後にpath の情報が必要であり、グループ情報の設定の為にも必要。<br>
+   * 複製されたVinyl オブジェクトのcontents にはnull を代入してメモリの占有を緩和する。
+   * @param {Object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
   setAnyFileInfoToAllFileMap( file, settings ) {
@@ -323,18 +324,16 @@ class DiffBuildProcessor {
       ,allFileMap = this.allFileMap.get( name )
     ;
     allFileMap.set( file.path, file.clone() );
-    // file.contents はプロパティのなかで一番容量が大きいので、
-    // このライフサイクル中はいったんnull を代入する。
+    // 容量の大きいcontents プロパティにはいったんnull を代入する。
     // 最終的に選択された際に再代入する。
     allFileMap.get( file.path ).contents = null;
   }
 
   /**
-   * グループ情報を設定。
-   * 複数のsrc ファイルを1つのdist にするようなタスク用。
-   * 自身のパスがkey の値（file オブジェクト）に、
-   * group プロパティを追加する。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * グループ情報を設定。<br>
+   * 複数のsrc ファイルを1つのdist にするようなタスク用。<br>
+   * 参照するファイルのパスをkey に持つallFileMap のその値（vinly オブジェクト）に、group プロパティを追加する。
+   * @param {Object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
   setAssignedGroupToAllFileMap( file, settings ) {
@@ -350,9 +349,9 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 依存関係からインポート元のファイルを収集。
+   * 依存関係からインポート元のファイルを収集。<br>
    * ファイルの依存関係をCallback で収集してもらう。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {Object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {Object} settings - 設定オブジェクト
    */
   setImporterFileToCollectionMap( file, settings ) {
@@ -364,8 +363,8 @@ class DiffBuildProcessor {
   }
 
   /**
-   * されたファイルと直近の差分で未追跡のファイルは、
-   * 自身が所属するグループの他のファイルをターゲットにする。
+   * 削除されたファイルと直近の差分で未追跡のファイルは、<br>
+   * それが属するグループの他のファイルを対象ファイルにする。
    * @param {Object} settings - 設定オブジェクト
    */
   addFilesGroupedWithDeletedToTarget( settings ) {
@@ -395,7 +394,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 例えば候補が1ファイルでも、所属している同じグループのその他のファイルも選択する。
+   * 例えば候補が1ファイルでも、属している同じグループの他のファイルも選択する。<br>
    * 複数src ファイルを1つに束ねる様なタスク用。
    * @param {Object} settings - 設定オブジェクト
    */
@@ -425,7 +424,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 収集したすべてのファイルパス情報をselectedMap に追加する。
+   * 収集したすべてのファイルパス情報を選択ファイルとしてselectedMap に追加する。
    * @param {Object} settings - 設定オブジェクト
    */
   addAllFilesToSelectionSet( settings ) {
@@ -440,8 +439,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 収集した依存関係ファイルからstream に渡したいファイルを選択。
-   * Callback で選択してもらう。
+   * 収集した依存関係ファイルからストリームに渡したいファイルをCallback で選択してもらう。
    * @param {Object} settings - 設定オブジェクト
    */
   addFilesFromCollectionToSelectionSet( settings ) {
@@ -471,12 +469,13 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 選択された通過ファイルをstream にプッシュする。
+   * 選択された通過ファイルをストリームにプッシュする。
    * @param {Stream} stream - Gulp stream
    * @param {Object} settings - 設定オブジェクト
+   * @param {Function} promiseReadAndPush - stream にファイルを読み込んでプッシュする関数
    * @returns {Promise<void>}
    */
-  async pushSelectedFilesToStream( stream, settings ) {
+  async pushSelectedFilesToStream( stream, settings, promiseReadAndPush ) {
     const
       name = settings.name
       ,allFileMap = this.allFileMap.get( name )
@@ -485,7 +484,7 @@ class DiffBuildProcessor {
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
       const limitedTask = limit(
-        () => _promisePushReadFileToStream( filePath, allFileMap, stream )
+        () => promiseReadAndPush( filePath, allFileMap, stream )
       );
       promiseReadFileAll.push( limitedTask );
     }
@@ -519,8 +518,9 @@ class DiffBuildProcessor {
 }
 
 /**
- * 候補ファイルに依存するファイルを再帰選択する。
- * through2.obj()の flush function の内部で実行。
+ * 候補ファイルに依存するファイルを再帰選択する。<br>
+ * through2.obj()の flush function の内部で実行。<br>
+ * 各タスクで汎用的に使用できるため、エクスポートする。
  * @param {String} filePath - ファイルパス
  * @param {Object} collectedFileMap - 収集した依存関係
  * @param {Set} selectedFileMap - 通過させるファイルパスの格納用
@@ -566,7 +566,9 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
 }
 
 /**
- * プロセスの最終処理。
+ * プロセスの最終処理。<br>
+ * 検知数と通過させた数のログを出力。<br>
+ * 直近の差分データとして、lastDiff に書き込む。
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定
  * @returns {Promise<void>} - Promise
@@ -589,7 +591,7 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
 }
 
 /**
- * 差分一覧のファイルへの書き込み。
+ * 差分一覧のファイルへの書き込み。<br>
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
  * @returns {Promise<void>} - Promise
  */
@@ -631,11 +633,10 @@ function _includes( diffData, filePath ) {
 }
 
 /**
- * git status 結果を整形
- * 'git status -suall <dir>'で得られるファイルパスをkey に、
- * 属性（「M」 や「?」 など）をその値に、
+ * git status 結果を整形<br>
+ * 'git status -suall <dir>'で得られるファイルパスをkey に、<br>
+ * 属性（「M」 や「?」 など）をその値にして、<br>
  * oject（差分ファイルリスト） の作成。
- * @private
  * @param {String} command - git コマンド
  * @param {String} name - タスク名
  * @returns {Promise<Object>} - 差分ファイルリスト

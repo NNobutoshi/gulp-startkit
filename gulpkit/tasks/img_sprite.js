@@ -18,7 +18,7 @@ const
 
 /** @module tasks/img_sprite */
 /**
- * PNGスプライトを作成するタスク。
+ * PNGスプライトを作成するタスク。<br>
  * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
@@ -31,7 +31,7 @@ function img_sprite() {
 }
 
 /**
- * 任意の各フォルダ毎に、PNG スプライトを作成する。
+ * 任意の各フォルダ毎に、PNG スプライトを作成する。<br>
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
  * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp stream

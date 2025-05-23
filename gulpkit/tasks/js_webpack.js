@@ -23,22 +23,23 @@ let
 
 /** @module tasks/js_webpack */
 /**
- * cache 機能や差分ビルド機能は、Webpack の備えているものを。
- * watch はGulpのものを使用。
- * entry や splitChunks は、Gulp.src() 後,chumk が通ってくる毎に作成し、
+ * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
+ * watch はGulpのものを使用。<br>
+ * entry や splitChunks は、Gulp.src() 後,chunk が通ってくる毎に作成し、<br>
  * 既存の webpackConfigと 比較して差異があれば再代入する。
  */
 
 /**
- * config.js 側で'filesystem' の指定があれば、cacheDirectory をここで指定。
+ * config.js 側で'filesystem' の指定があれば、cacheDirectory をここで指定。<br>
  * 'memory' が指定されているとcacheDirectory をそのままにしておけないため。
+ * @member
  */
 if ( webpackConfig.cache?.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
 }
 
 /**
- * webpack のコンパイルを実行するタスク。
+ * webpack のコンパイルを実行するタスク。<br>
  * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
@@ -51,7 +52,7 @@ function js_webpack() {
 }
 
 /**
- * webpack のconfig ファイルをstream のchunk 情報を元に整形し準備する。
+ * webpack のconfig ファイルをstream のchunk 情報を元に整形し準備する。<br>
  * @returns {Object} - Gulp stream
  */
 function _prepareWebpackConfig() {
@@ -64,7 +65,7 @@ function _prepareWebpackConfig() {
   return through.obj( _transform, _flush );
 
   /**
-   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
+   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。<br>
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {string} enc - エンコーディングの種類
    * @param {Function} callback - 実行して処理の完了を伝える

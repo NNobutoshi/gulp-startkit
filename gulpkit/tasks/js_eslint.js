@@ -14,7 +14,7 @@ export { js_eslint as default };
 
 /** @module tasks/js_eslint */
 /**
- * JavaScriptのLintを実行するタスク。
+ * JavaScriptのLintを実行するタスク。<br>
  * default としてエクスポート。
  * @returns {Object} - Gulp stream
  */
@@ -28,7 +28,7 @@ function js_eslint() {
 }
 
 /**
- * ESLint を実行するためのストリーム処理を提供。
+ * ESLint を実行するためのストリーム処理を提供。<br>
  * 各ファイルに対して ESLint を実行し、結果をログに出力する。
  * @param {Object} esLintOptions - ESLint のオプション設定
  * @returns {Stream} - Gulp ストリーム

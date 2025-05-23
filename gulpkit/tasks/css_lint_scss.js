@@ -13,7 +13,7 @@ export { css_lint_scss as default };
 
 /** @module tasks/css_lint_scss */
 /**
- * SCSS のLint を実行するタスク。
+ * SCSS のLint を実行するタスク。<br>
  * default としてエクスポート。
  * @returns {Stream} - Gulp stream
  */
