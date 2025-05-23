@@ -1,5 +1,5 @@
-import main, { html, img, css, js } from './index.js';
 import { argv  }    from 'node:process';
+import main, { html, img, css, js } from './index.js';
 
 
 const taskName = argv.slice( 4 )[ 0 ];
@@ -11,6 +11,8 @@ let run;
  * 省略された場合、タスクはmain を選択。<br>
  * 3つ目と4つ目の引数は、ブランチ間、コミット間が指定されている想定。
  * @module build_by_comparing_refs
+ * @requires node:process
+ * @requires gulpkit/tasks/index.js
  **/
 switch ( taskName ) {
 case 'main':

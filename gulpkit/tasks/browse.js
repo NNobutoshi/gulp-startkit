@@ -1,10 +1,11 @@
-import { access }        from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path              from 'node:path';
 
 import browserSync from 'browser-sync';
 import fancyLog    from 'fancy-log';
 import chalk       from 'chalk';
+
+import existsFile from '../utilities/exists.js';
 
 export { init_browse, reload_browse };
 
@@ -14,7 +15,15 @@ const
   ,CONFIG_FILE_PATH = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
 ;
 
-/** @module tasks/browse */
+/**
+ * @module tasks/browse
+ * @requires node:url
+ * @requires node:path
+ * @requires browser-sync
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../utilities/exists.js
+ */
 /**
  * BrowserSync を初期化する。
  * @param {Function} done - Gulp タスク完了のコールバック
@@ -22,7 +31,7 @@ const
  */
 async function init_browse( done ) {
   try {
-    if ( !await _exists( CONFIG_FILE_PATH ) ) {
+    if ( !await existsFile( CONFIG_FILE_PATH ) ) {
       fancyLog( chalk.gray( 'no serve' ) );
       return done();
     }
@@ -48,18 +57,4 @@ function reload_browse( done ) {
     browserSync.reload();
   }
   return done();
-}
-
-/**
- * ファイルの存在を確認する。
- * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
- * @returns {Promise<void>}
- */
-async function _exists( filePath ) {
-  try {
-    await access( filePath );
-    return true;
-  } catch {
-    return false;
-  }
 }

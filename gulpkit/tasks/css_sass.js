@@ -21,7 +21,19 @@ const
   SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
-/** @module tasks/css_sass */
+/**
+ * @module tasks/css_sass
+ * @requires node:path
+ * @requires gulp
+ * @requires gulp-sass
+ * @requires gulp-if
+ * @requires gulp-sourcemaps
+ * @requires gulp-plumber
+ * @requires gulp-postcss
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_css_sass.js
+ */
 /**
  * Sass を実行するタスク。<br>
  * default としてエクスポート。
@@ -52,6 +64,7 @@ function css_sass() {
  *     'chunk自身のパス'
  *   ]
  * }
+ * @private
  * @param {Object} file - vinyl オブジェクト
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */

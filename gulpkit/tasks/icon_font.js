@@ -20,7 +20,19 @@ const
   ,PLACEHOLDER = config.placeholder
 ;
 
-/** @module tasks/icon_font */
+/**
+ * @module tasks/icon_font
+ * @requires node:fs/promises
+ * @requires gulp
+ * @requires gulp-iconfont
+ * @requires gulp-plumber
+ * @requires handlebars
+ * @requires ../lib/lint_svg.js
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_icon_font.js
+ */
 /**
  * アイコンフォントを作成するタスク。<br>
  * default としてエクスポート。
@@ -37,6 +49,7 @@ function icon_font() {
 
 /**
  * iconfontの設定を行い、アイコンフォントの作成を行う。
+ * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
  * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @param {Stream} trunkStream - エラーを伝えるストリーム
@@ -69,6 +82,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
 /**
  * SCSS ファイル作成の準備を行う。<br>
  * 引数にエラーを伝えるためのストリームを渡す。
+ * @private
  * @param {Object} templateData - iconfontの設定情報
  * @param {Object} trunkStream - エラーを伝えるために必要
  * @returns {Function} - glyphsを受け取る関数
@@ -86,6 +100,7 @@ function _createScssFromGlyphs( templateData, trunkStream ) {
 
 /**
  * SCSSファイルを作成する
+ * @private
  * @param {Object} data - iconfontの設定情報
  * @param {Object} errorStream - エラーを伝えるストリーム
  * @returns {Promise<void>}
@@ -110,6 +125,7 @@ async function _createScssFile( templateData, errorStream ) {
 /**
  * ファイルのタイムスタンプ(stats.mtime)を取得し、最も新しいものを返す。
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
+ * @private
  * @param {Array} filePaths - ファイルパスの配列
  * @returns {Number} - タイムスタンプ
  * @returns {Promise<void>}

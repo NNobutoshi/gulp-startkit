@@ -10,10 +10,14 @@ const
   }
 ;
 
-/** @module lib/lint_svg */
 /**
- * svg をsrc にするタスク用。
- * エラーが拾いにくいため。
+ * @module lib/lint_svg
+ * @requires svglint
+ * @requires through2
+ */
+/**
+ * svg をsrc にするタスク用。<br>
+ * 各プラグインでエラーが拾いにくいため。<br>
  * default としてエクスポート。
  * @returns {Stream} - 処理されたストリーム
  */

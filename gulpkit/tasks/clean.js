@@ -7,10 +7,16 @@ import { config } from '../config/config_clean.js';
 
 export { clean as default };
 
-/** @module tasks/clean */
 /**
- * dist 先のクリーンアップを行う。
- * 削除するファイルは、Untracked file のみ。
+ * @module tasks/clean
+ * @requires node:child_process
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../config/config_clean.js
+ */
+/**
+ * dist 先のクリーンアップを行う。<br>
+ * 削除するファイルは、Untracked file のみ。<br>
  * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。
  * default としてエクスポート。 @returns {Promise<void>}
  */

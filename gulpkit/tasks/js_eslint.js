@@ -12,7 +12,17 @@ import { config, options } from '../config/config_js_eslint.js';
 
 export { js_eslint as default };
 
-/** @module tasks/js_eslint */
+/**
+ * @module tasks/js_eslint
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires eslint
+ * @requires through2
+ * @requires fancy-log
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_js_eslint.js
+ */
 /**
  * JavaScriptのLintを実行するタスク。<br>
  * default としてエクスポート。
@@ -30,6 +40,7 @@ function js_eslint() {
 /**
  * ESLint を実行するためのストリーム処理を提供。<br>
  * 各ファイルに対して ESLint を実行し、結果をログに出力する。
+ * @private
  * @param {Object} esLintOptions - ESLint のオプション設定
  * @returns {Stream} - Gulp ストリーム
  */

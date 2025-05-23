@@ -16,7 +16,17 @@ const
   PLACEHOLDER = config.placeholder
 ;
 
-/** @module tasks/img_sprite */
+/**
+ * @module tasks/img_sprite
+ * @requires gulp
+ * @requires gulp.spritesmith
+ * @requires gulp-plumber
+ * @requires gulp-if
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_img_sprite.js
+ */
 /**
  * PNGスプライトを作成するタスク。<br>
  * default としてエクスポート。
@@ -32,6 +42,7 @@ function img_sprite() {
 
 /**
  * 任意の各フォルダ毎に、PNG スプライトを作成する。<br>
+ * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
  * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp stream

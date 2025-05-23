@@ -39,6 +39,15 @@ export {
  * @module lib/diff_build
  * @description 差分用コマンドの出力に従ってファイルを選び、<br>
  * 依存関係にあるファイルや任意の同じグループに属する他のファイルなどをビルド対象にする。
+ * @requires node:fs/promises
+ * @requires node:child_process
+ * @requires node:process
+ * @requires node:path
+ * @requires through2
+ * @requires fancy-log
+ * @requires chalk
+ * @requires p-limit
+ * @requires last_diff
  */
 /**
  * Git で管理する前提での差分ビルド。<br>
@@ -121,6 +130,7 @@ function _addResetStateListeners(
 /**
  * One source → One destination 用のストリーム作成。<br>
  * Git Diff で検知されたfile のみを対象にする。<br>
+ * @private
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
@@ -161,6 +171,7 @@ function _createOneToOneFilesStream( diffBuildProc, settings ) {
  * or<br>
  * 渡されてきたファイル以外に必要な対象ファイルを併せてストリームに渡す。<br>
  * 例えば、iconFont sprite.smithなどのタスク用。
+ * @private
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
@@ -522,7 +533,7 @@ class DiffBuildProcessor {
  * through2.obj()の flush function の内部で実行。<br>
  * 各タスクで汎用的に使用できるため、エクスポートする。
  * @param {String} filePath - ファイルパス
- * @param {Object} collectedFileMap - 収集した依存関係
+ * @param {Map} collectedFileMap - 収集した依存関係
  * @param {Set} selectedFileMap - 通過させるファイルパスの格納用
  */
 function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) {
@@ -547,8 +558,9 @@ function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) 
 
 /**
  * ファイルを読み込みストリームにプッシュする。
+ * @private
  * @param {String} filePath - ファイルパス
- * @param {Map} allFiles - すべてのファイル情報
+ * @param {Map} allFiles - すべてのファイルの情報
  * @param {Stream} stream - Gulp stream
  * @returns {Promise<void>} - Promise
  */
@@ -569,6 +581,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
  * プロセスの最終処理。<br>
  * 検知数と通過させた数のログを出力。<br>
  * 直近の差分データとして、lastDiff に書き込む。
+ * @private
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定
  * @returns {Promise<void>} - Promise
@@ -593,6 +606,7 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
 /**
  * 差分一覧のファイルへの書き込み。<br>
  * ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。
+ * @private
  * @returns {Promise<void>} - Promise
  */
 async function _writeDiffData() {
@@ -610,6 +624,7 @@ async function _writeDiffData() {
 
 /**
  * 検知数と通過させた数のログを出力。
+ * @private
  * @param {String} name - タスク名
  * @param {Number} detected - 検知されたファイル数
  * @param {Number} total - 通過したファイル数
@@ -623,6 +638,7 @@ function _log( name, detected, total ) {
 
 /**
  * 差分ファイルリストに、filePath が含まれているか調べる。
+ * @private
  * @param {Object} diffData - 差分ファイルリスト
  * @param {String} filePath - ファイルパス
  * @returns {Boolean} - true or false
@@ -634,9 +650,9 @@ function _includes( diffData, filePath ) {
 
 /**
  * git status 結果を整形<br>
- * 'git status -suall <dir>'で得られるファイルパスをkey に、<br>
- * 属性（「M」 や「?」 など）をその値にして、<br>
- * oject（差分ファイルリスト） の作成。
+ * git status -suall &lt;dir&gt;で得られるファイルパスをkey に、<br>
+ * 属性（「M」 や「?」 など）をその値にし oject（差分ファイルリスト） の作成。
+ * @private
  * @param {String} command - git コマンド
  * @param {String} name - タスク名
  * @returns {Promise<Object>} - 差分ファイルリスト
@@ -668,6 +684,7 @@ function _getGitDiffData( settings, ref1, ref2 ) {
 
 /**
  * 渡された文字列をObject にして返す。
+ * @private
  * @param {string} str - 基にする文字列
  * @returns {Object} - 生成したObject
  */

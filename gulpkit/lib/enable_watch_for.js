@@ -4,10 +4,15 @@ import { argv  } from 'node:process';
 
 export { enableWatchForCommandLineTask as default };
 
-/** @module lib/enable_watch_for */
+/**
+ * @module lib/enable_watch_for
+ * @requires gulp
+ * @requires node:process
+ */
 /**
  * コマンドラインからGulp <task> として、特定のタスクを個別に実行する際に、<br>
- * watch や live reload も機能させる。
+ * watch や live reload も機能させる。<br>
+ * default としてエクスポート。
  * @param {Object} tasks - Gulp タスク
  */
 function enableWatchForCommandLineTask( tasks ) {

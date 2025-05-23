@@ -22,7 +22,12 @@ const
   }
 ;
 
-/** @module config/common */
+/**
+ * @module config/common
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ./env_type.js
+ */
 /**
  * 各タスクで共通の設定は環境変数に応じて各タスクの設定に先んじて、切り替えを行う。
  * ソースマップ、差分ビルド、watch などの有効の有無等。

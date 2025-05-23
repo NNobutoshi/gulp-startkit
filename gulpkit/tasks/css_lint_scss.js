@@ -11,7 +11,17 @@ import { config, options } from '../config/config_css_lint_scss.js';
 
 export { css_lint_scss as default };
 
-/** @module tasks/css_lint_scss */
+/**
+ * @module tasks/css_lint_scss
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires through2
+ * @requires stylelint
+ * @requires fancy-log
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_css_lint_scss.js
+ */
 /**
  * SCSS のLint を実行するタスク。<br>
  * default としてエクスポート。

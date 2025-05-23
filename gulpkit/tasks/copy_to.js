@@ -8,7 +8,14 @@ import { config, options } from '../config/config_copy_to.js';
 
 export { copy_to as default };
 
-/** @module tasks/copy_to */
+/**
+ * @module tasks/copy_to
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_copy_to.js
+ */
 /**
  * 指定されたファイルをコピーするタスク。
  * default としてエクスポート。 @returns {Stream} - Gulp stream

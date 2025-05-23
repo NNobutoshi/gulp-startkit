@@ -12,7 +12,18 @@ import { config, options } from '../config/config_img_sprite_svg.js';
 
 export { img_sprite_svg as default };
 
-/** @module tasks/img_sprite_svg */
+/**
+ * @module tasks/img_sprite_svg
+ * @requires gulp
+ * @requires gulp-svg-sprite
+ * @requires gulp-plumber
+ * @requires gulp-if
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/lint_svg.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_img_sprite_svg.js
+ */
 /**
  * SVGスプライトを作成するタスク。<br>
  * default としてエクスポート。
@@ -29,6 +40,7 @@ function img_sprite_svg() {
 
 /**
  * 任意に命名されたフォルダ毎に、SVG スプライトを作成する。
+ * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
  * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp stream

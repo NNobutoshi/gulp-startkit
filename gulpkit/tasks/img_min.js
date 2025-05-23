@@ -9,7 +9,15 @@ import { config, options } from '../config/config_img_min.js';
 
 export { img_min as default };
 
-/** @module tasks/img_min */
+/**
+ * @module tasks/img_min
+ * @requires gulp
+ * @requires gulp-imagemin
+ * @requires gulp-plumber
+ * @requires imagemin-pngquant
+ * @requires ../lib/diff_build.js
+ * @requires ../config/config_img_min.js
+ */
 /**
  * 画像を圧縮するタスク。<br>
  * default としてエクスポート。

@@ -6,7 +6,12 @@ import chalk    from 'chalk';
 
 export { logSteamData as default };
 
-/** @module lib/log_stream_data */
+/**
+ * @module lib/log_stream_data
+ * @requires through2
+ * @requires fancy-log
+ * @requires chalk
+ */
 const defaultSettings = {
   onStream     : true,
   forEachFile  : true,
@@ -15,8 +20,6 @@ const defaultSettings = {
 
 /**
  * Gulp stream のデータをログに出力する。
- * @param {String} title - タスク名などlog 冒頭に表示させたい文字列
- * @param {String} subTitle - 何をしたかを表す文字列
  * @param {Object} options - 色や出力の制限などが設定可能なオプション
  * @returns {Stream} - 処理されたストリーム
  */

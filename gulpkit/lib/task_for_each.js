@@ -6,12 +6,16 @@ import mergeStream from 'merge-stream';
 export { assignTaskForEachGroup as default };
 
 /**
+ * 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させる。
  * @module lib/task_for_each
- * @description 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させるユーティリティ。
+ * @requires node:path
+ * @requires through2
+ * @requires merge-stream
  */
 /**
- * 指定のグループに従ってsource を小分けにする 。
- * @param {String} group - 任意のグループ名( 部分的ディレクトリ名)、例：'/fonts/icons/'
+ * 指定のグループに従ってsource を小分けにする 。<br>
+ * default としてエクスポート。
+ * @param {String} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
  * @param {String} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  */
@@ -23,8 +27,9 @@ function assignTaskForEachGroup( group, base, branchTask ) {
 /**
  * 指定のグループに従ってsource を小分けにする 。
  * 実際に指定のグループ名に則してディレクトリが構成されていることが大前提。
+ * @private
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {String} group - 任意のグループ名( 部分的ディレクトリ名)、例：'/fonts/icons/'
+ * @param {String} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
  * @param {String} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  * @returns {Stream} - 処理されたストリーム

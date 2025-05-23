@@ -27,7 +27,15 @@ const
   ,force = ( process.argv.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
-/** @module pug_tmp_engine */
+/**
+ * @module pug_tmp_engine
+ * @requires node:fs/promises
+ * @requires node:path
+ * @requires node:url
+ * @requires fancy-log
+ * @requires xlsx
+ * @requires ../utilities/exists.js
+ */
 /**
  * Excel のデータを JSON に変換する。
  * @function _run
@@ -50,6 +58,7 @@ const
 
 /**
  * Excel のデータを JSON に変換する。
+ * @private
  * @param {object} workBook - Excel のデータ
  * @returns {object} JSON データ
  */
@@ -61,6 +70,7 @@ function _xlsxToJson( workBook ) {
 
 /**
  * Pug の設定ファイルを読み込む。
+ * @private
  * @returns {object} Pug の設定ファイルの内容
  */
 async function _readConfigFile() {
@@ -86,6 +96,7 @@ function _getIndent( configContent, indentRegeX ) {
 }
 
 /**
+ * @private
  * @param {object} jSONData - JSON データ
  * @param {string} indent - インデント
  * @returns {string} JSON データから変換された文字列
@@ -101,6 +112,7 @@ function _deleteWrapperParen( jSONData, indent ) {
 
 /**
  * Pug の設定ファイルに書き込む。
+ * @private
  * @param {string} content - Pug の設定ファイルの内容
  * @param {string} newStrings - 新しい文字列
  * @param {string} indent - インデント
@@ -118,6 +130,7 @@ async function _writePugConfigFile( content, newStrings, indent ) {
 /**
  * JSON データを変換する。
  * データ中のurl をkey にするObject に作り変える。
+ * @private
  * @param {object} data - JSON データ
  * @returns {object} 変換された JSON データ
  */
@@ -133,6 +146,7 @@ function _reJsonData( data ) {
 
 /**
  * Pug のファイルを作成する。
+ * @private
  * @param {object} props - Pug のプロパティ
  * @param {Function} createPugFile - Pug ファイルを作成する関数
  */
@@ -160,6 +174,7 @@ async function _createPugFileByProps( props, createFile ) {
 
 /**
  * Pug ファイルを作成する。
+ * @private
  * @param {string} pugUrl - Pug ファイルの URL
  * @param {string} htmlUrl - HTML ファイルの URL
  * @param {string} template - テンプレート
@@ -179,6 +194,7 @@ async function _createPugFile( pugUrl, htmlUrl, template ) {
 
 /**
  * テンプレートファイルを読み込む。
+ * @private
  * @param {string} template - テンプレートファイルの URL
  * @returns {string} テンプレートファイルの内容
  */
@@ -192,6 +208,7 @@ async function _readTemplateFile( template ) {
 
 /**
  * Pug ファイルを書き込む。
+ * @private
  * @param {string} content - Pug ファイルの内容
  * @param {string} pugUrl - Pug ファイルの URL
  * @param {string} htmlUrl - HTML ファイルの URL

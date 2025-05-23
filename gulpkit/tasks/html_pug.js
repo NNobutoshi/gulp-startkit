@@ -19,7 +19,21 @@ export { html_pug as default };
 const CHARSET = 'utf-8';
 let pugData;
 
-/** @module tasks/html_pug */
+/**
+ * @module tasks/html_pug
+ * @requires node:path
+ * @requires node:buffer
+ * @requires node:fs
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires pug
+ * @requires through2
+ * @requires js-beautify
+ * @requires image-size/fromFile
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_html_pug.js
+ */
 /**
  * Pug を実行するタスク。
  * default としてエクスポート。
@@ -42,6 +56,7 @@ function html_pug() {
 
 /**
  * Pug の実行前に、Pug に渡すデータをセットする。<br>
+ * @private
  * @returns {Object} - Gulp stream
  */
 function _setPugData() {
@@ -73,6 +88,7 @@ function _setPugData() {
  *     'chunk自身のパス'
  *   ]
  * }
+ * @private
  * @param {Object} file - vinyl オブジェクト
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */
@@ -99,6 +115,7 @@ function _collectImporterFiles( file, collectedFiles ) {
 
 /**
  * Pug の実行。
+ * @private
  * @returns {object} - Gulp stream
  */
 function _renderPug() {
@@ -130,6 +147,7 @@ function _renderPug() {
 /**
  * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
+ * @private
  * @returns {object} - Gulp stream
  */
 function _formatHtml() {
@@ -176,6 +194,7 @@ function _formatHtml() {
 
 /**
  * img サイズの自動挿入
+ * @private
  * @returns {object} - Gulp stream
  */
 function _injectImageSize() {
@@ -222,49 +241,52 @@ function _injectImageSize() {
     }
   } );
 
-  /**
-   * img || source 要素に width と height を追加する。
-   * @param {Object} match
-   * @param {Object} file
-   * @param {Map} map
-   * @param {Function} errorCallback
-   * @returns {Promise<void>}
-   */
-  async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
+}
+
+/**
+ * img || source 要素に width と height を追加する。
+ * @private
+ * @param {Object} match RegExp から得られるマッチした文字列が格納された配列
+ * @param {Object} file 参照するファイル（vinyl オブジェクト）
+ * @param {Map} map match[0] をkey にし、値にwidth 、height が設定されたimg 要素の文字列を代入するMap オブジェクト
+ * @param {Function} errorCallback ストリームにエラーを伝えるCallback
+ * @returns {Promise<void>}
+ */
+async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
+  const
+    fullStr    = match[ 0 ]
+    ,tagName   = match[ 1 ]
+    ,frontPart = match[ 2 ]
+    ,attrName  = match[ 3 ]
+    ,q         = match[ 4 ]
+    ,srcPath   = match[ 5 ]
+    ,query     = match[ 6 ]
+    ,rearPart  = match[ 7 ]
+    ,absoluteSrcPath = _absolutePath( srcPath, config.base, file.dirname )
+  ;
+  try {
     const
-      fullStr    = match[ 0 ]
-      ,tagName   = match[ 1 ]
-      ,frontPart = match[ 2 ]
-      ,attrName  = match[ 3 ]
-      ,q         = match[ 4 ]
-      ,srcPath   = match[ 5 ]
-      ,query     = match[ 6 ]
-      ,rearPart  = match[ 7 ]
-      ,absoluteSrcPath = _absolutePath( srcPath, config.base, file.dirname )
-    ;
-    try {
-      const
-        dimensions = await imageSizeFromFile( absoluteSrcPath )
-        ,elementWithSize  =
+      dimensions = await imageSizeFromFile( absoluteSrcPath )
+      ,elementWithSize  =
                     `<${ tagName }${ frontPart }${ attrName }=`
                   + `${ q }${ srcPath }${ query }${ q } `
                   + `width=${ q }${ dimensions.width }${ q } `
                   + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`
       ;
-      map.set( fullStr, elementWithSize );
-    } catch ( err ) {
-      errorCallback( err );
-    }
+    map.set( fullStr, elementWithSize );
+  } catch ( err ) {
+    errorCallback( err );
   }
 }
 
 /**
- * 閉じタグ付近に付けるコメントに関する体裁。
- * @param {String} _full
- * @param {String} endTag
- * @param {String} lineFeed
- * @param {String} indent
- * @param {String} comment
+ * 閉じタグ付近に付けるコメントに関する体裁を整える。
+ * @private
+ * @param {String} _full RegExP で得られるマッチする全文字列
+ * @param {String} endTag RegExP で得られる閉じタグにあたる文字列
+ * @param {String} lineFeed RegExP で得られる改行コードにあたる文字列
+ * @param {String} indent RegExP で得られるインデントにあたる文字列
+ * @param {String} comment RegExP で得られるコメントタグの'&lt;!--'と'--&gt;'を除く文字列
  * @returns {String} 置換文字列
  */
 function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
@@ -319,6 +341,7 @@ function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
 
 /**
  * srcPath が外部の src か否かを調べる。
+ * @private
  * @param {String} srcPath
  * @return {Boolean}
  */
@@ -327,6 +350,7 @@ function _isExternalSrc( srcPath ) {
 }
 
 /** srcPath がルートパスか否かを調べる。
+ * @private
  * @param {String} srcPath
  * @return {Boolean}
  */
@@ -336,6 +360,7 @@ function _isRootPath( srcPath ) {
 
 /**
  * srcPath を絶対パスにする。
+ * @private
  * @param {String} srcPath
  * @param {String} base
  * @param {String} dirname

@@ -13,11 +13,15 @@ let
   lastDiffData = null
 ;
 
-/** @module lib/last_diff */
 /**
- * Git コマンドで得たタスク終了時までの差分データを取得。
+ * Git コマンドで得たタスク終了時までの差分データを取得。<br>
  * また、ファイル保存する。
+ * @module lib/last_diff
+ * @requires node:fs/promises
+ * @requires node:path
+ * @requires ../utilities/exists
  */
+
 export default {
   get    : _getLastDiffData,
   set    : _setLastDiffData,
@@ -27,8 +31,8 @@ export default {
 };
 
 /**
- * モジュールスコープ変数に代入されている差分ファイルリスト（Object）を優先して取得。
- * 未代入であれば、保存先ファイルから取得。
+ * モジュールスコープ変数に代入されている差分ファイルリスト（Object）を優先して取得。<br>
+ * 未代入であれば、保存先ファイルから取得。<br>
  * 保存ファイルが存在しなければ、空のObject を返す。
  * @function _getLastDiffData
  * @returns {Object} - lastDiffData
@@ -78,6 +82,8 @@ async function _writeDiffDataToFile() {
 
 /**
  * リセット。
+ * @example
+ * lastDiffData = null;
  */
 function _reset() {
   lastDiffData = null;

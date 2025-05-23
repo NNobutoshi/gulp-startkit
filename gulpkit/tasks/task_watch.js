@@ -14,9 +14,16 @@ let
   ,taskSet = new Set()
 ;
 
-/** @module tasks/task_watch */
 /**
- * gulp watch タスクを生成する関数
+ * @module tasks/task_watch
+ * @requires gulp
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../config/config_task_watch.js
+ * @requires ../config/index.js
+ */
+/**
+ * gulp watch タスクを生成する。<br>
  * default としてエクスポート。
  * @param {Array} tasks - タスクの配列
  * @param {Function} nextTask - 次に実行するタスク
@@ -60,6 +67,7 @@ function task_watch( tasks, nextTask ) {
 
 /**
  * 一定時間内の連続実行は間引きし、一定時間後に集めたタスクを実行する。
+ * @private
  * @param {Function} task - タスク
  * @param {Function} nextTask - 次に実行するタスク
  * @returns {Function} - gulp タスク
@@ -75,6 +83,7 @@ function _addTaskToSet( task, nextTask ) {
 
 /**
  * Gulp Watch で集めたタスクをGulp series でつなげて実行する。
+ * @private
  * @param {Function} nextTask - 次に実行するタスク
  * @returns {Function}
  */
@@ -91,6 +100,7 @@ function _runChainedTasks( nextTask ) {
 
 /**
  * watch タスクの完了を待つ。
+ * @private
  * @param {Function} done - gulp タスクの完了コールバック
  */
 function watchWaiting( done ) {

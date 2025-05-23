@@ -6,7 +6,7 @@ import plumber   from 'gulp-plumber';
 import webpack   from 'webpack';
 import log       from 'fancy-log';
 import through   from 'through2';
-import mergeWith from 'lodash/mergeWith.js';
+import merge     from 'lodash/merge.js';
 import isEqual   from 'lodash/isEqual.js';
 
 import { config, options } from '../config/config_js_webpack.js';
@@ -21,7 +21,23 @@ let
   ,webpackConfig = config.webpackConfig
 ;
 
-/** @module tasks/js_webpack */
+/**
+ * @module tasks/js_webpack
+ * @requires node:path
+ * @requires node:fs/promises
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires webpack
+ * @requires fancy-log
+ * @requires through2
+ * @requires lodash/merge.js
+ * @requires lodash/isEqual.js
+ * @requires ../config/config_js_webpack.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../lib/prepare_webpack_config.js
+ * @requires ../lib/webpack_config.js
+ */
 /**
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
  * watch はGulpのものを使用。<br>
@@ -32,7 +48,6 @@ let
 /**
  * config.js 側で'filesystem' の指定があれば、cacheDirectory をここで指定。<br>
  * 'memory' が指定されているとcacheDirectory をそのままにしておけないため。
- * @member
  */
 if ( webpackConfig.cache?.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
@@ -53,6 +68,7 @@ function js_webpack() {
 
 /**
  * webpack のconfig ファイルをstream のchunk 情報を元に整形し準備する。<br>
+ * @private
  * @returns {Object} - Gulp stream
  */
 function _prepareWebpackConfig() {
@@ -65,7 +81,8 @@ function _prepareWebpackConfig() {
   return through.obj( _transform, _flush );
 
   /**
-   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。<br>
+   * chunkのpath やconfig.js の設定からentry や splitChunks を作る。
+   * @private
    * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {string} enc - エンコーディングの種類
    * @param {Function} callback - 実行して処理の完了を伝える
@@ -100,11 +117,11 @@ function _prepareWebpackConfig() {
     ) {
       // 新しく構成された entry や splitChunks が既存のものと異なる場合、マージする。
       webpackConfig.entry = entries;
-      mergeWith( webpackConfig.output, {
+      merge( webpackConfig.output, {
         filename : '[name].js',
         path : path.resolve( process.cwd(), config.dist ),
       } );
-      mergeWith( webpackConfig.optimization, {
+      merge( webpackConfig.optimization, {
         splitChunks : {
           cacheGroups : splitChunksGroups,
         }
@@ -117,6 +134,7 @@ function _prepareWebpackConfig() {
 
 /**
  * webpack のコンパイルを実行する。
+ * @private
  * @returns {Stream} - Gulp stream
  */
 function _runWebpack() {
@@ -158,6 +176,7 @@ function _runWebpack() {
  * vendor など、ディレクトリで共通で使用するモジュールは、
  * そのディレクトリ毎で設定が行えるようにする。
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
+ * @private
  * @param {Object} groups - webpackConfig の cacheGroups
  * @param {String} chunkConfigPath - JSON data のpath
  * @returns {Promise<void>}
@@ -171,11 +190,12 @@ async function _createSplitChunks( groups, chunkConfigPath ) {
     const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
     chunkConfig[ key ].test = new RegExp( test );
   }
-  mergeWith( groups, chunkConfig );
+  merge( groups, chunkConfig );
 }
 
 /**
  * エントリーパスから Webpack 用の key と val を作成する
+ * @private
  * @param {string} filePath - 対象のファイルパス
  * @returns {{ entryName: string, relativeEntryPath: string }}
  */
