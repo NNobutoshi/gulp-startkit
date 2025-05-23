@@ -1,9 +1,11 @@
-import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import path                           from 'node:path';
+import { fileURLToPath }              from 'node:url';
 
 import fanctLog from 'fancy-log';
 import XLSX     from 'xlsx';
+
+import existsFile from '../utilities/exists.js';
 
 const
   CHARSET               = 'utf-8'
@@ -164,7 +166,7 @@ async function _createPugFileByProps( props, createFile ) {
  */
 async function _createPugFile( pugUrl, htmlUrl, template ) {
   try {
-    const isNew = !await _exists( pugUrl );
+    const isNew = !await existsFile( pugUrl );
     if ( !isNew && force === false ) {
       return;
     }
@@ -205,19 +207,5 @@ async function _writePugFile( content, pugUrl, htmlUrl, isNew ) {
     }
   } catch ( err ) {
     return console.error( err.stack );
-  }
-}
-
-/**
- * ファイルの存在を確認する。
- * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
- * @returns {Promise<void>}
- */
-async function _exists( filePath ) {
-  try {
-    await access( filePath );
-    return true;
-  } catch {
-    return false;
   }
 }

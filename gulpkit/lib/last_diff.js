@@ -1,5 +1,7 @@
-import { mkdir, readFile, writeFile, rm, access } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
+
+import existsFile from '../utilities/exists.js';
 
 const
   FILEPATH = path.resolve( process.cwd(), '.last_diff/.diffmap' )
@@ -35,7 +37,7 @@ async function _getLastDiffData() {
   if ( lastDiffData ) {
     return lastDiffData;
   }
-  if ( await _exists( FILEPATH ) ) {
+  if ( await existsFile( FILEPATH ) ) {
     try {
       const fileContent =  await readFile( FILEPATH, CHARSET );
       lastDiffData = JSON.parse( fileContent );
@@ -46,20 +48,6 @@ async function _getLastDiffData() {
     lastDiffData = {};
   }
   return lastDiffData;
-}
-
-/**
- * ファイルの存在を確認する。
- * @param {String} filePath - 直近の差分情報が書き込まれたファイルのパス
- * @returns {Promise<void>}
- */
-async function _exists( filePath ) {
-  try {
-    await access( filePath );
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 /**
@@ -79,7 +67,7 @@ async function _writeDiffDataToFile() {
     return false;
   }
   try {
-    if ( await _exists( DIRNAME ) ) {
+    if ( await existsFile( DIRNAME ) ) {
       await mkdir( DIRNAME, { recursive : true } );
     }
     await writeFile( FILEPATH, JSON.stringify( lastDiffData, null, 2 ), CHARSET );
