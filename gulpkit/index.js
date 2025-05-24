@@ -3,7 +3,7 @@ import { series, parallel } from 'gulp';
 import * as tasks from './tasks/index.js';
 import enableWatchForCommandLineTask from './lib/enable_watch_for.js';
 
-export { main as default, html, img, css, js, watchForCommanLineTask };
+export { main as default, html, img, css, js, icon, watchForCommanLineTask };
 
 /**
  * @module gulpkit/index
@@ -102,18 +102,18 @@ function html( done ) {
  * @example
  * function img( done ) {
  *   series(
- *     tasks.css_lint_scss,
  *     tasks.img_min,
  *     tasks.img_sprite,
  *     tasks.img_sprite_svg,
  *     tasks.css_sass,
+ *     tasks.css_lint_scss,
  *     tasks.init_browse,
  *     series(
  *       tasks.task_watch( [
- *         tasks.css_lint_scss,
  *         tasks.img_min,
  *         tasks.img_sprite,
  *         tasks.img_sprite_svg,
+ *         tasks.css_lint_scss,
  *         tasks.css_sass,
  *       ],
  *       tasks.reload_browse ),
@@ -123,18 +123,18 @@ function html( done ) {
  */
 function img( done ) {
   series(
-    tasks.css_lint_scss,
     tasks.img_min,
     tasks.img_sprite,
     tasks.img_sprite_svg,
+    tasks.css_lint_scss,
     tasks.css_sass,
     tasks.init_browse,
     series(
       tasks.task_watch( [
-        tasks.css_lint_scss,
         tasks.img_min,
         tasks.img_sprite,
         tasks.img_sprite_svg,
+        tasks.css_lint_scss,
         tasks.css_sass,
       ],
       tasks.reload_browse ),
@@ -204,6 +204,40 @@ function js( done ) {
       tasks.task_watch( [
         tasks.js_eslint,
         tasks.js_webpack,
+      ],
+      tasks.reload_browse ),
+    ),
+  )( done );
+}
+
+/**
+ * アイコン 関連タスク
+ * @param {Function} done - gulp タスク完了のコールバック
+ * @example
+ * function icon( done ) {
+ *   series(
+ *     tasks.icon_font,
+ *     tasks.css_lint_scss,
+ *     tasks.init_browse,
+ *     series(
+ *       tasks.task_watch( [
+ *         tasks.icon_font,
+ *         tasks.css_lint_scss,
+ *       ],
+ *       tasks.reload_browse ),
+ *     ),
+ *   )( done );
+ * }
+ */
+function icon( done ) {
+  series(
+    tasks.icon_font,
+    tasks.css_lint_scss,
+    tasks.init_browse,
+    series(
+      tasks.task_watch( [
+        tasks.icon_font,
+        tasks.css_lint_scss,
       ],
       tasks.reload_browse ),
     ),
