@@ -62,7 +62,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
       branchFontName = options.iconfont.fontName.replace( PLACEHOLDER, baseDir.replace( /\//, '_' ) )
       ,iconFontOptions = { ...options.iconfont,
         fontName : branchFontName,
-        timeStamp : await _getTimestamp( branchSrc ),
+        timestamp : await _getTimestamp( branchSrc ),
       }
       ,templateData = { ...options.iconFontScss,
         fontName : branchFontName,
