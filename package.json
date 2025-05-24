@@ -7,8 +7,8 @@
     "prd": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production gulp",
     "one": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
     "bld": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
-    "one_cref": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/build_by_comparing_refs.js",
-    "bld_cref": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/build_by_comparing_refs.js",
+    "one_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/run_task_by_diff_refs.js",
+    "bld_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/run_task_by_diff_refs.js",
     "pug_tmp_engine": "node ./gulpkit/pug_tmp_engine/index.js & npm run dev html_pug",
     "pug_tmp_engine_rewrite": "node ./gulpkit/pug_tmp_engine/index.js force & npm run dev html_pug",
     "jsdoc": "jsdoc -c jsdoc.conf.json"

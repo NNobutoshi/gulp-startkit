@@ -40,9 +40,9 @@ let pugData;
  */
 function html_pug() {
   return gulpSrc( [ config.data ] )
+    .pipe( plumber( options.plumber ) )
     .pipe( _loadPugData() )
     .pipe( gulpSrc( config.src ) )
-    .pipe( plumber( options.plumber ) )
     .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .pipe( _setPugData() )
