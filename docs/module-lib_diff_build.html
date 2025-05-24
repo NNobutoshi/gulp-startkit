@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>lib/diff_build - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-build_by_comparing_refs.html">build_by_comparing_refs</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-build_by_comparing_refs.html#~runTaskByName">runTaskByName</a></li></ul></li><li><a href="module-config_common.html">config/common</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_common.html#.exports.commonConfig">exports.commonConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_common.html#.exports.commonOptions">exports.commonOptions</a></li></ul></li><li><a href="module-config_index.html">config/index</a></li><li><a href="module-config_merge_by_env.html">config/merge_by_env</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-config_merge_by_env.html#.mergeByEnv">mergeByEnv</a></li></ul></li><li><a href="module-config_browse_orig.html">config_browse_orig</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_browse_orig.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_browse_orig.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_browse_orig.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_browse_orig.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_clean.html">config_clean</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_clean.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_clean.html#.prodConfig">prodConfig</a></li></ul></li><li><a href="module-config_copy_to.html">config_copy_to</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_copy_to.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_copy_to.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_copy_to.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_copy_to.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_css_lint_scss.html">config_css_lint_scss</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_css_lint_scss.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_css_lint_scss.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_css_lint_scss.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_css_lint_scss.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_css_sass.html">config_css_sass</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_css_sass.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_css_sass.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_css_sass.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_css_sass.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_html_pug.html">config_html_pug</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_html_pug.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_html_pug.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_html_pug.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_html_pug.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_icon_font.html">config_icon_font</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_icon_font.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_icon_font.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_icon_font.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_icon_font.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_img_min.html">config_img_min</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_img_min.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_min.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_img_min.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_min.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_img_sprite.html">config_img_sprite</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_img_sprite.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_img_sprite_svg.html">config_img_sprite_svg</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_img_sprite_svg.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite_svg.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite_svg.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_img_sprite_svg.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_js_eslint.html">config_js_eslint</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_js_eslint.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_js_eslint.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_js_eslint.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_js_eslint.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_js_webpack.html">config_js_webpack</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_js_webpack.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_js_webpack.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_js_webpack.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_js_webpack.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-config_task_watch.html">config_task_watch</a><ul class='members'><li data-type='member' style='display: none;'><a href="module-config_task_watch.html#.devConfig">devConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_task_watch.html#.devOptions">devOptions</a></li><li data-type='member' style='display: none;'><a href="module-config_task_watch.html#.prodConfig">prodConfig</a></li><li data-type='member' style='display: none;'><a href="module-config_task_watch.html#.prodOptions">prodOptions</a></li></ul></li><li><a href="module-gulpkit_index.html">gulpkit/index</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~css">css</a></li><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~html">html</a></li><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~img">img</a></li><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~js">js</a></li><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~main">main</a></li><li data-type='method' style='display: none;'><a href="module-gulpkit_index.html#~watchForCommanLineTask">watchForCommanLineTask</a></li></ul></li><li><a href="module-lib_diff_build.html">lib/diff_build</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#.diff_build">diff_build</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#.organizeSelectedFileMap">organizeSelectedFileMap</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_addResetStateListeners">_addResetStateListeners</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_createDependencyFilesStream">_createDependencyFilesStream</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_createObjectFromStrings">_createObjectFromStrings</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_createOneToOneFilesStream">_createOneToOneFilesStream</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_finalizeProcessor">_finalizeProcessor</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_getGitDiffData">_getGitDiffData</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_includes">_includes</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_log">_log</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_promisePushReadFileToStream">_promisePushReadFileToStream</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build.html#~_writeDiffData">_writeDiffData</a></li></ul></li><li><a href="module-lib_enable_watch_for.html">lib/enable_watch_for</a></li><li><a href="module-lib_last_diff.html">lib/last_diff</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_last_diff.html#~_delete">_delete</a></li><li data-type='method' style='display: none;'><a href="module-lib_last_diff.html#~_getLastDiffData">_getLastDiffData</a></li><li data-type='method' style='display: none;'><a href="module-lib_last_diff.html#~_reset">_reset</a></li><li data-type='method' style='display: none;'><a href="module-lib_last_diff.html#~_setLastDiffData">_setLastDiffData</a></li><li data-type='method' style='display: none;'><a href="module-lib_last_diff.html#~_writeDiffDataToFile">_writeDiffDataToFile</a></li></ul></li><li><a href="module-lib_lint_svg.html">lib/lint_svg</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_lint_svg.html#~lint_svg">lint_svg</a></li></ul></li><li><a href="module-lib_log_stream_data.html">lib/log_stream_data</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_log_stream_data.html#~logSteamData">logSteamData</a></li></ul></li><li><a href="module-lib_task_for_each.html">lib/task_for_each</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_task_for_each.html#~_groupSources">_groupSources</a></li><li data-type='method' style='display: none;'><a href="module-lib_task_for_each.html#~_runTaskforEachGroup">_runTaskforEachGroup</a></li><li data-type='method' style='display: none;'><a href="module-lib_task_for_each.html#~_setChildSourceToParentMap">_setChildSourceToParentMap</a></li><li data-type='method' style='display: none;'><a href="module-lib_task_for_each.html#~assignTaskForEachGroup">assignTaskForEachGroup</a></li></ul></li><li><a href="module-pug_tmp_engine.html">pug_tmp_engine</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_createPugFile">_createPugFile</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_createPugFileByProps">_createPugFileByProps</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_deleteWrapperParen">_deleteWrapperParen</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_getIndent">_getIndent</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_reJsonData">_reJsonData</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_readConfigFile">_readConfigFile</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_readTemplateFile">_readTemplateFile</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_run">_run</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_writePugConfigFile">_writePugConfigFile</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_writePugFile">_writePugFile</a></li><li data-type='method' style='display: none;'><a href="module-pug_tmp_engine.html#~_xlsxToJson">_xlsxToJson</a></li></ul></li><li><a href="module-tasks_browse.html">tasks/browse</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_browse.html#.init_browse">init_browse</a></li><li data-type='method' style='display: none;'><a href="module-tasks_browse.html#.reload_browse">reload_browse</a></li></ul></li><li><a href="module-tasks_clean.html">tasks/clean</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_clean.html#.clean">clean</a></li><li data-type='method' style='display: none;'><a href="module-tasks_clean.html#~_gitClean">_gitClean</a></li></ul></li><li><a href="module-tasks_copy_to.html">tasks/copy_to</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_copy_to.html#.copy_to">copy_to</a></li></ul></li><li><a href="module-tasks_css_lint_scss.html">tasks/css_lint_scss</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_css_lint_scss.html#~_lintScss">_lintScss</a></li></ul></li><li><a href="module-tasks_css_sass.html">tasks/css_sass</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_css_sass.html#.css_sass">css_sass</a></li><li data-type='method' style='display: none;'><a href="module-tasks_css_sass.html#~_collectImporterFiles">_collectImporterFiles</a></li></ul></li><li><a href="module-tasks_html_pug.html">tasks/html_pug</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#.html_pug">html_pug</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_absolutePath">_absolutePath</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_addImageDimensionsToElementStrings">_addImageDimensionsToElementStrings</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_collectImporterFiles">_collectImporterFiles</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_formatHtml">_formatHtml</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_injectImageSize">_injectImageSize</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_isExternalSrc">_isExternalSrc</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_isRootPath">_isRootPath</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_loadPugData">_loadPugData</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_renderPug">_renderPug</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_replaceEndComment">_replaceEndComment</a></li><li data-type='method' style='display: none;'><a href="module-tasks_html_pug.html#~_setPugData">_setPugData</a></li></ul></li><li><a href="module-tasks_icon_font.html">tasks/icon_font</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_icon_font.html#.icon_font">icon_font</a></li><li data-type='method' style='display: none;'><a href="module-tasks_icon_font.html#~_branchTask">_branchTask</a></li><li data-type='method' style='display: none;'><a href="module-tasks_icon_font.html#~_createScssFile">_createScssFile</a></li><li data-type='method' style='display: none;'><a href="module-tasks_icon_font.html#~_createScssFromGlyphs">_createScssFromGlyphs</a></li><li data-type='method' style='display: none;'><a href="module-tasks_icon_font.html#~_getTimestamp">_getTimestamp</a></li></ul></li><li><a href="module-tasks_img_min.html">tasks/img_min</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_img_min.html#.img_min">img_min</a></li></ul></li><li><a href="module-tasks_img_sprite.html">tasks/img_sprite</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_img_sprite.html#.img_sprite">img_sprite</a></li><li data-type='method' style='display: none;'><a href="module-tasks_img_sprite.html#~_branchTask">_branchTask</a></li></ul></li><li><a href="module-tasks_img_sprite_svg.html">tasks/img_sprite_svg</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_img_sprite_svg.html#.img_sprite_svg">img_sprite_svg</a></li><li data-type='method' style='display: none;'><a href="module-tasks_img_sprite_svg.html#~_branchTask">_branchTask</a></li></ul></li><li><a href="module-tasks_index.html">tasks/index</a></li><li><a href="module-tasks_js_eslint.html">tasks/js_eslint</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_js_eslint.html#.js_eslint">js_eslint</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_eslint.html#~_runEsLint">_runEsLint</a></li></ul></li><li><a href="module-tasks_js_webpack.html">tasks/js_webpack</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#.js_webpack">js_webpack</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_createEntries">_createEntries</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_createSplitChunks">_createSplitChunks</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_createValidPath">_createValidPath</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_runWebPack">_runWebPack</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_runWebpackCompiler">_runWebpackCompiler</a></li><li data-type='method' style='display: none;'><a href="module-tasks_js_webpack.html#~_setUpWebpackCompiler">_setUpWebpackCompiler</a></li></ul></li><li><a href="module-tasks_task_watch.html">tasks/task_watch</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-tasks_task_watch.html#.task_watch">task_watch</a></li><li data-type='method' style='display: none;'><a href="module-tasks_task_watch.html#~_addTaskToSet">_addTaskToSet</a></li><li data-type='method' style='display: none;'><a href="module-tasks_task_watch.html#~_runChainedTasks">_runChainedTasks</a></li><li data-type='method' style='display: none;'><a href="module-tasks_task_watch.html#~watchWaiting">watchWaiting</a></li></ul></li><li><a href="module-utilities_exists.html">utilities/exists</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-utilities_exists.html#~exists">exists</a></li></ul></li></ul><h3>Classes</h3><ul><li><a href="module-lib_diff_build-DiffBuildProcessor.html">DiffBuildProcessor</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html"></a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html"></a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#addAllFilesToSelectionSet">addAllFilesToSelectionSet</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#addDiffFilteredFileToTargetSet">addDiffFilteredFileToTargetSet</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#addFilesFromCollectionToSelectionSet">addFilesFromCollectionToSelectionSet</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#addFilesFromGroupToSelectionSet">addFilesFromGroupToSelectionSet</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#addFilesGroupedWithDeletedToTarget">addFilesGroupedWithDeletedToTarget</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#pushSelectedFilesToStream">pushSelectedFilesToStream</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#resetSharedState">resetSharedState</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#setAnyFileInfoToAllFileMap">setAnyFileInfoToAllFileMap</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#setAssignedGroupToAllFileMap">setAssignedGroupToAllFileMap</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#setContentsToFile">setContentsToFile</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#setImporterFileToCollectionMap">setImporterFileToCollectionMap</a></li><li data-type='method' style='display: none;'><a href="module-lib_diff_build-DiffBuildProcessor.html#setUpChildMaps">setUpChildMaps</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">lib/diff_build</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext">差分用コマンドの出力に従ってファイルを選び、<br>
+依存関係にあるファイルや任意の同じグループに属する他のファイルなどをビルド対象にする。</div>
+            
+
+            
+                
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>差分用コマンドの出力に従ってファイルを選び、<br>
+依存関係にあるファイルや任意の同じグループに属する他のファイルなどをビルド対象にする。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line38">line 38</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:node:fs/promises</li>
+        
+            <li>module:node:child_process</li>
+        
+            <li>module:node:process</li>
+        
+            <li>module:node:path</li>
+        
+            <li>module:through2</li>
+        
+            <li>module:fancy-log</li>
+        
+            <li>module:chalk</li>
+        
+            <li>module:p-limit</li>
+        
+            <li>module:./last_diff.js</li>
+        </ul>
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-lib_diff_build-DiffBuildProcessor.html">DiffBuildProcessor</a></dt>
+            <dd></dd>
+        </dl>
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".diff_build"><span class="type-signature type-signature-static">(static) </span>diff_build<span class="signature">(options, collect, select)</span><span class="type-signature"> &rarr; {Stream}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Git で管理する前提での差分ビルド。<br>
+diff コマンドで検知されたファイルのみを対象とする。<br>
+default としてエクスポート。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">オプション</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>collect</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">依存関係収集用コールバック</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>select</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">通過ファイル選択用コールバック</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 処理されたストリーム
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Stream</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".organizeSelectedFileMap"><span class="type-signature type-signature-static">(static) </span>organizeSelectedFileMap<span class="signature">(filePath, collectedFileMap, selectedFileMap)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>候補ファイルに依存するファイルを再帰選択する。<br>
+through2.obj()の flush function の内部で実行。<br>
+各タスクで汎用的に使用できるため、エクスポートする。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line542">line 542</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filePath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ファイルパス</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>collectedFileMap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Map</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">収集した依存関係</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectedFileMap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Set</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">通過させるファイルパスの格納用</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_addResetStateListeners"><span class="type-signature type-signature-private, inner">(private, inner) </span>_addResetStateListeners<span class="signature">(resetSharedState, firstTasksEndedEventName, tasksEndedEventName)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>各タスクの最初の実行後と、その後のsrc 更新毎にだけ差分データを取得する意図。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line118">line 118</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resetSharedState</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">リスナー関数</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>firstTasksEndedEventName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">発行元のイベント名で、コマンドで最初の1度の呼び出しを想定。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tasksEndedEventName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">発行元のイベント名で、Watch 等で待機中にSrc が更新される度に呼び出す想定。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_createDependencyFilesStream"><span class="type-signature type-signature-private, inner">(private, inner) </span>_createDependencyFilesStream<span class="signature">(diffBuildProc, settings)</span><span class="type-signature"> &rarr; {Stream}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>依存関を伴う他のファイルも含めるストリームを作成。<br>
+例えば、Pug、Sass のコンパイルタスク用。<br>
+or<br>
+渡されてきたファイル以外に必要な対象ファイルを併せてストリームに渡す。<br>
+例えば、iconFont sprite.smithなどのタスク用。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line181">line 181</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>diffBuildProc</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">diffBuildProc</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">差分ビルド処理を行うクラスのインスタンス</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>settings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">設定オブジェクト</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 処理されたストリーム
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Stream</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_createObjectFromStrings"><span class="type-signature type-signature-private, inner">(private, inner) </span>_createObjectFromStrings<span class="signature">(str)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>渡された文字列をObject にして返す。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line697">line 697</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">基にする文字列</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 生成したObject
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_createOneToOneFilesStream"><span class="type-signature type-signature-private, inner">(private, inner) </span>_createOneToOneFilesStream<span class="signature">(diffBuildProc, settings)</span><span class="type-signature"> &rarr; {Stream}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>One source → One destination 用のストリーム作成。<br>
+Git Diff で検知されたfile のみを対象にする。<br></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>diffBuildProc</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">diffBuildProc</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">差分ビルド処理を行うクラスのインスタンス</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>settings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">設定オブジェクト</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 処理されたストリーム
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Stream</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_finalizeProcessor"><span class="type-signature type-signature-async, private, inner">(async, private, inner) </span>_finalizeProcessor<span class="signature">(diffBuildProc, settings)</span><span class="type-signature"> &rarr; {Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>プロセスの最終処理。<br>
+検知数と通過させた数のログを出力。<br>
+直近の差分データとして、lastDiff に書き込む。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line592">line 592</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>diffBuildProc</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">diffBuildProc</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">差分ビルド処理を行うクラスのインスタンス</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>settings</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">設定</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - Promise
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_getGitDiffData"><span class="type-signature type-signature-private, inner">(private, inner) </span>_getGitDiffData<span class="signature">(command, name)</span><span class="type-signature"> &rarr; {Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;Object:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>git status 結果を整形<br>
+git status -suall &lt;dir&gt;で得られるファイルパスをkey に、<br>
+属性（「M」 や「?」 など）をその値にし oject（差分ファイルリスト） の作成。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line666">line 666</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>command</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">git コマンド</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">タスク名</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 差分ファイルリスト
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;Object:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_includes"><span class="type-signature type-signature-private, inner">(private, inner) </span>_includes<span class="signature">(diffData, filePath)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>差分ファイルリストに、filePath が含まれているか調べる。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line652">line 652</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>diffData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">差分ファイルリスト</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filePath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ファイルパス</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - true or false
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Boolean</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_log"><span class="type-signature type-signature-private, inner">(private, inner) </span>_log<span class="signature">(name, detected, total)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>検知数と通過させた数のログを出力。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line635">line 635</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">タスク名</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>detected</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">検知されたファイル数</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>total</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">通過したファイル数</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_promisePushReadFileToStream"><span class="type-signature type-signature-async, private, inner">(async, private, inner) </span>_promisePushReadFileToStream<span class="signature">(filePath, allFiles, stream)</span><span class="type-signature"> &rarr; {Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>ファイルを読み込みストリームにプッシュする。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line570">line 570</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filePath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ファイルパス</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>allFiles</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Map</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">すべてのファイルの情報</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stream</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Stream</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Gulp stream</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - Promise
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_writeDiffData"><span class="type-signature type-signature-async, private, inner">(async, private, inner) </span>_writeDiffData<span class="signature">()</span><span class="type-signature"> &rarr; {Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>差分一覧のファイルへの書き込み。<br>
+ある程度時間を置いての処理で良いため、連続の呼び出しは、間引く。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_diff_build.js.html">lib/diff_build.js</a>, <a href="lib_diff_build.js.html#line615">line 615</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - Promise
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Sat May 24 2025 20:45:41 GMT+0900 (日本標準時) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>
