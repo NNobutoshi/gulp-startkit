@@ -8,7 +8,15 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-// 開発環境用。
+/**
+ * @module config_js_webpack
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+/**
+ * 開発環境用コンフィグオブジェクト。
+ * @memberof module:config_js_webpack
+ */
 const devConfig = {
   src            : [ commonConfig.SRC + '/**/*.{js,json}' ],
   dist           : commonConfig.DIST,
@@ -56,10 +64,13 @@ const devConfig = {
     optimization : {},
   }
 };
-// 本番環境用。
-// 開発環境と異なる設定を行う場合に、
-// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
-// 同一設定の場合はnull を明示的に代入。
+
+/**
+ * 本番環境用コンフィグオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_js_webpack
+ */
 const prodConfig = {
   webpackConfig : {
     devtool : ( commonConfig.SOURCEMAPS_ENABLED ) ? 'source-map' : false,
@@ -76,10 +87,20 @@ const prodConfig = {
   }
 };
 
-// devConf に同じ。
+/**
+ * 開発環境用オプションオブジェクト。
+ * @memberof module:config_js_webpack
+ */
 const devOptions = {
   plumber : commonOptions.plumber,
 };
+
+/**
+ * 本番環境用オプションオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_js_webpack
+ */
 const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。

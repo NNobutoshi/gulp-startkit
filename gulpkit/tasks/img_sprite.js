@@ -11,7 +11,6 @@ import { config, options } from '../config/config_img_sprite.js';
 
 export { img_sprite as default };
 
-
 const
   PLACEHOLDER = config.placeholder
 ;
@@ -30,6 +29,7 @@ const
 /**
  * PNGスプライトを作成するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/img_sprite
  * @returns {Object} - Gulp stream
  */
 function img_sprite() {

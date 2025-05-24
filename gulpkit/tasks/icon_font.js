@@ -36,6 +36,7 @@ const
 /**
  * アイコンフォントを作成するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/icon_font
  * @returns {Stream} - Gulp stream
  */
 function icon_font() {

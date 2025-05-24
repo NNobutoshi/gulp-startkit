@@ -17,8 +17,10 @@ export { clean as default };
 /**
  * dist 先のクリーンアップを行う。<br>
  * 削除するファイルは、Untracked file のみ。<br>
- * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。
- * default としてエクスポート。 @returns {Promise<void>}
+ * Gulp はcallback の実行やStream の代わりにPromise を返してもOK。<br>
+ * default としてエクスポート。
+ * @memberof module:tasks/clean
+ * @returns {Promise<void>}
  */
 async function clean() {
   await _gitClean( config.command );
@@ -26,6 +28,7 @@ async function clean() {
 
 /**
  * Git Command をつかってUntracked fileを、削除。
+ * @private
  * @param {string} command - git clean コマンド
  * @returns {Promise<void>}
  */

@@ -21,6 +21,7 @@ export { img_min as default };
 /**
  * 画像を圧縮するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/img_min
  * @returns {Stream} - Gulp stream
  */
 function img_min() {

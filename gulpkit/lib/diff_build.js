@@ -47,19 +47,20 @@ export {
  * @requires fancy-log
  * @requires chalk
  * @requires p-limit
- * @requires last_diff
+ * @requires ./last_diff.js
  */
 /**
  * Git で管理する前提での差分ビルド。<br>
  * diff コマンドで検知されたファイルのみを対象とする。<br>
  * default としてエクスポート。
+ * @memberof module:lib/diff_build
  * @param {Object} options - オプション
  * @param {Function} collect - 依存関係収集用コールバック
  * @param {Function} select - 通過ファイル選択用コールバック
  * @returns {Stream} - 処理されたストリーム
  */
 function diff_build( options, collect, select ) {
-  const settings = { ...defaultSettings, ...options };
+  const settings = { ...defaultSettings, name : Symbol(), ...options };
   if ( settings.enabled === false ) {
     return through.obj();
   }
@@ -109,6 +110,7 @@ function diff_build( options, collect, select ) {
 
 /**
  * 各タスクの最初の実行後と、その後のsrc 更新毎にだけ差分データを取得する意図。
+ * @private
  * @param {Function} resetSharedState - リスナー関数
  * @param {String} firstTasksEndedEventName - 発行元のイベント名で、コマンドで最初の1度の呼び出しを想定。
  * @param {String} tasksEndedEventName - 発行元のイベント名で、Watch 等で待機中にSrc が更新される度に呼び出す想定。
@@ -532,6 +534,7 @@ class DiffBuildProcessor {
  * 候補ファイルに依存するファイルを再帰選択する。<br>
  * through2.obj()の flush function の内部で実行。<br>
  * 各タスクで汎用的に使用できるため、エクスポートする。
+ * @memberof module:lib/diff_build
  * @param {String} filePath - ファイルパス
  * @param {Map} collectedFileMap - 収集した依存関係
  * @param {Set} selectedFileMap - 通過させるファイルパスの格納用
@@ -630,6 +633,9 @@ async function _writeDiffData() {
  * @param {Number} total - 通過したファイル数
  */
 function _log( name, detected, total ) {
+  if ( typeof name === 'symbol' ) {
+    name = String( name );
+  }
   if ( name ) {
     fancyLog( chalk.gray( `[${ name }]: detected ${ detected } files diff` ) );
     fancyLog( chalk.gray( `[${ name }]: passed ${ total } files` ) );

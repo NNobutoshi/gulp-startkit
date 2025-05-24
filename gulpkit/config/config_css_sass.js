@@ -8,7 +8,15 @@ export { mergedConf as config, mergedOptions as options };
 
 const TASK_NAME = 'css_sass';
 
-// 開発環境用。
+/**
+ * @module config_css_sass
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+/**
+ * 開発環境用コンフィグオブジェクト。
+ * @memberof module:config_css_sass
+ */
 const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.scss' ],
   dist : commonConfig.DIST,
@@ -17,15 +25,21 @@ const devConfig = {
   enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
   sourcemaps_dir    : '/' + commonConfig.SOURCEMAPS_DIR,
 };
-// 本番環境用。
-// 開発環境と異なる設定を行う場合に、
-// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
-// 同一設定の場合はnull を明示的に代入。
+
+/**
+ * 本番環境用コンフィグオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_css_sass
+ */
 const prodConfig = {
   enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
 };
 
-// devConf に同じ。
+/**
+ * 開発環境用オプションオブジェクト。
+ * @memberof module:config_css_sass
+ */
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
@@ -56,6 +70,13 @@ const devOptions = {
     },
   },
 };
+
+/**
+ * 本番環境用オプションオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_css_sass
+ */
 const prodOptions = {
   sass : {
     outputStyle : 'compressed', // nested, compact, compressed, expanded

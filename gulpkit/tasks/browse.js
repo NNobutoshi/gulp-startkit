@@ -25,7 +25,9 @@ const
  * @requires ../utilities/exists.js
  */
 /**
- * BrowserSync を初期化する。
+ * BrowserSync を初期化する。<br>
+ * コンフィグファイルが無い場合（live reload機能が必要のない場合）はCallback のdone を実行してタスクを終了する。
+ * @memberof module:tasks/browse
  * @param {Function} done - Gulp タスク完了のコールバック
  * @returns {Promise<void>}
  */
@@ -43,12 +45,13 @@ async function init_browse( done ) {
     browserSync.init( options );
     // return done();
   } catch ( err ) {
-    throw err.stack;
+    throw err.stack || err;
   }
 }
 
 /**
  * BrowserSync をリロードする。
+ * @memberof module:tasks/browse
  * @param {Function} done - Gulp タスク完了のコールバック
  * @returns {Function}
  */

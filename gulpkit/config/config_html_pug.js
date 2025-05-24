@@ -7,7 +7,15 @@ export { mergedConf as config, mergedOptions as options };
 
 const TASK_NAME = 'html_pug';
 
-// 開発環境用。
+/**
+ * @module config_html_pug
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+/**
+ * 開発環境用コンフィグオブジェクト。
+ * @memberof module:config_html_pug
+ */
 const devConfig = {
   src : [
     ''  + commonConfig.SRC + '/**/*.pug',
@@ -23,13 +31,19 @@ const devConfig = {
   data : path.resolve( process.cwd(), `${ commonConfig.SRC }/_data/_pug_data.json` ),
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
-// 本番環境用。
-// 開発環境と異なる設定を行う場合に、
-// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
-// 同一設定の場合はnull を明示的に代入。
+
+/**
+ * 本番環境用コンフィグオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_html_pug
+ */
 const prodConfig = null;
 
-// devConf に同じ。
+/**
+ * 開発環境用オプションオブジェクト。
+ * @memberof module:config_html_pug
+ */
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
@@ -62,6 +76,13 @@ const devOptions = {
     subtitle  : 'renderd',
   },
 };
+
+/**
+ * 本番環境用オプションオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_html_pug
+ */
 const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。

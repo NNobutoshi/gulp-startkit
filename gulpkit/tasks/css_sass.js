@@ -37,6 +37,7 @@ const
 /**
  * Sass を実行するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/css_sass
  * @returns {Stream} - Gulp stream
  */
 function css_sass() {

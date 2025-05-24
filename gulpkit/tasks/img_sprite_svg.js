@@ -27,6 +27,7 @@ export { img_sprite_svg as default };
 /**
  * SVGスプライトを作成するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/img_sprite_svg
  * @returns {Object} - Gulp stream
  */
 function img_sprite_svg() {

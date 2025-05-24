@@ -25,6 +25,7 @@ let
 /**
  * gulp watch タスクを生成する。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/task_watch
  * @param {Array} tasks - タスクの配列
  * @param {Function} nextTask - 次に実行するタスク
  * @returns {Function} - gulp タスク

@@ -5,20 +5,35 @@ export { mergedConf as config, mergedOptions as options };
 
 const TASK_NAME = 'copy_to';
 
-// 開発環境用。
+/**
+ * @module config_copy_to
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+
+/**
+ * 開発環境用コンフィグオブジェクト。
+ * @memberof module:config_copy_to
+ */
 const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.{mp4,webm}' ],
   base : commonConfig.SRC,
   dist : commonConfig.DIST,
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
-// 本番環境用。
-// 開発環境と異なる設定を行う場合に、
-// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
-// 同一設定の場合はnull を明示的に代入。
+
+/**
+ * 本番環境用コンフィグオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_copy_to
+ */
 const prodConfig = null;
 
-// devConf に同じ。
+/**
+ * 開発環境用オプションオブジェクト。
+ * @memberof module:config_copy_to
+ */
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
@@ -36,6 +51,13 @@ const devOptions = {
     forEachFile : false,
   },
 };
+
+/**
+ * 本番環境用オプションオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_copy_to
+ */
 const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。

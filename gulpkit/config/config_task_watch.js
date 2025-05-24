@@ -3,24 +3,45 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-// 開発環境用。
+/**
+ * @module config_task_watch
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+/**
+ * 開発環境用コンフィグオブジェクト。
+ * @memberof module:config_task_watch
+ */
 const devConfig = {
   watchInitEventName    : commonConfig.EVENT_NAME_WATCH_INIT,
   watchWaitingEventName : commonConfig.EVENT_NAME_WATCH_WAITING,
 };
-// 本番環境用。
-// 開発環境と異なる設定を行う場合に、
-// その異なるプロパティ部分だけの同一構造のオブジェクトを代入。
-// 同一設定の場合はnull を明示的に代入。
+
+/**
+ * 本番環境用コンフィグオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_task_watch
+ */
 const prodConfig = null;
 
-// devConf に同じ。
+/**
+ * 開発環境用オプションオブジェクト。
+ * @memberof module:config_task_watch
+ */
 const devOptions = {
   runChainedTsksDelayTime : 100,
   watch : {
     usePolling : true,
   },
 };
+
+/**
+ * 本番環境用オプションオブジェクト。<br>
+ * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
+ * 同一設定の場合はnull を明示的に代入。
+ * @memberof module:config_task_watch
+ */
 const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。

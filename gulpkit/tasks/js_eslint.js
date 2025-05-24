@@ -26,6 +26,7 @@ export { js_eslint as default };
 /**
  * JavaScriptのLintを実行するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/js_eslint
  * @returns {Object} - Gulp stream
  */
 function js_eslint() {

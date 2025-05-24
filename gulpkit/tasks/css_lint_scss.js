@@ -25,29 +25,34 @@ export { css_lint_scss as default };
 /**
  * SCSS のLint を実行するタスク。<br>
  * default としてエクスポート。
+ * @memberof modlue: tasks/css_lint_scss
  * @returns {Stream} - Gulp stream
  */
 function css_lint_scss() {
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
-    .pipe( through.obj(
-      async function( file, enc, callback ) {
-        try {
-          const { report } = await stylelint.lint( { ...options.stylelint,
-            code : String( file.contents ),
-          } );
-          if ( report ) {
-            fancyLog( report.replace( /<.+?>/, file.path ) );
-          }
-          callback( null, file );
-        } catch ( err ) {
-          callback( err );
-        }
-      },
-    ) )
+    .pipe( _lintScss() )
     .pipe( logStreamData( options.logStreamData ) )
   ;
 }
 
-
+/**
+ * SCSS の構文チェック。
+ * @returns Gulp stream
+ */
+function _lintScss() {
+  return through.obj( async function _transform( file, enc, callback ) {
+    try {
+      const { report } = await stylelint.lint( { ...options.stylelint,
+        code : String( file.contents ),
+      } );
+      if ( report ) {
+        fancyLog( report.replace( /<.+?>/, file.path ) );
+      }
+      callback( null, file );
+    } catch ( err ) {
+      callback( err );
+    }
+  } );
+}

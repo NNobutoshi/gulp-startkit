@@ -8,6 +8,7 @@ export { logSteamData as default };
 
 /**
  * @module lib/log_stream_data
+ * @requires node:path
  * @requires through2
  * @requires fancy-log
  * @requires chalk

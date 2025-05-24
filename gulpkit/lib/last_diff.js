@@ -19,7 +19,7 @@ let
  * @module lib/last_diff
  * @requires node:fs/promises
  * @requires node:path
- * @requires ../utilities/exists
+ * @requires ../utilities/exists.js
  */
 
 export default {

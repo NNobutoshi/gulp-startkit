@@ -1,6 +1,5 @@
 import { Buffer }       from 'node:buffer';
 import path             from 'node:path';
-import { readFileSync } from 'node:fs';
 
 import { src as gulpSrc, dest } from 'gulp';
 import plumber  from 'gulp-plumber';
@@ -16,7 +15,6 @@ import { config, options } from '../config/config_html_pug.js';
 
 export { html_pug as default };
 
-const CHARSET = 'utf-8';
 let pugData;
 
 /**
@@ -35,13 +33,15 @@ let pugData;
  * @requires ../config/config_html_pug.js
  */
 /**
- * Pug を実行するタスク。
+ * Pug を実行するタスク。<br>
  * default としてエクスポート。
+ * @memberof module:tasks/html_pug
  * @returns {Object} - Gulp stream
  */
 function html_pug() {
-  pugData = JSON.parse( readFileSync( config.data ,CHARSET ) );
-  return gulpSrc( config.src )
+  return gulpSrc( [ config.data ] )
+    .pipe( _loadPugData() )
+    .pipe( gulpSrc( config.src ) )
     .pipe( plumber( options.plumber ) )
     .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
@@ -52,6 +52,22 @@ function html_pug() {
     .pipe( dest( config.dist ) )
     .pipe( logStreamData( options.logStreamData ) )
   ;
+}
+
+/**
+ * Gulp src で流れてくるPug 用JSON ファイルを読み込み、<br>
+ * パースを行ってPugData に格納する。
+ * PugData は、Pug の実行時に、Pug に渡すデータとして使用する。
+ * @private
+ * @returns {Object} - Gulp stream
+ */
+function _loadPugData() {
+  return through.obj( function _transform( file, enc, callback ) {
+    if ( file.path === config.data ) {
+      pugData = JSON.parse( String( file.contents ) );
+    }
+    callback();
+  } );
 }
 
 /**
