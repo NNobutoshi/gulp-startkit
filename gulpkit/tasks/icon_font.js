@@ -1,10 +1,15 @@
-import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
+import { cwd }            from 'node:process';
+import { Buffer }         from 'node:buffer';
+import { readFile, stat } from 'node:fs/promises';
 
 import { src as gulpSrc, dest } from 'gulp';
 import iconfont from 'gulp-iconfont';
 import plumber  from 'gulp-plumber';
+import gulpIf   from 'gulp-if';
 
 import Handlebars from 'handlebars';
+import through    from 'through2';
+import Vinyl      from 'vinyl';
 
 import lintSvg                from '../lib/lint_svg.js';
 import assignTaskForEachGroup from '../lib/task_for_each.js';
@@ -18,15 +23,21 @@ export { icon_font as default };
 const
   CHARSET = 'utf-8'
   ,PLACEHOLDER = config.placeholder
+  ,SCSS_FILE_REGEX = /\.scss$/
 ;
 
 /**
  * @module tasks/icon_font
+ * @requires node:process
+ * @requires node:buffer
  * @requires node:fs/promises
  * @requires gulp
  * @requires gulp-iconfont
  * @requires gulp-plumber
+ * @requires gulp-if
  * @requires handlebars
+ * @requires through2
+ * @requires vinyl
  * @requires ../lib/lint_svg.js
  * @requires ../lib/task_for_each.js
  * @requires ../lib/diff_build.js
@@ -34,7 +45,7 @@ const
  * @requires ../config/config_icon_font.js
  */
 /**
- * アイコンフォントを作成するタスク。<br>
+ * アイコンフォントとそのSCSS ファイルを作成するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/icon_font
  * @returns {Stream} - Gulp stream
@@ -49,7 +60,8 @@ function icon_font() {
 }
 
 /**
- * iconfontの設定を行い、アイコンフォントの作成を行う。
+ * アイコンフォントの設定を行い作成する。<br>
+ * アイコンフォント用のscss ファイルを作成する。
  * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
  * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
@@ -62,17 +74,22 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
       branchFontName = options.iconfont.fontName.replace( PLACEHOLDER, baseDir.replace( /\//, '_' ) )
       ,iconFontOptions = { ...options.iconfont,
         fontName : branchFontName,
-        timestamp : await _getTimestamp( branchSrc ),
+        timestamp : await _getLatestTimestamp( branchSrc ),
       }
       ,templateData = { ...options.iconFontScss,
         fontName : branchFontName,
         scssDist : config.scssDist.replace( PLACEHOLDER, baseDir ),
       }
+      ,fontDist = config.fontsDist.replace( PLACEHOLDER, baseDir )
+      ,scssDist = templateData.scssDist
     ;
     return iconfont( branchSrc, iconFontOptions )
-      .on( 'glyphs', _createScssFromGlyphs( templateData, trunkStream ) )
-      .pipe( dest( config.fontsDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) )
-      .pipe( logStreamData( options.logStreamData.iconFont ) )
+      .on( 'glyphs', _setGlyphsToTemplateData( templateData ) )
+      .pipe( gulpIf( _isOptionalFontFile, dest( fontDist, { encoding : false } ) ) )
+      .pipe( gulpIf( _isOptionalFontFile, logStreamData( options.logStreamData.iconFont ) ) )
+      .pipe( _createScssFile( templateData, baseDir ) )
+      .pipe( gulpIf( SCSS_FILE_REGEX, dest( scssDist ) ) )
+      .pipe( gulpIf( SCSS_FILE_REGEX, logStreamData( options.logStreamData.scss ) ) )
     ;
   } catch ( err ) {
     trunkStream.emit( 'error', err );
@@ -82,56 +99,74 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
 
 /**
  * SCSS ファイル作成の準備を行う。<br>
- * 引数にエラーを伝えるためのストリームを渡す。
+ * glypsh イベントのリスナー関数の引数からglypshs を受け取り、<br>
+ * Handlebars 用のtemplateDataにglyphs データを代入。
  * @private
- * @param {Object} templateData - iconfontの設定情報
- * @param {Object} trunkStream - エラーを伝えるために必要
- * @returns {Function} - glyphsを受け取る関数
+ * @param {Object} templateData - Handlebers 用のtemplateData
+ * @returns glypshイベント用のリスナー関数を返す。
  */
-function _createScssFromGlyphs( templateData, trunkStream ) {
+function _setGlyphsToTemplateData( templateData ) {
   return function( glyphs ) {
     glyphs.forEach( ( glyph ) => {
       // unicodeを16進数のcodepointに変換
       glyph.codepoint = glyph.unicode[ 0 ].codePointAt( 0 ).toString( 16 ).toUpperCase();
     } );
     templateData.glyphs = glyphs;
-    _createScssFile( templateData, trunkStream );
   };
 }
 
 /**
- * SCSSファイルを作成する
+ * file （vinyl オブジェクト） のパスを参照し、<br>
+ * オプションで指定のフォントフォーマットに該当するか否かを返す。
  * @private
- * @param {Object} data - iconfontの設定情報
- * @param {Object} errorStream - エラーを伝えるストリーム
- * @returns {Promise<void>}
+ * @param {Object} file - vinyl オブジェクト
+ * @returns Array.prototype.some 結果（真偽値）
  */
-async function _createScssFile( templateData, errorStream ) {
-  try {
-    const
-      content     = await readFile( templateData.templatePath, CHARSET )
-      ,sourceCode = Handlebars.compile( content )( templateData )
-      ,filePath   = `${ templateData.scssDist }/${ templateData.scssFileName }`
-      ,logOptions = { ...options.logStreamData.scss }
-     ;
-    await mkdir( templateData.scssDist, { recursive : true } );
-    await writeFile( filePath, sourceCode, { encoding : CHARSET } );
-    logOptions.subtitle = `${ filePath } ${ logOptions.subtitle }`;
-    logStreamData( logOptions );
-  } catch ( err ) {
-    errorStream.emit( 'error', err );
-  }
+function _isOptionalFontFile( file ) {
+  return options.iconfont.formats.some( element => file.path.endsWith( element ) );
 }
 
 /**
- * ファイルのタイムスタンプ(stats.mtime)を取得し、最も新しいものを返す。
+ * SCSSファイルを作成し、ストリームに流す。
+ * @private
+ * @param {Object} templateData - Handlebers 用のtemplateData
+ * @returns {Promise<void>}
+ */
+function _createScssFile( templateData ) {
+  return through.obj(
+    function _noop( file, _enc, callback ) {
+      callback( null, file );
+    },
+    async function _flush( callback ) {
+      try {
+        const
+          content     = await readFile( templateData.templatePath, CHARSET )
+          ,sourceCode = Handlebars.compile( content )( templateData )
+          ,file = new Vinyl( {
+            cwd  : cwd(),
+            base : cwd(),
+            path : templateData.scssFileName,
+            contents : Buffer.from( sourceCode ),
+          } )
+        ;
+        this.push( file );
+        callback();
+      } catch ( err ) {
+        callback( err );
+      }
+    },
+  );
+}
+
+/**
+ * ファイルのタイムスタンプ(stats.mtime)を取得し、最も新しいものを返す。<br>
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @private
  * @param {Array} filePaths - ファイルパスの配列
  * @returns {Number} - タイムスタンプ
  * @returns {Promise<void>}
  */
-async function _getTimestamp( filePaths ) {
+async function _getLatestTimestamp( filePaths ) {
   let
     latestTimestamp = Math.round( new Date( 0 ) / 1000 )
   ;

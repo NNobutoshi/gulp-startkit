@@ -62,14 +62,12 @@ const devOptions = {
   },
   logStreamData : {
     iconFont :  {
-      title       : TASK_NAME,
-      subtitle    : 'created',
+      title    : TASK_NAME,
+      subtitle : 'created',
     },
     scss : {
-      title       : `${ TASK_NAME }:scss`,
-      subtitle    : 'generated',
-      forEachFile : false,
-      onStream    : false,
+      title    : `${ TASK_NAME }:scss`,
+      subtitle : 'generated',
     },
   },
 };

@@ -66,6 +66,7 @@
     "svglint": "*",
     "terser-webpack-plugin": "*",
     "through2": "*",
+    "vinyl": "*",
     "webpack": "*",
     "webpack-cli": "*",
     "xlsx": "*"
