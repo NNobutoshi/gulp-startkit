@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { src as gulpSrc } from 'gulp';
 import plumber   from 'gulp-plumber';
 import webpack   from 'webpack';
-import log       from 'fancy-log';
+import fancyLog  from 'fancy-log';
 import through   from 'through2';
 import merge     from 'lodash/merge.js';
 import isEqual   from 'lodash/isEqual.js';
@@ -40,8 +40,8 @@ let
  * @description
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
  * watch はGulpのものを使用。<br>
- * entry や splitChunks は、Gulp.src() 後,chunk が通ってくる毎に作成し、<br>
- * 既存の webpackConfigと 比較して差異があれば再代入する。
+ * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくる毎に作成し、<br>
+ * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
  */
 
 /**
@@ -66,7 +66,7 @@ function js_webpack() {
 }
 
 /**
- * webpack のconfig ファイルをstream のchunk 情報を元に整形し、備え、<br>
+ * webpackConfig ファイルをストリームのファイル（vinyl オブジェクト）情報を元に整形して備え、<br>
  * webpack を実行する。
  * @private
  * @returns {Object} - Gulp stream
@@ -83,11 +83,11 @@ function _runWebPack() {
     try  {
       const filePath = file.path;
       // chunk のpath が、splitChunks用のJSON データであれば。
-      if ( file.path.endsWith( splitChunksFileNamePattern ) === true ) {
+      if ( filePath.endsWith( splitChunksFileNamePattern ) === true ) {
         await _createSplitChunks( filePath, splitChunksGroups );
       }
       // entry ファイルであれば。
-      if ( file.path.endsWith( entryFileNamePattern ) === true ) {
+      if ( filePath.endsWith( entryFileNamePattern ) === true ) {
         _createEntries( filePath, entries );
       }
       callback();
@@ -133,8 +133,8 @@ async function _createEntries( filePath, entries ) {
 }
 
 /**
- * webpackCompiler がまだ無いか、新たに作ったentreis や splitChunks がWebpackConfig のものと相違があれば、<br>
- * webpackCompiler を用意する。
+ * webpackCompiler がまだ無いか、新たに作ったentreis や splitChunks がWebpackConfig のそれと差異があれば、<br>
+ * 新たなwebpackConfig でwebpackCompiler を初期化する。
  * @private
  * @param {Object} splitChunksGroups
  * @param {Object} entries
@@ -175,11 +175,11 @@ function _runWebpackCompiler( callback ) {
       return callback( new Error( messages.join( '\n' ) ) );
     }
     if ( stats ) {
-      log( stats.toString( {
+      fancyLog( stats.toString( {
         colors : true,
         chunks : false,
         assets : false,
-        hash : true,
+        hash   : true,
         errors : false,
       } ) );
     }
@@ -199,10 +199,11 @@ function _createValidPath( filePath ) {
       .relative( config.base, filePath )
       .replace( config.entry, '' )
       .replace( /\\/g, '/' )
-    ;
-  let relativeEntryPath = path
-    .relative( process.cwd(), filePath )
-    .replace( /\\/g , '/' )
+  ;
+  let
+    relativeEntryPath = path
+      .relative( process.cwd(), filePath )
+      .replace( /\\/g , '/' )
   ;
   relativeEntryPath = /^\.?\.\//.test( relativeEntryPath )
     ? relativeEntryPath

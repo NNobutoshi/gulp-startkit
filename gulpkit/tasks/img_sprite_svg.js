@@ -12,6 +12,12 @@ import { config, options } from '../config/config_img_sprite_svg.js';
 
 export { img_sprite_svg as default };
 
+const
+  SVG_FILE_REGEX   = /\.svg$/
+  ,SCSS_FILE_REGEX = /\.scss$/
+  ,HTML_FILE_REGEX = /\.html$/
+;
+
 /**
  * @module tasks/img_sprite_svg
  * @requires gulp
@@ -49,11 +55,11 @@ function img_sprite_svg() {
 function _branchTask( branchSrc, baseDir ) {
   return gulpSrc( branchSrc )
     .pipe( svgSprite( options.svgSprite ) )
-    .pipe( gulpIf( /\.svg$/,  dest( config.dist + baseDir ) ) )
-    .pipe( gulpIf( /\.scss$/, dest( config.base + baseDir ) ) )
-    .pipe( gulpIf( /\.html$/, dest( config.dist + baseDir ) ) )
-    .pipe( gulpIf( /\.svg$/,  logStreamData( options.logStreamData.svg ) ) )
-    .pipe( gulpIf( /\.scss$/, logStreamData( options.logStreamData.scss ) ) )
-    .pipe( gulpIf( /\.html$/, logStreamData( options.logStreamData.html ) ) )
+    .pipe( gulpIf( SVG_FILE_REGEX,  dest( config.dist + baseDir ) ) )
+    .pipe( gulpIf( SCSS_FILE_REGEX, dest( config.base + baseDir ) ) )
+    .pipe( gulpIf( HTML_FILE_REGEX, dest( config.dist + baseDir ) ) )
+    .pipe( gulpIf( SVG_FILE_REGEX,  logStreamData( options.logStreamData.svg ) ) )
+    .pipe( gulpIf( SCSS_FILE_REGEX, logStreamData( options.logStreamData.scss ) ) )
+    .pipe( gulpIf( HTML_FILE_REGEX, logStreamData( options.logStreamData.html ) ) )
   ;
 }

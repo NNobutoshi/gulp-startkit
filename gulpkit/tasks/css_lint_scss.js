@@ -25,7 +25,7 @@ export { css_lint_scss as default };
 /**
  * SCSS のLint を実行するタスク。<br>
  * default としてエクスポート。
- * @memberof modlue: tasks/css_lint_scss
+ * @memberof module:tasks/css_lint_scss
  * @returns {Stream} - Gulp stream
  */
 function css_lint_scss() {

@@ -105,8 +105,8 @@ function html( done ) {
  *     tasks.img_min,
  *     tasks.img_sprite,
  *     tasks.img_sprite_svg,
- *     tasks.css_sass,
  *     tasks.css_lint_scss,
+ *     tasks.css_sass,
  *     tasks.init_browse,
  *     series(
  *       tasks.task_watch( [
@@ -218,11 +218,13 @@ function js( done ) {
  *   series(
  *     tasks.icon_font,
  *     tasks.css_lint_scss,
+ *     tasks.css_sass,
  *     tasks.init_browse,
  *     series(
  *       tasks.task_watch( [
  *         tasks.icon_font,
  *         tasks.css_lint_scss,
+ *         tasks.css_sass,
  *       ],
  *       tasks.reload_browse ),
  *     ),
@@ -233,11 +235,13 @@ function icon( done ) {
   series(
     tasks.icon_font,
     tasks.css_lint_scss,
+    tasks.css_sass,
     tasks.init_browse,
     series(
       tasks.task_watch( [
         tasks.icon_font,
         tasks.css_lint_scss,
+        tasks.css_sass,
       ],
       tasks.reload_browse ),
     ),

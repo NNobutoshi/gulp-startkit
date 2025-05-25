@@ -38,7 +38,7 @@ export {
 /**
  * @module lib/diff_build
  * @description 差分用コマンドの出力に従ってファイルを選び、<br>
- * 依存関係にあるファイルや任意の同じグループに属する他のファイルなどをビルド対象にする。
+ * 依存関係にあるファイルや任意で設定したグループに属する他のファイルなどをビルド対象にする。
  * @requires node:fs/promises
  * @requires node:child_process
  * @requires node:process
@@ -71,7 +71,8 @@ function diff_build( options, collect, select ) {
   if ( settings.enabledRefs === true ) {
     [ ref1, ref2 ] = argv.slice( 2 );
   }
-  // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
+
+  /** モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。*/
   if ( !diffBuildProc ) {
     diffBuildProc = new DiffBuildProcessor();
     // リスナ-登録でthis の参照が代わらないようにdiffBuildProc にbind 。

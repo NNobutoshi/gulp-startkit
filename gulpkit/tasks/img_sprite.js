@@ -13,6 +13,8 @@ export { img_sprite as default };
 
 const
   PLACEHOLDER = config.placeholder
+  ,PNG_FILE_REGEX  = /\.png$/
+  ,SCSS_FILE_REGEX = /\.scss$/
 ;
 
 /**
@@ -48,11 +50,15 @@ function img_sprite() {
  * @returns {Stream} - Gulp stream
  */
 function _branchTask( branchSrc, baseDir ) {
+  const
+    imgDist = config.imgDist.replace( PLACEHOLDER, baseDir )
+    ,scssDist = config.scssDist.replace( PLACEHOLDER, baseDir )
+  ;
   return gulpSrc( branchSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
-    .pipe( gulpIf( /\.png$/,  dest( config.imgDist.replace( PLACEHOLDER, baseDir ), { encoding : false } ) ) )
-    .pipe( gulpIf( /\.scss$/, dest( config.scssDist.replace( PLACEHOLDER, baseDir ) ) ) )
-    .pipe( gulpIf( /\.png$/,  logStreamData( options.logStreamData.png ) ) )
-    .pipe( gulpIf( /\.scss$/, logStreamData( options.logStreamData.scss ) ) )
+    .pipe( gulpIf( PNG_FILE_REGEX, dest( imgDist, { encoding : false } ) ) )
+    .pipe( gulpIf( SCSS_FILE_REGEX, dest( scssDist ) ) )
+    .pipe( gulpIf( PNG_FILE_REGEX,  logStreamData( options.logStreamData.png ) ) )
+    .pipe( gulpIf( SCSS_FILE_REGEX, logStreamData( options.logStreamData.scss ) ) )
   ;
 }

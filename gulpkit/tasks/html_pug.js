@@ -1,5 +1,5 @@
-import { Buffer }       from 'node:buffer';
-import path             from 'node:path';
+import { Buffer } from 'node:buffer';
+import path       from 'node:path';
 
 import { src as gulpSrc, dest } from 'gulp';
 import plumber  from 'gulp-plumber';
