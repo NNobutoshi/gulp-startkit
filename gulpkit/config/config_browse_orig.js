@@ -8,7 +8,8 @@ const BROWSE_ENV = process.env.BROWSE_ENV;
 /**
  * @module config_browse_orig
  * @description live reload 機能は作業者各々でポート等の設定を自由に行えるようにする意図。<br>
- * 機能を利用する場合は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。
+ * <strong>機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
+ * config_brows.js はコミットの対象とならないよう、git でignore されている。
  * @requires ./common.js
  * @requires ./merge_by_env.js
  * @example

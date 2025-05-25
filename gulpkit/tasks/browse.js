@@ -59,5 +59,5 @@ function reload_browse( done ) {
   if ( browserSync.active ) {
     browserSync.reload();
   }
-  return done();
+  return done?.();
 }

@@ -27,10 +27,10 @@ let
  * default としてエクスポート。
  * @memberof module:tasks/task_watch
  * @param {Array} tasks - タスクの配列
- * @param {Function} nextTask - 次に実行するタスク
+ * @param {Function} finish - 最後に実行する関数
  * @returns {Function} - gulp タスク
  */
-function task_watch( tasks, nextTask ) {
+function task_watch( tasks, finish ) {
   return function init_watch( done ) {
     let enabled = false;
     process.emit( watchConfig.watchInitEventName );
@@ -44,7 +44,9 @@ function task_watch( tasks, nextTask ) {
         watchSrc
       ;
       if ( !taskConfig ) {
-        continue;
+        const errMsg = `Configuration for task "${ taskName }" was not found.`;
+        fancyLog.error( chalk.red( errMsg ) );
+        throw new Error( errMsg );
       }
       if ( taskConfig.src && taskConfig.subsrc ) {
         watchSrc = taskConfig.src.concat( taskConfig.subsrc );
@@ -56,7 +58,7 @@ function task_watch( tasks, nextTask ) {
       if ( taskConfig.enabledWatch === true && watchSrc ) {
         enabled = true;
         // Gulp Watch はいったんタスクのみを収集する。
-        watch( watchSrc, watchOptions, _addTaskToSet( task, nextTask ) );
+        watch( watchSrc, watchOptions, _addTaskToSet( task, finish ) );
       }
     } //for
     if ( enabled === false ) {
@@ -70,14 +72,14 @@ function task_watch( tasks, nextTask ) {
  * 一定時間内の連続実行は間引きし、一定時間後に集めたタスクを実行する。
  * @private
  * @param {Function} task - タスク
- * @param {Function} nextTask - 次に実行するタスク
+ * @param {Function} finish - 最後に実行する関数
  * @returns {Function} - gulp タスク
  */
-function _addTaskToSet( task, nextTask ) {
+function _addTaskToSet( task, finish ) {
   return function addWatchTask( done ) {
     taskSet.add( task );
     clearTimeout( timeoutId );
-    timeoutId = setTimeout( _runChainedTasks( nextTask ), options.runChainedTsksDelayTime );
+    timeoutId = setTimeout( _runChainedTasks( finish ), options.runChainedTsksDelayTime );
     done();
   };
 }
@@ -85,16 +87,13 @@ function _addTaskToSet( task, nextTask ) {
 /**
  * Gulp Watch で集めたタスクをGulp series でつなげて実行する。
  * @private
- * @param {Function} nextTask - 次に実行するタスク
+ * @param {Function} finish - 最後に実行する関数
  * @returns {Function}
  */
-function _runChainedTasks( nextTask ) {
+function _runChainedTasks( finish ) {
   return function() {
     clearTimeout( timeoutId );
-    if ( nextTask ) {
-      taskSet.add( nextTask );
-    }
-    series( ...taskSet, watchWaiting )();
+    series( ...taskSet, watchWaiting )( finish?.() );
     taskSet.clear();
   };
 }

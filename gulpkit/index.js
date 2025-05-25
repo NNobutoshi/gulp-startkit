@@ -13,6 +13,7 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
  */
 /**
  * Gulp 実行時のdefault 用で全タスクを実行する。
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function main( done ) {
@@ -64,186 +65,183 @@ function main( done ) {
 
 /**
  * html 関連タスク用。
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function html( done ) {
- *   series(
+ *   const members = [
  *     tasks.img_min,
  *     tasks.html_pug,
+ *   ];
+ *   series(
+ *     ...members,
  *     tasks.init_browse,
- *     series(
- *       tasks.task_watch( [
- *         tasks.img_min,
- *         tasks.html_pug,
- *       ],
- *       tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       members,
+ *       tasks.reload_browse,
  *     ),
  *   )( done );
  * }
  */
 function html( done ) {
-  series(
+  const members = [
     tasks.img_min,
     tasks.html_pug,
+  ];
+  series(
+    ...members,
     tasks.init_browse,
-    series(
-      tasks.task_watch( [
-        tasks.img_min,
-        tasks.html_pug,
-      ],
-      tasks.reload_browse ),
+    tasks.task_watch(
+      members,
+      tasks.reload_browse,
     ),
   )( done );
 }
 
 /**
  * img 関連タスク
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function img( done ) {
- *   series(
+ *   const members = [
  *     tasks.img_min,
  *     tasks.img_sprite,
  *     tasks.img_sprite_svg,
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
+ *   ];
+ *   series(
+ *     ...members,
  *     tasks.init_browse,
- *     series(
- *       tasks.task_watch( [
- *         tasks.img_min,
- *         tasks.img_sprite,
- *         tasks.img_sprite_svg,
- *         tasks.css_lint_scss,
- *         tasks.css_sass,
- *       ],
- *       tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       members,
+ *       tasks.reload_browse,
  *     ),
  *   )( done );
- + }
+ * }
  */
 function img( done ) {
-  series(
+  const members = [
     tasks.img_min,
     tasks.img_sprite,
     tasks.img_sprite_svg,
     tasks.css_lint_scss,
     tasks.css_sass,
+  ];
+  series(
+    ...members,
     tasks.init_browse,
-    series(
-      tasks.task_watch( [
-        tasks.img_min,
-        tasks.img_sprite,
-        tasks.img_sprite_svg,
-        tasks.css_lint_scss,
-        tasks.css_sass,
-      ],
-      tasks.reload_browse ),
+    tasks.task_watch(
+      members,
+      tasks.reload_browse,
     ),
   )( done );
 }
 
 /**
  * CSS 関連タスク
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function css( done ) {
- *   series(
+ *   const members = [
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
+ *   ];
+ *   series(
+ *     ...members,
  *     tasks.init_browse,
- *     series(
- *       tasks.task_watch( [
- *         tasks.css_lint_scss,
- *         tasks.css_sass,
- *       ],
- *       tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       members,
+ *       tasks.reload_browse,
  *     ),
  *   )( done );
  * }
  */
 function css( done ) {
-  series(
+  const members = [
     tasks.css_lint_scss,
     tasks.css_sass,
+  ];
+  series(
+    ...members,
     tasks.init_browse,
-    series(
-      tasks.task_watch( [
-        tasks.css_lint_scss,
-        tasks.css_sass,
-      ],
-      tasks.reload_browse ),
+    tasks.task_watch(
+      members,
+      tasks.reload_browse,
     ),
   )( done );
 }
 
 /**
  * JavaScript 関連タスク
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function js( done ) {
- *   series(
+ *   const members = [
  *     tasks.js_eslint,
  *     tasks.js_webpack,
+ *   ];
+ *   series(
+ *     ...members,
  *     tasks.init_browse,
- *     series(
- *       tasks.task_watch( [
- *         tasks.js_eslint,
- *         tasks.js_webpack,
- *       ],
- *       tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       members,
+ *       tasks.reload_browse,
  *     ),
  *   )( done );
  * }
  */
 function js( done ) {
-  series(
+  const members = [
     tasks.js_eslint,
     tasks.js_webpack,
+  ];
+  series(
+    ...members,
     tasks.init_browse,
-    series(
-      tasks.task_watch( [
-        tasks.js_eslint,
-        tasks.js_webpack,
-      ],
-      tasks.reload_browse ),
+    tasks.task_watch(
+      members,
+      tasks.reload_browse,
     ),
   )( done );
 }
 
 /**
  * アイコン 関連タスク
+ * @memberof module:gulpkit/index
  * @param {Function} done - gulp タスク完了のコールバック
  * @example
  * function icon( done ) {
- *   series(
+ *   const members = [
  *     tasks.icon_font,
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
+ *   ];
+ *   series(
+ *     ...members,
  *     tasks.init_browse,
- *     series(
- *       tasks.task_watch( [
- *         tasks.icon_font,
- *         tasks.css_lint_scss,
- *         tasks.css_sass,
- *       ],
- *       tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       members,
+ *       tasks.reload_browse,
  *     ),
  *   )( done );
  * }
  */
 function icon( done ) {
-  series(
+  const members = [
     tasks.icon_font,
     tasks.css_lint_scss,
     tasks.css_sass,
+  ];
+  series(
+    ...members,
     tasks.init_browse,
-    series(
-      tasks.task_watch( [
-        tasks.icon_font,
-        tasks.css_lint_scss,
-        tasks.css_sass,
-      ],
-      tasks.reload_browse ),
+    tasks.task_watch(
+      members,
+      tasks.reload_browse,
     ),
   )( done );
 }
@@ -251,7 +249,7 @@ function icon( done ) {
 /**
  * コマンドライン上 Gulp <task>
  * でタスクを個別に実行する際、watch や live reload も機能させる。
- * @param {Function} done - gulp タスク完了のコールバック
+ * @memberof gulpkit/index
  */
 function watchForCommanLineTask() {
   enableWatchForCommandLineTask( tasks );

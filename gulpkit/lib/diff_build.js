@@ -202,10 +202,10 @@ function _createDependencyFilesStream( diffBuildProc, settings ) {
     },
     async function _flush( callback ) {
       try {
-        // 削除されたファイルと同じグループのファイルを対象にする。
-        diffBuildProc.addFilesGroupedWithDeletedToTarget( settings );
         if ( settings.group ) {
-          // 所属する同じグループのファイルも選択。
+          // 削除されたファイルと同じグループのファイルを対象にする。
+          diffBuildProc.addFilesGroupedWithDeletedToTarget( settings );
+          // 属する同じグループのファイルも選択。
           diffBuildProc.addFilesFromGroupToSelectionSet( settings );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
@@ -497,9 +497,7 @@ class DiffBuildProcessor {
       ,promiseReadFileAll = []
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
-      const limitedTask = limit(
-        () => promiseReadAndPush( filePath, allFileMap, stream )
-      );
+      const limitedTask = limit( () => promiseReadAndPush( filePath, allFileMap, stream ) );
       promiseReadFileAll.push( limitedTask );
     }
     await Promise.all( promiseReadFileAll );
@@ -584,7 +582,7 @@ async function _promisePushReadFileToStream( filePath, allFiles, stream ) {
 /**
  * プロセスの最終処理。<br>
  * 検知数と通過させた数のログを出力。<br>
- * 直近の差分データとして、lastDiff に書き込む。
+ * 直近の差分データとしてlastDiff にセットし、ファイルに書き込む。
  * @private
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {Object} settings - 設定
