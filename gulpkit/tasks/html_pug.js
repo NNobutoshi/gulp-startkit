@@ -15,7 +15,10 @@ import { config, options } from '../config/config_html_pug.js';
 
 export { html_pug as default };
 
-let pugData;
+let
+  pugCommonDataMap = new Map()
+  ,pugPageData = {}
+;
 
 /**
  * @module tasks/html_pug
@@ -39,7 +42,7 @@ let pugData;
  * @returns {Object} - Gulp stream
  */
 function html_pug() {
-  return gulpSrc( [ config.data ] )
+  return gulpSrc( config.dataSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( _loadPugData() )
     .pipe( gulpSrc( config.src ) )
@@ -55,16 +58,21 @@ function html_pug() {
 }
 
 /**
- * Gulp src で流れてくるPug 用JSON ファイルを読み込み、<br>
- * パースを行ってPugData に格納する。
- * PugData は、Pug の実行時に、Pug に渡すデータとして使用する。
+ * Gulp src で流れてくるPug 用JSON ファイルを読み込み、パースを行う。
+ * パースしたデータは共通用とページ固有用とでそれぞれ、pugCoomonDataMap とpugPageData に格納する。
+ * データはPug の実行時にPug に渡すデータとして使用する。
  * @private
  * @returns {Object} - Gulp stream
  */
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {
-    if ( file.path === config.data ) {
-      pugData = JSON.parse( String( file.contents ) );
+    const
+      data = JSON.parse( String( file.contents ) )
+    ;
+    if ( file.path.includes( '_common_' ) ) {
+      pugCommonDataMap.set( file.path, data );
+    } else {
+      pugPageData = { ...pugPageData, ...data };
     }
     callback();
   } );
@@ -78,14 +86,24 @@ function _loadPugData() {
 function _setPugData() {
   return through.obj( function _transform( file, enc, callback ) {
     if ( file.path.endsWith( '.pug' ) === true ) {
-      const keyFilePath = file.path
-        .replace( path.resolve( process.cwd(), config.base ), '' )
-        .replace( /\\/g, '/' )
-        .replace( /\.pug$/, '.html' )
+      const
+        keyFilePath = file.path
+          .replace( path.resolve( process.cwd(), config.base ), '' )
+          .replace( /\\/g, '/' )
+          .replace( /\.pug$/, '.html' )
+      ;
+      const
+        commonDataFilePath = pugPageData[ keyFilePath ]?.common
+      ;
+      if ( !commonDataFilePath ) {
+        return callback( null, file );
+      }
+      const
+        pugCommonData = _getPugCommonData( commonDataFilePath, pugCommonDataMap )
       ;
       file.data = {
-        siteData : pugData.defaults,
-        pageData : pugData[ keyFilePath ],
+        // common 用を基にpage 用をマージする。
+        pageData : { ...pugCommonData, ...pugPageData[ keyFilePath ] },
       };
     }
     callback( null, file );
@@ -93,6 +111,23 @@ function _setPugData() {
 }
 
 /**
+ * ページそれぞれで指定されている共通用JSONデータのパスをキーにしている値を、<br>
+ * _loadPugData() で準備したpugCommonDataMap から取得する。
+ * @param {String} commonDataFilePath - ページそれぞれから指定されている共通用JSONデータのパス
+ * @param {Map} pugCommonDataMap - ページ共通のデータが格納されたMap
+ * @returns {Object} - 引数で渡されたパスをkey にするMap の値
+ */
+function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
+  const
+    reslovedCommonDataFilePath = path.join(
+      path.resolve( process.cwd(), config.base ), commonDataFilePath
+    )
+  ;
+  return pugCommonDataMap.get( reslovedCommonDataFilePath );
+}
+
+/**
+ * diff_build 用コールバック関数。<br>
  * インポート元のファイルを収集してMap に追加する。<br>
  * through2 のtransformFunction の内部で実行。<br>
  * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。

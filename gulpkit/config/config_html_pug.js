@@ -18,13 +18,18 @@ const TASK_NAME = 'html_pug';
  */
 const devConfig = {
   src : [
-    ''  + commonConfig.SRC + '/**/*.pug',
-    ''  + commonConfig.SRC + '/**/*_data.json',
+    commonConfig.SRC + '/**/*.pug',
+    commonConfig.SRC + '/**/_pug_data.json',
+    commonConfig.SRC + '/**/_pug_common_data.json',
   ],
   subsrc : [
     ''  + commonConfig.SRC + '/**/*.{png,jpg,svg}',
     '!' + commonConfig.SRC + '/**/_sprite*/*.{png,svg}',
     '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
+  ],
+  dataSrc : [
+    commonConfig.SRC + '/**/_pug_data.json',
+    commonConfig.SRC + '/**/_pug_common_data.json',
   ],
   dist : commonConfig.DIST,
   base : commonConfig.SRC,
