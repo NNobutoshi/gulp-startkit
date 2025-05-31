@@ -15,6 +15,7 @@ export { assignTaskForEachGroup as default };
 /**
  * 指定のグループに従ってsource を小分けにする 。<br>
  * default としてエクスポート。
+ * @memberof module:lib/task_for_each
  * @param {String} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
  * @param {String} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
@@ -82,11 +83,11 @@ async function _runTaskforEachGroup( groupedSources, branchTask, callback ) {
     trunkStream = this
     ,branchStreams = []
   ;
-  for ( let [ key ] of groupedSources ) {
+  for ( const [ key ,value ] of groupedSources ) {
     branchStreams.push(
       await branchTask(
-        groupedSources.get( key ).children.map( ( item ) => key + item ),
-        groupedSources.get( key ).baseDir.replace( /\\/g, '/' ),
+        value.children.map( ( item ) => key + item ),
+        value.baseDir.replace( /\\/g, '/' ),
         trunkStream,
       )
     );

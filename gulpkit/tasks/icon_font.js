@@ -106,7 +106,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
  * @returns glypshイベント用のリスナー関数を返す。
  */
 function _setGlyphsToTemplateData( templateData ) {
-  return function( glyphs ) {
+  return ( glyphs ) => {
     glyphs.forEach( ( glyph ) => {
       // unicodeを16進数のcodepointに変換
       glyph.codepoint = glyph.unicode[ 0 ].codePointAt( 0 ).toString( 16 ).toUpperCase();
@@ -120,7 +120,7 @@ function _setGlyphsToTemplateData( templateData ) {
  * オプションで指定のフォントフォーマットに該当するか否かを返す。
  * @private
  * @param {Object} file - vinyl オブジェクト
- * @returns Array.prototype.some 結果（真偽値）
+ * @returns {Boolean} Array.prototype.some の結果（真偽値）
  */
 function _isOptionalFontFile( file ) {
   return options.iconfont.formats.some( element => file.path.endsWith( element ) );

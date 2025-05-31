@@ -7,7 +7,9 @@ import * as taskConfigAll from '../config/index.js';
 
 export { task_watch as default };
 
-const watchOptions = options.watch;
+const
+  watchOptions = options.watch
+;
 
 let
   timeoutId = null

@@ -56,7 +56,7 @@ function _branchTask( branchSrc, baseDir ) {
   ;
   return gulpSrc( branchSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )
-    .pipe( gulpIf( PNG_FILE_REGEX, dest( imgDist, { encoding : false } ) ) )
+    .pipe( gulpIf( PNG_FILE_REGEX,  dest( imgDist, { encoding : false } ) ) )
     .pipe( gulpIf( SCSS_FILE_REGEX, dest( scssDist ) ) )
     .pipe( gulpIf( PNG_FILE_REGEX,  logStreamData( options.logStreamData.png ) ) )
     .pipe( gulpIf( SCSS_FILE_REGEX, logStreamData( options.logStreamData.scss ) ) )

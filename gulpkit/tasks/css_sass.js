@@ -55,6 +55,7 @@ function css_sass() {
 }
 
 /**
+ * diff_build 用コールバック関数。<br>
  * インポート元のファイルを収集してMap に追加する。<br>
  * through2 のtransformFunction の内部で実行。<br>
  * chunk のcontents から読み込んでいるパスを調べ、自身をインポーターとして収集。<br>

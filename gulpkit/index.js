@@ -36,8 +36,23 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
  *       )
  *     ),
  *     tasks.init_browse,
- *     tasks.task_watch( Object.values( tasks ), tasks.reload_browse ),
+ *     tasks.task_watch(
+ *       [
+ *         tasks.copy_to,
+ *         tasks.img_min,
+ *         tasks.html_pug,
+ *         tasks.icon_font,
+ *         tasks.img_sprite,
+ *         tasks.img_sprite_svg,
+ *         tasks.css_lint_scss,
+ *         tasks.css_sass,
+ *         tasks.js_eslint,
+ *         tasks.js_webpack,
+ *       ],
+ *       tasks.reload_browse,
+ *     ),
  *   )( done );
+ * }
  */
 function main( done ) {
   series(
@@ -59,7 +74,21 @@ function main( done ) {
       )
     ),
     tasks.init_browse,
-    tasks.task_watch( Object.values( tasks ), tasks.reload_browse ),
+    tasks.task_watch(
+      [
+        tasks.copy_to,
+        tasks.img_min,
+        tasks.html_pug,
+        tasks.icon_font,
+        tasks.img_sprite,
+        tasks.img_sprite_svg,
+        tasks.css_lint_scss,
+        tasks.css_sass,
+        tasks.js_eslint,
+        tasks.js_webpack,
+      ],
+      tasks.reload_browse,
+    ),
   )( done );
 }
 
