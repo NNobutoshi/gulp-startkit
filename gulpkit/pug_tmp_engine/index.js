@@ -83,9 +83,7 @@ async function _writePugDataFile( content ) {
  * @returns {Object} 変換された JSON データ
  */
 function _reJsonData( data ) {
-  const
-    res = {}
-  ;
+  const res = {};
   data.forEach( ( item ) => {
     res[ item.url ] = item;
   } );

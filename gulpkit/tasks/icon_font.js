@@ -72,7 +72,9 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
   try {
     const
       branchFontName = options.iconfont.fontName.replace( PLACEHOLDER, baseDir.replace( /\//, '_' ) )
-      ,iconFontOptions = { ...options.iconfont,
+    ;
+    const
+      iconFontOptions = { ...options.iconfont,
         fontName : branchFontName,
         timestamp : await _getLatestTimestamp( branchSrc ),
       }
@@ -80,7 +82,9 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
         fontName : branchFontName,
         scssDist : config.scssDist.replace( PLACEHOLDER, baseDir ),
       }
-      ,fontDist = config.fontsDist.replace( PLACEHOLDER, baseDir )
+    ;
+    const
+      fontDist  = config.fontsDist.replace( PLACEHOLDER, baseDir )
       ,scssDist = templateData.scssDist
     ;
     return iconfont( branchSrc, iconFontOptions )
@@ -140,7 +144,7 @@ function _createScssFile( templateData ) {
     async function _flush( callback ) {
       try {
         const
-          content     = await readFile( templateData.templatePath, CHARSET )
+          content = await readFile( templateData.templatePath, CHARSET )
           ,sourceCode = Handlebars.compile( content )( templateData )
           ,file = new Vinyl( {
             cwd  : cwd(),

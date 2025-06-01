@@ -145,9 +145,11 @@ function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents         = String( file.contents )
-    ,importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
-    ,matches         = contents.matchAll( importRuleRegEx )
+    contents = String( file.contents )
+  ;
+  const
+    importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
+    ,matches = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const
@@ -176,8 +178,7 @@ function _renderPug() {
       if ( ignoreFileRegEx.test( file.basename ) === true ) {
         return callback();
       }
-      const pugOptions = {
-        ...options.pug,
+      const pugOptions = { ...options.pug,
         self     : true,
         filename : file.path,
         siteData : file.data.siteData,
@@ -249,9 +250,7 @@ function _formatHtml() {
  * @returns {object} - Gulp stream
  */
 function _injectImageSize() {
-  const
-    mapImageElementStrings = new Map()
-  ;
+  const mapImageElementStrings = new Map();
   if ( options.imgSize === false ) {
     return through.obj();
   }
@@ -318,12 +317,16 @@ async function _addImageDimensionsToElementStrings( match, file, map, errorCallb
   try {
     const
       dimensions = await imageSizeFromFile( absoluteSrcPath )
-      ,elementWithSize  =
-                    `<${ tagName }${ frontPart }${ attrName }=`
-                  + `${ q }${ srcPath }${ query }${ q } `
-                  + `width=${ q }${ dimensions.width }${ q } `
-                  + `height=${ q }${ dimensions.height }${ q }${ rearPart }>`
-      ;
+    ;
+    const
+      elementWithSize = ''
+        + '<'
+        + `${ tagName }${ frontPart }${ attrName }=`
+        + `${ q }${ srcPath }${ query }${ q } `
+        + `width=${ q }${ dimensions.width }${ q } `
+        + `height=${ q }${ dimensions.height }${ q }${ rearPart }`
+        + '>'
+    ;
     map.set( fullStr, elementWithSize );
   } catch ( err ) {
     errorCallback( err );

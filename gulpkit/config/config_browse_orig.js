@@ -52,10 +52,10 @@ const prodConfig = null;
  * @memberof module:config_browse_orig
  */
 const devOptions = {
-  'port'           : 3000,
-  'browser'        : 'Chrome',
+  'port'    : 3000,
+  'browser' : 'Chrome',
+  'server'  : './dist/development/html',
   'reloadThrottle' : 100,
-  'server' : './dist/development/html',
 };
 
 /**
@@ -65,7 +65,7 @@ const devOptions = {
  * @memberof module:config_browse_orig
  */
 const prodOptions = {
-  'port'           : 3001,
+  'port'   : 3001,
   'server' : './dist/production/html',
 };
 

@@ -58,7 +58,9 @@ function _groupSources( groupedSources, group, base, branchTask ) {
 function _setChildSourceToParentMap( file, groupedSources, group, base ) {
   const
     splits  = file.path.split( group )
-    ,parent = splits[ 0 ] + group
+  ;
+  const
+    parent = splits[ 0 ] + group
     ,child  = splits[ 1 ]
   ;
   if ( groupedSources.has( parent ) === false ) {

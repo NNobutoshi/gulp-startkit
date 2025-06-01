@@ -28,7 +28,9 @@ function lint_svg( options ) {
       try {
         const
           contents = String( file.contents )
-          ,linting = await SVGLint.lintSource( contents, settings )
+        ;
+        const
+          linting = await SVGLint.lintSource( contents, settings )
         ;
         linting.on( 'done', () => {
           if ( linting.state === 'error' || linting.valid === false ) {

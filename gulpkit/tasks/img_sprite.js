@@ -51,7 +51,7 @@ function img_sprite() {
  */
 function _branchTask( branchSrc, baseDir ) {
   const
-    imgDist = config.imgDist.replace( PLACEHOLDER, baseDir )
+    imgDist   = config.imgDist.replace( PLACEHOLDER, baseDir )
     ,scssDist = config.scssDist.replace( PLACEHOLDER, baseDir )
   ;
   return gulpSrc( branchSrc, { encoding : false } )

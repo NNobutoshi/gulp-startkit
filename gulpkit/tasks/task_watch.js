@@ -40,7 +40,9 @@ function task_watch( tasks, finish ) {
       const
         task = tasks[ i ]
         ,taskName = tasks[ i ].name
-        ,taskConfig = taskConfigAll[ taskName ]
+      ;
+      const
+        taskConfig = taskConfigAll[ taskName ]
       ;
       let
         watchSrc
@@ -95,7 +97,7 @@ function _addTaskToSet( task, finish ) {
 function _runChainedTasks( finish ) {
   return function() {
     clearTimeout( timeoutId );
-    series( ...taskSet, watchWaiting )( finish?.() );
+    series( ...taskSet, watchWaiting )( () => finish?.() );
     taskSet.clear();
   };
 }

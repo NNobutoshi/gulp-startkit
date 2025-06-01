@@ -110,10 +110,7 @@ function _runWebPack() {
  * @returns {Promise<void>}
  */
 async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
-  const
-    contents = await readFile( chunkConfigPath, CHARSET )
-    ,chunkConfig = JSON.parse( contents )
-  ;
+  const chunkConfig = JSON.parse( await readFile( chunkConfigPath, CHARSET ) );
   for ( const [ key, value ] of Object.entries( chunkConfig ) ) {
     const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
     chunkConfig[ key ].test = new RegExp( test );

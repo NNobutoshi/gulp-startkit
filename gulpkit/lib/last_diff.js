@@ -6,9 +6,10 @@ import existsFile from '../utilities/exists.js';
 const
   FILEPATH = path.resolve( process.cwd(), '.last_diff/.diffmap' )
   ,CHARSET = 'utf-8'
-  ,DIRNAME = path.dirname( FILEPATH )
 ;
-
+const
+  DIRNAME = path.dirname( FILEPATH )
+;
 let
   lastDiffData = null
 ;

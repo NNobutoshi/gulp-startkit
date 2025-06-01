@@ -59,10 +59,16 @@ function _runEsLint( esLintOptions ) {
       try {
         const
           eslint = new ESLint( esLintOptions )
-          ,results = await eslint.lintText( String( file.contents ) )
-          ,formatter = await eslint.loadFormatter( 'stylish' )
+        ;
+        const
+          results = await eslint.lintText( String( file.contents ) )
+        ;
+        const
+          formatter = await eslint.loadFormatter( 'stylish' )
           ,filteredResults = ESLint.getErrorResults( results )
-          ,resultText = formatter.format( filteredResults )
+        ;
+        const
+          resultText = formatter.format( filteredResults )
         ;
         if ( resultText ) {
           fancyLog( resultText.replace( '<text>', file.path ) );
