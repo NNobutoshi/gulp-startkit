@@ -1,10 +1,11 @@
+import { cwd } from 'node:process';
 import { mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 
 import existsFile from '../utilities/exists.js';
 
 const
-  FILEPATH = path.resolve( process.cwd(), '.last_diff/.diffmap' )
+  FILEPATH = path.resolve( cwd(), '.last_diff/.diffmap' )
   ,CHARSET = 'utf-8'
 ;
 const
@@ -18,6 +19,7 @@ let
  * Git コマンドで得たタスク終了時までの差分データを取得。<br>
  * また、ファイル保存する。
  * @module lib/last_diff
+ * @requires node:process
  * @requires node:fs/promises
  * @requires node:path
  * @requires ../utilities/exists.js

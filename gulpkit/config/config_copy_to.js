@@ -3,13 +3,15 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'copy_to';
-
 /**
  * @module config_copy_to
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'copy_to'
+;
 
 /**
  * 開発環境用コンフィグオブジェクト。

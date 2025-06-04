@@ -1,3 +1,4 @@
+import { cwd }      from 'node:process';
 import path         from 'node:path';
 import { readFile } from 'node:fs/promises';
 
@@ -15,6 +16,7 @@ export { js_webpack as default };
 
 const
   CHARSET = 'utf-8'
+  ,CWD    = cwd()
 ;
 let
   webpackCompiler = null
@@ -23,6 +25,7 @@ let
 
 /**
  * @module tasks/js_webpack
+ * @requires node:process
  * @requires node:path
  * @requires node:fs/promises
  * @requires gulp
@@ -125,7 +128,7 @@ async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
  * @param {Object} entries
  */
 async function _createEntries( filePath, entries ) {
-  const { entryName, relativeEntryPath } = _createValidPath( filePath );
+  const { entryName, relativeEntryPath } = _getEntriesKeyValue( filePath );
   entries[ entryName ] = relativeEntryPath;
 }
 
@@ -146,7 +149,7 @@ function _setUpWebpackCompiler( splitChunksGroups, entries ) {
     webpackConfig.entry = entries;
     merge( webpackConfig.output, {
       filename : '[name].js',
-      path : path.resolve( process.cwd(), config.dist ),
+      path : path.resolve( CWD, config.dist ),
     } );
     merge( webpackConfig.optimization, {
       splitChunks : {
@@ -190,7 +193,7 @@ function _runWebpackCompiler( callback ) {
  * @param {string} filePath - 対象のファイルパス
  * @returns {{ entryName: string, relativeEntryPath: string }}
  */
-function _createValidPath( filePath ) {
+function _getEntriesKeyValue( filePath ) {
   const
     entryName = path
       .relative( config.base, filePath )
@@ -199,7 +202,7 @@ function _createValidPath( filePath ) {
   ;
   let
     relativeEntryPath = path
-      .relative( process.cwd(), filePath )
+      .relative( CWD, filePath )
       .replace( /\\/g , '/' )
   ;
   relativeEntryPath = /^\.?\.\//.test( relativeEntryPath )

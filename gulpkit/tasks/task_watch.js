@@ -1,3 +1,5 @@
+import process from 'node:process';
+
 import { watch, series } from 'gulp';
 import fancyLog          from 'fancy-log';
 import chalk             from 'chalk';
@@ -18,6 +20,7 @@ let
 
 /**
  * @module tasks/task_watch
+ * @requires node:process
  * @requires gulp
  * @requires fancy-log
  * @requires chalk

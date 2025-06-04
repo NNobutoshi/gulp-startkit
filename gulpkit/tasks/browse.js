@@ -11,9 +11,7 @@ export { init_browse, reload_browse };
 
 const
   RELATIVE_CONFIG_FILE_PATH = '../config/config_browse.js'
-;
-const
-  CONFIG_FILE_DIRNAME = path.dirname( fileURLToPath( import.meta.url ) )
+  ,CONFIG_FILE_DIRNAME = path.dirname( fileURLToPath( import.meta.url ) )
 ;
 const
   CONFIG_FILE_PATH = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )

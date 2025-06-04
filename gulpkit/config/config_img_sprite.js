@@ -3,14 +3,17 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'img_sprite';
-const GROUP_DIR = '/img/_sprite';
-
 /**
  * @module config_img_sprite
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'img_sprite'
+  ,GROUP_DIR = '/img/_sprite'
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_img_sprite

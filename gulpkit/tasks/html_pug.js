@@ -1,3 +1,4 @@
+import { cwd }    from 'node:process';
 import { Buffer } from 'node:buffer';
 import path       from 'node:path';
 
@@ -15,6 +16,9 @@ import { config, options } from '../config/config_html_pug.js';
 
 export { html_pug as default };
 
+const
+  CWD = cwd()
+;
 let
   pugCommonDataMap = new Map()
   ,pugPageData = {}
@@ -22,6 +26,7 @@ let
 
 /**
  * @module tasks/html_pug
+ * @requires node:process
  * @requires node:path
  * @requires node:buffer
  * @requires node:fs
@@ -88,7 +93,7 @@ function _setPugData() {
     if ( file.path.endsWith( '.pug' ) === true ) {
       const
         keyFilePath = file.path
-          .replace( path.resolve( process.cwd(), config.base ), '' )
+          .replace( path.resolve( CWD, config.base ), '' )
           .replace( /\\/g, '/' )
           .replace( /\.pug$/, '.html' )
       ;
@@ -120,7 +125,7 @@ function _setPugData() {
 function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
   const
     reslovedCommonDataFilePath = path.join(
-      path.resolve( process.cwd(), config.base ), commonDataFilePath
+      path.resolve( CWD, config.base ), commonDataFilePath
     )
   ;
   return pugCommonDataMap.get( reslovedCommonDataFilePath );
@@ -423,7 +428,7 @@ function _isRootPath( srcPath ) {
 function _absolutePath( srcPath, base, dirname ) {
   return ( _isRootPath( srcPath ) )
   // ルートパスであれば
-    ? path.join( path.resolve( process.cwd(), base ), srcPath )
+    ? path.join( path.resolve( CWD, base ), srcPath )
   // 相対パスであれば
     : path.resolve( dirname, srcPath );
 }

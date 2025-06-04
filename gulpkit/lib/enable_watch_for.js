@@ -1,13 +1,13 @@
-import { series } from 'gulp';
+import process from 'node:process';
 
-import { argv  } from 'node:process';
+import { series } from 'gulp';
 
 export { enableWatchForCommandLineTask as default };
 
 /**
  * @module lib/enable_watch_for
- * @requires gulp
  * @requires node:process
+ * @requires gulp
  */
 /**
  * コマンドラインからGulp <task> として、特定のタスクを個別に実行する際に、<br>
@@ -19,7 +19,7 @@ export { enableWatchForCommandLineTask as default };
 function enableWatchForCommandLineTask( tasks ) {
   const
     watchTasks = []
-    ,args = argv.slice( 2 )
+    ,args = process.argv.slice( 2 )
   ;
   if ( args.length === 0 ) {
     return;

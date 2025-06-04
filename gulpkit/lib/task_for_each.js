@@ -1,4 +1,5 @@
-import path from 'node:path';
+import { cwd } from 'node:process';
+import path    from 'node:path';
 
 import through     from 'through2';
 import mergeStream from 'merge-stream';
@@ -8,10 +9,16 @@ export { assignTaskForEachGroup as default };
 /**
  * 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させる。
  * @module lib/task_for_each
+ * @requires node:process
  * @requires node:path
  * @requires through2
  * @requires merge-stream
  */
+
+const
+  CWD = cwd()
+;
+
 /**
  * 指定のグループに従ってsource を小分けにする 。<br>
  * default としてエクスポート。
@@ -66,7 +73,7 @@ function _setChildSourceToParentMap( file, groupedSources, group, base ) {
   if ( groupedSources.has( parent ) === false ) {
     groupedSources.set( parent, {
       children : [],
-      baseDir  : splits[ 0 ].replace( path.resolve( process.cwd(), base ), '' ),
+      baseDir  : splits[ 0 ].replace( path.resolve( CWD, base ), '' ),
     } );
   }
   groupedSources.get( parent ).children.push( child );

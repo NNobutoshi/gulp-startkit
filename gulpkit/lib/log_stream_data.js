@@ -1,4 +1,5 @@
-import path from 'node:path';
+import { cwd } from 'node:process';
+import path    from 'node:path';
 
 import through  from 'through2';
 import fancyLog from 'fancy-log';
@@ -8,11 +9,15 @@ export { logSteamData as default };
 
 /**
  * @module lib/log_stream_data
+ * @requires node:process
  * @requires node:path
  * @requires through2
  * @requires fancy-log
  * @requires chalk
  */
+const
+  CWD = cwd()
+;
 const defaultSettings = {
   onStream     : true,
   forEachFile  : true,
@@ -49,7 +54,7 @@ function logSteamData( options ) {
       // ファイルが何をされたかfile 毎の出力が必要な場合。
       fancyLog(
         chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` )
-        + ` ${ path.relative( process.cwd(), file.path ) }`
+        + ` ${ path.relative( CWD, file.path ) }`
       );
       callback( null, file );
     },

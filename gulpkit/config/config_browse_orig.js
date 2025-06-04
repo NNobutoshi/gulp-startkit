@@ -1,15 +1,16 @@
+import { env } from 'node:process';
+
 import { commonConfig } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import mergeByEnv       from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
-
-const BROWSE_ENV = process.env.BROWSE_ENV;
 
 /**
  * @module config_browse_orig
  * @description live reload 機能は作業者各々でポート等の設定を自由に行えるようにする意図。<br>
  * <strong>機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
  * config_brows.js はGit igonre でコミットから除外。
+ * @requires node:process
  * @requires ./common.js
  * @requires ./merge_by_env.js
  * @example
@@ -27,6 +28,8 @@ const BROWSE_ENV = process.env.BROWSE_ENV;
  *   'server' : './dist/production/html',
  * };
  */
+
+const BROWSE_ENV = env.BROWSE_ENV;
 
 /**
  * 開発環境用コンフィグオブジェクト。

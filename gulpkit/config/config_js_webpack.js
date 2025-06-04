@@ -1,4 +1,5 @@
-import path from 'node:path';
+import { cwd } from 'node:process';
+import path    from 'node:path';
 
 import webpack      from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -10,9 +11,18 @@ export { mergedConf as config, mergedOptions as options };
 
 /**
  * @module config_js_webpack
+ * @requires node:process
+ * @requires node:path
+ * @requires webpack
+ * @requires terser-webpack-plugin
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  CWD = cwd()
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_js_webpack
@@ -24,7 +34,7 @@ const devConfig = {
   entry          : '.entry.js',
   splitChunks    : '.split.json',
   enabledWatch   : commonConfig.WATCH_ENABLED,
-  cacheDirectory : path.resolve( process.cwd(), '.webpack_cache' ),
+  cacheDirectory : path.resolve( CWD, '.webpack_cache' ),
   webpackConfig  : {
     mode      : commonConfig.NODE_ENV,
     output    : {},
@@ -74,6 +84,9 @@ const devConfig = {
 const prodConfig = {
   webpackConfig : {
     devtool : ( commonConfig.SOURCEMAPS_ENABLED ) ? 'source-map' : false,
+    plugins : [
+      function() {},
+    ],
     optimization : {
       minimizer : [
         new TerserPlugin( {
@@ -81,9 +94,6 @@ const prodConfig = {
         } ),
       ],
     },
-    plugins : [
-      function() {},
-    ],
   }
 };
 

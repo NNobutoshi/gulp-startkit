@@ -3,13 +3,15 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'css_lint_scss';
-
 /**
  * @module config_css_lint_scss
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'css_lint_scss'
+;
 
 /**
  * 開発環境用コンフィグオブジェクト。

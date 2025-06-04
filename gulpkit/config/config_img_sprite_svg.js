@@ -1,18 +1,25 @@
-import path from 'node:path';
+import { cwd } from 'node:process';
+import path    from 'node:path';
 
 import { commonConfig, commonOptions } from './common.js';
 import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'img_sprite_svg';
-const GROUP_DIR = '/img/_sprite_svg';
-
 /**
  * @module config_img_sprite_svg
+ * @requires node:process
+ * @requires node:path
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME  = 'img_sprite_svg'
+  ,GROUP_DIR = '/img/_sprite_svg'
+  ,CWD = cwd()
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_img_sprite_svg
@@ -60,11 +67,11 @@ const devOptions = {
         bust       : false,
         render     : {
           scss : {
-            dest : path.resolve( process.cwd(), 'css/_sprite_svg.scss' ),
+            dest : path.resolve( CWD, 'css/_sprite_svg.scss' ),
           },
         },
         example : {
-          dest : path.resolve( process.cwd(), '_sprite_svg_bg_example.html' ),
+          dest : path.resolve( CWD, '_sprite_svg_bg_example.html' ),
         },
       },
     },

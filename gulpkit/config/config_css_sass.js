@@ -6,13 +6,16 @@ import mqpacker     from '@hail2u/css-mqpacker';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'css_sass';
-
 /**
  * @module config_css_sass
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'css_sass'
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_css_sass
@@ -32,9 +35,7 @@ const devConfig = {
  * 同一設定の場合はnull を明示的に代入。
  * @memberof module:config_css_sass
  */
-const prodConfig = {
-  enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
-};
+const prodConfig = null;
 
 /**
  * 開発環境用オプションオブジェクト。

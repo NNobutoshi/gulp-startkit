@@ -1,17 +1,23 @@
-import path from 'node:path';
+import { cwd } from 'node:process';
+import path    from 'node:path';
 
 import { commonConfig, commonOptions } from './common.js';
 import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'html_pug';
-
 /**
  * @module config_html_pug
+ * @requires node:process
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'html_pug'
+  ,CWD = cwd()
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_html_pug
@@ -33,7 +39,7 @@ const devConfig = {
   ],
   dist : commonConfig.DIST,
   base : commonConfig.SRC,
-  data : path.resolve( process.cwd(), `${ commonConfig.SRC }/_data/_pug_data.json` ),
+  data : path.resolve( CWD, `${ commonConfig.SRC }/_data/_pug_data.json` ),
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
 

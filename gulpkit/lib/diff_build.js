@@ -1,6 +1,6 @@
+import process      from 'node:process';
 import { readFile } from 'node:fs/promises';
 import { exec }     from 'node:child_process';
-import { argv  }    from 'node:process';
 import path         from 'node:path';
 
 
@@ -14,6 +14,7 @@ import lastDiff from './last_diff.js';
 const
   WRITING_DELAY_TIME = 1000
   ,MAX_BUFFER_SIZE = 1024 * 1024 * 10
+  ,CWD = process.cwd()
 ;
 const
   defaultSettings = {
@@ -38,9 +39,9 @@ export {
  * @module lib/diff_build
  * @description 差分用コマンドの出力に従ってファイルを選び、<br>
  * 依存関係にあるファイルや任意で設定したグループに属する他のファイルなどをビルド対象にする。
+ * @requires node:process
  * @requires node:fs/promises
  * @requires node:child_process
- * @requires node:process
  * @requires node:path
  * @requires through2
  * @requires fancy-log
@@ -59,7 +60,12 @@ export {
  * @returns {Stream} - 処理されたストリーム
  */
 function diff_build( options, collect, select ) {
-  const settings = { ...defaultSettings, name : Symbol(), ...options };
+  const
+    settings = { ...defaultSettings, name : Symbol(), ...options }
+  ;
+  const
+    taskName = settings.name
+  ;
   if ( settings.enabled === false ) {
     return through.obj();
   }
@@ -68,7 +74,7 @@ function diff_build( options, collect, select ) {
     settings.group = settings.group.replace( /\//g, path.sep );
   }
   if ( settings.enabledRefs === true ) {
-    [ ref1, ref2 ] = argv.slice( 2 );
+    [ ref1, ref2 ] = process.argv.slice( 2 );
   }
 
   /** モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。*/
@@ -94,11 +100,11 @@ function diff_build( options, collect, select ) {
     }
   }
   // 被依存ファイル情報の収集用コールバックを各タスク毎保有する。
-  if ( collect ) {
+  if ( collect && diffBuildProc.collector.has( taskName ) === false ) {
     diffBuildProc.collector.set( settings.name, collect );
   }
   // 最終選択用コールバックを各タスク毎保有する。
-  if ( select ) {
+  if ( select && diffBuildProc.selector.has( taskName ) === false ) {
     diffBuildProc.selector.set( settings.name, select );
   }
 
@@ -406,7 +412,7 @@ class DiffBuildProcessor {
         continue;
       }
       const
-        resolveFilePathOfDiffData = path.resolve( process.cwd(), filePathOfDiffData )
+        resolveFilePathOfDiffData = path.resolve( CWD, filePathOfDiffData )
       ;
       const
         dirNameOfDiffData = path.dirname( resolveFilePathOfDiffData )
@@ -674,7 +680,7 @@ function _logFileCount( name, detected, total ) {
  * @returns {Boolean} - true or false
  */
 function _includes( diffData, filePath ) {
-  const relativePath = path.relative( process.cwd(), filePath ).replace( /[\\]/g, '/' );
+  const relativePath = path.relative( CWD, filePath ).replace( /[\\]/g, '/' );
   return diffData && Object.keys( diffData ).includes( relativePath );
 }
 

@@ -1,12 +1,23 @@
+import { env } from 'node:process';
+
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
-import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
+
+import { PRODUCTION_ENV, DEVELOPMENT_ENV } from './env_type.js';
+
+/**
+ * @module config/common
+ * @requires node:process
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ./env_type.js
+ */
 
 const
-  NODE_ENV        = process.env.NODE_ENV
-  ,WATCH_ENV      = process.env.WATCH_ENV
-  ,DIFF_ENV       = process.env.DIFF_ENV
-  ,DIFF_REFS_ENV  = process.env.DIFF_REFS_ENV
+  NODE_ENV        = env.NODE_ENV
+  ,WATCH_ENV      = env.WATCH_ENV
+  ,DIFF_ENV       = env.DIFF_ENV
+  ,DIFF_REFS_ENV  = env.DIFF_REFS_ENV
   ,IS_PRODUCTION  = ( NODE_ENV === PRODUCTION_ENV )
   ,IS_DEVELOPMENT = ( NODE_ENV === DEVELOPMENT_ENV )
   ,IS_DIFF_REFS   = !!Number( DIFF_REFS_ENV )
@@ -21,13 +32,6 @@ const
     [ DEVELOPMENT_ENV ] : 'dist/development/html',
   }
 ;
-
-/**
- * @module config/common
- * @requires fancy-log
- * @requires chalk
- * @requires ./env_type.js
- */
 
 /**
  * 各タスクで共通の設定は環境変数に応じて各タスクの設定に先んじて、切り替えを行う。

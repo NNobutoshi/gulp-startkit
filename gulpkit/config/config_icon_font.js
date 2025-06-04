@@ -3,14 +3,17 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'icon_font';
-const GROUP_DIR = '/fonts/icons';
-
 /**
  * @module config_icon_font
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME  = 'icon_font'
+  ,GROUP_DIR = '/fonts/icons'
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_icon_font

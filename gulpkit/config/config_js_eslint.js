@@ -3,13 +3,16 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'js_eslint';
-
 /**
  * @module config_js_eslint
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'js_eslint'
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_js_eslint

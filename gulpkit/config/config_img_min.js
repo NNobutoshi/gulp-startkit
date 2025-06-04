@@ -3,13 +3,16 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-const TASK_NAME = 'img_min';
-
 /**
  * @module config_img_min
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
+const
+  TASK_NAME = 'img_min'
+;
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_img_min

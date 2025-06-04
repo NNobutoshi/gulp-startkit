@@ -1,3 +1,4 @@
+import { cwd , argv }                 from 'node:process';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path                           from 'node:path';
 
@@ -9,17 +10,17 @@ import { html } from '../index.js';
 
 const
   CHARSET               = 'utf-8'
-  ,CWD                  = process.cwd()
+  ,CWD                  = cwd()
   ,SRC_DIR_NAME         = 'src'
   ,PUG_CONFIG_FILE_NAME = '_pug_data.json'
-  ,SITE_MAP_FILE_PATH   = process.argv[ 2 ]
+  ,SITE_MAP_FILE_PATH   = argv[ 2 ]
 ;
 const
   SRC_DIR          = path.resolve( CWD, SRC_DIR_NAME )
   ,XLSX_FILE_PATH  = path.resolve( CWD, SITE_MAP_FILE_PATH )
   ,DATA_FILE_PATH  = path.resolve( CWD, path.dirname( SITE_MAP_FILE_PATH ), PUG_CONFIG_FILE_NAME )
   ,XLSX_SHEET_NAME = 'Sheet1'
-  ,FORCED = ( process.argv[ 3 ]?.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
+  ,FORCED = ( argv[ 3 ]?.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
 /**
@@ -69,9 +70,9 @@ function _xlsxToJson( workBook ) {
 async function _writePugDataFile( content ) {
   try {
     await writeFile( DATA_FILE_PATH, content, CHARSET );
-    fancyLog( `configed  "${ path.relative( process.cwd(), DATA_FILE_PATH ) }"` );
+    fancyLog( `configed  "${ path.relative( CWD, DATA_FILE_PATH ) }"` );
   } catch ( err ) {
-    return console.error( err.stack );
+    fancyLog.error( err.stack );
   }
 }
 
@@ -98,9 +99,9 @@ function _reJsonData( data ) {
  */
 async function _createPugFileByDataProps( props, createFile ) {
   let
-    url      = props.url
-    ,temp    = props.template
-    ,pugUrl  = ''
+    url     = props.url
+    ,temp   = props.template
+    ,pugUrl = ''
   ;
   if ( url.match( /\/$/ ) ) {
     pugUrl = url.replace( /\/$/, '/index.pug' );
@@ -113,7 +114,7 @@ async function _createPugFileByDataProps( props, createFile ) {
     await mkdir( path.dirname( pugUrl ),{ recursive : true } );
     await createFile( pugUrl, temp );
   } catch ( err ) {
-    console.error( err.stack );
+    fancyLog.error( err.stack );
   }
 }
 
@@ -132,7 +133,7 @@ async function _createPugFile( pugUrl, template ) {
     const content = await _readTemplateFile( template );
     await _writePugFile( content, pugUrl, exists );
   } catch ( err ) {
-    return console.error( err.stack );
+    fancyLog.error( err.stack );
   }
 }
 
@@ -146,7 +147,7 @@ async function _readTemplateFile( template ) {
   try {
     return await readFile( path.join( SRC_DIR, template ), CHARSET );
   } catch ( err ) {
-    return console.error( err.stack );
+    fancyLog.error( err.stack );
   }
 }
 
@@ -161,11 +162,11 @@ async function _writePugFile( content, pugUrl, exists ) {
   try {
     await writeFile( pugUrl, content, CHARSET );
     if ( exists ) {
-      fancyLog( `Updated       "${ path.relative( process.cwd(), pugUrl ) }"` );
+      fancyLog( `Updated       "${ path.relative( CWD, pugUrl ) }"` );
     } else {
-      fancyLog( `newly created "${ path.relative( process.cwd(), pugUrl ) }"` );
+      fancyLog( `newly created "${ path.relative( CWD, pugUrl ) }"` );
     }
   } catch ( err ) {
-    return console.error( err.stack );
+    fancyLog.error( err.stack );
   }
 }

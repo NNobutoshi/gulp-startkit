@@ -22,6 +22,7 @@ export { icon_font as default };
 
 const
   CHARSET = 'utf-8'
+  ,CWD = cwd()
   ,PLACEHOLDER = config.placeholder
   ,SCSS_FILE_REGEX = /\.scss$/
 ;
@@ -147,8 +148,8 @@ function _createScssFile( templateData ) {
           content = await readFile( templateData.templatePath, CHARSET )
           ,sourceCode = Handlebars.compile( content )( templateData )
           ,file = new Vinyl( {
-            cwd  : cwd(),
-            base : cwd(),
+            cwd  : CWD,
+            base : CWD,
             path : templateData.scssFileName,
             contents : Buffer.from( sourceCode ),
           } )
