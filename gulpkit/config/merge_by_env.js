@@ -11,10 +11,10 @@ export { mergeByEnv as default };
 /**
  * production 用のオブジェクトは、development を基準にしてマージする。<br>
  * @memberof module:config/merge_by_env
- * @param {String} env - 環境変数
- * @param {Object} devObj - depelopment 用のオブジェクト
- * @param {Object} devprod - production 用のオブジェクト
- * @returns {Object} - マージを行ったオブジェクト
+ * @param {string} env - 環境変数
+ * @param {object} devObj - depelopment 用のオブジェクト
+ * @param {object} devprod - production 用のオブジェクト
+ * @returns {object} - マージを行ったオブジェクト
  */
 function mergeByEnv( env, baseObj, sourceObj ) {
   const result = {};

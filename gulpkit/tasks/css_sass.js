@@ -67,7 +67,7 @@ function css_sass() {
  *   ]
  * }
  * @private
- * @param {Object} file - vinyl オブジェクト
+ * @param {object} file - vinyl オブジェクト
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */
 function _collectImporterFiles( file, collectedFiles ) {

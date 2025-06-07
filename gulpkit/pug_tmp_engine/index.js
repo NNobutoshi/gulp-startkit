@@ -34,8 +34,8 @@ const
 /**
  * Excel のデータを JSON に変換する。
  * @function _run
- * @param {Object} workBook - Excel のデータ
- * @returns {Object} JSON データ
+ * @param {object} workBook - Excel のデータ
+ * @returns {object} JSON データ
  */
 ( async function _run() {
   const workBook    = XLSX.readFile( XLSX_FILE_PATH );
@@ -51,8 +51,8 @@ const
 /**
  * Excel のデータを JSON に変換する。
  * @private
- * @param {Object} workBook - Excel のデータ
- * @returns {Object} JSON データ
+ * @param {object} workBook - Excel のデータ
+ * @returns {object} JSON データ
  */
 function _xlsxToJson( workBook ) {
   return _reJsonData(
@@ -63,9 +63,10 @@ function _xlsxToJson( workBook ) {
 /**
  * Pug のデータファイルに書き込む。
  * @private
- * @param {String} content - Pug の設定ファイルの内容
- * @param {String} newStrings - 新しい文字列
- * @param {String} indent - インデント
+ * @param {string} content - Pug の設定ファイルの内容
+ * @param {string} newStrings - 新しい文字列
+ * @param {string} indent - インデント
+ * @returns {Promise<void>}
  */
 async function _writePugDataFile( content ) {
   try {
@@ -80,8 +81,8 @@ async function _writePugDataFile( content ) {
  * JSON データを変換する。
  * データ中のurl をkey にするObject に作り変える。
  * @private
- * @param {Object} data - JSON データ
- * @returns {Object} 変換された JSON データ
+ * @param {object} data - JSON データ
+ * @returns {object} 変換された JSON データ
  */
 function _reJsonData( data ) {
   const res = {};
@@ -94,8 +95,9 @@ function _reJsonData( data ) {
 /**
  * Pug のファイルを作成する。
  * @private
- * @param {Object} props - JSON データのプロパティ
+ * @param {object} props - JSON データのプロパティ
  * @param {Function} createPugFile - Pug ファイルを作成する関数
+ * @returns {Promise<void>}
  */
 async function _createPugFileByDataProps( props, createFile ) {
   let
@@ -115,14 +117,16 @@ async function _createPugFileByDataProps( props, createFile ) {
     await createFile( pugUrl, temp );
   } catch ( err ) {
     fancyLog.error( err.stack );
+    throw err;
   }
 }
 
 /**
  * Pug ファイルを作成する。
  * @private
- * @param {String} pugUrl - Pug ファイルの URL
- * @param {String} template - テンプレート
+ * @param {string} pugUrl - Pug ファイルの URL
+ * @param {string} template - テンプレート
+ * @returns {Promise<void>}
  */
 async function _createPugFile( pugUrl, template ) {
   try {
@@ -134,29 +138,32 @@ async function _createPugFile( pugUrl, template ) {
     await _writePugFile( content, pugUrl, exists );
   } catch ( err ) {
     fancyLog.error( err.stack );
+    throw err;
   }
 }
 
 /**
  * テンプレートファイルを読み込む。
  * @private
- * @param {String} template - テンプレートファイルの URL
- * @returns {String} テンプレートファイルの内容
+ * @param {string} template - テンプレートファイルの URL
+ * @returns {Promise<string>} テンプレートファイルの内容
  */
 async function _readTemplateFile( template ) {
   try {
     return await readFile( path.join( SRC_DIR, template ), CHARSET );
   } catch ( err ) {
     fancyLog.error( err.stack );
+    throw err;
   }
 }
 
 /**
  * Pug ファイルを書き込む。
  * @private
- * @param {String} content - Pug ファイルの内容
- * @param {String} pugUrl - Pug ファイルの URL
- * @param {Boolean} exists - Pug ファイルが既存か否か
+ * @param {string} content - Pug ファイルの内容
+ * @param {string} pugUrl - Pug ファイルの URL
+ * @param {boolean} exists - Pug ファイルが既存か否か
+ * @returns {Promise<void>} テンプレートファイルの内容
  */
 async function _writePugFile( content, pugUrl, exists ) {
   try {
@@ -168,5 +175,6 @@ async function _writePugFile( content, pugUrl, exists ) {
     }
   } catch ( err ) {
     fancyLog.error( err.stack );
+    throw err;
   }
 }

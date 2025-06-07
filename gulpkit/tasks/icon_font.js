@@ -65,7 +65,7 @@ function icon_font() {
  * アイコンフォント用のscss ファイルを作成する。
  * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
- * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
+ * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @param {Stream} trunkStream - エラーを伝えるストリーム
  * @returns {Stream} - iconfontのストリーム
  */
@@ -107,7 +107,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
  * glypsh イベントのリスナー関数の引数からglypshs を受け取り、<br>
  * Handlebars 用のtemplateDataにglyphs データを代入。
  * @private
- * @param {Object} templateData - Handlebers 用のtemplateData
+ * @param {object} templateData - Handlebers 用のtemplateData
  * @returns glypshイベント用のリスナー関数を返す。
  */
 function _setGlyphsToTemplateData( templateData ) {
@@ -124,8 +124,8 @@ function _setGlyphsToTemplateData( templateData ) {
  * file （vinyl オブジェクト） のパスを参照し、<br>
  * オプションで指定のフォントフォーマットに該当するか否かを返す。
  * @private
- * @param {Object} file - vinyl オブジェクト
- * @returns {Boolean} Array.prototype.some の結果（真偽値）
+ * @param {object} file - vinyl オブジェクト
+ * @returns {boolean} Array.prototype.some の結果（真偽値）
  */
 function _isOptionalFontFile( file ) {
   return options.iconfont.formats.some( element => file.path.endsWith( element ) );
@@ -134,7 +134,7 @@ function _isOptionalFontFile( file ) {
 /**
  * SCSSファイルを作成し、ストリームに流す。
  * @private
- * @param {Object} templateData - Handlebers 用のtemplateData
+ * @param {object} templateData - Handlebers 用のtemplateData
  * @returns {Promise<void>}
  */
 function _createScssFile( templateData ) {
@@ -168,7 +168,7 @@ function _createScssFile( templateData ) {
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @private
  * @param {Array} filePaths - ファイルパスの配列
- * @returns {Number} - タイムスタンプ
+ * @returns {number} - タイムスタンプ
  * @returns {Promise<void>}
  */
 async function _getLatestTimestamp( filePaths ) {

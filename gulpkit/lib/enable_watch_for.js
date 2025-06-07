@@ -14,7 +14,7 @@ export { enableWatchForCommandLineTask as default };
  * watch や live reload も機能させる。<br>
  * default としてエクスポート。
  * @memberof module:lib/enable_watch_for
- * @param {Object} tasks - Gulp タスク
+ * @param {object} tasks - Gulp タスク
  */
 function enableWatchForCommandLineTask( tasks ) {
   const

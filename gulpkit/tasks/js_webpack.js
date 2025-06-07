@@ -59,7 +59,7 @@ if ( webpackConfig.cache?.type === 'filesystem' ) {
  * webpack のコンパイルを実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/js_webpack
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function js_webpack() {
   return gulpSrc( config.src, { read : false } )
@@ -72,7 +72,7 @@ function js_webpack() {
  * webpackConfig ファイルをストリームのファイル（vinyl オブジェクト）情報を元に整形して備え、<br>
  * webpack を実行する。
  * @private
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function _runWebPack() {
   const
@@ -108,8 +108,8 @@ function _runWebPack() {
  * vendor など、ディレクトリで共通で使用するモジュールは、そのディレクトリ毎で設定が行えるようにする。<br>
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
  * @private
- * @param {Object} splitChunksGroups - webpackConfig の cacheGroups
- * @param {String} chunkConfigPath - JSON data のpath
+ * @param {object} splitChunksGroups - webpackConfig の cacheGroups
+ * @param {string} chunkConfigPath - JSON data のpath
  * @returns {Promise<void>}
  */
 async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
@@ -124,8 +124,8 @@ async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
 /**
  * weblackConfig のentry プロパティで有効な値を作成する。
  * @private
- * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
- * @param {Object} entries
+ * @param {object} file - 処理対象のファイル (Vinyl オブジェクト)
+ * @param {object} entries
  */
 async function _createEntries( filePath, entries ) {
   const { entryName, relativeEntryPath } = _getEntriesKeyValue( filePath );
@@ -136,8 +136,8 @@ async function _createEntries( filePath, entries ) {
  * webpackCompiler がまだ無いか、新たに作ったentreis や splitChunks がWebpackConfig のそれと差異があれば、<br>
  * 新たなwebpackConfig でwebpackCompiler を初期化する。
  * @private
- * @param {Object} splitChunksGroups
- * @param {Object} entries
+ * @param {object} splitChunksGroups
+ * @param {object} entries
  */
 function _setUpWebpackCompiler( splitChunksGroups, entries ) {
   if (

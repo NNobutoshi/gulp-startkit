@@ -2,6 +2,7 @@
  * タスク毎にエクスポート。
  * @module config/index
  * @example
+ * export { config as clean          } from './config_copy_to.js';
  * export { config as copy_to        } from './config_copy_to.js';
  * export { config as css_sass       } from './config_css_sass.js';
  * export { config as css_lint_scss  } from './config_css_lint_scss.js';
@@ -13,6 +14,7 @@
  * export { config as js_eslint      } from './config_js_eslint.js';
  * export { config as js_webpack     } from './config_js_webpack.js';
  */
+export { config as clean          } from './config_copy_to.js';
 export { config as copy_to        } from './config_copy_to.js';
 export { config as css_sass       } from './config_css_sass.js';
 export { config as css_lint_scss  } from './config_css_lint_scss.js';

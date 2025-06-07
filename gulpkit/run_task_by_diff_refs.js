@@ -19,7 +19,7 @@ runTaskByName( argv.slice( 4 )[ 0 ] );
  **/
 /**
  * argvの5つ目の引数に応じてタスクを実行。
- * @param {String} taskName - argvの5つ目の引数
+ * @param {string} taskName - argvの5つ目の引数
  */
 function runTaskByName( taskName ) {
   switch ( taskName ) {

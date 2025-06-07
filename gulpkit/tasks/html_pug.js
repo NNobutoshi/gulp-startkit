@@ -44,7 +44,7 @@ let
  * Pug を実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/html_pug
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function html_pug() {
   return gulpSrc( config.dataSrc )
@@ -67,7 +67,7 @@ function html_pug() {
  * パースしたデータは共通用とページ固有用とでそれぞれ、pugCoomonDataMap とpugPageData に格納する。
  * データはPug の実行時にPug に渡すデータとして使用する。
  * @private
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {
@@ -86,7 +86,7 @@ function _loadPugData() {
 /**
  * Pug の実行前に、Pug に渡すデータをセットする。<br>
  * @private
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function _setPugData() {
   return through.obj( function _transform( file, enc, callback ) {
@@ -118,9 +118,9 @@ function _setPugData() {
 /**
  * ページそれぞれで指定されている共通用JSONデータのパスをキーにしている値を、<br>
  * _loadPugData() で準備したpugCommonDataMap から取得する。
- * @param {String} commonDataFilePath - ページそれぞれから指定されている共通用JSONデータのパス
+ * @param {string} commonDataFilePath - ページそれぞれから指定されている共通用JSONデータのパス
  * @param {Map} pugCommonDataMap - ページ共通のデータが格納されたMap
- * @returns {Object} - 引数で渡されたパスをkey にするMap の値
+ * @returns {object} - 引数で渡されたパスをkey にするMap の値
  */
 function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
   const
@@ -145,7 +145,7 @@ function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
  *   ]
  * }
  * @private
- * @param {Object} file - vinyl オブジェクト
+ * @param {object} file - vinyl オブジェクト
  * @param {Map} collectedFiles - 依存関係を格納する Map
  */
 function _collectImporterFiles( file, collectedFiles ) {
@@ -301,8 +301,8 @@ function _injectImageSize() {
 /**
  * img || source 要素に width と height を追加する。
  * @private
- * @param {Object} match RegExp から得られるマッチした文字列が格納された配列
- * @param {Object} file 参照するファイル（vinyl オブジェクト）
+ * @param {object} match RegExp から得られるマッチした文字列が格納された配列
+ * @param {object} file 参照するファイル（vinyl オブジェクト）
  * @param {Map} map match[0] をkey にし、値にwidth 、height が設定されたimg 要素の文字列を代入するMap オブジェクト
  * @param {Function} errorCallback ストリームにエラーを伝えるCallback
  * @returns {Promise<void>}
@@ -341,12 +341,12 @@ async function _addImageDimensionsToElementStrings( match, file, map, errorCallb
 /**
  * 閉じタグ付近に付けるコメントに関する体裁を整える。
  * @private
- * @param {String} _full RegExP で得られるマッチする全文字列
- * @param {String} endTag RegExP で得られる閉じタグにあたる文字列
- * @param {String} lineFeed RegExP で得られる改行コードにあたる文字列
- * @param {String} indent RegExP で得られるインデントにあたる文字列
- * @param {String} comment RegExP で得られるコメントタグの'&lt;!--'と'--&gt;'を除く文字列
- * @returns {String} 置換文字列
+ * @param {string} _full RegExP で得られるマッチする全文字列
+ * @param {string} endTag RegExP で得られる閉じタグにあたる文字列
+ * @param {string} lineFeed RegExP で得られる改行コードにあたる文字列
+ * @param {string} indent RegExP で得られるインデントにあたる文字列
+ * @param {string} comment RegExP で得られるコメントタグの'&lt;!--'と'--&gt;'を除く文字列
+ * @returns {string} 置換文字列
  */
 function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
   const
@@ -401,8 +401,8 @@ function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
 /**
  * srcPath が外部の src か否かを調べる。
  * @private
- * @param {String} srcPath
- * @return {Boolean}
+ * @param {string} srcPath
+ * @return {boolean}
  */
 function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
@@ -410,8 +410,8 @@ function _isExternalSrc( srcPath ) {
 
 /** srcPath がルートパスか否かを調べる。
  * @private
- * @param {String} srcPath
- * @return {Boolean}
+ * @param {string} srcPath
+ * @return {boolean}
  */
 function _isRootPath( srcPath ) {
   return /^\//.test( srcPath );
@@ -420,10 +420,10 @@ function _isRootPath( srcPath ) {
 /**
  * srcPath を絶対パスにする。
  * @private
- * @param {String} srcPath
- * @param {String} base
- * @param {String} dirname
- * @return {String} - 絶対パス
+ * @param {string} srcPath
+ * @param {string} base
+ * @param {string} dirname
+ * @return {string} - 絶対パス
  */
 function _absolutePath( srcPath, base, dirname ) {
   return ( _isRootPath( srcPath ) )

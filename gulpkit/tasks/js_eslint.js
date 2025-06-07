@@ -27,7 +27,7 @@ export { js_eslint as default };
  * JavaScriptのLintを実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/js_eslint
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function js_eslint() {
   return gulpSrc( config.src, options.gulplSrc )
@@ -42,14 +42,14 @@ function js_eslint() {
  * ESLint を実行するためのストリーム処理を提供。<br>
  * 各ファイルに対して ESLint を実行し、結果をログに出力する。
  * @private
- * @param {Object} esLintOptions - ESLint のオプション設定
+ * @param {object} esLintOptions - ESLint のオプション設定
  * @returns {Stream} - Gulp ストリーム
  */
 function _runEsLint( esLintOptions ) {
 
   /**
    * 各ファイルに対して ESLint を実行。
-   * @param {Object} file - 処理対象のファイル (Vinyl オブジェクト)
+   * @param {object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {string} enc - エンコーディングの種類
    * @param {Function} callback - 実行して処理の完了を伝える
    * @returns {Stream} - Gulp stream

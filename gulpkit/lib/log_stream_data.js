@@ -26,7 +26,7 @@ const defaultSettings = {
 
 /**
  * Gulp stream のデータをログに出力する。
- * @param {Object} options - 色や出力の制限などが設定可能なオプション
+ * @param {object} options - 色や出力の制限などが設定可能なオプション
  * @returns {Stream} - 処理されたストリーム
  */
 function logSteamData( options ) {

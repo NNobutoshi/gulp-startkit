@@ -34,7 +34,7 @@ const
  * SVGスプライトを作成するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/img_sprite_svg
- * @returns {Object} - Gulp stream
+ * @returns {object} - Gulp stream
  */
 function img_sprite_svg() {
   return gulpSrc( config.src )
@@ -49,7 +49,7 @@ function img_sprite_svg() {
  * 任意に命名されたフォルダ毎に、SVG スプライトを作成する。
  * @private
  * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
- * @param {String} baseDir - 設定した任意のフォルダ名を末尾に持つパス
+ * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp stream
  */
 function _branchTask( branchSrc, baseDir ) {

@@ -38,7 +38,7 @@ export default {
  * 未代入であれば、保存先ファイルから取得。<br>
  * 保存ファイルが存在しなければ、空のObject を返す。
  * @function _getLastDiffData
- * @returns {Object} - lastDiffData
+ * @returns {object} - lastDiffData
  */
 async function _getLastDiffData() {
   if ( lastDiffData ) {

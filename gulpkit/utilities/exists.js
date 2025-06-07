@@ -9,8 +9,8 @@ export { exists as default };
 /**
  * ファイルの存在を確認する。<br>
  * default としてエクスポート。
- * @param {String} filePath - ファイルの絶対パス
- * @returns {Boolean} ファイルが存在するか否か
+ * @param {string} filePath - ファイルの絶対パス
+ * @returns {boolean} - ファイルが存在するか否か
  */
 async function exists( filePath ) {
   try {

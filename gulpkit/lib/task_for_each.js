@@ -23,8 +23,8 @@ const
  * 指定のグループに従ってsource を小分けにする 。<br>
  * default としてエクスポート。
  * @memberof module:lib/task_for_each
- * @param {String} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
- * @param {String} base - ソースファイルのベースディレクトリ
+ * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
+ * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  */
 function assignTaskForEachGroup( group, base, branchTask ) {
@@ -37,8 +37,8 @@ function assignTaskForEachGroup( group, base, branchTask ) {
  * 実際に指定のグループ名に則してディレクトリが構成されていることが大前提。
  * @private
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {String} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
- * @param {String} base - ソースファイルのベースディレクトリ
+ * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
+ * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  * @returns {Stream} - 処理されたストリーム
  */
@@ -57,10 +57,10 @@ function _groupSources( groupedSources, group, base, branchTask ) {
 /**
  * file のパスを任意のグループ名で区切り、前者の方を親に、後者の方を子として親ディレクトリ毎にグループ分けする。
  * @private
- * @param {Object} file - Vinyl オブジェクト
+ * @param {object} file - Vinyl オブジェクト
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {String} group - 任意のループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
- * @param {String} base - ソースファイルのベースディレクトリ
+ * @param {string} group - 任意のループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
+ * @param {string} base - ソースファイルのベースディレクトリ
  */
 function _setChildSourceToParentMap( file, groupedSources, group, base ) {
   const

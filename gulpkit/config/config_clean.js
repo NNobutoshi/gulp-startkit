@@ -14,7 +14,8 @@ export { mergedConf as config };
  * @memberof module:config_clean
  */
 const devConfig = {
-  command : `git clean -f ${ commonConfig.DIST }/`,
+  enabledWatch : false,
+  command      : `git clean -f ${ commonConfig.DIST }/`,
 };
 
 /**
