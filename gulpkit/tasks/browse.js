@@ -45,7 +45,7 @@ async function init_browse( done ) {
       return done();
     }
     browserSync.init( options );
-    // return done();
+    return done();
   } catch ( err ) {
     throw err.stack || err;
   }
@@ -55,7 +55,7 @@ async function init_browse( done ) {
  * BrowserSync をリロードする。
  * @memberof module:tasks/browse
  * @param {Function} done - Gulp タスク完了のコールバック
- * @returns {Function}
+ * @returns {undefined}
  */
 function reload_browse( done ) {
   if ( browserSync.active ) {

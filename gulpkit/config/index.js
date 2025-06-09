@@ -1,5 +1,5 @@
 /**
- * タスク毎にエクスポート。
+ * タスクごとにエクスポート。
  * @module config/index
  * @example
  * export { config as clean          } from './config_copy_to.js';

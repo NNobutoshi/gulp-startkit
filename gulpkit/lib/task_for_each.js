@@ -7,7 +7,7 @@ import mergeStream from 'merge-stream';
 export { assignTaskForEachGroup as default };
 
 /**
- * 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループ毎にcallback （Gulp タスク）を実行させる。
+ * 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループごとにcallback （Gulp タスク）を実行させる。
  * @module lib/task_for_each
  * @requires node:process
  * @requires node:path
@@ -33,11 +33,11 @@ function assignTaskForEachGroup( group, base, branchTask ) {
 }
 
 /**
- * 指定のグループに従ってsource を小分けにする 。
- * 実際に指定のグループ名に則してディレクトリが構成されていることが大前提。
+ * 指定のグループに従ってsource を小分けにする。<br>
+ * 設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。
  * @private
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
+ * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  * @returns {Stream} - 処理されたストリーム
@@ -55,7 +55,7 @@ function _groupSources( groupedSources, group, base, branchTask ) {
 }
 
 /**
- * file のパスを任意のグループ名で区切り、前者の方を親に、後者の方を子として親ディレクトリ毎にグループ分けする。
+ * file のパスを任意のグループ名で区切り、前者の方を親に、後者の方を子として親ディレクトリごとにグループ分けする。
  * @private
  * @param {object} file - Vinyl オブジェクト
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
@@ -64,11 +64,11 @@ function _groupSources( groupedSources, group, base, branchTask ) {
  */
 function _setChildSourceToParentMap( file, groupedSources, group, base ) {
   const
-    splits  = file.path.split( group )
+    splits = file.path.split( group )
   ;
   const
     parent = splits[ 0 ] + group
-    ,child  = splits[ 1 ]
+    ,child = splits[ 1 ]
   ;
   if ( groupedSources.has( parent ) === false ) {
     groupedSources.set( parent, {
@@ -80,9 +80,9 @@ function _setChildSourceToParentMap( file, groupedSources, group, base ) {
 }
 
 /**
- * コールバックのbranchTask には、グループ毎に必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
+ * Callback のbranchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
  * @prive
- * @param {Map} groupedSources - 任意のディレクトリ毎に分たソースの格納用
+ * @param {Map} groupedSources - 任意のディレクトリごとに分たソースの格納用
  * @param {Function} branchTask - Callback で実行するGulp タスク
  * @param {Function} callback - through2 で処理終了を伝えるコールバック
  * @returns {Promise<void>}

@@ -43,7 +43,7 @@ let
  * @description
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
  * watch はGulpのものを使用。<br>
- * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくる毎に作成し、<br>
+ * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくるごとに作成し、<br>
  * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
  */
 
@@ -59,7 +59,7 @@ if ( webpackConfig.cache?.type === 'filesystem' ) {
  * webpack のコンパイルを実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/js_webpack
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function js_webpack() {
   return gulpSrc( config.src, { read : false } )
@@ -72,7 +72,7 @@ function js_webpack() {
  * webpackConfig ファイルをストリームのファイル（vinyl オブジェクト）情報を元に整形して備え、<br>
  * webpack を実行する。
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _runWebPack() {
   const
@@ -105,7 +105,7 @@ function _runWebPack() {
 }
 
 /**
- * vendor など、ディレクトリで共通で使用するモジュールは、そのディレクトリ毎で設定が行えるようにする。<br>
+ * vendor など、ディレクトリで共通で使用するモジュールは、そのディレクトリごとで設定が行えるようにする。<br>
  * そのためのJSON data をwebpackConfig で使用可能な状態にする。
  * @private
  * @param {object} splitChunksGroups - webpackConfig の cacheGroups

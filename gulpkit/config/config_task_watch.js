@@ -8,6 +8,7 @@ export { mergedConf as config, mergedOptions as options };
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
+
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_task_watch

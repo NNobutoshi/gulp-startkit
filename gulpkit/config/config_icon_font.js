@@ -25,7 +25,7 @@ const devConfig = {
   placeholder  : commonConfig.PLACEHOLDER,
   fontsDist    : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/fonts`,
   scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
-  group        : GROUP_DIR, // この命名ルールのディレクトリ毎に。
+  group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
 

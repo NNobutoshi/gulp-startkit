@@ -27,7 +27,7 @@ async function clean() {
 }
 
 /**
- * Git Command をつかってUntracked fileを、削除。
+ * Git のコマンドを使って未追跡ファイルを削除。
  * @private
  * @param {string} command - git clean コマンド
  * @returns {Promise<void>}

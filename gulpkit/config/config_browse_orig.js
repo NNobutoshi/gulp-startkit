@@ -7,8 +7,8 @@ export { mergedConf as config, mergedOptions as options };
 
 /**
  * @module config_browse_orig
- * @description live reload 機能は作業者各々でポート等の設定を自由に行えるようにする意図。<br>
- * <strong>機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
+ * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
+ * 作業者各々でポート等の設定を自由に行えるようにする意図。<br>
  * config_brows.js はGit igonre でコミットから除外。
  * @requires node:process
  * @requires ./common.js
@@ -48,7 +48,6 @@ const devConfig = {
  * @memberof module:config_browse_orig
  */
 const prodConfig = null;
-
 
 /**
  * 開発環境用オプションオブジェクト。

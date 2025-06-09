@@ -25,7 +25,7 @@ const defaultSettings = {
 };
 
 /**
- * Gulp stream のデータをログに出力する。
+ * Gulp stream で処理されたファイル名やその数等を出力する。
  * @param {object} options - 色や出力の制限などが設定可能なオプション
  * @returns {Stream} - 処理されたストリーム
  */
@@ -46,12 +46,12 @@ function logSteamData( options ) {
   return through.obj(
     function _transform( file, enc, callback ) {
       fileCounter += 1;
-      // ファイルが何をされたかfile 毎の出力が必要ない場合。
+      // ファイルが何をされたかfile ごとの出力が必要ない場合。
       if ( settings.forEachFile === false ) {
         callback( null, file );
         return;
       }
-      // ファイルが何をされたかfile 毎の出力が必要な場合。
+      // ファイルが何をされたかfile ごとの出力が必要な場合。
       fancyLog(
         chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` )
         + ` ${ path.relative( CWD, file.path ) }`

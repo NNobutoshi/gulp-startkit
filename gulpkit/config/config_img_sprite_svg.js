@@ -28,7 +28,7 @@ const devConfig = {
   src   : [ commonConfig.SRC + '/**/img/_sprite_svg/**/*.svg' ],
   base  : commonConfig.SRC,
   dist  : commonConfig.DIST,
-  group : GROUP_DIR, // この命名ルールのディレクトリ毎に。
+  group : GROUP_DIR, // この命名ルールのディレクトリごとに。
   enabledWatch : commonConfig.WATCH_ENABLED,
 };
 

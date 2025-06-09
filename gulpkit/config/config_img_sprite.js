@@ -23,7 +23,7 @@ const devConfig = {
   dist         : commonConfig.DIST,
   base         : commonConfig.SRC,
   placeholder  : commonConfig.PLACEHOLDER,
-  group        : GROUP_DIR, // この命名ルールのディレクトリ毎に。
+  group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
   imgDist      : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/img`,
   scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
   enabledWatch : commonConfig.WATCH_ENABLED,

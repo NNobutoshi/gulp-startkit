@@ -8,6 +8,7 @@ export { mergeByEnv as default };
  * @requires lodash/merge.js
  * @requires ./env_type.js
  */
+
 /**
  * production 用のオブジェクトは、development を基準にしてマージする。<br>
  * @memberof module:config/merge_by_env

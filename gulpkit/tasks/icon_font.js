@@ -49,7 +49,7 @@ const
  * アイコンフォントとそのSCSS ファイルを作成するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/icon_font
- * @returns {Stream} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function icon_font() {
   return gulpSrc( config.src )
@@ -64,10 +64,10 @@ function icon_font() {
  * アイコンフォントの設定を行い作成する。<br>
  * アイコンフォント用のscss ファイルを作成する。
  * @private
- * @param {Array} branchSrc - 基のストリームから分けられたグループ毎のソース
+ * @param {Array} branchSrc - 基のストリームから分けられたグループごとのソース
  * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @param {Stream} trunkStream - エラーを伝えるストリーム
- * @returns {Stream} - iconfontのストリーム
+ * @returns {Stream} - iconfont のストリーム
  */
 async function _branchTask( branchSrc, baseDir, trunkStream ) {
   try {
@@ -105,7 +105,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
 /**
  * SCSS ファイル作成の準備を行う。<br>
  * glypsh イベントのリスナー関数の引数からglypshs を受け取り、<br>
- * Handlebars 用のtemplateDataにglyphs データを代入。
+ * Handlebars 用のtemplateData にglyphs を代入。
  * @private
  * @param {object} templateData - Handlebers 用のtemplateData
  * @returns glypshイベント用のリスナー関数を返す。
@@ -168,8 +168,7 @@ function _createScssFile( templateData ) {
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @private
  * @param {Array} filePaths - ファイルパスの配列
- * @returns {number} - タイムスタンプ
- * @returns {Promise<void>}
+ * @returns {Promise<number>} - タイムスタンプ
  */
 async function _getLatestTimestamp( filePaths ) {
   let

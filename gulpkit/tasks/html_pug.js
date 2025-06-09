@@ -44,7 +44,7 @@ let
  * Pug を実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/html_pug
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function html_pug() {
   return gulpSrc( config.dataSrc )
@@ -67,7 +67,7 @@ function html_pug() {
  * パースしたデータは共通用とページ固有用とでそれぞれ、pugCoomonDataMap とpugPageData に格納する。
  * データはPug の実行時にPug に渡すデータとして使用する。
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {
@@ -86,7 +86,7 @@ function _loadPugData() {
 /**
  * Pug の実行前に、Pug に渡すデータをセットする。<br>
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _setPugData() {
   return through.obj( function _transform( file, enc, callback ) {
@@ -174,7 +174,7 @@ function _collectImporterFiles( file, collectedFiles ) {
 /**
  * Pug の実行。
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _renderPug() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
@@ -186,7 +186,6 @@ function _renderPug() {
       const pugOptions = { ...options.pug,
         self     : true,
         filename : file.path,
-        siteData : file.data.siteData,
         pageData : file.data.pageData,
       };
       try {
@@ -205,7 +204,7 @@ function _renderPug() {
  * Pug の実行後、HTML ファイルに対して実行。
  * HTML の体裁を整える。
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _formatHtml() {
   const
@@ -252,7 +251,7 @@ function _formatHtml() {
 /**
  * img サイズの自動挿入
  * @private
- * @returns {object} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function _injectImageSize() {
   const mapImageElementStrings = new Map();
@@ -402,7 +401,7 @@ function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
  * srcPath が外部の src か否かを調べる。
  * @private
  * @param {string} srcPath
- * @return {boolean}
+ * @returns {boolean}
  */
 function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
@@ -411,7 +410,7 @@ function _isExternalSrc( srcPath ) {
 /** srcPath がルートパスか否かを調べる。
  * @private
  * @param {string} srcPath
- * @return {boolean}
+ * @returns {boolean}
  */
 function _isRootPath( srcPath ) {
   return /^\//.test( srcPath );
@@ -423,7 +422,7 @@ function _isRootPath( srcPath ) {
  * @param {string} srcPath
  * @param {string} base
  * @param {string} dirname
- * @return {string} - 絶対パス
+ * @returns {string} - 絶対パス
  */
 function _absolutePath( srcPath, base, dirname ) {
   return ( _isRootPath( srcPath ) )

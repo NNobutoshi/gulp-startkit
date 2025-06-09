@@ -34,9 +34,9 @@ export default {
 };
 
 /**
- * モジュールスコープ変数に代入されている差分ファイルリスト（Object）を優先して取得。<br>
+ * モジュールスコープ変数に代入されている差分ファイルリスト（object）を優先して取得。<br>
  * 未代入であれば、保存先ファイルから取得。<br>
- * 保存ファイルが存在しなければ、空のObject を返す。
+ * 保存ファイルが存在しなければ、空のobject を返す。
  * @function _getLastDiffData
  * @returns {object} - lastDiffData
  */

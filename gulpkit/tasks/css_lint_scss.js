@@ -26,7 +26,7 @@ export { css_lint_scss as default };
  * SCSS のLint を実行するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/css_lint_scss
- * @returns {Stream} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function css_lint_scss() {
   return gulpSrc( config.src, options.gulpSrc )
@@ -39,7 +39,7 @@ function css_lint_scss() {
 
 /**
  * SCSS の構文チェック。
- * @returns Gulp stream
+ * @returns Gulp ストリーム
  */
 function _lintScss() {
   return through.obj( async function _transform( file, enc, callback ) {
@@ -48,6 +48,7 @@ function _lintScss() {
         code : String( file.contents ),
       } );
       if ( report ) {
+        // 不要な1行目の文字列はfile.path で置換する。
         fancyLog( report.replace( /<.+?>/, file.path ) );
       }
       callback( null, file );

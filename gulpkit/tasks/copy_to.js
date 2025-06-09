@@ -20,7 +20,7 @@ export { copy_to as default };
  * 指定されたファイルをコピーするタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/copy_to
- * @returns {Stream} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function copy_to() {
   return gulpSrc( config.src, options.gulpSrc )
