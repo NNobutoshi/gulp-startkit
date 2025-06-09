@@ -1,4 +1,4 @@
-import { src as gulpSrc, dest, lastRun } from 'gulp';
+import { src as gulpSrc, dest } from 'gulp';
 import imagemin, { gifsicle, mozjpeg, optipng, svgo } from 'gulp-imagemin';
 import plumber                                        from 'gulp-plumber';
 import imageminPngquant from 'imagemin-pngquant';
@@ -22,10 +22,9 @@ export { img_min as default };
  * 画像を圧縮するタスク。<br>
  * default としてエクスポート。
  * @memberof module:tasks/img_min
- * @returns {Stream} - Gulp stream
+ * @returns {Stream} - Gulp ストリーム
  */
 function img_min() {
-  options.gulpSrc.since = lastRun( img_min );
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
