@@ -79,16 +79,13 @@ function diff_build( options, collect, select ) {
     [ ref1, ref2 ] = process.argv.slice( 2 );
   }
 
-  /** モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。*/
+  // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
   if ( !diffBuildProc ) {
     diffBuildProc = new DiffBuildProcessor();
-    // リスナ-登録でthis の参照が代わらないようにdiffBuildProc にbind 。
-    diffBuildProc.resetSharedState = diffBuildProc
-      .resetSharedState.bind( diffBuildProc )
-    ;
     // diffBuildProc の共有する値を初期化するメンバ関数をリスナー登録。
     _addResetStateListeners(
-      diffBuildProc.resetSharedState,
+    // リスナ-登録でthis の参照が代わらないようdiffBuildProc にbind 。
+      diffBuildProc.resetSharedState.bind( diffBuildProc ),
       settings.firstTasksEndedEventName,
       settings.tasksEndedEventName,
     );
@@ -141,7 +138,7 @@ function _addResetStateListeners(
 
 /**
  * One source → One destination 用のストリーム作成。<br>
- * Git Diff で検知されたfile のみを対象にする。<br>
+ * Git status または Git diff で検知されたfile のみを対象にする。
  * @private
  * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {object} settings - 設定オブジェクト
@@ -248,14 +245,7 @@ class DiffBuildProcessor {
   constructor() {
     this.collector = new Map();
     this.selector  = new Map();
-    this.allFileMap = new Map();
-    this.targetFileMap = new Map();
-    this.selectedFileMap = new Map();
-    this.collectedFileMap = new Map();
-    this.currentDiffData = null;
-    this.lastDiffData = null;
-    this.promiseToGetDiffData = null;
-    this.promiseToGetLastDiffData = null;
+    this.resetSharedState();
   }
 
   /**
