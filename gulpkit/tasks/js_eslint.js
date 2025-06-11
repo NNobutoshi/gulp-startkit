@@ -61,7 +61,7 @@ function _runEsLint( esLintOptions ) {
           eslint = new ESLint( esLintOptions )
         ;
         const
-          results = await eslint.lintText( String( file.contents ) )
+          results = await eslint.lintText( file.contents.toString() )
         ;
         const
           formatter = await eslint.loadFormatter( 'stylish' )

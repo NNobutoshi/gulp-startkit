@@ -27,7 +27,7 @@ function lint_svg( options ) {
     async function _transform( file, enc, callback ) {
       try {
         const
-          contents = String( file.contents )
+          contents = file.contents.toString()
         ;
         const
           linting = await SVGLint.lintSource( contents, settings )

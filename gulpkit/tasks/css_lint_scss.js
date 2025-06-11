@@ -45,7 +45,7 @@ function _lintScss() {
   return through.obj( async function _transform( file, enc, callback ) {
     try {
       const { report } = await stylelint.lint( { ...options.stylelint,
-        code : String( file.contents ),
+        code : file.contents.toString(),
       } );
       if ( report ) {
         // 不要な1行目の文字列はfile.path で置換する。

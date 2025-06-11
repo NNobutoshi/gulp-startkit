@@ -72,7 +72,7 @@ function html_pug() {
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {
     const
-      data = JSON.parse( String( file.contents ) )
+      data = JSON.parse( file.contents.toString() )
     ;
     if ( file.path.includes( '_common_' ) ) {
       pugCommonDataMap.set( file.path, data );
@@ -150,7 +150,7 @@ function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = String( file.contents )
+    contents = file.contents.toString()
   ;
   const
     importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
@@ -189,7 +189,7 @@ function _renderPug() {
         pageData : file.data.pageData,
       };
       try {
-        const html = pug.render( String( file.contents ), pugOptions );
+        const html = pug.render( file.contents.toString(), pugOptions );
         file.contents = Buffer.from( html );
         file.path = file.path.replace( /\.pug$/, '.html' );
         callback( null, file );
@@ -213,7 +213,7 @@ function _formatHtml() {
   ;
   return through.obj(
     function( file, enc, callback ) {
-      let contents = String( file.contents );
+      let contents = file.contents.toString();
       // オプションで指定があれば、
       // <div> などを内包する<a> の体裁を整える。
       //
@@ -263,7 +263,7 @@ function _injectImageSize() {
       imgRegEx = options.injectImageSize.imgRegEx
       ,promiseReplaceImageElementStringsAll = []
     ;
-    let contents = String( file.contents );
+    let contents = file.contents.toString();
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
         frontPart = match[ 2 ]

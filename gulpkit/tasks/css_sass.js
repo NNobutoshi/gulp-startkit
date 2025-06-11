@@ -72,7 +72,7 @@ function css_sass() {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = String( file.contents )
+    contents = file.contents.toString()
   ;
   const
     importRuleRegEx = /^.*?@(use|forward)\s*['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
