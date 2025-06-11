@@ -1,8 +1,13 @@
 import { argv  } from 'node:process';
 
+import fancyLog from 'fancy-log';
+
 import main, { html, img, css, js } from './index.js';
 
-runTaskByName( argv.slice( 4 )[ 0 ] );
+runTaskByName( argv[ 4 ] );
+
+fancyLog( `Running task: ${ argv[ 4 ] || 'main' }` );
+fancyLog( `Comparing refs: ${ argv[ 2 ] }...${ argv[ 3 ] }` );
 
 /**
  * Git diff でブランチ間やコミット間の差分をdiff_build の対象とする場合、<br>

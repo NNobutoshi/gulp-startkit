@@ -20,7 +20,7 @@ const
   ,XLSX_FILE_PATH  = path.resolve( CWD, SITE_MAP_FILE_PATH )
   ,DATA_FILE_PATH  = path.resolve( CWD, path.dirname( SITE_MAP_FILE_PATH ), PUG_CONFIG_FILE_NAME )
   ,XLSX_SHEET_NAME = 'Sheet1'
-  ,FORCED = ( argv[ 3 ]?.includes( 'force' ) ) ? true : false // 既存の各pug ファイルを刷新するか否か
+  ,FORCED = ( argv[ 3 ] === 'force'  ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
 /**
