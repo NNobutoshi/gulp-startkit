@@ -1,3 +1,22 @@
+/**
+ * @module tasks/icon_font
+ * @requires node:process
+ * @requires node:buffer
+ * @requires node:fs/promises
+ * @requires gulp
+ * @requires gulp-iconfont
+ * @requires gulp-plumber
+ * @requires gulp-if
+ * @requires handlebars
+ * @requires through2
+ * @requires vinyl
+ * @requires ../lib/lint_svg.js
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_icon_font.js
+ */
+
 import { cwd }            from 'node:process';
 import { Buffer }         from 'node:buffer';
 import { readFile, stat } from 'node:fs/promises';
@@ -27,24 +46,6 @@ const
   ,SCSS_FILE_REGEX = /\.scss$/
 ;
 
-/**
- * @module tasks/icon_font
- * @requires node:process
- * @requires node:buffer
- * @requires node:fs/promises
- * @requires gulp
- * @requires gulp-iconfont
- * @requires gulp-plumber
- * @requires gulp-if
- * @requires handlebars
- * @requires through2
- * @requires vinyl
- * @requires ../lib/lint_svg.js
- * @requires ../lib/task_for_each.js
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_icon_font.js
- */
 /**
  * アイコンフォントとそのSCSS ファイルを作成するタスク。<br>
  * default としてエクスポート。
@@ -138,10 +139,7 @@ function _isOptionalFontFile( file ) {
  * @returns {Promise<void>}
  */
 function _createScssFile( templateData ) {
-  return through.obj(
-    function _noop( file, _enc, callback ) {
-      callback( null, file );
-    },
+  return through.obj( null, null,
     async function _flush( callback ) {
       try {
         const
