@@ -1,3 +1,20 @@
+/**
+ * @module tasks/html_pug
+ * @requires node:process
+ * @requires node:path
+ * @requires node:buffer
+ * @requires node:fs
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires pug
+ * @requires through2
+ * @requires js-beautify
+ * @requires image-size/fromFile
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_html_pug.js
+ */
+
 import { cwd }    from 'node:process';
 import { Buffer } from 'node:buffer';
 import path       from 'node:path';
@@ -24,22 +41,6 @@ let
   ,pugPageData = {}
 ;
 
-/**
- * @module tasks/html_pug
- * @requires node:process
- * @requires node:path
- * @requires node:buffer
- * @requires node:fs
- * @requires gulp
- * @requires gulp-plumber
- * @requires pug
- * @requires through2
- * @requires js-beautify
- * @requires image-size/fromFile
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_html_pug.js
- */
 /**
  * Pug を実行するタスク。<br>
  * default としてエクスポート。
@@ -150,8 +151,11 @@ function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = file.contents.toString()
+    contents = file.contents?.toString?.()
   ;
+  if ( !contents ) {
+    return;
+  }
   const
     importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
     ,matches = contents.matchAll( importRuleRegEx )

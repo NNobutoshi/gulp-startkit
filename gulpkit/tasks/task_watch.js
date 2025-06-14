@@ -1,3 +1,13 @@
+/**
+ * @module tasks/task_watch
+ * @requires node:process
+ * @requires gulp
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../config/config_task_watch.js
+ * @requires ../config/index.js
+ */
+
 import process from 'node:process';
 
 import { watch, series } from 'gulp';
@@ -18,15 +28,6 @@ let
   ,taskSet = new Set()
 ;
 
-/**
- * @module tasks/task_watch
- * @requires node:process
- * @requires gulp
- * @requires fancy-log
- * @requires chalk
- * @requires ../config/config_task_watch.js
- * @requires ../config/index.js
- */
 /**
  * gulp watch タスクを生成する。<br>
  * default としてエクスポート。

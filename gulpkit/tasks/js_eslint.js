@@ -1,3 +1,15 @@
+/**
+ * @module tasks/js_eslint
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires eslint
+ * @requires through2
+ * @requires fancy-log
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_js_eslint.js
+ */
+
 import { src as gulpSrc } from 'gulp';
 import plumber from 'gulp-plumber';
 
@@ -12,17 +24,6 @@ import { config, options } from '../config/config_js_eslint.js';
 
 export { js_eslint as default };
 
-/**
- * @module tasks/js_eslint
- * @requires gulp
- * @requires gulp-plumber
- * @requires eslint
- * @requires through2
- * @requires fancy-log
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_js_eslint.js
- */
 /**
  * JavaScriptのLintを実行するタスク。<br>
  * default としてエクスポート。

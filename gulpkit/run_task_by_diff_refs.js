@@ -1,14 +1,3 @@
-import { argv  } from 'node:process';
-
-import fancyLog from 'fancy-log';
-
-import main, { html, img, css, js } from './index.js';
-
-runTaskByName( argv[ 4 ] );
-
-fancyLog( `Running task: ${ argv[ 4 ] || 'main' }` );
-fancyLog( `Comparing refs: ${ argv[ 2 ] }...${ argv[ 3 ] }` );
-
 /**
  * Git diff でブランチ間やコミット間の差分をdiff_build の対象とする場合、<br>
  * argvの5つ目の引数で実行するタスクを決定する。<br>
@@ -22,6 +11,18 @@ fancyLog( `Comparing refs: ${ argv[ 2 ] }...${ argv[ 3 ] }` );
  * // master ブランチと develop ブランチとの差分ファイルを対象として、html タスクを実行する。
  * npm run one_refs master develop html
  **/
+
+import { argv  } from 'node:process';
+
+import fancyLog from 'fancy-log';
+
+import main, { html, img, css, js } from './index.js';
+
+runTaskByName( argv[ 4 ] );
+
+fancyLog( `Running task: ${ argv[ 4 ] || 'main' }` );
+fancyLog( `Comparing refs: ${ argv[ 2 ] }...${ argv[ 3 ] }` );
+
 /**
  * argvの5つ目の引数に応じてタスクを実行。
  * @param {string} taskName - argvの5つ目の引数

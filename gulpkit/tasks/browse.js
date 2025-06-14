@@ -1,3 +1,13 @@
+/**
+ * @module tasks/browse
+ * @requires node:url
+ * @requires node:path
+ * @requires browser-sync
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../utilities/exists.js
+ */
+
 import { fileURLToPath } from 'node:url';
 import path              from 'node:path';
 
@@ -17,15 +27,6 @@ const
   CONFIG_FILE_PATH = path.resolve( CONFIG_FILE_DIRNAME, RELATIVE_CONFIG_FILE_PATH )
 ;
 
-/**
- * @module tasks/browse
- * @requires node:url
- * @requires node:path
- * @requires browser-sync
- * @requires fancy-log
- * @requires chalk
- * @requires ../utilities/exists.js
- */
 /**
  * BrowserSync を初期化する。<br>
  * コンフィグファイルが無い場合（live reload機能が必要のない場合）はCallback のdone を実行してタスクを終了する。

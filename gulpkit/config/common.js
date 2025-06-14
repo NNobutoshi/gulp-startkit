@@ -1,3 +1,11 @@
+/**
+ * @module config
+ * @requires node:process
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ./env_type.js
+ */
+
 import { env } from 'node:process';
 
 import fancyLog from 'fancy-log';
@@ -5,13 +13,6 @@ import chalk    from 'chalk';
 
 import { PRODUCTION_ENV, DEVELOPMENT_ENV } from './env_type.js';
 
-/**
- * @module config/common
- * @requires node:process
- * @requires fancy-log
- * @requires chalk
- * @requires ./env_type.js
- */
 
 const
   NODE_ENV        = env.NODE_ENV
@@ -36,7 +37,8 @@ const
 /**
  * 各タスクで共通の設定は環境変数に応じてタスク個別の設定に先んじて切り替えを行う。<br>
  * ソースマップ、差分ビルド、watch などの有効の有無等。
- * @memberof module:config/common
+ * @memberof module:config
+ * @name commonConfig
  */
 export const commonConfig = {
   NODE_ENV : NODE_ENV,
@@ -58,7 +60,8 @@ export const commonConfig = {
 /**
  * ブランチ間やコミット間の差分をビルド対象とするか否かでコマンドを別ける。<br>
  * コミット前の作業差分は未追跡のファイルを検知さる為に、Git status を使用。
- * @memberof module:config/common
+ * @memberof module:config
+ * @name GIT_COMMAND
  */
 const GIT_COMMAND = ( IS_DIFF_REFS )
   ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ commonConfig.SRC }/`
@@ -67,7 +70,8 @@ const GIT_COMMAND = ( IS_DIFF_REFS )
 
 /**
  * 各タスクで共通して使用するプラグイン等のオプション用。
- * @memberof module:config/common
+ * @memberof module:config
+ * @name commonOptions
  */
 export const commonOptions = {
   diff : {

@@ -1,3 +1,9 @@
+/**
+ * @module lib/lint_svg
+ * @requires svglint
+ * @requires through2
+ */
+
 import SVGLint from 'svglint';
 import through from 'through2';
 
@@ -10,11 +16,6 @@ const
   }
 ;
 
-/**
- * @module lib/lint_svg
- * @requires svglint
- * @requires through2
- */
 /**
  * svg をsrc にするタスク用。<br>
  * 各プラグインでエラーが拾いにくいため。<br>

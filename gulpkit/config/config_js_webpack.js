@@ -1,3 +1,13 @@
+/**
+ * @module config
+ * @requires node:process
+ * @requires node:path
+ * @requires webpack
+ * @requires terser-webpack-plugin
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+
 import { cwd } from 'node:process';
 import path    from 'node:path';
 
@@ -9,23 +19,14 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-/**
- * @module config_js_webpack
- * @requires node:process
- * @requires node:path
- * @requires webpack
- * @requires terser-webpack-plugin
- * @requires ./common.js
- * @requires ./merge_by_env.js
- */
-
 const
   CWD = cwd()
 ;
 
 /**
  * 開発環境用コンフィグオブジェクト。
- * @memberof module:config_js_webpack
+ * @memberof module:config
+ * @name devConfig:js_webpack
  */
 const devConfig = {
   src            : [ commonConfig.SRC + '/**/*.{js,json}' ],
@@ -79,7 +80,8 @@ const devConfig = {
  * 本番環境用コンフィグオブジェクト。<br>
  * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
  * 同一設定の場合はnull を明示的に代入。
- * @memberof module:config_js_webpack
+ * @memberof module:config
+ * @name prodConfig:js_webpack
  */
 const prodConfig = {
   webpackConfig : {
@@ -99,7 +101,8 @@ const prodConfig = {
 
 /**
  * 開発環境用オプションオブジェクト。
- * @memberof module:config_js_webpack
+ * @memberof module:config
+ * @name devOptions:js_webpack
  */
 const devOptions = {
   plumber : commonOptions.plumber,
@@ -109,7 +112,8 @@ const devOptions = {
  * 本番環境用オプションオブジェクト。<br>
  * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
  * 同一設定の場合はnull を明示的に代入。
- * @memberof module:config_js_webpack
+ * @memberof module:config
+ * @name prodOptions:js_webpack
  */
 const prodOptions = null;
 

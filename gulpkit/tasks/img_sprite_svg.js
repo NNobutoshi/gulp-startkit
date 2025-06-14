@@ -1,3 +1,16 @@
+/**
+ * @module tasks/img_sprite_svg
+ * @requires gulp
+ * @requires gulp-svg-sprite
+ * @requires gulp-plumber
+ * @requires gulp-if
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/lint_svg.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_img_sprite_svg.js
+ */
+
 import { src as gulpSrc, dest } from 'gulp';
 import svgSprite from 'gulp-svg-sprite';
 import plumber   from 'gulp-plumber';
@@ -18,18 +31,6 @@ const
   ,HTML_FILE_REGEX = /\.html$/
 ;
 
-/**
- * @module tasks/img_sprite_svg
- * @requires gulp
- * @requires gulp-svg-sprite
- * @requires gulp-plumber
- * @requires gulp-if
- * @requires ../lib/diff_build.js
- * @requires ../lib/task_for_each.js
- * @requires ../lib/lint_svg.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_img_sprite_svg.js
- */
 /**
  * SVGスプライトを作成するタスク。<br>
  * default としてエクスポート。

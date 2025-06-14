@@ -1,3 +1,10 @@
+/**
+ * @memberof config
+ * @requires node:process
+ * @requires ./common.js
+ * @requires ./merge_by_env.js
+ */
+
 import { cwd } from 'node:process';
 import path    from 'node:path';
 
@@ -6,13 +13,6 @@ import mergeByEnv from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
-/**
- * @module config_html_pug
- * @requires node:process
- * @requires ./common.js
- * @requires ./merge_by_env.js
- */
-
 const
   TASK_NAME = 'html_pug'
   ,CWD = cwd()
@@ -20,7 +20,8 @@ const
 
 /**
  * 開発環境用コンフィグオブジェクト。
- * @memberof module:config_html_pug
+ * @memberof module:config
+ * @name devConfig:html_pug
  */
 const devConfig = {
   src : [
@@ -47,13 +48,15 @@ const devConfig = {
  * 本番環境用コンフィグオブジェクト。<br>
  * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
  * 同一設定の場合はnull を明示的に代入。
- * @memberof module:config_html_pug
+ * @memberof module:config
+ * @name prodConfig:html_pug
  */
 const prodConfig = null;
 
 /**
  * 開発環境用オプションオブジェクト。
- * @memberof module:config_html_pug
+ * @memberof module:config
+ * @name devOptions:html_pug
  */
 const devOptions = {
   plumber : commonOptions.plumber,
@@ -92,7 +95,8 @@ const devOptions = {
  * 本番環境用オプションオブジェクト。<br>
  * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
  * 同一設定の場合はnull を明示的に代入。
- * @memberof module:config_html_pug
+ * @memberof module:config
+ * @name prodOptions:html_pug
  */
 const prodOptions = null;
 

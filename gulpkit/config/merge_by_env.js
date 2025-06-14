@@ -1,13 +1,13 @@
-import merge from 'lodash/merge.js';
-import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
-
-export { mergeByEnv as default };
-
 /**
  * @module config/merge_by_env
  * @requires lodash/merge.js
  * @requires ./env_type.js
  */
+
+import merge from 'lodash/merge.js';
+import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
+
+export { mergeByEnv as default };
 
 /**
  * production 用のオブジェクトは、development を基準にしてマージする。<br>

@@ -1,3 +1,11 @@
+/**
+ * @module tasks/clean
+ * @requires node:child_process
+ * @requires fancy-log
+ * @requires chalk
+ * @requires ../config/config_clean.js
+ */
+
 import { exec } from 'node:child_process';
 
 import fancyLog from 'fancy-log';
@@ -7,13 +15,6 @@ import { config } from '../config/config_clean.js';
 
 export { clean as default };
 
-/**
- * @module tasks/clean
- * @requires node:child_process
- * @requires fancy-log
- * @requires chalk
- * @requires ../config/config_clean.js
- */
 /**
  * dist 先のクリーンアップを行う。<br>
  * 削除するファイルは、Untracked file のみ。<br>

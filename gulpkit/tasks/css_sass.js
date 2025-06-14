@@ -1,3 +1,17 @@
+/**
+ * @module tasks/css_sass
+ * @requires node:path
+ * @requires gulp
+ * @requires gulp-sass
+ * @requires gulp-if
+ * @requires gulp-sourcemaps
+ * @requires gulp-plumber
+ * @requires gulp-postcss
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_css_sass.js
+ */
+
 import path from 'node:path';
 
 import { src as gulpSrc, dest } from 'gulp';
@@ -21,19 +35,6 @@ const
   SOURCEMAPS_ENABLED = config.enabledSourcemaps
 ;
 
-/**
- * @module tasks/css_sass
- * @requires node:path
- * @requires gulp
- * @requires gulp-sass
- * @requires gulp-if
- * @requires gulp-sourcemaps
- * @requires gulp-plumber
- * @requires gulp-postcss
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_css_sass.js
- */
 /**
  * Sass を実行するタスク。<br>
  * default としてエクスポート。
@@ -72,8 +73,11 @@ function css_sass() {
  */
 function _collectImporterFiles( file, collectedFiles ) {
   const
-    contents = file.contents.toString()
+    contents = file.contents?.toString?.()
   ;
+  if ( !contents ) {
+    return;
+  }
   const
     importRuleRegEx = /^.*?@(use|forward)\s*['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
     ,matches = contents.matchAll( importRuleRegEx )

@@ -1,14 +1,15 @@
+/**
+ * @module lib/enable_watch_for
+ * @requires node:process
+ * @requires gulp
+ */
+
 import process from 'node:process';
 
 import { series } from 'gulp';
 
 export { enableWatchForCommandLineTask as default };
 
-/**
- * @module lib/enable_watch_for
- * @requires node:process
- * @requires gulp
- */
 /**
  * コマンドラインからGulp <task> として、特定のタスクを個別に実行する際に、<br>
  * watch や live reload も機能させる。<br>

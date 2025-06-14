@@ -1,3 +1,12 @@
+/**
+ * @module lib/log_stream_data
+ * @requires node:process
+ * @requires node:path
+ * @requires through2
+ * @requires fancy-log
+ * @requires chalk
+ */
+
 import { cwd } from 'node:process';
 import path    from 'node:path';
 
@@ -7,14 +16,6 @@ import chalk    from 'chalk';
 
 export { logSteamData as default };
 
-/**
- * @module lib/log_stream_data
- * @requires node:process
- * @requires node:path
- * @requires through2
- * @requires fancy-log
- * @requires chalk
- */
 const
   CWD = cwd()
 ;

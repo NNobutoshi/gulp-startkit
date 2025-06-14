@@ -1,3 +1,15 @@
+/**
+ * @module tasks/img_sprite
+ * @requires gulp
+ * @requires gulp.spritesmith
+ * @requires gulp-plumber
+ * @requires gulp-if
+ * @requires ../lib/task_for_each.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../config/config_img_sprite.js
+ */
+
 import { src as gulpSrc, dest } from 'gulp';
 import spriteSmith from 'gulp.spritesmith';
 import plumber     from 'gulp-plumber';
@@ -17,17 +29,6 @@ const
   ,SCSS_FILE_REGEX = /\.scss$/
 ;
 
-/**
- * @module tasks/img_sprite
- * @requires gulp
- * @requires gulp.spritesmith
- * @requires gulp-plumber
- * @requires gulp-if
- * @requires ../lib/task_for_each.js
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../config/config_img_sprite.js
- */
 /**
  * PNGスプライトを作成するタスク。<br>
  * default としてエクスポート。

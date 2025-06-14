@@ -1,3 +1,12 @@
+/**
+ * @module pug_tmp_engine
+ * @requires node:fs/promises
+ * @requires node:path
+ * @requires fancy-log
+ * @requires xlsx
+ * @requires ../utilities/exists.js
+ */
+
 import { cwd , argv }                 from 'node:process';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path                           from 'node:path';
@@ -23,14 +32,6 @@ const
   ,FORCED = ( argv[ 3 ] === 'force'  ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
-/**
- * @module pug_tmp_engine
- * @requires node:fs/promises
- * @requires node:path
- * @requires fancy-log
- * @requires xlsx
- * @requires ../utilities/exists.js
- */
 /**
  * Excel のデータを JSON に変換する。
  * @function _run

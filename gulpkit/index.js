@@ -1,3 +1,10 @@
+/**
+ * @module gulpkit/index
+ * @requires gulp
+ * @requires ./tasks/index.js
+ * @requires ./lib/enable_watch_for.js
+ */
+
 import { series, parallel } from 'gulp';
 
 import * as tasks from './tasks/index.js';
@@ -5,12 +12,6 @@ import enableWatchForCommandLineTask from './lib/enable_watch_for.js';
 
 export { main as default, html, img, css, js, icon, watchForCommanLineTask };
 
-/**
- * @module gulpkit/index
- * @requires gulp
- * @requires ./tasks/index.js
- * @requires ./lib/enable_watch_for.js
- */
 /**
  * Gulp 実行時のdefault 用で全タスクを実行する。
  * @memberof module:gulpkit/index

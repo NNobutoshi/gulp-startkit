@@ -1,3 +1,18 @@
+/**
+ * @module lib/diff_build
+ * @description 差分用コマンドの出力に従ってファイルを選び、<br>
+ * 依存関係にあるファイルや任意で設定したグループに属する他のファイル等をビルド対象にする。
+ * @requires node:process
+ * @requires node:fs/promises
+ * @requires node:child_process
+ * @requires node:path
+ * @requires through2
+ * @requires fancy-log
+ * @requires chalk
+ * @requires p-limit
+ * @requires ./last_diff.js
+ */
+
 import process      from 'node:process';
 import { readFile } from 'node:fs/promises';
 import { exec }     from 'node:child_process';
@@ -35,20 +50,6 @@ export {
   organizeSelectedFileMap, // タスクで汎用的に使えるため
 };
 
-/**
- * @module lib/diff_build
- * @description 差分用コマンドの出力に従ってファイルを選び、<br>
- * 依存関係にあるファイルや任意で設定したグループに属する他のファイル等をビルド対象にする。
- * @requires node:process
- * @requires node:fs/promises
- * @requires node:child_process
- * @requires node:path
- * @requires through2
- * @requires fancy-log
- * @requires chalk
- * @requires p-limit
- * @requires ./last_diff.js
- */
 /**
  * Git で管理する前提での差分ビルド。<br>
  * diff コマンドで検知されたファイルのみを対象とする。<br>
@@ -503,7 +504,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 選択された通過ファイルをストリームにプッシュする。
+   * 選択された通過ファイルをストリームにプッシュする。<br>
    * ファイルの非同期読み込みの過負荷をp-limt で緩和させる。
    * @param {Stream} stream - Gulp stream
    * @param {object} settings - 設定オブジェクト

@@ -1,3 +1,27 @@
+/**
+ * @module tasks/js_webpack
+ * @requires node:process
+ * @requires node:path
+ * @requires node:fs/promises
+ * @requires gulp
+ * @requires gulp-plumber
+ * @requires webpack
+ * @requires fancy-log
+ * @requires through2
+ * @requires lodash/merge.js
+ * @requires lodash/isEqual.js
+ * @requires ../config/config_js_webpack.js
+ * @requires ../lib/diff_build.js
+ * @requires ../lib/log_stream_data.js
+ * @requires ../lib/prepare_webpack_config.js
+ * @requires ../lib/webpack_config.js
+ * @description
+ * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
+ * watch はGulpのものを使用。<br>
+ * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくるごとに作成し、<br>
+ * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
+ */
+
 import { cwd }      from 'node:process';
 import path         from 'node:path';
 import { readFile } from 'node:fs/promises';
@@ -22,30 +46,6 @@ let
   webpackCompiler = null
   ,webpackConfig = config.webpackConfig
 ;
-
-/**
- * @module tasks/js_webpack
- * @requires node:process
- * @requires node:path
- * @requires node:fs/promises
- * @requires gulp
- * @requires gulp-plumber
- * @requires webpack
- * @requires fancy-log
- * @requires through2
- * @requires lodash/merge.js
- * @requires lodash/isEqual.js
- * @requires ../config/config_js_webpack.js
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../lib/prepare_webpack_config.js
- * @requires ../lib/webpack_config.js
- * @description
- * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
- * watch はGulpのものを使用。<br>
- * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくるごとに作成し、<br>
- * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
- */
 
 /**
  * config.js 側で'filesystem' の指定があれば、cacheDirectory をここで指定。<br>

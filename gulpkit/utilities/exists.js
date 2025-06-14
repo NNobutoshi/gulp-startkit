@@ -1,11 +1,12 @@
-import { access } from 'node:fs/promises';
-
-export { exists as default };
-
 /**
  * @module utilities/exists
  * @requires node:fs/promises
  */
+
+import { access } from 'node:fs/promises';
+
+export { exists as default };
+
 /**
  * ファイルの存在を確認する。<br>
  * default としてエクスポート。
