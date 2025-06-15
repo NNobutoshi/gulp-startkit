@@ -23,7 +23,9 @@ const
  * @returns {Stream} - 処理されたストリーム
  */
 function lint_svg( options ) {
-  const settings = { ...defaultSettings, ...options };
+  const
+    settings = { ...defaultSettings, ...options }
+  ;
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {

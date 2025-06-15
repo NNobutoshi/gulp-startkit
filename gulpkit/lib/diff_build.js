@@ -704,7 +704,7 @@ function _getGitDiffData( settings, ref1, ref2 ) {
         fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
-        return resolvePromise( _createObjectFromStrings( stdout, enabledRefs ) );
+        return resolvePromise( _createObjectFromDiffStdout( stdout, enabledRefs ) );
       }
       return resolvePromise( {} );
     } );
@@ -717,7 +717,7 @@ function _getGitDiffData( settings, ref1, ref2 ) {
  * @param {string} str - 基にする文字列
  * @returns {object} - 生成したObject
  */
-function _createObjectFromStrings( str, enabledRefs ) {
+function _createObjectFromDiffStdout( str, enabledRefs ) {
   const
     matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg )
     ,renameSeparator = ( enabledRefs ) ? /\s+/ : /\s+->\s+/ //コマンドによって区切り文字が違うため。
