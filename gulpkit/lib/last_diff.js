@@ -66,7 +66,8 @@ function _setLastDiffData( data ) {
 }
 
 /**
- * ファイルに書き込み。
+ * ファイルに書き込み。<br>
+ * 保存先ディレクトリが存在しなければ、作成する。
  * @returns {Promise<void>}
  */
 async function _writeDiffDataToFile() {
@@ -74,7 +75,7 @@ async function _writeDiffDataToFile() {
     return false;
   }
   try {
-    if ( await existsFile( DIRNAME ) ) {
+    if ( await existsFile( DIRNAME ) === false ) {
       await mkdir( DIRNAME, { recursive : true } );
     }
     await writeFile( FILEPATH, JSON.stringify( lastDiffData, null, 2 ), CHARSET );
