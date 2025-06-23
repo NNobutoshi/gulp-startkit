@@ -22,7 +22,6 @@ import { Buffer }         from 'node:buffer';
 import { readFile, stat } from 'node:fs/promises';
 
 import { src as gulpSrc, dest } from 'gulp';
-import iconfont from 'gulp-iconfont';
 import plumber  from 'gulp-plumber';
 import gulpIf   from 'gulp-if';
 
@@ -68,7 +67,7 @@ function icon_font() {
  * @param {Array} branchSrc - 基のストリームから分けられたグループごとのソース
  * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @param {Stream} trunkStream - エラーを伝えるストリーム
- * @returns {Stream} - iconfont のストリーム
+ * @returns {Promise<Stream>} - iconfont のストリーム
  */
 async function _branchTask( branchSrc, baseDir, trunkStream ) {
   try {
@@ -77,7 +76,7 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
     ;
     const
       iconFontOptions = { ...options.iconfont,
-        fontName : branchFontName,
+        fontName  : branchFontName,
         timestamp : await _getLatestTimestamp( branchSrc ),
       }
       ,templateData = { ...options.iconFontScss,
@@ -88,6 +87,9 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
     const
       fontDist  = config.fontsDist.replace( PLACEHOLDER, baseDir )
       ,scssDist = templateData.scssDist
+    ;
+    const
+      iconfont = ( await import( 'gulp-iconfont' ) ).default
     ;
     return iconfont( branchSrc, iconFontOptions )
       .on( 'glyphs', _setGlyphsToTemplateData( templateData ) )
@@ -139,7 +141,9 @@ function _isOptionalFontFile( file ) {
  * @returns {Promise<void>}
  */
 function _createScssFile( templateData ) {
-  return through.obj( null, null,
+  return through.obj(
+    null,
+    null,
     async function _flush( callback ) {
       try {
         const
