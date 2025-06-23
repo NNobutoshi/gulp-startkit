@@ -182,26 +182,24 @@ function _collectImporterFiles( file, collectedFiles ) {
  */
 function _renderPug() {
   const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
-  return through.obj(
-    function _transform( file, enc, callback ) {
-      if ( ignoreFileRegEx.test( file.basename ) === true ) {
-        return callback();
-      }
-      const pugOptions = { ...options.pug,
-        self     : true,
-        filename : file.path,
-        pageData : file.data.pageData,
-      };
-      try {
-        const html = pug.render( file.contents.toString(), pugOptions );
-        file.contents = Buffer.from( html );
-        file.path = file.path.replace( /\.pug$/, '.html' );
-        callback( null, file );
-      } catch ( err ) {
-        return callback( err );
-      }
+  return through.obj( function _transform( file, enc, callback ) {
+    if ( ignoreFileRegEx.test( file.basename ) === true ) {
+      return callback();
     }
-  );
+    const pugOptions = { ...options.pug,
+      self     : true,
+      filename : file.path,
+      pageData : file.data.pageData,
+    };
+    try {
+      const html = pug.render( file.contents.toString(), pugOptions );
+      file.contents = Buffer.from( html );
+      file.path = file.path.replace( /\.pug$/, '.html' );
+      callback( null, file );
+    } catch ( err ) {
+      return callback( err );
+    }
+  } );
 }
 
 /**
@@ -215,41 +213,39 @@ function _formatHtml() {
     uglyAElementRegEx = options.formatHtml.uglyAElementRegEx
     ,endCommentRegEx  = options.formatHtml.endCommentRegEx
   ;
-  return through.obj(
-    function( file, enc, callback ) {
-      let contents = file.contents.toString();
-      // オプションで指定があれば、
-      // <div> などを内包する<a> の体裁を整える。
-      //
-      // <a>             \ <a>
-      //  <div>          \   <div>
-      //  </div></a>     \   </div>
-      //                 \ </a>
-      if ( options.formatHtml.repairAElement === true ) {
-        contents = contents.replace(
-          uglyAElementRegEx,
-          ( _all, indent, element, linefeed ) => {
-            const fixed = element
-              .replace( '><a ', '>' + linefeed + '<a ' )
-              .replace( '</a>', '</a>' + linefeed )
-            ;
-            return beautify.html( fixed, options.beautify ).replace( /^/mg, indent );
-          },
-        )
-        ;
-      }
-      // オプションで指定があれば、インデントをトル。
-      if ( options.formatHtml.indent === false ) {
-        contents = contents.replace( /^([^\S\n\r\f]+)/mg, '' );
-      }
-      // 閉じタグ付近に付けるコメントに関する体裁。
-      if ( options.formatHtml.commentPosition ) {
-        contents = contents.replace( endCommentRegEx, _replaceEndComment );
-      }
-      file.contents = Buffer.from( contents );
-      callback( null, file );
+  return through.obj( function( file, enc, callback ) {
+    let contents = file.contents.toString();
+    // オプションで指定があれば、
+    // <div> などを内包する<a> の体裁を整える。
+    //
+    // <a>             \ <a>
+    //  <div>          \   <div>
+    //  </div></a>     \   </div>
+    //                 \ </a>
+    if ( options.formatHtml.repairAElement === true ) {
+      contents = contents.replace(
+        uglyAElementRegEx,
+        ( _all, indent, element, linefeed ) => {
+          const fixed = element
+            .replace( '><a ', '>' + linefeed + '<a ' )
+            .replace( '</a>', '</a>' + linefeed )
+          ;
+          return beautify.html( fixed, options.beautify ).replace( /^/mg, indent );
+        },
+      )
+      ;
     }
-  );
+    // オプションで指定があれば、インデントをトル。
+    if ( options.formatHtml.indent === false ) {
+      contents = contents.replace( /^([^\S\n\r\f]+)/mg, '' );
+    }
+    // 閉じタグ付近に付けるコメントに関する体裁。
+    if ( options.formatHtml.commentPosition ) {
+      contents = contents.replace( endCommentRegEx, _replaceEndComment );
+    }
+    file.contents = Buffer.from( contents );
+    callback( null, file );
+  } );
 }
 
 /**
@@ -298,7 +294,6 @@ function _injectImageSize() {
       callback( err );
     }
   } );
-
 }
 
 /**

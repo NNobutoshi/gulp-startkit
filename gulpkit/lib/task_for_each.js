@@ -96,7 +96,7 @@ async function _runTaskforEachGroup( groupedSources, branchTask, callback ) {
     branchStreams.push(
       await branchTask(
         value.children.map( ( item ) => key + item ),
-        value.baseDir.replace( /\\/g, '/' ),
+        value.baseDir.replace( /\\/g, '/' ).replace( /\/$/, '' ),
         trunkStream,
       )
     );

@@ -11,7 +11,7 @@ export { mergedConf as config, mergedOptions as options };
 
 const
   TASK_NAME = 'img_sprite'
-  ,GROUP_DIR = '/img/_sprite'
+  ,GROUP_DIR = 'img/_sprite'
 ;
 
 /**
@@ -20,7 +20,7 @@ const
  * @name devConfig:img_sprite
  */
 const devConfig = {
-  src          : [ commonConfig.SRC + '/**/img/_sprite/**/*.png' ],
+  src          : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.png` ],
   dist         : commonConfig.DIST,
   base         : commonConfig.SRC,
   placeholder  : commonConfig.PLACEHOLDER,

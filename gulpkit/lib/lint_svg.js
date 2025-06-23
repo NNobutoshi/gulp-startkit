@@ -26,25 +26,23 @@ function lint_svg( options ) {
   const
     settings = { ...defaultSettings, ...options }
   ;
-  return through.obj(
-    async function _transform( file, enc, callback ) {
-      try {
-        const
-          contents = file.contents.toString()
-        ;
-        const
-          linting = await SVGLint.lintSource( contents, settings )
-        ;
-        linting.on( 'done', () => {
-          if ( linting.state === 'error' || linting.valid === false ) {
-            return callback( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
-          }
-          callback( null, file );
-        } );
-        linting.lint();
-      } catch ( err ) {
-        callback( err );
-      }
+  return through.obj( async function _transform( file, enc, callback ) {
+    try {
+      const
+        contents = file.contents.toString()
+      ;
+      const
+        linting = await SVGLint.lintSource( contents, settings )
+      ;
+      linting.on( 'done', () => {
+        if ( linting.state === 'error' || linting.valid === false ) {
+          return callback( new Error( `Linting failed (${ linting.state })\n${ file.path }` ) );
+        }
+        callback( null, file );
+      } );
+      linting.lint();
+    } catch ( err ) {
+      callback( err );
     }
-  );
+  } );
 }

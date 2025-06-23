@@ -55,29 +55,28 @@ function _runEsLint( esLintOptions ) {
    * @param {Function} callback - 実行して処理の完了を伝える
    * @returns {Stream} - Gulp ストリーム
    */
-  return through.obj(
-    async function _transform( file, enc, callback ) {
-      try {
-        const
-          eslint = new ESLint( esLintOptions )
-        ;
-        const
-          results = await eslint.lintText( file.contents.toString() )
-        ;
-        const
-          formatter = await eslint.loadFormatter( 'stylish' )
-          ,filteredResults = ESLint.getErrorResults( results )
-        ;
-        const
-          resultText = formatter.format( filteredResults )
-        ;
-        if ( resultText ) {
-          fancyLog( resultText.replace( '<text>', file.path ) );
-        }
-        callback( null, file );
-      } catch ( err ) {
-        callback( err );
+  return through.obj( async function _transform( file, enc, callback ) {
+    try {
+      const
+        eslint = new ESLint( esLintOptions )
+      ;
+      const
+        results = await eslint.lintText( file.contents.toString() )
+      ;
+      const
+        formatter = await eslint.loadFormatter( 'stylish' )
+        ,filteredResults = ESLint.getErrorResults( results )
+      ;
+      const
+        resultText = formatter.format( filteredResults )
+      ;
+      if ( resultText ) {
+        fancyLog( resultText.replace( '<text>', file.path ) );
       }
+      callback( null, file );
+    } catch ( err ) {
+      callback( err );
     }
+  }
   );
 }

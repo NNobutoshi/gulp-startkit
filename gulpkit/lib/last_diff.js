@@ -46,7 +46,7 @@ async function _getLastDiffData() {
   }
   if ( await existsFile( FILEPATH ) ) {
     try {
-      const fileContent =  await readFile( FILEPATH, CHARSET );
+      const fileContent = await readFile( FILEPATH, CHARSET );
       lastDiffData = JSON.parse( fileContent );
     } catch ( err ) {
       throw err;

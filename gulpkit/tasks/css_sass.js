@@ -94,7 +94,7 @@ function _collectImporterFiles( file, collectedFiles ) {
       dependencyFilePath = path.resolve( file.dirname, srcPath )
       ,depFilePathBasename
     ;
-    // 拡張子がない場合は .scss を追加。
+    // 拡張子がない場合は .scss を書き足す。
     if ( !extension ) {
       dependencyFilePath += '.scss';
     }

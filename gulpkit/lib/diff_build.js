@@ -18,7 +18,6 @@ import { readFile } from 'node:fs/promises';
 import { exec }     from 'node:child_process';
 import path         from 'node:path';
 
-
 import through  from 'through2';
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
@@ -76,6 +75,7 @@ function diff_build( options, collect, select ) {
   if ( typeof settings.group !== '' ) {
     settings.group = settings.group.replace( /\//g, path.sep );
   }
+  // ブランチ名、もしくはコミットハッシュをコマンドラインの引数から取得。
   if ( settings.enabledRefs === true ) {
     [ ref1, ref2 ] = process.argv.slice( 2 );
   }
@@ -292,10 +292,7 @@ class DiffBuildProcessor {
       ;
       this.currentDiffData = await this.promiseToGetDiffData;
       this.lastDiffData    = await this.promiseToGetLastDiffData;
-      if (
-        _includes( this.currentDiffData, file.path ) ||
-        _includes( this.lastDiffData, file.path )
-      ) {
+      if ( this.#isFileInDiffData( file.path ) === true ) {
         targetFileSet.add( file.path );
       }
     } catch ( err ) {
@@ -365,7 +362,7 @@ class DiffBuildProcessor {
     const
       groupPath = file.path.slice( 0, groupIndex + group.length )
     ;
-    // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つフルのパス。
+    // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つ絶対パス。
     allFileMap.get( file.path ).group = groupPath;
   }
 
@@ -437,11 +434,11 @@ class DiffBuildProcessor {
     ;
     for ( const targetFilePath of targetFileSet ) {
       const
-        targetGroup = allFileMap.get( targetFilePath )?.group
+        targetGroup = allFileMap.get( targetFilePath )?.group // targetGroup は絶対パス。
         ,groupIndex = targetFilePath.indexOf( group )
       ;
       const
-        myGroup = targetFilePath.slice( 0, groupIndex + group.length )
+        myGroup = targetFilePath.slice( 0, groupIndex + group.length ) // teargetFilePath は絶対パス。
       ;
       for ( const [ filePath, file ] of allFileMap ) {
         if (
@@ -551,6 +548,19 @@ class DiffBuildProcessor {
     parentMap.set( name, new Set() );
   }
 
+  /**
+   * 差分データに、filePath が含まれているか調べる。
+   * @private
+   * @param {string} filePath - ファイルの絶対パス
+   * @returns {boolean} - true or false
+   */
+  #isFileInDiffData( filePath ) {
+    const
+      relativePath = path.relative( CWD, filePath ).replace( /[\\]/g, '/' )
+      ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
+    ;
+    return mergeDiffData && Object.keys( mergeDiffData ).includes( relativePath );
+  }
 }
 
 /**
@@ -663,18 +673,6 @@ function _logFileCount( name, detected, total ) {
     fancyLog( chalk.gray( `[${ name }]: detected ${ detected } files diff` ) );
     fancyLog( chalk.gray( `[${ name }]: passed ${ total } files` ) );
   }
-}
-
-/**
- * 差分データに、filePath が含まれているか調べる。
- * @private
- * @param {object} diffData - 差分データ
- * @param {string} filePath - ファイルの絶対パス
- * @returns {boolean} - true or false
- */
-function _includes( diffData, filePath ) {
-  const relativePath = path.relative( CWD, filePath ).replace( /[\\]/g, '/' );
-  return diffData && Object.keys( diffData ).includes( relativePath );
 }
 
 /**

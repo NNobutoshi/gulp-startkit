@@ -20,7 +20,7 @@ import * as taskConfigAll from '../config/index.js';
 export { task_watch as default };
 
 const
-  watchOptions = options.watch
+  gulpWatchOptions = options.gulpWatch
 ;
 
 let
@@ -66,7 +66,7 @@ function task_watch( tasks, finish ) {
       if ( taskConfig.enabledWatch === true && watchSrc ) {
         enabled = true;
         // Gulp Watch はいったんタスクのみを収集する。
-        watch( watchSrc, watchOptions, _addTaskToSet( task, finish ) );
+        watch( watchSrc, gulpWatchOptions, _addTaskToSet( task, finish ) );
       }
     } //for
     if ( enabled === false ) {
@@ -87,7 +87,7 @@ function _addTaskToSet( task, finish ) {
   return function addWatchTask( done ) {
     taskSet.add( task );
     clearTimeout( timeoutId );
-    timeoutId = setTimeout( _runChainedTasks( finish ), options.runChainedTsksDelayTime );
+    timeoutId = setTimeout( _runChainedTasks( finish ), options.runChainedTasksDelayTime );
     done();
   };
 }

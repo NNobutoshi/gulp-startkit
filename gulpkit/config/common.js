@@ -15,13 +15,12 @@ import { PRODUCTION_ENV, DEVELOPMENT_ENV } from './env_type.js';
 
 
 const
-  NODE_ENV        = env.NODE_ENV
-  ,WATCH_ENV      = env.WATCH_ENV
-  ,DIFF_ENV       = env.DIFF_ENV
-  ,DIFF_REFS_ENV  = env.DIFF_REFS_ENV
+  NODE_ENV   = env.NODE_ENV
+  ,WATCH_ENV = env.WATCH_ENV
+  ,DIFF_ENV  = env.DIFF_ENV
+  ,DIFF_REFS_ENABLED = !!Number( env.DIFF_REFS_ENV )
   ,IS_PRODUCTION  = ( NODE_ENV === PRODUCTION_ENV )
   ,IS_DEVELOPMENT = ( NODE_ENV === DEVELOPMENT_ENV )
-  ,IS_DIFF_REFS   = !!Number( DIFF_REFS_ENV )
 ;
 const
   src_dir  = {
@@ -59,11 +58,12 @@ export const commonConfig = {
 
 /**
  * ブランチ間やコミット間の差分をビルド対象とするか否かでコマンドを別ける。<br>
+ * <ref1> と<ref2> はプレースホルダーで、コマンドラインの引数でされたブランチ名やコミットハッシュで置換される。<br>
  * コミット前の作業差分は未追跡のファイルを検知さる為に、Git status を使用。
  * @memberof module:config
  * @name GIT_COMMAND
  */
-const GIT_COMMAND = ( IS_DIFF_REFS )
+const GIT_COMMAND = ( DIFF_REFS_ENABLED )
   ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ commonConfig.SRC }/`
   : `git status -suall gulpkit/ ${ commonConfig.SRC }/`
 ;
@@ -77,7 +77,7 @@ export const commonOptions = {
   diff : {
     command     : GIT_COMMAND,
     enabled     : commonConfig.DIFF_ENABLED,
-    enabledRefs : IS_DIFF_REFS,
+    enabledRefs : DIFF_REFS_ENABLED,
     firstTasksEndedEventName : commonConfig.EVENT_NAME_WATCH_INIT,
     tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_WAITING,
   },

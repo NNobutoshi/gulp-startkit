@@ -81,27 +81,28 @@ function _runWebPack() {
     ,splitChunksFileNamePattern = config.splitChunks
     ,entryFileNamePattern = config.entry
   ;
-  return through.obj( _transform, _flush );
-  async function _transform( file, enc, callback ) {
-    try  {
-      const filePath = file.path;
-      // chunk のpath が、splitChunks用のJSON データであれば。
-      if ( filePath.endsWith( splitChunksFileNamePattern ) === true ) {
-        await _createSplitChunks( filePath, splitChunksGroups );
+  return through.obj(
+    async function _transform( file, enc, callback ) {
+      try  {
+        const filePath = file.path;
+        // chunk のpath が、splitChunks用のJSON データであれば。
+        if ( filePath.endsWith( splitChunksFileNamePattern ) === true ) {
+          await _createSplitChunks( filePath, splitChunksGroups );
+        }
+        // entry ファイルであれば。
+        if ( filePath.endsWith( entryFileNamePattern ) === true ) {
+          _createEntries( filePath, entries );
+        }
+        callback();
+      } catch ( err ) {
+        callback( err );
       }
-      // entry ファイルであれば。
-      if ( filePath.endsWith( entryFileNamePattern ) === true ) {
-        _createEntries( filePath, entries );
-      }
-      callback();
-    } catch ( err ) {
-      callback( err );
+    },
+    function _flush( callback ) {
+      _setUpWebpackCompiler( splitChunksGroups, entries );
+      _runWebpackCompiler( callback );
     }
-  }
-  function _flush( callback ) {
-    _setUpWebpackCompiler( splitChunksGroups, entries );
-    _runWebpackCompiler( callback );
-  }
+  );
 }
 
 /**

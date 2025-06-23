@@ -11,7 +11,7 @@ export { mergedConf as config, mergedOptions as options };
 
 const
   TASK_NAME  = 'icon_font'
-  ,GROUP_DIR = '/fonts/icons'
+  ,GROUP_DIR = 'fonts/icons'
 ;
 
 /**
@@ -20,7 +20,7 @@ const
  * @name devConfig:icon_font
  */
 const devConfig = {
-  src          : [ commonConfig.SRC + '/**/fonts/icons/*.svg' ],
+  src          : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.svg` ],
   base         : commonConfig.SRC,
   dist         : commonConfig.DIST,
   placeholder  : commonConfig.PLACEHOLDER,

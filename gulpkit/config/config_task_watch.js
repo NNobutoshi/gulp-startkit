@@ -33,8 +33,8 @@ const prodConfig = null;
  * @name devOptions:task_watch
  */
 const devOptions = {
-  runChainedTsksDelayTime : 100,
-  watch : {
+  runChainedTasksDelayTime : 100,
+  gulpWatch : {
     usePolling : true,
   },
 };

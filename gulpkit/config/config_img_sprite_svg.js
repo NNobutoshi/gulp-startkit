@@ -16,7 +16,7 @@ export { mergedConf as config, mergedOptions as options };
 
 const
   TASK_NAME  = 'img_sprite_svg'
-  ,GROUP_DIR = '/img/_sprite_svg'
+  ,GROUP_DIR = 'img/_sprite_svg'
   ,CWD = cwd()
 ;
 
@@ -26,7 +26,7 @@ const
  * @name devConfig:img_sprite_svg
  */
 const devConfig = {
-  src   : [ commonConfig.SRC + '/**/img/_sprite_svg/**/*.svg' ],
+  src   : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.svg` ],
   base  : commonConfig.SRC,
   dist  : commonConfig.DIST,
   group : GROUP_DIR, // この命名ルールのディレクトリごとに。
