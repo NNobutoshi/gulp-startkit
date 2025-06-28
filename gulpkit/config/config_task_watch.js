@@ -6,7 +6,6 @@
  */
 import { env } from 'node:process';
 
-import { commonConfig }                                    from './common.js';
 import { EVENT_NAME_WATCH_INIT, EVENT_NAME_WATCH_WAITING } from './constants.js';
 import mergeByEnv                                          from './merge_by_env.js';
 
@@ -58,6 +57,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;
