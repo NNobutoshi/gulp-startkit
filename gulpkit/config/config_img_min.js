@@ -1,11 +1,14 @@
 /**
- * @memberof config
+ * @memberof module:config
+ * @requires node:process
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
 
+import { env } from 'node:process';
+
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -25,7 +28,6 @@ const devConfig = {
     '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
   ],
   dist : commonConfig.DIST,
-  enabledWatch : commonConfig.WATCH_ENABLED,
 };
 
 /**
@@ -51,7 +53,7 @@ const devOptions = {
   gulpSrc : {
     base     : commonConfig.SRC,
     encoding : false,
-    read     : !commonConfig.DIFF_ENABLED,
+    read     : !commonOptions.diff.enabled,
   },
   imageminMozjpeg : {
     quality : 90,
@@ -84,6 +86,6 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

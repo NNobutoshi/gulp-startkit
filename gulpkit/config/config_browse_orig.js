@@ -1,17 +1,9 @@
-import { env } from 'node:process';
-
-import { commonConfig } from './common.js';
-import mergeByEnv       from './merge_by_env.js';
-
-export { mergedConf as config, mergedOptions as options };
-
 /**
  * @module config_browse_orig
  * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
  * 作業者各々でポート等の設定を自由に行えるようにする意図。<br>
  * config_brows.js はGit igonre でコミットから除外。
  * @requires node:process
- * @requires ./common.js
  * @requires ./merge_by_env.js
  * @example
  * // 開発環境用設定例
@@ -29,16 +21,22 @@ export { mergedConf as config, mergedOptions as options };
  * };
  */
 
-const BROWSE_ENV = env.BROWSE_ENV;
+import { env } from 'node:process';
+
+import mergeByEnv from './merge_by_env.js';
+
+export { mergedConf as config, mergedOptions as options };
+
+const
+  BROWSE_ENV = env.BROWSE_ENV
+;
 
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config_browse_orig
  */
 const devConfig = {
-  'enabled' : ( BROWSE_ENV )
-    ? !!Number( BROWSE_ENV )
-    : commonConfig.IS_DEVELOPMENT || !commonConfig.IS_PRODUCTION
+  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV ) : true
 };
 
 /**
@@ -47,7 +45,9 @@ const devConfig = {
  * 同一設定の場合はnull を明示的に代入。
  * @memberof module:config_browse_orig
  */
-const prodConfig = null;
+const prodConfig = {
+  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV ) : false
+};
 
 /**
  * 開発環境用オプションオブジェクト。
@@ -73,6 +73,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

@@ -3,7 +3,7 @@
  * @requires node:process
  * @requires fancy-log
  * @requires chalk
- * @requires ./env_type.js
+ * @requires ./constants.js
  */
 
 import { env } from 'node:process';
@@ -11,26 +11,34 @@ import { env } from 'node:process';
 import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 
-import { PRODUCTION_ENV, DEVELOPMENT_ENV } from './env_type.js';
-
+import {
+  PROD_ENV_NAME,
+  DEV_ENV_NAME,
+  EVENT_NAME_WATCH_INIT,
+  EVENT_NAME_WATCH_WAITING,
+} from './constants.js';
 
 const
-  NODE_ENV   = env.NODE_ENV
-  ,WATCH_ENV = env.WATCH_ENV
-  ,DIFF_ENV  = env.DIFF_ENV
-  ,DIFF_REFS_ENABLED = !!Number( env.DIFF_REFS_ENV )
-  ,IS_PRODUCTION  = ( NODE_ENV === PRODUCTION_ENV )
-  ,IS_DEVELOPMENT = ( NODE_ENV === DEVELOPMENT_ENV )
+  NODE_ENV       = env.NODE_ENV
+  ,DIFF_ENV      = env.DIFF_ENV
+  ,DIFF_REFS_ENV = env.DIFF_REFS_ENV
+;
+const
+  IS_PRODUCTION   = ( NODE_ENV === PROD_ENV_NAME )
+  ,IS_DEVELOPMENT = ( NODE_ENV === DEV_ENV_NAME )
 ;
 const
   src_dir  = {
-    [ PRODUCTION_ENV ]  : 'src',
-    [ DEVELOPMENT_ENV ] : 'src',
+    [ PROD_ENV_NAME ] : 'src',
+    [ DEV_ENV_NAME ]  : 'src',
   },
   dist_dir = {
-    [ PRODUCTION_ENV ]  : 'dist/production/html',
-    [ DEVELOPMENT_ENV ] : 'dist/development/html',
+    [ PROD_ENV_NAME ] : 'dist/production/html',
+    [ DEV_ENV_NAME ]  : 'dist/development/html',
   }
+;
+const
+  DIFF_REFS_ENABLED = !!Number( DIFF_REFS_ENV )
 ;
 
 /**
@@ -40,20 +48,8 @@ const
  * @name commonConfig
  */
 export const commonConfig = {
-  NODE_ENV : NODE_ENV,
   SRC  : src_dir[ NODE_ENV ],
   DIST : dist_dir[ NODE_ENV ],
-  IS_PRODUCTION  : IS_PRODUCTION,
-  IS_DEVELOPMENT : IS_DEVELOPMENT,
-  SOURCEMAPS_ENABLED : IS_DEVELOPMENT || !IS_PRODUCTION,
-  // WATCH 専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
-  WATCH_ENABLED : ( WATCH_ENV ) ? !!Number( WATCH_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,
-  // 差分ビルド専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
-  DIFF_ENABLED  : ( DIFF_ENV )  ? !!Number( DIFF_ENV )  : IS_DEVELOPMENT || !IS_PRODUCTION,
-  SOURCEMAPS_DIR : 'sourcemaps',
-  PLACEHOLDER : '[subdir]',
-  EVENT_NAME_WATCH_INIT    : 'watchInit',
-  EVENT_NAME_WATCH_WAITING : 'watchWaiting',
 };
 
 /**
@@ -76,10 +72,11 @@ const GIT_COMMAND = ( DIFF_REFS_ENABLED )
 export const commonOptions = {
   diff : {
     command     : GIT_COMMAND,
-    enabled     : commonConfig.DIFF_ENABLED,
+    // 差分ビルド専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
+    enabled     : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,
     enabledRefs : DIFF_REFS_ENABLED,
-    firstTasksEndedEventName : commonConfig.EVENT_NAME_WATCH_INIT,
-    tasksEndedEventName      : commonConfig.EVENT_NAME_WATCH_WAITING,
+    firstTasksEndedEventName : EVENT_NAME_WATCH_INIT,
+    tasksEndedEventName      : EVENT_NAME_WATCH_WAITING,
   },
   plumber : {
     errorHandler : function( err ) {

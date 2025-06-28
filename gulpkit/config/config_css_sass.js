@@ -1,11 +1,16 @@
 /**
- * @memberof config
+ * @memberof module:config
+ * @requires node:process
  * @requires ./common.js
+ * @requires ./constants.js
  * @requires ./merge_by_env.js
  */
 
+import { env } from 'node:process';
+
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import { SOURCEMAPS_DIR }              from './constants.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 import autoprefixer from 'autoprefixer';
 import mqpacker     from '@hail2u/css-mqpacker';
@@ -25,9 +30,8 @@ const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.scss' ],
   dist : commonConfig.DIST,
   base : commonConfig.SRC,
-  enabledWatch      : commonConfig.WATCH_ENABLED,
-  enabledSourcemaps : commonConfig.SOURCEMAPS_ENABLED,
-  sourcemaps_dir    : '/' + commonConfig.SOURCEMAPS_DIR,
+  enabledSourcemaps : true,
+  sourcemaps_dir    : '/' + SOURCEMAPS_DIR,
 };
 
 /**
@@ -37,7 +41,9 @@ const devConfig = {
  * @memberof module:config
  * @name prodConfig:css_sass
  */
-const prodConfig = null;
+const prodConfig = {
+  enabledSourcemaps : false,
+};
 
 /**
  * 開発環境用オプションオブジェクト。
@@ -90,6 +96,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

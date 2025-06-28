@@ -38,7 +38,10 @@ let
  */
 function task_watch( tasks, finish ) {
   return function init_watch( done ) {
-    let enabled = false;
+    if ( options.enabled === false ) {
+      fancyLog( chalk.gray( 'no task to watch' ) );
+      return done();
+    }
     process.emit( watchConfig.watchInitEventName );
     for ( let i = 0, len = tasks.length; i < len; i++ ) {
       const
@@ -63,16 +66,10 @@ function task_watch( tasks, finish ) {
       } else {
         continue;
       }
-      if ( taskConfig.enabledWatch === true && watchSrc ) {
-        enabled = true;
-        // Gulp Watch はいったんタスクのみを収集する。
-        watch( watchSrc, gulpWatchOptions, _addTaskToSet( task, finish ) );
-      }
+      // Gulp Watch はいったんタスクのみを収集する。
+      watch( watchSrc, gulpWatchOptions, _addTaskToSet( task, finish ) );
     } //for
-    if ( enabled === false ) {
-      fancyLog( chalk.gray( 'no task to watch' ) );
-    }
-    done();
+    return done();
   };
 }
 

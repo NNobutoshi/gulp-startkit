@@ -1,11 +1,16 @@
 /**
- * @memberof config
+ * @memberof module:config
+ * @requires node:process
  * @requires ./common.js
+ * @requires ./constants.js
  * @requires ./merge_by_env.js
  */
 
+import { env } from 'node:process';
+
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import { PLACEHOLDER }                 from './constants.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -23,11 +28,10 @@ const devConfig = {
   src          : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.svg` ],
   base         : commonConfig.SRC,
   dist         : commonConfig.DIST,
-  placeholder  : commonConfig.PLACEHOLDER,
-  fontsDist    : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/fonts`,
-  scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
+  placeholder  : PLACEHOLDER,
+  fontsDist    : commonConfig.DIST + `${ PLACEHOLDER }/fonts`,
+  scssDist     : commonConfig.SRC  + `${ PLACEHOLDER }/css`,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  enabledWatch : commonConfig.WATCH_ENABLED,
 };
 
 /**
@@ -51,7 +55,7 @@ const devOptions = {
     group : GROUP_DIR,
   },
   iconfont : {
-    fontName       : `icons${ commonConfig.PLACEHOLDER }`,
+    fontName       : `icons${ PLACEHOLDER }`,
     prependUnicode : false,
     formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
     normalize      : true,
@@ -89,6 +93,6 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

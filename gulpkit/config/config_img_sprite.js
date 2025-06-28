@@ -1,11 +1,16 @@
 /**
- * @module config
+ * @memberof module:config
+ * @requires node:process
  * @requires ./common.js
+ * @requires ./constants.js
  * @requires ./merge_by_env.js
  */
 
+import { env } from 'node:process';
+
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import { PLACEHOLDER }                 from './constants.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -23,11 +28,10 @@ const devConfig = {
   src          : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.png` ],
   dist         : commonConfig.DIST,
   base         : commonConfig.SRC,
-  placeholder  : commonConfig.PLACEHOLDER,
+  placeholder  : PLACEHOLDER,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  imgDist      : commonConfig.DIST + `${ commonConfig.PLACEHOLDER }/img`,
-  scssDist     : commonConfig.SRC  + `${ commonConfig.PLACEHOLDER }/css`,
-  enabledWatch : commonConfig.WATCH_ENABLED,
+  imgDist      : commonConfig.DIST + `${ PLACEHOLDER }/img`,
+  scssDist     : commonConfig.SRC  + `${ PLACEHOLDER }/css`,
 };
 
 /**
@@ -86,6 +90,6 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

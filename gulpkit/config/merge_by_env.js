@@ -1,11 +1,12 @@
 /**
  * @module config/merge_by_env
  * @requires lodash/merge.js
- * @requires ./env_type.js
+ * @requires ./constants.js
  */
 
 import merge from 'lodash/merge.js';
-import { PRODUCTION_ENV, DEVELOPMENT_ENV  } from './env_type.js';
+
+import { PROD_ENV_NAME, DEV_ENV_NAME  } from './constants.js';
 
 export { mergeByEnv as default };
 
@@ -20,10 +21,10 @@ export { mergeByEnv as default };
 function mergeByEnv( env, baseObj, sourceObj ) {
   const result = {};
   switch ( env ) {
-  case PRODUCTION_ENV:
+  case PROD_ENV_NAME:
     merge( result, baseObj, sourceObj );
     break;
-  case DEVELOPMENT_ENV:
+  case  DEV_ENV_NAME:
     merge( result, baseObj );
     break;
   default:

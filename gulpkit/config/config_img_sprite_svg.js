@@ -1,16 +1,16 @@
 /**
- * @memberof config
+ * @memberof module:config
  * @requires node:process
  * @requires node:path
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
 
-import { cwd } from 'node:process';
-import path    from 'node:path';
+import { cwd, env } from 'node:process';
+import path         from 'node:path';
 
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -30,7 +30,6 @@ const devConfig = {
   base  : commonConfig.SRC,
   dist  : commonConfig.DIST,
   group : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  enabledWatch : commonConfig.WATCH_ENABLED,
 };
 
 /**
@@ -146,6 +145,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

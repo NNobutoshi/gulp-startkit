@@ -1,11 +1,14 @@
 /**
  * @memberof module:config
+ * @requires node:process
  * @requires ./common.js
  * @requires ./merge_by_env.js
  */
 
+import { env } from 'node:process';
+
 import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import mergeByEnv                      from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -16,13 +19,12 @@ const
 /**
  * 開発環境用コンフィグオブジェクト。
  * @memberof module:config
- * @name devConfig:config_copy_to
+ * @name devConfig:copy_to
  */
 const devConfig = {
   src  : [ commonConfig.SRC + '/**/*.{mp4,webm}' ],
   base : commonConfig.SRC,
   dist : commonConfig.DIST,
-  enabledWatch : commonConfig.WATCH_ENABLED,
 };
 
 /**
@@ -30,7 +32,7 @@ const devConfig = {
  * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
  * 同一設定の場合はnull を明示的に代入。
  * @memberof module:config
- * @name prodConfig:config_copy_to
+ * @name prodConfig:copy_to
  */
 const prodConfig = null;
 
@@ -48,7 +50,7 @@ const devOptions = {
   gulpSrc : {
     base     : commonConfig.SRC,
     encoding : false,
-    read     : !commonConfig.DIFF_ENABLED,
+    read     : !commonOptions.diff.enabled,
   },
   logStreamData : {
     title       : TASK_NAME,
@@ -68,7 +70,7 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( commonConfig.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( commonConfig.NODE_ENV, devOptions, prodOptions )
+  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;
 

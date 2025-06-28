@@ -1,11 +1,14 @@
 /**
- * @module config
+ * @memberof module:config
  * @requires ./common.js
+ * @requires ./constants.js
  * @requires ./merge_by_env.js
  */
+import { env } from 'node:process';
 
-import { commonConfig } from './common.js';
-import mergeByEnv from './merge_by_env.js';
+import { commonConfig }                                    from './common.js';
+import { EVENT_NAME_WATCH_INIT, EVENT_NAME_WATCH_WAITING } from './constants.js';
+import mergeByEnv                                          from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -14,8 +17,8 @@ export { mergedConf as config, mergedOptions as options };
  * @memberof module:config_task_watch
  */
 const devConfig = {
-  watchInitEventName    : commonConfig.EVENT_NAME_WATCH_INIT,
-  watchWaitingEventName : commonConfig.EVENT_NAME_WATCH_WAITING,
+  watchInitEventName    : EVENT_NAME_WATCH_INIT,
+  watchWaitingEventName : EVENT_NAME_WATCH_WAITING,
 };
 
 /**
@@ -33,6 +36,8 @@ const prodConfig = null;
  * @name devOptions:task_watch
  */
 const devOptions = {
+  //開発環境では、環境変数でWATCH_ENV が設定されていればその値を、なければtrue に。
+  enabled : ( env.WATCH_ENV ) ? !!Number( env.WATCH_ENV ) : true,
   runChainedTasksDelayTime : 100,
   gulpWatch : {
     usePolling : true,
@@ -46,7 +51,10 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:task_watch
  */
-const prodOptions = null;
+const prodOptions = {
+  //本番環境では、環境変数でWATCH_ENV が設定されていればその値を、なければfalse に。
+  enabled : ( env.WATCH_ENV ) ? !!Number( env.WATCH_ENV ) : false,
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const
