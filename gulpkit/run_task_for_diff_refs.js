@@ -3,7 +3,7 @@
  * argvの5つ目の引数で実行するタスクを決定する。<br>
  * 省略された場合、タスクはmain を選択。<br>
  * 3つ目と4つ目の引数は、ブランチ間、コミット間が指定されている想定。
- * @module build_by_comparing_refs
+ * @module run_task_for_diff_refs
  * @requires node:process
  * @requires gulpkit/tasks/index.js
  * @example

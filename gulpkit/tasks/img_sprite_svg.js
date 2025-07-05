@@ -5,7 +5,7 @@
  * @requires gulp-plumber
  * @requires gulp-if
  * @requires ../lib/diff_build.js
- * @requires ../lib/task_for_each.js
+ * @requires ../lib/assign_task.js
  * @requires ../lib/lint_svg.js
  * @requires ../lib/log_stream_data.js
  * @requires ../config/config_img_sprite_svg.js
@@ -16,10 +16,10 @@ import svgSprite from 'gulp-svg-sprite';
 import plumber   from 'gulp-plumber';
 import gulpIf    from 'gulp-if';
 
-import diff                   from '../lib/diff_build.js';
-import assignTaskForEachGroup from '../lib/task_for_each.js';
-import lintSvg                from '../lib/lint_svg.js';
-import logStreamData          from '../lib/log_stream_data.js';
+import diff               from '../lib/diff_build.js';
+import assignTaskForGroup from '../lib/assign_task.js';
+import lintSvg            from '../lib/lint_svg.js';
+import logStreamData      from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_img_sprite_svg.js';
 
@@ -42,7 +42,7 @@ function img_sprite_svg() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( lintSvg( options.lintSvg ) )
-    .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
+    .pipe( assignTaskForGroup( config.group, config.base, _branchTask ) )
   ;
 }
 

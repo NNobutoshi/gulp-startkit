@@ -1,5 +1,5 @@
 /**
- * @module lib/enable_watch_for
+ * @module lib/watch_CL_task
  * @requires node:process
  * @requires gulp
  */
@@ -14,7 +14,7 @@ export { enableWatchForCommandLineTask as default };
  * コマンドラインからGulp <task> として、特定のタスクを個別に実行する際に、<br>
  * watch や live reload も機能させる。<br>
  * default としてエクスポート。
- * @memberof module:lib/enable_watch_for
+ * @memberof module:lib/watch_CL_task
  * @param {object} tasks - Gulp タスク
  */
 function enableWatchForCommandLineTask( tasks ) {

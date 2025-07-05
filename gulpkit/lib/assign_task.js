@@ -1,6 +1,6 @@
 /**
  * 任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループごとにcallback （Gulp タスク）を実行させる。
- * @module lib/task_for_each
+ * @module lib/assign_task
  * @requires node:process
  * @requires node:path
  * @requires through2
@@ -13,7 +13,7 @@ import path    from 'node:path';
 import through     from 'through2';
 import mergeStream from 'merge-stream';
 
-export { assignTaskForEachGroup as default };
+export { assignTaskForGroup as default };
 
 const
   CWD = cwd()
@@ -22,12 +22,12 @@ const
 /**
  * 指定のグループに従ってsource を小分けにする 。<br>
  * default としてエクスポート。
- * @memberof module:lib/task_for_each
+ * @memberof module:lib/assign_task_for
  * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons/'
  * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  */
-function assignTaskForEachGroup( group, base, branchTask ) {
+function assignTaskForGroup( group, base, branchTask ) {
   const groupedSources = new Map();
   return _groupSources( groupedSources, group, base, branchTask );
 }

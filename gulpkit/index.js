@@ -2,13 +2,13 @@
  * @module gulpkit/index
  * @requires gulp
  * @requires ./tasks/index.js
- * @requires ./lib/enable_watch_for.js
+ * @requires ./lib/watch_CL_task.js
  */
 
 import { series, parallel } from 'gulp';
 
 import * as tasks from './tasks/index.js';
-import enableWatchForCommandLineTask from './lib/enable_watch_for.js';
+import enableWatchForCommandLineTask from './lib/watch_CL_task.js';
 
 export { main as default, html, img, css, js, icon, watchForCommanLineTask };
 

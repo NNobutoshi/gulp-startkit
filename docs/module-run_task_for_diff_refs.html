@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config/index.js - Documentation</title>
+    <title>run_task_for_diff_refs - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,46 +35,298 @@
 
 <div id="main">
     
-    <h1 class="page-title">config/index.js</h1>
+    <h1 class="page-title">run_task_for_diff_refs</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * タスクごとにエクスポート。
- * @module config/index
- * @example
- * export { config as clean          } from './config_copy_to.js';
- * export { config as copy_to        } from './config_copy_to.js';
- * export { config as css_sass       } from './config_css_sass.js';
- * export { config as css_lint_scss  } from './config_css_lint_scss.js';
- * export { config as icon_font      } from './config_icon_font.js';
- * export { config as html_pug       } from './config_html_pug.js';
- * export { config as img_min        } from './config_img_min.js';
- * export { config as img_sprite     } from './config_img_sprite.js';
- * export { config as img_sprite_svg } from './config_img_sprite_svg.js';
- * export { config as js_eslint      } from './config_js_eslint.js';
- * export { config as js_webpack     } from './config_js_webpack.js';
- */
-export { config as clean          } from './config_copy_to.js';
-export { config as copy_to        } from './config_copy_to.js';
-export { config as css_sass       } from './config_css_sass.js';
-export { config as css_lint_scss  } from './config_css_lint_scss.js';
-export { config as icon_font      } from './config_icon_font.js';
-export { config as html_pug       } from './config_html_pug.js';
-export { config as img_min        } from './config_img_min.js';
-export { config as img_sprite     } from './config_img_sprite.js';
-export { config as img_sprite_svg } from './config_img_sprite_svg.js';
-export { config as js_eslint      } from './config_js_eslint.js';
-export { config as js_webpack     } from './config_js_webpack.js';
-</code></pre>
-        </article>
-    </section>
+        
+            
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext">Git diff でブランチ間やコミット間の差分をdiff_build の対象とする場合、<br>
+argvの5つ目の引数で実行するタスクを決定する。<br>
+省略された場合、タスクはmain を選択。<br>
+3つ目と4つ目の引数は、ブランチ間、コミット間が指定されている想定。</div>
+            
+
+            
+                
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Git diff でブランチ間やコミット間の差分をdiff_build の対象とする場合、<br>
+argvの5つ目の引数で実行するタスクを決定する。<br>
+省略された場合、タスクはmain を選択。<br>
+3つ目と4つ目の引数は、ブランチ間、コミット間が指定されている想定。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="run_task_for_diff_refs.js.html">run_task_for_diff_refs.js</a>, <a href="run_task_for_diff_refs.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>// コマンドライン
+// master ブランチと develop ブランチとの差分ファイルを対象として、html タスクを実行する。
+npm run one_refs master develop html</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:node:process</li>
+        
+            <li>module:gulpkit/tasks/index.js</li>
+        </ul>
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~runTaskByName"><span class="type-signature type-signature-inner">(inner) </span>runTaskByName<span class="signature">(taskName)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>argvの5つ目の引数に応じてタスクを実行。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="run_task_for_diff_refs.js.html">run_task_for_diff_refs.js</a>, <a href="run_task_for_diff_refs.js.html#line30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>taskName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">argvの5つ目の引数</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

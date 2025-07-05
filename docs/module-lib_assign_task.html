@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config/index.js - Documentation</title>
+    <title>lib/assign_task - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,46 +35,794 @@
 
 <div id="main">
     
-    <h1 class="page-title">config/index.js</h1>
+    <h1 class="page-title">lib/assign_task</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * タスクごとにエクスポート。
- * @module config/index
- * @example
- * export { config as clean          } from './config_copy_to.js';
- * export { config as copy_to        } from './config_copy_to.js';
- * export { config as css_sass       } from './config_css_sass.js';
- * export { config as css_lint_scss  } from './config_css_lint_scss.js';
- * export { config as icon_font      } from './config_icon_font.js';
- * export { config as html_pug       } from './config_html_pug.js';
- * export { config as img_min        } from './config_img_min.js';
- * export { config as img_sprite     } from './config_img_sprite.js';
- * export { config as img_sprite_svg } from './config_img_sprite_svg.js';
- * export { config as js_eslint      } from './config_js_eslint.js';
- * export { config as js_webpack     } from './config_js_webpack.js';
- */
-export { config as clean          } from './config_copy_to.js';
-export { config as copy_to        } from './config_copy_to.js';
-export { config as css_sass       } from './config_css_sass.js';
-export { config as css_lint_scss  } from './config_css_lint_scss.js';
-export { config as icon_font      } from './config_icon_font.js';
-export { config as html_pug       } from './config_html_pug.js';
-export { config as img_min        } from './config_img_min.js';
-export { config as img_sprite     } from './config_img_sprite.js';
-export { config as img_sprite_svg } from './config_img_sprite_svg.js';
-export { config as js_eslint      } from './config_js_eslint.js';
-export { config as js_webpack     } from './config_js_webpack.js';
-</code></pre>
-        </article>
-    </section>
+        
+            
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext">任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループごとにcallback （Gulp タスク）を実行させる。</div>
+            
+
+            
+                
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>任意に指定されたグループ名に従ってソースファイルを小分けし、そのグループごとにcallback （Gulp タスク）を実行させる。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_assign_task.js.html">lib/assign_task.js</a>, <a href="lib_assign_task.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:node:process</li>
+        
+            <li>module:node:path</li>
+        
+            <li>module:through2</li>
+        
+            <li>module:merge-stream</li>
+        </ul>
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_groupSources"><span class="type-signature type-signature-private, inner">(private, inner) </span>_groupSources<span class="signature">(groupedSources, group, base, branchTask)</span><span class="type-signature"> &rarr; {Stream}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>指定のグループに従ってsource を小分けにする。<br>
+設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_assign_task.js.html">lib/assign_task.js</a>, <a href="lib_assign_task.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>groupedSources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Map</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">グループごとに分けられたソースの格納用</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">任意のグループ名(部分的なディレクトリ名)、例：'/fonts/icons'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>base</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ソースファイルのベースディレクトリ</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>branchTask</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">グループごと実行させるcallback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 処理されたストリーム
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Stream</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_runTaskforEachGroup"><span class="type-signature type-signature-async, inner">(async, inner) </span>_runTaskforEachGroup<span class="signature">(groupedSources, branchTask, callback)</span><span class="type-signature"> &rarr; {Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Callback のbranchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_assign_task.js.html">lib/assign_task.js</a>, <a href="lib_assign_task.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>groupedSources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Map</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">任意のディレクトリごとに分たソースの格納用</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>branchTask</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Callback で実行するGulp タスク</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">through2 で処理終了を伝えるコールバック</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>.&lt;void:<a href="module-lib_diff_build-DiffBuildProcessor.html"></a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~_setChildSourceToParentMap"><span class="type-signature type-signature-private, inner">(private, inner) </span>_setChildSourceToParentMap<span class="signature">(file, groupedSources, group, base)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>file のパスを任意のグループ名で区切り、前者の方を親に、後者の方を子として親ディレクトリごとにグループ分けする。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_assign_task.js.html">lib/assign_task.js</a>, <a href="lib_assign_task.js.html#line65">line 65</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>file</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Vinyl オブジェクト</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>groupedSources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Map</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">グループごとに分けられたソースの格納用</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">任意のループ名(部分的なディレクトリ名)、例：'/fonts/icons/'</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>base</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ソースファイルのベースディレクトリ</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

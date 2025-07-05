@@ -11,7 +11,7 @@
  * @requires through2
  * @requires vinyl
  * @requires ../lib/lint_svg.js
- * @requires ../lib/task_for_each.js
+ * @requires ../lib/assign_task.js
  * @requires ../lib/diff_build.js
  * @requires ../lib/log_stream_data.js
  * @requires ../config/config_icon_font.js
@@ -29,10 +29,10 @@ import Handlebars from 'handlebars';
 import through    from 'through2';
 import Vinyl      from 'vinyl';
 
-import lintSvg                from '../lib/lint_svg.js';
-import assignTaskForEachGroup from '../lib/task_for_each.js';
-import diff                   from '../lib/diff_build.js';
-import logStreamData          from '../lib/log_stream_data.js';
+import lintSvg            from '../lib/lint_svg.js';
+import assignTaskForGroup from '../lib/assign_task.js';
+import diff               from '../lib/diff_build.js';
+import logStreamData      from '../lib/log_stream_data.js';
 
 import { config, options } from '../config/config_icon_font.js';
 
@@ -56,7 +56,7 @@ function icon_font() {
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( lintSvg( options.lintSvg ) )
-    .pipe( assignTaskForEachGroup( config.group, config.base, _branchTask ) )
+    .pipe( assignTaskForGroup( config.group, config.base, _branchTask ) )
   ;
 }
 
