@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development gulp",
     "prd": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production gulp",
-    "one": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
-    "bld": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0 gulp",
-    "one_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/run_task_for_diff_refs.js",
-    "bld_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=1 DIFF_REFS_ENV=1 node ./gulpkit/run_task_for_diff_refs.js",
+    "one": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=0 gulp",
+    "bld": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=0 gulp",
+    "one_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=1 DIFF_REFS_ENABLED=1 node ./gulpkit/run_task_for_diff_refs.js",
+    "bld_refs": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=production WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=1 DIFF_REFS_ENABLED=1 node ./gulpkit/run_task_for_diff_refs.js",
     "pug_tmp_engine": "cross-env NODE_OPTIONS=--no-experimental-require-module NODE_ENV=development node ./gulpkit/pug_tmp_engine/index.js",
     "jsdoc": "jsdoc -c jsdoc.conf.json"
   },

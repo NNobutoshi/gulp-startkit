@@ -19,12 +19,11 @@ import {
 } from './constants.js';
 
 const
-  NODE_ENV       = env.NODE_ENV
-  ,DIFF_ENV      = env.DIFF_ENV
-  ,DIFF_REFS_ENV = env.DIFF_REFS_ENV
+  NODE_ENV      = env.NODE_ENV
+  ,DIFF_ENABLED = env.DIFF_ENABLED
 ;
 const
-  DIFF_REFS_ENABLED = !!Number( DIFF_REFS_ENV )
+  DIFF_REFS_ENABLED = !!Number( env.DIFF_REFS_ENABLED )
 ;
 
 /**
@@ -65,14 +64,14 @@ const GIT_COMMAND = ( DIFF_REFS_ENABLED )
  * @name commonOptions
  */
 export const commonOptions = {
-  enabledDiff : {
+  isDiffEnabled : {
     // 差分ビルド専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
-    dev  : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : true,
-    prod : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : false,
+    dev  : ( DIFF_ENABLED ) ? !!Number( DIFF_ENABLED ) : true,
+    prod : ( DIFF_ENABLED ) ? !!Number( DIFF_ENABLED ) : false,
   },
   diff : {
     command     : GIT_COMMAND,
-    enabledRefs : DIFF_REFS_ENABLED,
+    isRefsEnabled : DIFF_REFS_ENABLED,
     firstTasksEndedEventName : WATCH_INIT_EVENT_NAME,
     tasksEndedEventName      : WATCH_START_EVENT_NAME,
   },

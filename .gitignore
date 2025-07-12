@@ -1,8 +1,7 @@
 .DS_Store
 node_modules
-.sass-cache
-.last_diff
-.webpack_cache
+/.last_diff
+/.webpack_cache
 npm-debug.log
 sourcemaps
 /.vagrant

@@ -36,8 +36,8 @@ function enableWatchForCommandLineTask( tasks ) {
   }
   process.once( 'beforeExit',
     series(
-      tasks.init_browse,
-      tasks.task_watch( watchTasks, tasks.reload_browse ),
+      tasks.init_browsing,
+      tasks.task_watch( watchTasks, tasks.reload_browsing ),
     )
   );
 }

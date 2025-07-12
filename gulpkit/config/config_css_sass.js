@@ -61,7 +61,7 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name    : TASK_NAME,
-    enabled : commonOptions.enabledDiff.dev,
+    enabled : commonOptions.isDiffEnabled.dev,
   },
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -98,7 +98,7 @@ const devOptions = {
  */
 const prodOptions = {
   diff : {
-    enabled : commonOptions.enabledDiff.prod,
+    enabled : commonOptions.isDiffEnabled.prod,
   },
   sass : {
     outputStyle : 'compressed', // nested, compact, compressed, expanded

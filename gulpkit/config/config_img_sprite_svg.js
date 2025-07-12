@@ -57,7 +57,7 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name    : TASK_NAME,
-    enabled : commonOptions.enabledDiff.dev,
+    enabled : commonOptions.isDiffEnabled.dev,
     group   : GROUP_DIR,
   },
   svgSprite : {
@@ -140,7 +140,7 @@ const devOptions = {
  */
 const prodOptions = {
   diff : {
-    enabled : commonOptions.enabledDiff.prod,
+    enabled : commonOptions.isDiffEnabled.prod,
   },
   svgSprite : {
     mode : {

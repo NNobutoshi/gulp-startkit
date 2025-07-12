@@ -35,8 +35,8 @@ const prodConfig = null;
  * @name devOptions:task_watch
  */
 const devOptions = {
-  //開発環境では、環境変数でWATCH_ENV が設定されていればその値を、なければtrue に。
-  enabled : ( env.WATCH_ENV ) ? !!Number( env.WATCH_ENV ) : true,
+  //開発環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければtrue に。
+  enabled : ( env.WATCH_ENABLED ) ? !!Number( env.WATCH_ENABLED ) : true,
   runChainedTasksDelayTime : 100,
   gulpWatch : {
     usePolling : true,
@@ -51,8 +51,8 @@ const devOptions = {
  * @name prodOptions:task_watch
  */
 const prodOptions = {
-  //本番環境では、環境変数でWATCH_ENV が設定されていればその値を、なければfalse に。
-  enabled : ( env.WATCH_ENV ) ? !!Number( env.WATCH_ENV ) : false,
+  //本番環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければfalse に。
+  enabled : ( env.WATCH_ENABLED ) ? !!Number( env.WATCH_ENABLED ) : false,
 };
 
 // すべては開発環境用の設定をベースにマージする。

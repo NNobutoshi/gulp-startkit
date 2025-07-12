@@ -36,7 +36,7 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
  *         tasks.js_webpack,
  *       )
  *     ),
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       [
  *         tasks.copy_to,
@@ -50,7 +50,7 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
  *         tasks.js_eslint,
  *         tasks.js_webpack,
  *       ],
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -74,7 +74,7 @@ function main( done ) {
         tasks.js_webpack,
       )
     ),
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       [
         tasks.copy_to,
@@ -88,7 +88,7 @@ function main( done ) {
         tasks.js_eslint,
         tasks.js_webpack,
       ],
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }
@@ -105,10 +105,10 @@ function main( done ) {
  *   ];
  *   series(
  *     ...members,
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       members,
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -120,10 +120,10 @@ function html( done ) {
   ];
   series(
     ...members,
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       members,
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }
@@ -143,10 +143,10 @@ function html( done ) {
  *   ];
  *   series(
  *     ...members,
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       members,
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -161,10 +161,10 @@ function img( done ) {
   ];
   series(
     ...members,
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       members,
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }
@@ -181,10 +181,10 @@ function img( done ) {
  *   ];
  *   series(
  *     ...members,
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       members,
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -196,10 +196,10 @@ function css( done ) {
   ];
   series(
     ...members,
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       members,
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }
@@ -216,10 +216,10 @@ function css( done ) {
  *   ];
  *   series(
  *     ...members,
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       members,
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -231,10 +231,10 @@ function js( done ) {
   ];
   series(
     ...members,
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       members,
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }
@@ -252,10 +252,10 @@ function js( done ) {
  *   ];
  *   series(
  *     ...members,
- *     tasks.init_browse,
+ *     tasks.init_browsing,
  *     tasks.task_watch(
  *       members,
- *       tasks.reload_browse,
+ *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
@@ -268,10 +268,10 @@ function icon( done ) {
   ];
   series(
     ...members,
-    tasks.init_browse,
+    tasks.init_browsing,
     tasks.task_watch(
       members,
-      tasks.reload_browse,
+      tasks.reload_browsing,
     ),
   )( done );
 }

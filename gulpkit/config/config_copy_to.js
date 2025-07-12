@@ -53,12 +53,12 @@ const devOptions = {
   diff : { ...commonOptions.diff,
     name     : TASK_NAME,
     oneToOne : true,
-    enabled : commonOptions.enabledDiff.dev,
+    enabled : commonOptions.isDiffEnabled.dev,
   },
   gulpSrc : {
     base     : SRC_DIR,
     encoding : false,
-    read     : !commonOptions.enabledDiff.dev,
+    read     : !commonOptions.isDiffEnabled.dev,
   },
   logStreamData : {
     title       : TASK_NAME,
@@ -76,10 +76,10 @@ const devOptions = {
  */
 const prodOptions = {
   diff : {
-    enabled : commonOptions.enabledDiff.prod,
+    enabled : commonOptions.isDiffEnabled.prod,
   },
   gulpSrc : {
-    read : !commonOptions.enabledDiff.prod,
+    read : !commonOptions.isDiffEnabled.prod,
   },
 };
 

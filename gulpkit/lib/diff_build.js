@@ -34,7 +34,7 @@ const
   defaultSettings = {
     group       : '',
     enabled     : true,
-    enabledRefs : false,
+    isRefsEnabled : false,
     command     : 'git status -suall',
     oneToOne    : false,
     allForOne   : false,
@@ -76,7 +76,7 @@ function diff_build( options, collect, select ) {
     settings.group = settings.group.replace( /\//g, path.sep );
   }
   // ブランチ名、もしくはコミットハッシュをコマンドラインの引数から取得。
-  if ( settings.enabledRefs === true ) {
+  if ( settings.isRefsEnabled === true ) {
     [ ref1, ref2 ] = process.argv.slice( 2 );
   }
 
@@ -96,7 +96,7 @@ function diff_build( options, collect, select ) {
   if ( !diffBuildProc.promiseToGetDiffData ) {
     diffBuildProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
     // refs （ブランチ間、コミット間）比較が無効の場合にのみ直近の差分データを取得する。
-    if ( settings.enabledRefs === false ) {
+    if ( settings.isRefsEnabled === false ) {
       diffBuildProc.promiseToGetLastDiffData = lastDiff.get();
     }
   }
@@ -633,7 +633,7 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
     targetFileSet.size,
     selectedFileSet.size,
   );
-  if ( settings.enabledRefs === false ) {
+  if ( settings.isRefsEnabled === false ) {
     lastDiff.set( diffBuildProc.currentDiffData );
     await _writeDiffData();
   }
@@ -688,9 +688,9 @@ function _getGitDiffData( settings, ref1, ref2 ) {
   const name = settings.name;
   let
     command = settings.command
-    ,enabledRefs = ( ref1 && ref2 )
+    ,isRefsEnabled = ( ref1 && ref2 )
   ;
-  if ( enabledRefs ) {
+  if ( isRefsEnabled ) {
     command = command.replace( '<ref1>', ref1 ).replace( '<ref2>', ref2 );
   }
   return new Promise( ( resolvePromise, rejectPromise ) => {
@@ -702,7 +702,7 @@ function _getGitDiffData( settings, ref1, ref2 ) {
         fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
-        return resolvePromise( _createObjectFromDiffStdout( stdout, enabledRefs ) );
+        return resolvePromise( _createObjectFromDiffStdout( stdout, isRefsEnabled ) );
       }
       return resolvePromise( {} );
     } );
@@ -715,10 +715,10 @@ function _getGitDiffData( settings, ref1, ref2 ) {
  * @param {string} str - 基にする文字列
  * @returns {object} - 生成したObject
  */
-function _createObjectFromDiffStdout( str, enabledRefs ) {
+function _createObjectFromDiffStdout( str, isRefsEnabled ) {
   const
     matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg )
-    ,renameSeparator = ( enabledRefs ) ? /\s+/ : /\s+->\s+/ //コマンドによって区切り文字が違うため。
+    ,renameSeparator = ( isRefsEnabled ) ? /\s+/ : /\s+->\s+/ //コマンドによって区切り文字が違うため。
     ,retObj = {}
   ;
   for ( const match of matches ) {

@@ -56,11 +56,11 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name     : TASK_NAME,
-    enabled  : commonOptions.enabledDiff.dev,
+    enabled  : commonOptions.isDiffEnabled.dev,
     oneToOne : true,
   },
   gulpSrc : {
-    read : !commonOptions.enabledDiff.dev,
+    read : !commonOptions.isDiffEnabled.dev,
   },
   stylelint : {
     formatter : 'string',
@@ -81,10 +81,10 @@ const devOptions = {
  */
 const prodOptions = {
   diff : {
-    enabled : commonOptions.enabledDiff.prod,
+    enabled : commonOptions.isDiffEnabled.prod,
   },
   gulpSrc : {
-    read : !commonOptions.enabledDiff.prod,
+    read : !commonOptions.isDiffEnabled.prod,
   }
 };
 

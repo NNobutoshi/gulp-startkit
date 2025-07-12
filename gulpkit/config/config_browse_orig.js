@@ -2,7 +2,7 @@
  * @module config_browse_orig
  * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
  * 作業者各々でポート等の設定を自由に行えるようにする意図。<br>
- * config_brows.js はGit igonre でコミットから除外。
+ * config_browes.js はGit igonre でコミットから除外。
  * @requires node:process
  * @requires ./merge_by_env.js
  * @example
@@ -25,10 +25,10 @@ import { env } from 'node:process';
 
 import mergeByEnv from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
-  BROWSE_ENV = env.BROWSE_ENV
+  BROWSING_ENABLED = env.BROWSING_ENABLED
 ;
 
 /**
@@ -36,7 +36,7 @@ const
  * @memberof module:config_browse_orig
  */
 const devConfig = {
-  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV ) : true
+  enabled : ( BROWSING_ENABLED ) ? !!Number( BROWSING_ENABLED ) : true
 };
 
 /**
@@ -46,7 +46,7 @@ const devConfig = {
  * @memberof module:config_browse_orig
  */
 const prodConfig = {
-  'enabled' : ( BROWSE_ENV ) ? !!Number( BROWSE_ENV ) : false
+  enabled : ( BROWSING_ENABLED ) ? !!Number( BROWSING_ENABLED ) : false
 };
 
 /**
@@ -54,10 +54,10 @@ const prodConfig = {
  * @memberof module:config_browse_orig
  */
 const devOptions = {
-  'port'    : 3000,
-  'browser' : 'Chrome',
-  'server'  : './dist/development/html',
-  'reloadThrottle' : 100,
+  port    : 3000,
+  browser : 'Chrome',
+  server  : './dist/development/html',
+  reloadThrottle : 100,
 };
 
 /**
@@ -67,12 +67,12 @@ const devOptions = {
  * @memberof module:config_browse_orig
  */
 const prodOptions = {
-  'port'   : 3001,
-  'server' : './dist/production/html',
+  port   : 3001,
+  server : './dist/production/html',
 };
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
+  mergedConfig   = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
 ;

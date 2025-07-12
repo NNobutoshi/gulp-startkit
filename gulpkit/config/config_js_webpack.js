@@ -74,7 +74,7 @@ const devConfig = {
     }, //module
     cache : {
       // 開発環境では差分ビルド用の環境変数で無効と設定されていない限り、'filesystem'を使用。
-      type : ( commonOptions.enabledDiff.dev === false ) ? 'memory' : 'filesystem',
+      type : ( commonOptions.isDiffEnabled.dev === false ) ? 'memory' : 'filesystem',
     },
     plugins : [
       new webpack.SourceMapDevToolPlugin( {
@@ -97,7 +97,7 @@ const prodConfig = {
     devtool : false,
     cache : {
       // 本番環境では差分ビルド用の環境変数で有効と設定されていない限り、'memory'を使用。
-      type : ( commonOptions.enabledDiff.prod === true ) ? 'filesystem' : 'memory',
+      type : ( commonOptions.isDiffEnabled.prod === true ) ? 'filesystem' : 'memory',
     },
     plugins : [
       function() {},
