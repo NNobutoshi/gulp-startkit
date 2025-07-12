@@ -7,10 +7,17 @@
 
 import { env } from 'node:process';
 
-import { commonConfig } from './common.js';
-import mergeByEnv       from './merge_by_env.js';
+import { distDir } from './common.js';
+import mergeByEnv  from './merge_by_env.js';
 
-export { mergedConf as config };
+export { mergedConfig as config };
+
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  DIST_DIR = distDir[ NODE_ENV ]
+;
 
 /**
  * 開発環境用コンフィグオブジェクト。
@@ -18,7 +25,7 @@ export { mergedConf as config };
  * @name devConcig:clean
  */
 const devConfig = {
-  command : `git clean -f ${ commonConfig.DIST }/`,
+  command : `git clean -f ${ DIST_DIR }/`,
 };
 
 /**
@@ -31,4 +38,4 @@ const devConfig = {
 const prodConfig = null;
 
 // すべては開発環境用の設定をベースにする。
-const mergedConf = mergeByEnv( env.NODE_ENV, devConfig, prodConfig );
+const mergedConfig = mergeByEnv( NODE_ENV, devConfig, prodConfig );

@@ -8,17 +8,24 @@
 
 import { env } from 'node:process';
 
-import { commonConfig, commonOptions } from './common.js';
-import { SOURCEMAPS_DIR }              from './constants.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import { SOURCEMAPS_DIR }                 from './constants.js';
+import mergeByEnv                         from './merge_by_env.js';
 
 import autoprefixer from 'autoprefixer';
 import mqpacker     from '@hail2u/css-mqpacker';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'css_sass'
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -27,9 +34,9 @@ const
  * @name devConfig:css_sass
  */
 const devConfig = {
-  src  : [ commonConfig.SRC + '/**/*.scss' ],
-  dist : commonConfig.DIST,
-  base : commonConfig.SRC,
+  src  : [ SRC_DIR + '/**/*.scss' ],
+  dist : DIST_DIR,
+  base : SRC_DIR,
   enabledSourcemaps : true,
   sourcemaps_dir    : '/' + SOURCEMAPS_DIR,
 };
@@ -53,7 +60,8 @@ const prodConfig = {
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name : TASK_NAME,
+    name    : TASK_NAME,
+    enabled : commonOptions.enabledDiff.dev,
   },
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
@@ -89,6 +97,9 @@ const devOptions = {
  * @name prodOptions:css_sass
  */
 const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
   sass : {
     outputStyle : 'compressed', // nested, compact, compressed, expanded
   },
@@ -96,6 +107,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;

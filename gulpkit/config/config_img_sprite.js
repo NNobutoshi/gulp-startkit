@@ -8,15 +8,22 @@
 
 import { env } from 'node:process';
 
-import { commonConfig, commonOptions } from './common.js';
-import { PLACEHOLDER }                 from './constants.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import { PLACEHOLDER }                    from './constants.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'img_sprite'
   ,GROUP_DIR = 'img/_sprite'
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -25,13 +32,13 @@ const
  * @name devConfig:img_sprite
  */
 const devConfig = {
-  src          : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.png` ],
-  dist         : commonConfig.DIST,
-  base         : commonConfig.SRC,
+  src          : [ `${ SRC_DIR }/**/${ GROUP_DIR }/*.png` ],
+  dist         : DIST_DIR,
+  base         : SRC_DIR,
   placeholder  : PLACEHOLDER,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  imgDist      : commonConfig.DIST + `${ PLACEHOLDER }/img`,
-  scssDist     : commonConfig.SRC  + `${ PLACEHOLDER }/css`,
+  imgDist      : DIST_DIR + `${ PLACEHOLDER }/img`,
+  scssDist     : SRC_DIR  + `${ PLACEHOLDER }/css`,
 };
 
 /**
@@ -51,8 +58,9 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name  : TASK_NAME,
-    group : GROUP_DIR,
+    name    : TASK_NAME,
+    enabled : commonOptions.enabledDiff.dev,
+    group   : GROUP_DIR,
   },
   sprite : {
     cssName     : '_mixins_sprite.scss',
@@ -60,7 +68,7 @@ const devOptions = {
     imgPath     : '../img/common_pack.png',
     cssFormat   : 'scss',
     padding     : 10,
-    cssTemplate : commonConfig.SRC + '/css/_templates/_sprite.scss.handlebars',
+    cssTemplate : SRC_DIR + '/css/_templates/_sprite.scss.handlebars',
     cssVarMap   : function( sprite ) {
       sprite.name = 'sheet-' + sprite.name;
     },
@@ -86,10 +94,14 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:img_sprite
  */
-const prodOptions = null;
+const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;

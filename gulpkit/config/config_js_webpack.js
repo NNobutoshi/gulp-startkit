@@ -15,14 +15,21 @@ import path         from 'node:path';
 import webpack      from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 
-import { commonConfig, commonOptions } from './common.js';
-import { SOURCEMAPS_DIR }              from './constants.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import { SOURCEMAPS_DIR }                 from './constants.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   CWD = cwd()
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -31,14 +38,14 @@ const
  * @name devConfig:js_webpack
  */
 const devConfig = {
-  src            : [ commonConfig.SRC + '/**/*.{js,json}' ],
-  dist           : commonConfig.DIST,
-  base           : commonConfig.SRC,
+  src            : [ SRC_DIR + '/**/*.{js,json}' ],
+  dist           : DIST_DIR,
+  base           : SRC_DIR,
   entry          : '.entry.js',
   splitChunks    : '.split.json',
   cacheDirectory : path.resolve( CWD, '.webpack_cache' ),
   webpackConfig  : {
-    mode      : env.NODE_ENV,
+    mode      : NODE_ENV,
     output    : {},
     devtool   : 'source-map',
     module    : {
@@ -67,7 +74,7 @@ const devConfig = {
     }, //module
     cache : {
       // 開発環境では差分ビルド用の環境変数で無効と設定されていない限り、'filesystem'を使用。
-      type : ( env.DIFF_ENV && !!( env.DIFF_ENV ) === false ) ? 'memory' : 'filesystem',
+      type : ( commonOptions.enabledDiff.dev === false ) ? 'memory' : 'filesystem',
     },
     plugins : [
       new webpack.SourceMapDevToolPlugin( {
@@ -90,7 +97,7 @@ const prodConfig = {
     devtool : false,
     cache : {
       // 本番環境では差分ビルド用の環境変数で有効と設定されていない限り、'memory'を使用。
-      type : ( env.DIFF_ENV && !!( env.DIFF_ENV ) === true ) ? 'filesystem' : 'memory',
+      type : ( commonOptions.enabledDiff.prod === true ) ? 'filesystem' : 'memory',
     },
     plugins : [
       function() {},
@@ -125,7 +132,7 @@ const prodOptions = null;
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;
 

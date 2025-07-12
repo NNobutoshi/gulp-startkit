@@ -9,15 +9,22 @@
 import { cwd, env } from 'node:process';
 import path         from 'node:path';
 
-import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME  = 'img_sprite_svg'
   ,GROUP_DIR = 'img/_sprite_svg'
   ,CWD = cwd()
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -26,9 +33,9 @@ const
  * @name devConfig:img_sprite_svg
  */
 const devConfig = {
-  src   : [ `${ commonConfig.SRC }/**/${ GROUP_DIR }/*.svg` ],
-  base  : commonConfig.SRC,
-  dist  : commonConfig.DIST,
+  src   : [ `${ SRC_DIR }/**/${ GROUP_DIR }/*.svg` ],
+  base  : SRC_DIR,
+  dist  : DIST_DIR,
   group : GROUP_DIR, // この命名ルールのディレクトリごとに。
 };
 
@@ -49,8 +56,9 @@ const prodConfig = null;
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name  : TASK_NAME,
-    group : GROUP_DIR,
+    name    : TASK_NAME,
+    enabled : commonOptions.enabledDiff.dev,
+    group   : GROUP_DIR,
   },
   svgSprite : {
     mode : {
@@ -131,6 +139,9 @@ const devOptions = {
  * @name prodOptions:img_sprite_svg
  */
 const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
   svgSprite : {
     mode : {
       symbol : {
@@ -145,6 +156,6 @@ const prodOptions = {
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;

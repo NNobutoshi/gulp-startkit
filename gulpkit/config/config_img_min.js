@@ -7,13 +7,20 @@
 
 import { env } from 'node:process';
 
-import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'img_min'
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -23,11 +30,11 @@ const
  */
 const devConfig = {
   src : [
-    ''  + commonConfig.SRC + '/**/*.{png,jpg,svg}',
-    '!' + commonConfig.SRC + '/**/_sprite*/*.{png,svg}',
-    '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
+    ''  + SRC_DIR + '/**/*.{png,jpg,svg}',
+    '!' + SRC_DIR + '/**/_sprite*/*.{png,svg}',
+    '!' + SRC_DIR + '/**/fonts/icons/*.svg',
   ],
-  dist : commonConfig.DIST,
+  dist : DIST_DIR,
 };
 
 /**
@@ -48,12 +55,13 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name     : TASK_NAME,
+    enabled  : commonOptions.enabledDiff.dev,
     oneToOne : true,
   },
   gulpSrc : {
-    base     : commonConfig.SRC,
+    base     : SRC_DIR,
     encoding : false,
-    read     : !commonOptions.diff.enabled,
+    read     : !commonOptions.enabledDiff.dev,
   },
   imageminMozjpeg : {
     quality : 90,
@@ -82,10 +90,17 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:img_min
  */
-const prodOptions = null;
+const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
+  gulpSrc : {
+    read : !commonOptions.enabledDiff.prod,
+  },
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;

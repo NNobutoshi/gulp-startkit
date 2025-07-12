@@ -8,14 +8,21 @@
 import { cwd, env } from 'node:process';
 import path         from 'node:path';
 
-import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'html_pug'
   ,CWD = cwd()
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -25,22 +32,22 @@ const
  */
 const devConfig = {
   src : [
-    commonConfig.SRC + '/**/*.pug',
-    commonConfig.SRC + '/**/_pug_data.json',
-    commonConfig.SRC + '/**/_pug_common_data.json',
+    SRC_DIR + '/**/*.pug',
+    SRC_DIR + '/**/_pug_data.json',
+    SRC_DIR + '/**/_pug_common_data.json',
   ],
   subsrc : [
-    ''  + commonConfig.SRC + '/**/*.{png,jpg,svg}',
-    '!' + commonConfig.SRC + '/**/_sprite*/*.{png,svg}',
-    '!' + commonConfig.SRC + '/**/fonts/icons/*.svg',
+    ''  + SRC_DIR + '/**/*.{png,jpg,svg}',
+    '!' + SRC_DIR + '/**/_sprite*/*.{png,svg}',
+    '!' + SRC_DIR + '/**/fonts/icons/*.svg',
   ],
   dataSrc : [
-    commonConfig.SRC + '/**/_pug_data.json',
-    commonConfig.SRC + '/**/_pug_common_data.json',
+    SRC_DIR + '/**/_pug_data.json',
+    SRC_DIR + '/**/_pug_common_data.json',
   ],
-  dist : commonConfig.DIST,
-  base : commonConfig.SRC,
-  data : path.resolve( CWD, `${ commonConfig.SRC }/_data/_pug_data.json` ),
+  dist : DIST_DIR,
+  base : SRC_DIR,
+  data : path.resolve( CWD, `${ SRC_DIR }/_data/_pug_data.json` ),
 };
 
 /**
@@ -61,6 +68,7 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name : TASK_NAME,
+    enabled  : commonOptions.enabledDiff.dev,
   },
   imgSize : true,
   injectImageSize : {
@@ -82,7 +90,7 @@ const devOptions = {
   },
   pug : {
     pretty  : true,
-    basedir : commonConfig.SRC,
+    basedir : SRC_DIR,
   },
   logStreamData : {
     title     : TASK_NAME,
@@ -97,10 +105,14 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:html_pug
  */
-const prodOptions = null;
+const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;

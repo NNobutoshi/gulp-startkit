@@ -7,13 +7,20 @@
 
 import { env } from 'node:process';
 
-import { commonConfig, commonOptions } from './common.js';
-import mergeByEnv                      from './merge_by_env.js';
+import { srcDir, distDir, commonOptions } from './common.js';
+import mergeByEnv                         from './merge_by_env.js';
 
-export { mergedConf as config, mergedOptions as options };
+export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'js_eslint'
+;
+const
+  NODE_ENV = env.NODE_ENV
+;
+const
+  SRC_DIR   = srcDir[ NODE_ENV ]
+  ,DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -24,10 +31,10 @@ const
 const devConfig = {
   src : [
     './gulpkit/**/*.js',
-    ''  + commonConfig.SRC + '/**/*.js',
-    '!' + commonConfig.SRC + '/**/_vendor/*.js',
+    ''  + SRC_DIR + '/**/*.js',
+    '!' + SRC_DIR + '/**/_vendor/*.js',
   ],
-  dist : commonConfig.DIST,
+  dist : DIST_DIR,
 };
 
 /**
@@ -48,10 +55,11 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name     : TASK_NAME,
+    enabled  : commonOptions.enabledDiff.dev,
     oneToOne : true,
   },
   gulpSrc : {
-    read : !commonOptions.diff.enabled,
+    read : !commonOptions.enabledDiff.dev,
   },
   eslint : {
   },
@@ -69,11 +77,18 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:js_eslint
  */
-const prodOptions = null;
+const prodOptions = {
+  diff : {
+    enabled : commonOptions.enabledDiff.prod,
+  },
+  gulpSrc : {
+    read : !commonOptions.enabledDiff.prod,
+  }
+};
 
 // すべては開発環境用の設定をベースにマージする。
 const
-  mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )
+  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
+  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;
 

@@ -14,8 +14,8 @@ import chalk    from 'chalk';
 import {
   PROD_ENV_NAME,
   DEV_ENV_NAME,
-  EVENT_NAME_WATCH_INIT,
-  EVENT_NAME_WATCH_WAITING,
+  WATCH_INIT_EVENT_NAME,
+  WATCH_START_EVENT_NAME,
 } from './constants.js';
 
 const
@@ -24,44 +24,39 @@ const
   ,DIFF_REFS_ENV = env.DIFF_REFS_ENV
 ;
 const
-  IS_PRODUCTION   = ( NODE_ENV === PROD_ENV_NAME )
-  ,IS_DEVELOPMENT = ( NODE_ENV === DEV_ENV_NAME )
-;
-const
-  src_dir  = {
-    [ PROD_ENV_NAME ] : 'src',
-    [ DEV_ENV_NAME ]  : 'src',
-  },
-  dist_dir = {
-    [ PROD_ENV_NAME ] : 'dist/production/html',
-    [ DEV_ENV_NAME ]  : 'dist/development/html',
-  }
-;
-const
   DIFF_REFS_ENABLED = !!Number( DIFF_REFS_ENV )
 ;
 
 /**
- * 各タスクで共通の設定は環境変数に応じてタスク個別の設定に先んじて切り替えを行う。<br>
- * ソースマップ、差分ビルド、watch などの有効の有無等。
+ * ソースディレクトリを環境変数に応じて切り替える。
  * @memberof module:config
- * @name commonConfig
+ * @name srcDir
  */
-export const commonConfig = {
-  SRC  : src_dir[ NODE_ENV ],
-  DIST : dist_dir[ NODE_ENV ],
+export const srcDir  = {
+  [ PROD_ENV_NAME ] : 'src',
+  [ DEV_ENV_NAME ]  : 'src',
+};
+
+/**
+ * 書き出し先ディレクトリを環境変数に応じて切り替える。
+ * @memberof module:config
+ * @name distDir
+ */
+export const distDir = {
+  [ PROD_ENV_NAME ] : 'dist/production/html',
+  [ DEV_ENV_NAME ]  : 'dist/development/html',
 };
 
 /**
  * ブランチ間やコミット間の差分をビルド対象とするか否かでコマンドを別ける。<br>
- * <ref1> と<ref2> はプレースホルダーで、コマンドラインの引数でされたブランチ名やコミットハッシュで置換される。<br>
+ * &lt;ref1&gt; と&lt;ref2&gt; はプレイスホルダーで、コマンドラインの引数でされたブランチ名やコミットハッシュで置換される。<br>
  * コミット前の作業差分は未追跡のファイルを検知さる為に、Git status を使用。
  * @memberof module:config
  * @name GIT_COMMAND
  */
 const GIT_COMMAND = ( DIFF_REFS_ENABLED )
-  ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ commonConfig.SRC }/`
-  : `git status -suall gulpkit/ ${ commonConfig.SRC }/`
+  ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ srcDir[ NODE_ENV ] }/`
+  : `git status -suall gulpkit/ ${ srcDir[ NODE_ENV ] }/`
 ;
 
 /**
@@ -70,13 +65,16 @@ const GIT_COMMAND = ( DIFF_REFS_ENABLED )
  * @name commonOptions
  */
 export const commonOptions = {
+  enabledDiff : {
+    // 差分ビルド専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
+    dev  : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : true,
+    prod : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : false,
+  },
   diff : {
     command     : GIT_COMMAND,
-    // 差分ビルド専用の環境変数を優先し、次にNODE_ENV に応じて有効の有無を決める。
-    enabled     : ( DIFF_ENV ) ? !!Number( DIFF_ENV ) : IS_DEVELOPMENT || !IS_PRODUCTION,
     enabledRefs : DIFF_REFS_ENABLED,
-    firstTasksEndedEventName : EVENT_NAME_WATCH_INIT,
-    tasksEndedEventName      : EVENT_NAME_WATCH_WAITING,
+    firstTasksEndedEventName : WATCH_INIT_EVENT_NAME,
+    tasksEndedEventName      : WATCH_START_EVENT_NAME,
   },
   plumber : {
     errorHandler : function( err ) {

@@ -6,8 +6,8 @@
  */
 import { env } from 'node:process';
 
-import { EVENT_NAME_WATCH_INIT, EVENT_NAME_WATCH_WAITING } from './constants.js';
-import mergeByEnv                                          from './merge_by_env.js';
+import { WATCH_INIT_EVENT_NAME, WATCH_START_EVENT_NAME } from './constants.js';
+import mergeByEnv                                        from './merge_by_env.js';
 
 export { mergedConf as config, mergedOptions as options };
 
@@ -16,8 +16,8 @@ export { mergedConf as config, mergedOptions as options };
  * @memberof module:config_task_watch
  */
 const devConfig = {
-  watchInitEventName    : EVENT_NAME_WATCH_INIT,
-  watchWaitingEventName : EVENT_NAME_WATCH_WAITING,
+  watchInitEventName  : WATCH_INIT_EVENT_NAME,
+  watchStartEventName : WATCH_START_EVENT_NAME,
 };
 
 /**
