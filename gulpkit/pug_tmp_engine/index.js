@@ -15,7 +15,7 @@ import fancyLog from 'fancy-log';
 import XLSX     from 'xlsx';
 
 import existsFile from '../utilities/exists.js';
-import { html } from '../index.js';
+import { html }   from '../index.js';
 
 const
   CHARSET               = 'utf-8'
@@ -39,53 +39,39 @@ const
  * @returns {object} JSON データ
  */
 ( async function _run() {
-  const workBook    = XLSX.readFile( XLSX_FILE_PATH );
-  const jSONData    = _xlsxToJson( workBook );
-  const dataStrings = JSON.stringify( jSONData, null, 2 );
+  const workBook       = XLSX.readFile( XLSX_FILE_PATH );
+  const jsonDataOrigin = XLSX.utils.sheet_to_json( workBook.Sheets[ XLSX_SHEET_NAME ] );
+  const jsonData       = _mapJsonDataByUrl( jsonDataOrigin );
+  const dataStrings    = JSON.stringify( jsonData, null, 2 );
   await _writePugDataFile( dataStrings );
-  for ( let url in jSONData ) {
-    await _createPugFileByDataProps( jSONData[ url ], _createPugFile );
+  for ( let url in jsonData ) {
+    await _createPugFileByDataProps( jsonData[ url ], _createPugFile );
   }
   html();
 } )();
 
 /**
- * Excel のデータを JSON に変換する。
- * @private
- * @param {object} workBook - Excel のデータ
- * @returns {object} JSON データ
- */
-function _xlsxToJson( workBook ) {
-  return _reJsonData(
-    XLSX.utils.sheet_to_json( workBook.Sheets[ XLSX_SHEET_NAME ] )
-  );
-}
-
-/**
  * Pug のデータファイルに書き込む。
  * @private
  * @param {string} content - Pug の設定ファイルの内容
- * @param {string} newStrings - 新しい文字列
- * @param {string} indent - インデント
  * @returns {Promise<void>}
  */
 async function _writePugDataFile( content ) {
   try {
     await writeFile( DATA_FILE_PATH, content, CHARSET );
-    fancyLog( `configed  "${ path.relative( CWD, DATA_FILE_PATH ) }"` );
+    fancyLog( `configured  "${ path.relative( CWD, DATA_FILE_PATH ) }"` );
   } catch ( err ) {
     fancyLog.error( err.stack );
   }
 }
 
 /**
- * JSON データを変換する。
- * データ中のurl をkey にするObject に作り変える。
+ * データ中のurl をkey とするObject を生成する。
  * @private
  * @param {object} data - JSON データ
  * @returns {object} 変換された JSON データ
  */
-function _reJsonData( data ) {
+function _mapJsonDataByUrl( data ) {
   const res = {};
   data.forEach( ( item ) => {
     res[ item.url ] = item;
@@ -94,28 +80,32 @@ function _reJsonData( data ) {
 }
 
 /**
- * Pug のファイルを作成する。
+ * JSON データのプロパティを元にPug ファイルを作成する。
  * @private
  * @param {object} props - JSON データのプロパティ
- * @param {Function} createPugFile - Pug ファイルを作成する関数
+ * @param {Function} pugFileCreator - Pug ファイルを作成する関数
  * @returns {Promise<void>}
  */
-async function _createPugFileByDataProps( props, createFile ) {
+async function _createPugFileByDataProps( props, pugFileCreator ) {
   let
-    url     = props.url
-    ,temp   = props.template
-    ,pugUrl = ''
+    siteRootHtmlFilePath         = props.url
+    ,siteRootTemplatePugFilePath = props.template
+    ,siteRootPugFilePath         = ''
+    ,pugFilePath                 = ''
   ;
-  if ( url.match( /\/$/ ) ) {
-    pugUrl = url.replace( /\/$/, '/index.pug' );
+  const
+    templateFilePath = path.join( SRC_DIR, siteRootTemplatePugFilePath )
+  ;
+  if ( siteRootHtmlFilePath.match( /\/$/ ) ) {
+    siteRootPugFilePath = siteRootHtmlFilePath.replace( /\/$/, '/index.pug' );
   }
-  if ( url.match( /\.html?$/ ) ) {
-    pugUrl = url.replace( /\.html?$/, '.pug' );
+  if ( siteRootHtmlFilePath.match( /\.html?$/ ) ) {
+    siteRootPugFilePath = siteRootHtmlFilePath.replace( /\.html?$/, '.pug' );
   }
-  pugUrl = path.join( SRC_DIR, pugUrl );
+  pugFilePath = path.join( SRC_DIR, siteRootPugFilePath );
   try {
-    await mkdir( path.dirname( pugUrl ),{ recursive : true } );
-    await createFile( pugUrl, temp );
+    await mkdir( path.dirname( pugFilePath ),{ recursive : true } );
+    await pugFileCreator( pugFilePath, templateFilePath );
   } catch ( err ) {
     fancyLog.error( err.stack );
     throw err;
@@ -125,18 +115,18 @@ async function _createPugFileByDataProps( props, createFile ) {
 /**
  * Pug ファイルを作成する。
  * @private
- * @param {string} pugUrl - Pug ファイルの URL
- * @param {string} template - テンプレート
+ * @param {string} pugFilePath - Pug ファイルの絶対パス
+ * @param {string} templateFilePath - テンプレートファイルの絶対パス
  * @returns {Promise<void>}
  */
-async function _createPugFile( pugUrl, template ) {
+async function _createPugFile( pugFilePath, templateFilePath ) {
   try {
-    const exists = await existsFile( pugUrl );
+    const exists = await existsFile( pugFilePath );
     if ( exists && FORCED === false ) {
       return;
     }
-    const content = await _readTemplateFile( template );
-    await _writePugFile( content, pugUrl, exists );
+    const content = await _readTemplateFile( templateFilePath );
+    await _writePugFile( pugFilePath, content, exists );
   } catch ( err ) {
     fancyLog.error( err.stack );
     throw err;
@@ -146,12 +136,12 @@ async function _createPugFile( pugUrl, template ) {
 /**
  * テンプレートファイルを読み込む。
  * @private
- * @param {string} template - テンプレートファイルの URL
+ * @param {string} templateFilePath - テンプレートファイルの絶対パス
  * @returns {Promise<string>} テンプレートファイルの内容
  */
-async function _readTemplateFile( template ) {
+async function _readTemplateFile( templateFilePath ) {
   try {
-    return await readFile( path.join( SRC_DIR, template ), CHARSET );
+    return await readFile( templateFilePath, CHARSET );
   } catch ( err ) {
     fancyLog.error( err.stack );
     throw err;
@@ -162,17 +152,17 @@ async function _readTemplateFile( template ) {
  * Pug ファイルを書き込む。
  * @private
  * @param {string} content - Pug ファイルの内容
- * @param {string} pugUrl - Pug ファイルの URL
+ * @param {string} pugFilePath - Pug ファイルの絶対パス
  * @param {boolean} exists - Pug ファイルが既存か否か
  * @returns {Promise<void>} テンプレートファイルの内容
  */
-async function _writePugFile( content, pugUrl, exists ) {
+async function _writePugFile( pugFilePath, content, exists ) {
   try {
-    await writeFile( pugUrl, content, CHARSET );
+    await writeFile( pugFilePath, content, CHARSET );
     if ( exists ) {
-      fancyLog( `Updated       "${ path.relative( CWD, pugUrl ) }"` );
+      fancyLog( `updated       "${ path.relative( CWD, pugFilePath ) }"` );
     } else {
-      fancyLog( `newly created "${ path.relative( CWD, pugUrl ) }"` );
+      fancyLog( `newly created "${ path.relative( CWD, pugFilePath ) }"` );
     }
   } catch ( err ) {
     fancyLog.error( err.stack );
