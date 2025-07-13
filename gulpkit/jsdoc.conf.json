@@ -1,0 +1,20 @@
+{
+  "opts": {
+    "destination": "./gulpkit/docs",
+    "recurse": true,
+    "private": true,
+    "template": "node_modules/docdash"
+  },
+  "source": {
+    "include": ["./gulpkit"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules|gulpkit/docs)"
+  },
+  "docdash": {
+    "static" : true,
+    "sort": true,
+    "lineNumbers": true,
+    "sectionOrder" : [ "Modules", "Classes"],
+    "collapse" : true
+  }
+}
