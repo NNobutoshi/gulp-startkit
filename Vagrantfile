@@ -104,9 +104,9 @@ Vagrant.configure("2") do |config|
     sudo apt install -y git
 
     # nodejs
-    curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_22.x | sudo -E bash -
     sudo apt install -y nodejs
-    sudo npm install n -g && n 20.19.0
+    sudo npm install n -g && n 22.17.0
 
     # nginx
     sudo apt install -y nginx

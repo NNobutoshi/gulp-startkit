@@ -2110,8 +2110,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_esnext_string_replace_all_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/esnext.string.replace-all.js */ "./node_modules/core-js/modules/esnext.string.replace-all.js");
 /* harmony import */ var lodash_mergeWith_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/mergeWith.js */ "./node_modules/lodash/mergeWith.js");
 /* harmony import */ var _libs_eventmanager_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./libs/eventmanager.js */ "./src/js/_modules/libs/eventmanager.js");
-/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! regenerator-runtime/runtime.js */ "./node_modules/regenerator-runtime/runtime.js");
-
 
 
 
