@@ -30,7 +30,8 @@ const
  */
 const devConfig = {
   src : [
-    './gulpkit/**/*.js',
+    ''  + './gulpkit/**/*.js',
+    '!' + './gulpkit/docs/**/*.js',
     ''  + SRC_DIR + '/**/*.js',
     '!' + SRC_DIR + '/**/_vendor/*.js',
   ],
