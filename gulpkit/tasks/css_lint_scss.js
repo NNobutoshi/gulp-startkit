@@ -40,7 +40,7 @@ function css_lint_scss() {
 
 /**
  * SCSS の構文チェック。
- * @returns Gulp ストリーム
+ * @returns {Stream} - Gulp ストリーム
  */
 function _lintScss() {
   return through.obj( async function _transform( file, enc, callback ) {

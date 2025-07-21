@@ -51,7 +51,7 @@ let
  * config.js 側で'filesystem' の指定があれば、cacheDirectory をここで指定。<br>
  * 'memory' が指定されているとcacheDirectory をそのままにしておけないため。
  */
-if ( webpackConfig.cache?.type === 'filesystem' ) {
+if ( webpackConfig?.cache?.type === 'filesystem' ) {
   webpackConfig.cache.cacheDirectory = config.cacheDirectory;
 }
 

@@ -8,7 +8,7 @@
   "source": {
     "include": ["./gulpkit"],
     "includePattern": ".+\\.js(doc|x)?$",
-    "excludePattern": "(node_modules|gulpkit/docs)"
+    "excludePattern": "(node_modules|gulpkit/docs|config/config_browse.js)"
   },
   "docdash": {
     "static" : true,
