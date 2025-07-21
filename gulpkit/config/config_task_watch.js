@@ -3,13 +3,20 @@
  * @requires ./common.js
  * @requires ./constants.js
  * @requires ./merge_by_env.js
+ * @requires ./get_env_status.js
  */
+
 import { env } from 'node:process';
 
 import { WATCH_INIT_EVENT_NAME, WATCH_START_EVENT_NAME } from './constants.js';
 import mergeByEnv                                        from './merge_by_env.js';
+import getEnvStatus                                      from './get_env_status.js';
 
 export { mergedConf as config, mergedOptions as options };
+
+const
+  WATCH_STATUS = getEnvStatus( env.WATCH_ENABLED )
+;
 
 /**
  * 開発環境用コンフィグオブジェクト。
@@ -36,7 +43,7 @@ const prodConfig = null;
  */
 const devOptions = {
   //開発環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければtrue に。
-  enabled : ( env.WATCH_ENABLED ) ? !!Number( env.WATCH_ENABLED ) : true,
+  enabled : WATCH_STATUS ?? true,
   runChainedTasksDelayTime : 100,
   gulpWatch : {
     usePolling : true,
@@ -52,7 +59,7 @@ const devOptions = {
  */
 const prodOptions = {
   //本番環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければfalse に。
-  enabled : ( env.WATCH_ENABLED ) ? !!Number( env.WATCH_ENABLED ) : false,
+  enabled : WATCH_STATUS ?? false,
 };
 
 // すべては開発環境用の設定をベースにマージする。

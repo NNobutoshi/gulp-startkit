@@ -7,6 +7,7 @@
  * @requires ./common.js
  * @requires ./constants.js
  * @requires ./merge_by_env.js
+ * @requires ./get_env_status.js
  */
 
 import { cwd, env } from 'node:process';
@@ -18,6 +19,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { srcDir, distDir, commonOptions } from './common.js';
 import { SOURCEMAPS_DIR }                 from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
+import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
@@ -26,6 +28,9 @@ const
 ;
 const
   NODE_ENV = env.NODE_ENV
+;
+const
+  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -74,7 +79,7 @@ const devConfig = {
     }, //module
     cache : {
       // 開発環境では差分ビルド用の環境変数で無効と設定されていない限り、'filesystem'を使用。
-      type : ( commonOptions.isDiffEnabled.dev === false ) ? 'memory' : 'filesystem',
+      type : ( DIFF_STATUS === false ) ? 'memory' : 'filesystem',
     },
     plugins : [
       new webpack.SourceMapDevToolPlugin( {
@@ -97,7 +102,7 @@ const prodConfig = {
     devtool : false,
     cache : {
       // 本番環境では差分ビルド用の環境変数で有効と設定されていない限り、'memory'を使用。
-      type : ( commonOptions.isDiffEnabled.prod === true ) ? 'filesystem' : 'memory',
+      type : ( DIFF_STATUS === true ) ? 'filesystem' : 'memory',
     },
     plugins : [
       function() {},

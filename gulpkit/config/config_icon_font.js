@@ -4,6 +4,7 @@
  * @requires ./common.js
  * @requires ./constants.js
  * @requires ./merge_by_env.js
+ * @requires ./get_env_status.js
  */
 
 import { env } from 'node:process';
@@ -11,6 +12,7 @@ import { env } from 'node:process';
 import { srcDir, distDir, commonOptions } from './common.js';
 import { PLACEHOLDER }                    from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
+import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
@@ -20,6 +22,9 @@ const
 ;
 const
   NODE_ENV = env.NODE_ENV
+;
+const
+  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -60,7 +65,7 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name    : TASK_NAME,
-    enabled : commonOptions.isDiffEnabled.dev,
+    enabled : DIFF_STATUS ?? true,
     group   : GROUP_DIR,
   },
   iconfont : {
@@ -100,7 +105,7 @@ const devOptions = {
  */
 const prodOptions = {
   diff : {
-    enabled : commonOptions.isDiffEnabled.prod,
+    enabled : DIFF_STATUS ?? false,
   },
 };
 

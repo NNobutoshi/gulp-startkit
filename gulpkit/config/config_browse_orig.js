@@ -1,10 +1,11 @@
 /**
  * @module config_browse_orig
- * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルをconfig_browse_orig.js -> config_browse.js とリネームする。</strong><br>
+ * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルを複製し、config_browse.js とリネームする。</strong><br>
  * 作業者各々でポート等の設定を自由に行えるようにする意図。<br>
  * config_browes.js はGit igonre でコミットから除外。
  * @requires node:process
  * @requires ./merge_by_env.js
+ * @requires ./get_env_status.js
  * @example
  * // 開発環境用設定例
  * const devOptions = {
@@ -23,12 +24,13 @@
 
 import { env } from 'node:process';
 
-import mergeByEnv from './merge_by_env.js';
+import mergeByEnv   from './merge_by_env.js';
+import getEnvStatus from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
 const
-  BROWSING_ENABLED = env.BROWSING_ENABLED
+  BROWSING_STATUS = getEnvStatus( env.BROWSING_ENABLED )
 ;
 
 /**
@@ -36,7 +38,7 @@ const
  * @memberof module:config_browse_orig
  */
 const devConfig = {
-  enabled : ( BROWSING_ENABLED ) ? !!Number( BROWSING_ENABLED ) : true
+  enabled : BROWSING_STATUS ?? true,
 };
 
 /**
@@ -46,7 +48,7 @@ const devConfig = {
  * @memberof module:config_browse_orig
  */
 const prodConfig = {
-  enabled : ( BROWSING_ENABLED ) ? !!Number( BROWSING_ENABLED ) : false
+  enabled : BROWSING_STATUS ?? false,
 };
 
 /**
