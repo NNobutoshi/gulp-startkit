@@ -14,7 +14,7 @@ export { mergeByEnv as default };
  * production 用のオブジェクトは、development を基準にしてマージする。<br>
  * @memberof module:config/merge_by_env
  * @param {string} env - 環境変数
- * @param {object} devObj - depelopment 用のオブジェクト
+ * @param {object} devObj - development 用のオブジェクト
  * @param {object} devprod - production 用のオブジェクト
  * @returns {object} - マージを行ったオブジェクト
  */

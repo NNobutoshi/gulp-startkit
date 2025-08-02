@@ -9,10 +9,8 @@
 ## 想定
 
 - プロジェクトはGit でバージョン管理下にあること。
-
 - 各package は、開発開始時に最新版をインストール。  
 その後 npm shrinkwrap など行って、共有。
-
 - dist もバージョン管理下に置く想定。
 
 ## 差分ビルド
@@ -31,14 +29,14 @@ src 1ファイル → dist 1ファイル のようなタスクは、高速化の
 $ npm run dev
 ```
 
-環境変数に` NODE_ENV=development WATCH_ENV=1 BROWSE_ENV=1 DIFF_ENV=1 `を含むコマンドのエイリアス。  
+環境変数に` NODE_ENABLED=development WATCH_ENABLED=1 BROWSING_ENABLED=1 DIFF_ENABLED=1 `を含むコマンドのエイリアス。  
 source map、`Gulp.watch()`、live reload（Browsersync）、差分ビルドを有効にする。
 
 ※ Browsersync を有効にするには設定ファイル（`/gulpkit/config_browse.js`）の用意が必要。`/gulpkit/conifig_browse_orig.js`を複製、リネームして利用し、リネーム後のファイル名は、Git でignore されていて、server のIP アドレス等は、実装者各々で設定自由にする。
 ```
 $ npm run one
 ```
-環境変数に`NODE_ENV=development WATCH_ENV=0 BROWSE_ENV=0 DIFF_ENV=0`を含むコマンドのエイリアス。
+環境変数に`NODE_ENV=development WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=0`を含むコマンドのエイリアス。
 watch はされず、live reload も差分ビルドも無効。
 
 ```
@@ -65,8 +63,8 @@ $ cd myproject
 ```
 後、以下前述のコマンド通り。
 
-- Ubuntu 20.10
-- Node.js 16.13.0
+- Ubuntu 24.04
+- Node.js 22.17.0
 - Nginx
 
 IP アドレス等は、`/vagrant_config.yml`を用意して実装者各々で設定自由｡

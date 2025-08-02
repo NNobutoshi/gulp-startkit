@@ -60,7 +60,7 @@ function _groupSources( groupedSources, group, base, branchTask ) {
  * @private
  * @param {object} file - Vinyl オブジェクト
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {string} group - 任意のループ名(部分的なディレクトリ名)、例：'fonts/icons/'
+ * @param {string} group - 任意のグループ名（部分的なディレクトリ名）、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  */
 function _setChildSourceToParentMap( file, groupedSources, group, base ) {

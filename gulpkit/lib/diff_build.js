@@ -1,6 +1,6 @@
 /**
  * @module lib/diff_build
- * @description 差分用コマンドの出力に従ってファイルを選び、<br>
+ * @description 差分取得用コマンドの出力に従ってファイルを選び、<br>
  * 依存関係にあるファイルや任意で設定したグループに属する他のファイル等をビルド対象にする。
  * @requires node:process
  * @requires node:fs/promises
@@ -32,17 +32,17 @@ const
 ;
 const
   defaultSettings = {
-    group       : '',
-    enabled     : true,
+    group         : '',
+    enabled       : true,
     isRefsEnabled : false,
-    command     : 'git status -suall',
-    oneToOne    : false,
-    allForOne   : false,
+    command       : 'git status -suall',
+    oneToOne      : false,
+    allForOne     : false,
   }
 ;
 let
   writingTimeoutId = null
-  ,diffBuildProc = null
+  ,diffBldProc = null
 ;
 export {
   diff_build as default,
@@ -50,8 +50,8 @@ export {
 };
 
 /**
- * Git で管理する前提での差分ビルド。<br>
- * diff コマンドで検知されたファイルのみを対象とする。<br>
+ * プロジェクトをGit で管理する前提で行う差分ビルド。<br>
+ * Git の差分取得用コマンド（diff or status）で検知されたファイルのみを対象とする。<br>
  * default としてエクスポート。
  * @memberof module:lib/diff_build
  * @param {object} options - オプション
@@ -65,6 +65,7 @@ function diff_build( options, collect, select ) {
   ;
   const
     taskName = settings.name
+    ,group   = settings.group
   ;
   let
     ref1, ref2
@@ -72,7 +73,7 @@ function diff_build( options, collect, select ) {
   if ( settings.enabled === false ) {
     return through.obj();
   }
-  if ( typeof settings.group !== '' ) {
+  if ( group && typeof group === 'string' ) {
     settings.group = settings.group.replace( /\//g, path.sep );
   }
   // ブランチ名、もしくはコミットハッシュをコマンドラインの引数から取得。
@@ -80,48 +81,49 @@ function diff_build( options, collect, select ) {
     [ ref1, ref2 ] = process.argv.slice( 2 );
   }
 
-  // モジュールスコープのdiffBuildProc がnull の場合にのみ初期化。
-  if ( !diffBuildProc ) {
-    diffBuildProc = new DiffBuildProcessor();
-    // diffBuildProc の共有する値を初期化するメンバ関数をリスナー登録。
+  // モジュールスコープであるdiffBldProc がnull の場合にのみ初期化。
+  if ( !diffBldProc ) {
+    diffBldProc = new DiffBuildProcessor();
+    // 共有する値を初期化するdiffBldProc のメンバ関数をリスナー登録。
     _addResetStateListeners(
-    // リスナ-登録でthis の参照が代わらないようdiffBuildProc にbind 。
-      diffBuildProc.resetSharedState.bind( diffBuildProc ),
+    // this の参照が代わらないようdiffBldProc にbind 。
+      diffBldProc.resetSharedState.bind( diffBldProc ),
       settings.firstTasksEndedEventName,
       settings.tasksEndedEventName,
     );
   } // if
 
-  // exec は処理が重いため、実行が連続しないよう各タスクでPromis を共有させる
-  if ( !diffBuildProc.promiseToGetDiffData ) {
-    diffBuildProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
-    // refs （ブランチ間、コミット間）比較が無効の場合にのみ直近の差分データを取得する。
+  // exec は処理が重いため、実行が連続しないよう各タスクでPromise を共有させる。
+  if ( !diffBldProc.promiseToGetDiffData ) {
+    diffBldProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
+    // refs （ブランチ間、コミット間）の比較が無効の場合にのみ直近の差分データを取得する。
     if ( settings.isRefsEnabled === false ) {
-      diffBuildProc.promiseToGetLastDiffData = lastDiff.get();
+      diffBldProc.promiseToGetLastDiffData = lastDiff.get();
     }
   }
   // 被依存ファイル情報の収集用コールバックを各タスクごとに保有する。
-  if ( collect && diffBuildProc.collector.has( taskName ) === false ) {
-    diffBuildProc.collector.set( settings.name, collect );
+  if ( collect && diffBldProc.collector.has( taskName ) === false ) {
+    diffBldProc.collector.set( settings.name, collect );
   }
   // 最終選択用コールバックを各タスクごとに保有する。
-  if ( select && diffBuildProc.selector.has( taskName ) === false ) {
-    diffBuildProc.selector.set( settings.name, select );
+  if ( select && diffBldProc.selector.has( taskName ) === false ) {
+    diffBldProc.selector.set( settings.name, select );
   }
-
+  // One source → One destination 用のストリームか、<br>
+  // 依存等の関係を伴う他のファイルも流すストリームを作成するか。
   return ( settings.oneToOne === true )
-    ? _createOneToOneFilesStream( diffBuildProc, settings )
-    : _createDependencyFilesStream( diffBuildProc, settings )
+    ? _createOneToOneFilesStream( diffBldProc, settings )
+    : _createDependencyFilesStream( diffBldProc, settings )
   ;
 }
 
 /**
- * 差分データの取得に伴い、共有データをリセットするリスナーを追加。<br>
+ * 差分データの取得に伴って共有された値をリセットするリスナーを追加。<br>
  * 各タスクの初回の実行時と、その後のSrc 更新時に共有データを初期化する。
  * @private
  * @param {Function} resetSharedState - リスナー関数
- * @param {string} firstTasksEndedEventName - 初回のタスクの実行時に発火するイベント名。
- * @param {string} tasksEndedEventName - Src の更新時に発火するイベント名。
+ * @param {string} firstTasksEndedEventName - 初回のタスクの実行時に発火するイベント名
+ * @param {string} tasksEndedEventName - Src の更新時に発火するイベント名
  */
 function _addResetStateListeners(
   resetSharedState,
@@ -141,24 +143,24 @@ function _addResetStateListeners(
  * One source → One destination 用のストリーム作成。<br>
  * Git status または Git diff で検知されたfile のみを対象にする。
  * @private
- * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
+ * @param {diffBldProc} diffBldProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createOneToOneFilesStream( diffBuildProc, settings ) {
+function _createOneToOneFilesStream( diffBldProc, settings ) {
   // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-  diffBuildProc.setUpChildMaps( settings );
+  diffBldProc.setUpChildMaps( settings );
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // 対象ファイルを選定。
-        await diffBuildProc.addDiffFilteredFileToTargetSet( file, settings );
-        if ( diffBuildProc.targetFileMap.get( settings.name ).has( file.path ) === false ) {
+        await diffBldProc.addFileFilteredByDiffToTargetSet( file, settings );
+        if ( diffBldProc.targetFileMap.get( settings.name ).has( file.path ) === false ) {
           return callback();
         }
         // Gulp src のオプション、{read :false } でfile.contents はnull なので、
         // 改めてfile を読み込み、file.contents に代入する。
-        await diffBuildProc.setContentsToFile( file, settings );
+        await diffBldProc.setContentsToFile( file, settings );
         callback( null, file );
       } catch ( err ) {
         callback( err );
@@ -166,7 +168,7 @@ function _createOneToOneFilesStream( diffBuildProc, settings ) {
     },
     async function _flush( callback ) {
       try {
-        await _finalizeProcessor( diffBuildProc, settings );
+        await _finalizeProcessor( diffBldProc, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -176,32 +178,32 @@ function _createOneToOneFilesStream( diffBuildProc, settings ) {
 }
 
 /**
- * 依存関を伴う他のファイルも流すストリームを作成。<br>
+ * 依存関係を伴う他のファイルも流すストリームを作成。<br>
  * 例えば、Pug、Sass のコンパイルタスク用。<br>
  * or<br>
  * 渡されてきたファイル以外に必要な対象ファイルを併せてストリームに渡す。<br>
  * 例えば、iconFont sprite.smithなどのタスク用。
  * @private
- * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
+ * @param {diffBldProc} diffBldProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {object} settings - 設定オブジェクト
  * @returns {Stream} - 処理されたストリーム
  */
-function _createDependencyFilesStream( diffBuildProc, settings ) {
+function _createDependencyFilesStream( diffBldProc, settings ) {
   // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-  diffBuildProc.setUpChildMaps( settings );
+  diffBldProc.setUpChildMaps( settings );
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // いったんすべてのファイル情報を収集。
-        diffBuildProc.setAnyFileInfoToAllFileMap( file, settings );
+        diffBldProc.setAnyFileInfoToAllFileMap( file, settings );
         // 対象ファイルを選定。
-        await diffBuildProc.addDiffFilteredFileToTargetSet( file, settings );
+        await diffBldProc.addFileFilteredByDiffToTargetSet( file, settings );
         // グループ情報を整理。
         if ( settings.group ) {
-          diffBuildProc.setAssignedGroupToAllFileMap( file, settings );
+          diffBldProc.setAssignedGroupToAllFileMap( file, settings );
         }
         // 依存関係にあるファイルを収集。
-        diffBuildProc.setImporterFileToCollectionMap( file, settings );
+        diffBldProc.setImporterFileToCollectionMap( file, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -211,23 +213,23 @@ function _createDependencyFilesStream( diffBuildProc, settings ) {
       try {
         if ( settings.group ) {
           // 削除されたファイルと同じグループのファイルを対象にする。
-          diffBuildProc.addFilesGroupedWithDeletedToTarget( settings );
+          diffBldProc.addFilesFromSameGroupAsDeletedToTarget( settings );
           // 属する同じグループのファイルも選択。
-          diffBuildProc.addFilesFromGroupToSelectionSet( settings );
+          diffBldProc.addFilesFromGroupToSelectionSet( settings );
         } else if ( settings.allForOne === true ) {
           // すべてのファイルの情報を選択。
-          diffBuildProc.addAllFilesToSelectionSet( settings );
+          diffBldProc.addAllFilesToSelectionSet( settings );
         } else {
           // 収集した依存関係にあるファイルからストリームに渡したいファイルを選択。
-          diffBuildProc.addFilesFromCollectionToSelectionSet( settings );
+          diffBldProc.addFilesFromCollectionToSelectionSet( settings );
         }
         // 選択されたファイルをストリームに渡す。
-        await diffBuildProc.pushSelectedFilesToStream(
+        await diffBldProc.pushFilesFromSelectionToStream(
           this,
           settings,
-          _promiseReadAndPushFileToStream,
+          _readAndPushFilesToStream,
         );
-        await _finalizeProcessor( diffBuildProc, settings );
+        await _finalizeProcessor( diffBldProc, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -250,7 +252,7 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 各共有データの初期化する。
+   * 各共有データを初期化する。
    */
   resetSharedState() {
     this.allFileMap = new Map();
@@ -282,7 +284,7 @@ class DiffBuildProcessor {
    * @param {object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
-  async addDiffFilteredFileToTargetSet( file, settings ) {
+  async addFileFilteredByDiffToTargetSet( file, settings ) {
     try {
       const
         name = settings.name
@@ -352,18 +354,19 @@ class DiffBuildProcessor {
    */
   setAssignedGroupToAllFileMap( file, settings ) {
     const
-      name   = settings.name
-      ,group = settings.group
+      name      = settings.name
+      ,group    = settings.group
+      ,filePath = file.path
     ;
     const
-      allFileMap = this.allFileMap.get( name )
-      ,groupIndex = file.path.indexOf( group )
+      allFileMap  = this.allFileMap.get( name )
+      ,groupIndex = filePath.indexOf( group )
     ;
     const
-      groupPath = file.path.slice( 0, groupIndex + group.length )
+      // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つ絶対パス。
+      groupPath = filePath.slice( 0, groupIndex + group.length )
     ;
-    // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つ絶対パス。
-    allFileMap.get( file.path ).group = groupPath;
+    allFileMap.get( filePath ).group = groupPath;
   }
 
   /**
@@ -383,35 +386,36 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 削除されたファイルと直近の差分で未追跡のファイルは、<br>
+   * 削除されたファイルと未追跡のファイルは、<br>
    * それが属するグループの他のファイルを対象ファイルにする。
    * @param {object} settings - 設定オブジェクト
    */
-  addFilesGroupedWithDeletedToTarget( settings ) {
+  addFilesFromSameGroupAsDeletedToTarget( settings ) {
     const
       name = settings.name
     ;
     const
       targetFileSet = this.targetFileMap.get( name )
       ,allFileMap   = this.allFileMap.get( name )
-      ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
+      ,mergedDiffData = { ...this.currentDiffData, ...this.lastDiffData }
     ;
-    for ( const [ filePathOfDiffData, info ] of Object.entries( mergeDiffData ) ) {
+    for ( const [ relativeDetectedFilePath, info ] of Object.entries( mergedDiffData ) ) {
       if ( info.status.includes( 'D' ) === false && info.status.includes( '?' ) === false ) {
         continue;
       }
       const
-        resolveFilePathOfDiffData = path.resolve( CWD, filePathOfDiffData )
+        // 相対パスから絶対パスに。
+        detectedFilePath = path.resolve( CWD, relativeDetectedFilePath )
       ;
       const
-        dirNameOfDiffData = path.dirname( resolveFilePathOfDiffData )
+        detectedFileDirName = path.dirname( detectedFilePath )
       ;
       for ( const [ , fileOfMap ] of allFileMap ) {
-        if ( targetFileSet.has( resolveFilePathOfDiffData ) === true ) {
+        if ( targetFileSet.has( detectedFilePath ) === true ) {
           continue;
         }
-        if ( dirNameOfDiffData === fileOfMap?.group ) {
-          targetFileSet.add( resolveFilePathOfDiffData );
+        if ( detectedFileDirName === fileOfMap?.group ) {
+          targetFileSet.add( detectedFilePath );
         }
       }
     }
@@ -505,23 +509,23 @@ class DiffBuildProcessor {
    * ファイルの非同期読み込みの過負荷をp-limt で緩和させる。
    * @param {Stream} stream - Gulp stream
    * @param {object} settings - 設定オブジェクト
-   * @param {Function} promiseReadAndPush - stream にファイルを読み込んでプッシュする関数
+   * @param {Function} readAndPusher - stream にファイルを読み込んでプッシュする関数
    * @returns {Promise<void>}
    */
-  async pushSelectedFilesToStream( stream, settings, promiseReadAndPush ) {
+  async pushFilesFromSelectionToStream( stream, settings, readAndPusher ) {
     const
       name = settings.name
     ;
     const
       allFileMap = this.allFileMap.get( name )
       ,limit = pLmit( 5 )
-      ,promiseReadFileAll = []
+      ,allPromisesToReadFiles = []
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
-      const limitedTask = limit( () => promiseReadAndPush( filePath, allFileMap, stream ) );
-      promiseReadFileAll.push( limitedTask );
+      const limitedTask = limit( () => readAndPusher( filePath, allFileMap, stream ) );
+      allPromisesToReadFiles.push( limitedTask );
     }
-    await Promise.all( promiseReadFileAll );
+    await Promise.all( allPromisesToReadFiles );
   }
 
   /**
@@ -557,20 +561,20 @@ class DiffBuildProcessor {
   #isFileInDiffData( filePath ) {
     const
       relativePath = path.relative( CWD, filePath ).replace( /[\\]/g, '/' )
-      ,mergeDiffData = { ...this.currentDiffData, ...this.lastDiffData }
+      ,mergedDiffData = { ...this.currentDiffData, ...this.lastDiffData }
     ;
-    return mergeDiffData && Object.keys( mergeDiffData ).includes( relativePath );
+    return mergedDiffData && Object.keys( mergedDiffData ).includes( relativePath );
   }
 }
 
 /**
  * 候補ファイルに依存するファイルを再帰選択する。<br>
- * through2.obj()の flush function の内部で実行。<br>
+ * through2.obj()の flush function 内部で実行。<br>
  * 各タスクで汎用的に使用できるため、エクスポートする。
  * @memberof module:lib/diff_build
  * @param {string} filePath - ファイルパス
  * @param {Map} collectedFileMap - 収集した依存関係
- * @param {Set} selectedFileMap - 通過させるファイルパスの格納用
+ * @param {Set} selectedFileMap - 最終選択ファイルのパスの格納用
  */
 function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) {
   const visited = new Set();
@@ -598,7 +602,7 @@ function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) 
  * @param {Stream} stream - Gulp stream
  * @returns {Promise<void>} - Promise
  */
-async function _promiseReadAndPushFileToStream( filePath, allFiles, stream ) {
+async function _readAndPushFilesToStream( filePath, allFiles, stream ) {
   try {
     const
       contents = await readFile( filePath )
@@ -616,17 +620,17 @@ async function _promiseReadAndPushFileToStream( filePath, allFiles, stream ) {
  * 検知数と通過させた数のログを出力。<br>
  * 現行の差分データを直近の差分データとしてlastDiff にセットし、ファイルに書き込む。
  * @private
- * @param {diffBuildProc} diffBuildProc - 差分ビルド処理を行うクラスのインスタンス
+ * @param {diffBldProc} diffBldProc - 差分ビルド処理を行うクラスのインスタンス
  * @param {object} settings - 設定
  * @returns {Promise<void>} - Promise
  */
-async function _finalizeProcessor( diffBuildProc, settings ) {
+async function _finalizeProcessor( diffBldProc, settings ) {
   const
     name = settings.name
   ;
   const
-    targetFileSet = diffBuildProc.targetFileMap.get( name )
-    ,selectedFileSet = diffBuildProc.selectedFileMap.get( name )
+    targetFileSet = diffBldProc.targetFileMap.get( name )
+    ,selectedFileSet = diffBldProc.selectedFileMap.get( name )
   ;
   _logFileCount(
     name,
@@ -634,7 +638,7 @@ async function _finalizeProcessor( diffBuildProc, settings ) {
     selectedFileSet.size,
   );
   if ( settings.isRefsEnabled === false ) {
-    lastDiff.set( diffBuildProc.currentDiffData );
+    lastDiff.set( diffBldProc.currentDiffData );
     await _writeDiffData();
   }
 }

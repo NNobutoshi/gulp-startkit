@@ -34,18 +34,20 @@ const
 async function init_browsing( done ) {
   try {
     if ( !await existsFile( CONFIG_FILE_PATH ) ) {
-      fancyLog( chalk.gray( 'no browse' ) );
-      return done();
+      return _logAndExit();
     }
     const { config, options } = await import( RELATIVE_CONFIG_FILE_PATH );
     if ( config.enabled === false ) {
-      fancyLog( chalk.gray( 'no browse' ) );
-      return done();
+      return _logAndExit();
     }
     browserSync.init( options );
     return done();
   } catch ( err ) {
     throw err.stack || err;
+  }
+  function _logAndExit() {
+    fancyLog( chalk.gray( 'not browsing' ) );
+    done();
   }
 }
 

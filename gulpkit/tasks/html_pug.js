@@ -167,7 +167,7 @@ function _collectImporterFiles( file, collectedFiles ) {
     if ( _isExternalSrc( srcPath ) === true || !srcPath ) {
       continue;
     }
-    const dependencyFilePath = _absolutePath( srcPath, config.base, file.dirname );
+    const dependencyFilePath = _getAbsolutePath( srcPath, config.base, file.dirname );
     if ( collectedFiles.has( dependencyFilePath ) === false ) {
       collectedFiles.set( dependencyFilePath, [] );
     }
@@ -241,7 +241,7 @@ function _formatHtml() {
     }
     // 閉じタグ付近に付けるコメントに関する体裁。
     if ( options.formatHtml.commentPosition ) {
-      contents = contents.replace( endCommentRegEx, _replaceEndComment );
+      contents = contents.replace( endCommentRegEx, _formatEndComment );
     }
     file.contents = Buffer.from( contents );
     callback( null, file );
@@ -254,14 +254,14 @@ function _formatHtml() {
  * @returns {Stream} - Gulp ストリーム
  */
 function _injectImageSize() {
-  const mapImageElementStrings = new Map();
+  const imageElementTagMap = new Map();
   if ( options.imgSize === false ) {
     return through.obj();
   }
-  return through.obj( async function( file, enc, callback ) {
+  return through.obj( async function _transform( file, enc, callback ) {
     const
       imgRegEx = options.injectImageSize.imgRegEx
-      ,promiseReplaceImageElementStringsAll = []
+      ,allPromisesToReplacing = []
     ;
     let contents = file.contents.toString();
     for ( const match of contents.matchAll( imgRegEx ) ) {
@@ -277,16 +277,16 @@ function _injectImageSize() {
       ) {
         continue;
       }
-      promiseReplaceImageElementStringsAll.push(
-        _addImageDimensionsToElementStrings( match, file, mapImageElementStrings, callback )
+      allPromisesToReplacing.push(
+        _addImageDimensions( match, file, imageElementTagMap, callback )
       );
     } // for
 
     try {
-      await Promise.all( promiseReplaceImageElementStringsAll );
+      await Promise.all( allPromisesToReplacing );
       contents = contents.replace(
         imgRegEx,
-        ( fullStr ) => mapImageElementStrings.get( fullStr ) || fullStr,
+        ( fullStr ) => imageElementTagMap.get( fullStr ) || fullStr,
       );
       file.contents = Buffer.from( contents );
       callback( null, file );
@@ -305,7 +305,7 @@ function _injectImageSize() {
  * @param {Function} errorCallback ストリームにエラーを伝えるCallback
  * @returns {Promise<void>}
  */
-async function _addImageDimensionsToElementStrings( match, file, map, errorCallback ) {
+async function _addImageDimensions( match, file, map, errorCallback ) {
   const
     fullStr    = match[ 0 ]
     ,tagName   = match[ 1 ]
@@ -315,7 +315,7 @@ async function _addImageDimensionsToElementStrings( match, file, map, errorCallb
     ,srcPath   = match[ 5 ]
     ,query     = match[ 6 ]
     ,rearPart  = match[ 7 ]
-    ,absoluteSrcPath = _absolutePath( srcPath, config.base, file.dirname )
+    ,absoluteSrcPath = _getAbsolutePath( srcPath, config.base, file.dirname )
   ;
   try {
     const
@@ -340,13 +340,13 @@ async function _addImageDimensionsToElementStrings( match, file, map, errorCallb
  * 閉じタグ付近に付けるコメントに関する体裁を整える。
  * @private
  * @param {string} _full RegExP で得られるマッチする全文字列
- * @param {string} endTag RegExP で得られる閉じタグにあたる文字列
+ * @param {string} closingTag RegExP で得られる閉じタグにあたる文字列
  * @param {string} lineFeed RegExP で得られる改行コードにあたる文字列
  * @param {string} indent RegExP で得られるインデントにあたる文字列
  * @param {string} comment RegExP で得られるコメントタグの'&lt;!--'と'--&gt;'を除く文字列
  * @returns {string} 置換文字列
  */
-function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
+function _formatEndComment( _full, closingTag, lineFeed, indent, comment ) {
   const
     htmlComment     = '<!--' + comment + '-->'
     ,positionInside = options.formatHtml.commentPosition === 'inside'
@@ -363,14 +363,14 @@ function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
     if ( oneLine === true ) {
       // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
-        ? htmlComment + endTag + lineFeed
-        : htmlComment + endTag
+        ? htmlComment + closingTag + lineFeed
+        : htmlComment + closingTag
       ;
     } else {
       //コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
-        ? htmlComment + lineFeed + indent + endTag + lineFeed
-        : htmlComment + lineFeed + indent + endTag
+        ? htmlComment + lineFeed + indent + closingTag + lineFeed
+        : htmlComment + lineFeed + indent + closingTag
       ;
     }
   // コメントを閉じタグ外側に付けたい場合。
@@ -383,14 +383,14 @@ function _replaceEndComment( _full, endTag, lineFeed, indent, comment ) {
     if ( oneLine === true ) {
       // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
-        ? endTag + htmlComment + lineFeed
-        : endTag + htmlComment
+        ? closingTag + htmlComment + lineFeed
+        : closingTag + htmlComment
       ;
     } else {
       // コメントの付いた閉じタグ後に空行をつけるか否か。
       return ( blankLine === true )
-        ? endTag + lineFeed + indent + htmlComment + lineFeed
-        : endTag + lineFeed + indent + htmlComment
+        ? closingTag + lineFeed + indent + htmlComment + lineFeed
+        : closingTag + lineFeed + indent + htmlComment
       ;
     }
   }
@@ -406,15 +406,6 @@ function _isExternalSrc( srcPath ) {
   return /^\/\/|^https?:\/\//.test( srcPath );
 }
 
-/** srcPath がルートパスか否かを調べる。
- * @private
- * @param {string} srcPath
- * @returns {boolean}
- */
-function _isRootPath( srcPath ) {
-  return /^\//.test( srcPath );
-}
-
 /**
  * srcPath を絶対パスにする。
  * @private
@@ -423,10 +414,19 @@ function _isRootPath( srcPath ) {
  * @param {string} dirname
  * @returns {string} - 絶対パス
  */
-function _absolutePath( srcPath, base, dirname ) {
+function _getAbsolutePath( srcPath, base, dirname ) {
   return ( _isRootPath( srcPath ) )
   // ルートパスであれば
     ? path.join( path.resolve( CWD, base ), srcPath )
   // 相対パスであれば
     : path.resolve( dirname, srcPath );
+}
+
+/** srcPath がルートパスか否かを調べる。
+ * @private
+ * @param {string} srcPath
+ * @returns {boolean}
+ */
+function _isRootPath( srcPath ) {
+  return /^\//.test( srcPath );
 }
