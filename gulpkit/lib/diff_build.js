@@ -52,6 +52,12 @@ export {
 /**
  * プロジェクトをGit で管理する前提で行う差分ビルド。<br>
  * Git の差分取得用コマンド（diff or status）で検知されたファイルのみを対象とする。<br>
+ * 初回時のみDiffBuildProccessor のインスタンスを作成。<br>
+ * インスタンスの共有データを初期化するメンバ関数をリスナー登録。<br>
+ * 各タスクで差分データ用のPromise を共有する。<br>
+ * オプションから、ブランチやコミット間の差分が対象か、作業中の差分が対象かを判別。<br>
+ * 依存ファイル収集や最終選択用のコールバックをタスクごとに保有。<br>
+ * One source → One destination 用のストリームか、依存等の関係を伴うファイル用のストリームかをオプションから判別。<br>
  * default としてエクスポート。
  * @memberof module:lib/diff_build
  * @param {object} options - オプション
@@ -109,6 +115,8 @@ function diff_build( options, collect, select ) {
   if ( select && diffBldProc.selector.has( taskName ) === false ) {
     diffBldProc.selector.set( settings.name, select );
   }
+  // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
+  diffBldProc.setUpChildMaps( settings );
   // One source → One destination 用のストリームか、<br>
   // 依存等の関係を伴う他のファイルも流すストリームを作成するか。
   return ( settings.oneToOne === true )
@@ -148,13 +156,11 @@ function _addResetStateListeners(
  * @returns {Stream} - 処理されたストリーム
  */
 function _createOneToOneFilesStream( diffBldProc, settings ) {
-  // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-  diffBldProc.setUpChildMaps( settings );
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // 対象ファイルを選定。
-        await diffBldProc.addFileFilteredByDiffToTargetSet( file, settings );
+        await diffBldProc.addFileFilteredByDiffToTargets( file, settings );
         if ( diffBldProc.targetFileMap.get( settings.name ).has( file.path ) === false ) {
           return callback();
         }
@@ -189,21 +195,19 @@ function _createOneToOneFilesStream( diffBldProc, settings ) {
  * @returns {Stream} - 処理されたストリーム
  */
 function _createDependencyFilesStream( diffBldProc, settings ) {
-  // 選定、収集、選択用のMap 及び Set オブジェクトを準備。
-  diffBldProc.setUpChildMaps( settings );
   return through.obj(
     async function _transform( file, enc, callback ) {
       try {
         // いったんすべてのファイル情報を収集。
-        diffBldProc.setAnyFileInfoToAllFileMap( file, settings );
+        diffBldProc.setAnyFileInfoToAllFiles( file, settings );
         // 対象ファイルを選定。
-        await diffBldProc.addFileFilteredByDiffToTargetSet( file, settings );
+        await diffBldProc.addFileFilteredByDiffToTargets( file, settings );
         // グループ情報を整理。
         if ( settings.group ) {
-          diffBldProc.setAssignedGroupToAllFileMap( file, settings );
+          diffBldProc.setAssignedGroupToAllFiles( file, settings );
         }
         // 依存関係にあるファイルを収集。
-        diffBldProc.setImporterFileToCollectionMap( file, settings );
+        diffBldProc.setImporterFileToCollection( file, settings );
         callback();
       } catch ( err ) {
         callback( err );
@@ -213,17 +217,17 @@ function _createDependencyFilesStream( diffBldProc, settings ) {
       try {
         if ( settings.group ) {
           // 削除されたファイルと同じグループのファイルを対象にする。
-          diffBldProc.addFilesFromSameGroupAsDeletedToTarget( settings );
+          diffBldProc.addFilesFromSameGroupAsDeletedToTargets( settings );
           // 属する同じグループのファイルも選択。
-          diffBldProc.addFilesFromGroupToSelectionSet( settings );
+          diffBldProc.addFilesFromGroupToSelection( settings );
         } else if ( settings.allForOne === true ) {
-          // すべてのファイルの情報を選択。
-          diffBldProc.addAllFilesToSelectionSet( settings );
+          // すべてのファイルを選択。
+          diffBldProc.addAllFilesToSelection( settings );
         } else {
           // 収集した依存関係にあるファイルからストリームに渡したいファイルを選択。
-          diffBldProc.addFilesFromCollectionToSelectionSet( settings );
+          diffBldProc.addFilesFromCollectionToSelection( settings );
         }
-        // 選択されたファイルをストリームに渡す。
+        // 最終選択されたファイルをストリームに渡す。
         await diffBldProc.pushFilesFromSelectionToStream(
           this,
           settings,
@@ -240,7 +244,7 @@ function _createDependencyFilesStream( diffBldProc, settings ) {
 
 /**
  * 差分ビルド処理を行うクラス。<br>
- * Git の差分データを基に対象を絞り、対象ファイルと依存関係にあるファイルや所属する同グループのファイルを選定、選択。<br>
+ * Git の差分データを基に対象を絞り、対象ファイルと依存関係にあるファイルや所属する同じグループのファイルを収集し選択する。<br>
  * 加えて、最終選択されたファイルをストリームに渡す。
  */
 class DiffBuildProcessor {
@@ -257,8 +261,8 @@ class DiffBuildProcessor {
   resetSharedState() {
     this.allFileMap = new Map();
     this.targetFileMap = new Map();
-    this.selectedFileMap = new Map();
     this.collectedFileMap = new Map();
+    this.selectedFileMap = new Map();
     this.currentDiffData = null;
     this.lastDiffData = null;
     this.promiseToGetDiffData = null;
@@ -284,7 +288,7 @@ class DiffBuildProcessor {
    * @param {object} settings - 設定オブジェクト
    * @returns {Promise<void>}
    */
-  async addFileFilteredByDiffToTargetSet( file, settings ) {
+  async addFileFilteredByDiffToTargets( file, settings ) {
     try {
       const
         name = settings.name
@@ -332,7 +336,7 @@ class DiffBuildProcessor {
    * @param {object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {object} settings - 設定オブジェクト
    */
-  setAnyFileInfoToAllFileMap( file, settings ) {
+  setAnyFileInfoToAllFiles( file, settings ) {
     const
       name = settings.name
     ;
@@ -352,7 +356,7 @@ class DiffBuildProcessor {
    * @param {object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {object} settings - 設定オブジェクト
    */
-  setAssignedGroupToAllFileMap( file, settings ) {
+  setAssignedGroupToAllFiles( file, settings ) {
     const
       name      = settings.name
       ,group    = settings.group
@@ -375,7 +379,7 @@ class DiffBuildProcessor {
    * @param {object} file - 参照するファイル (Vinyl オブジェクト)
    * @param {object} settings - 設定オブジェクト
    */
-  setImporterFileToCollectionMap( file, settings ) {
+  setImporterFileToCollection( file, settings ) {
     const
       name = settings.name
     ;
@@ -390,7 +394,7 @@ class DiffBuildProcessor {
    * それが属するグループの他のファイルを対象ファイルにする。
    * @param {object} settings - 設定オブジェクト
    */
-  addFilesFromSameGroupAsDeletedToTarget( settings ) {
+  addFilesFromSameGroupAsDeletedToTargets( settings ) {
     const
       name = settings.name
     ;
@@ -426,7 +430,7 @@ class DiffBuildProcessor {
    * 複数src ファイルを1つに束ねる様なタスク用。
    * @param {object} settings - 設定オブジェクト
    */
-  addFilesFromGroupToSelectionSet( settings ) {
+  addFilesFromGroupToSelection( settings ) {
     const
       name = settings.name
     ;
@@ -442,7 +446,7 @@ class DiffBuildProcessor {
         ,groupIndex = targetFilePath.indexOf( group )
       ;
       const
-        myGroup = targetFilePath.slice( 0, groupIndex + group.length ) // teargetFilePath は絶対パス。
+        myGroup = targetFilePath.slice( 0, groupIndex + group.length ) // teargetFilePath も絶対パス。
       ;
       for ( const [ filePath, file ] of allFileMap ) {
         if (
@@ -456,10 +460,10 @@ class DiffBuildProcessor {
   }
 
   /**
-   * 収集したすべてのファイルパス情報を選択ファイルとしてselectedMap に追加する。
+   * 収集したすべてのファイルパス情報を選択ファイルとしてselectedFileSet に追加する。
    * @param {object} settings - 設定オブジェクト
    */
-  addAllFilesToSelectionSet( settings ) {
+  addAllFilesToSelection( settings ) {
     const
       name = settings.name
     ;
@@ -476,7 +480,7 @@ class DiffBuildProcessor {
    * 収集した依存関係ファイルからストリームに渡したいファイルをCallback で選択してもらう。
    * @param {object} settings - 設定オブジェクト
    */
-  addFilesFromCollectionToSelectionSet( settings ) {
+  addFilesFromCollectionToSelection( settings ) {
     const
       name = settings.name
     ;

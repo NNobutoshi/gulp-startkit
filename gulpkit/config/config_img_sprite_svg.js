@@ -159,7 +159,7 @@ const prodOptions = {
   },
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

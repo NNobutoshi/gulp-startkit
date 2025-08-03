@@ -35,9 +35,9 @@ const
  */
 const devConfig = {
   src : [
-    ''  + SRC_DIR + '/**/*.{png,jpg,svg}',
-    '!' + SRC_DIR + '/**/_sprite*/*.{png,svg}',
-    '!' + SRC_DIR + '/**/fonts/icons/*.svg',
+    `${ SRC_DIR }/**/*.{png,jpg,svg}`,
+    `!${ SRC_DIR }/**/_sprite*/*.{png,svg}`,
+    `!${ SRC_DIR }/**/fonts/icons/*.svg`,
   ],
   dist : DIST_DIR,
 };
@@ -104,7 +104,7 @@ const prodOptions = {
   },
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

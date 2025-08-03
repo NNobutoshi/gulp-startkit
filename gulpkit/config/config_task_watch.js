@@ -62,7 +62,7 @@ const prodOptions = {
   enabled : WATCH_STATUS ?? false,
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConf     = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )

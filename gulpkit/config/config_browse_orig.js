@@ -1,6 +1,6 @@
 /**
  * @module config_browse_orig
- * @description <strong style="color:#b00">live reload 機能を利用する際は、このファイルを複製し、config_browse.js とリネームする。</strong><br>
+ * @description <strong style="color:#b00">live reload 機能を利用する際はこのファイルを複製し、config_browse.js とリネームする。</strong><br>
  * 作業者各々でポート等の設定を自由に行えるようにする意図。<br>
  * config_browes.js はGit igonre でコミットから除外。
  * @requires node:process
@@ -73,7 +73,7 @@ const prodOptions = {
   server : './dist/production/html',
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( env.NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( env.NODE_ENV, devOptions, prodOptions )

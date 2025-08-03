@@ -37,5 +37,5 @@ const devConfig = {
  */
 const prodConfig = null;
 
-// すべては開発環境用の設定をベースにする。
+// 開発環境用の設定をベースにする。
 const mergedConfig = mergeByEnv( NODE_ENV, devConfig, prodConfig );

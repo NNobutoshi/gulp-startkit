@@ -35,10 +35,10 @@ const
  */
 const devConfig = {
   src : [
-    ''  + './gulpkit/**/*.js',
-    '!' + './gulpkit/docs/**/*.js',
-    ''  + SRC_DIR + '/**/*.js',
-    '!' + SRC_DIR + '/**/_vendor/*.js',
+    './gulpkit/**/*.js',
+    '!./gulpkit/docs/**/*.js',
+    `${ SRC_DIR }/**/*.js`,
+    `!${ SRC_DIR }/**/_vendor/*.js`,
   ],
   dist : DIST_DIR,
 };
@@ -92,7 +92,7 @@ const prodOptions = {
   }
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

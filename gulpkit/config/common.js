@@ -12,14 +12,12 @@ import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 
 import {
-  PROD_ENV_NAME,
-  DEV_ENV_NAME,
-  WATCH_INIT_EVENT_NAME,
-  WATCH_START_EVENT_NAME,
+  PROD_ENV_NAME, WATCH_INIT_EVENT_NAME,
+  DEV_ENV_NAME,  WATCH_START_EVENT_NAME,
 } from './constants.js';
 
 const
-  NODE_ENV      = env.NODE_ENV
+  NODE_ENV = env.NODE_ENV
 ;
 const
   DIFF_REFS_ENABLED = !!Number( env.DIFF_REFS_ENABLED )

@@ -33,7 +33,7 @@ const
  * @name devConfig:copy_to
  */
 const devConfig = {
-  src  : [ SRC_DIR + '/**/*.{mp4,webm}' ],
+  src  : [ `${ SRC_DIR }/**/*.{mp4,webm}` ],
   base : SRC_DIR,
   dist : DIST_DIR,
 };
@@ -87,7 +87,7 @@ const prodOptions = {
   },
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

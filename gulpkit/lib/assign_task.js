@@ -23,13 +23,13 @@ const
  * 指定のグループに従ってsource を小分けにする 。<br>
  * default としてエクスポート。
  * @memberof module:lib/assign_task_for
- * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons/'
+ * @param {string} groupDirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  */
-function assignTaskForGroup( group, base, branchTask ) {
+function assignTaskForGroup( groupSubdirName, base, branchTask ) {
   const groupedSources = new Map();
-  return _groupSources( groupedSources, group, base, branchTask );
+  return _groupSources( groupedSources, groupSubdirName, base, branchTask );
 }
 
 /**
@@ -37,16 +37,16 @@ function assignTaskForGroup( group, base, branchTask ) {
  * 設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。
  * @private
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {string} group - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
+ * @param {string} groupSubdirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  * @param {Function} branchTask - グループごと実行させるcallback
  * @returns {Stream} - 処理されたストリーム
  */
-function _groupSources( groupedSources, group, base, branchTask ) {
-  group = group.replace( /\//g, path.sep );
+function _groupSources( groupedSources, groupSubdirName, base, branchTask ) {
+  groupSubdirName = groupSubdirName.replace( /\//g, path.sep );
   return through.obj(
     function _transform( file, enc, callback ) {
-      _setChildSourceToParentMap( file, groupedSources, group, base );
+      _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base );
       callback( null, file );
     },
     function _flush( callback ) {
@@ -60,15 +60,15 @@ function _groupSources( groupedSources, group, base, branchTask ) {
  * @private
  * @param {object} file - Vinyl オブジェクト
  * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {string} group - 任意のグループ名（部分的なディレクトリ名）、例：'fonts/icons'
+ * @param {string} groupSubdirName - 任意のグループ名（部分的なディレクトリ名）、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  */
-function _setChildSourceToParentMap( file, groupedSources, group, base ) {
+function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base ) {
   const
-    splits = file.path.split( group )
+    splits = file.path.split( groupSubdirName )
   ;
   const
-    parent = splits[ 0 ] + group
+    parent = splits[ 0 ] + groupSubdirName
     ,child = splits[ 1 ]
   ;
   if ( groupedSources.has( parent ) === false ) {
@@ -81,7 +81,7 @@ function _setChildSourceToParentMap( file, groupedSources, group, base ) {
 }
 
 /**
- * Callback のbranchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
+ * branchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
  * @prive
  * @param {Map} groupedSources - 任意のディレクトリごとに分たソースの格納用
  * @param {Function} branchTask - Callback で実行するGulp タスク
@@ -93,11 +93,11 @@ async function _runTaskforEachGroup( groupedSources, branchTask, callback ) {
     trunkStream = this
     ,branchStreams = []
   ;
-  for ( const [ key ,value ] of groupedSources ) {
+  for ( const [ parentPath ,groupData ] of groupedSources ) {
     branchStreams.push(
       await branchTask(
-        value.children.map( ( item ) => key + item ),
-        value.baseDir.replace( /\\/g, '/' ).replace( /\/$/, '' ),
+        groupData.children.map( ( childPath ) => parentPath + childPath ),
+        groupData.baseDir.replace( /\\/g, '/' ).replace( /\/$/, '' ),
         trunkStream,
       )
     );

@@ -37,18 +37,18 @@ const
  */
 const devConfig = {
   src : [
-    SRC_DIR + '/**/*.pug',
-    SRC_DIR + '/**/_pug_data.json',
-    SRC_DIR + '/**/_pug_common_data.json',
+    `${ SRC_DIR }/**/*.pug`,
+    `${ SRC_DIR }/**/_pug_data.json`,
+    `${ SRC_DIR }/**/_pug_common_data.json`,
   ],
   subsrc : [
-    ''  + SRC_DIR + '/**/*.{png,jpg,svg}',
-    '!' + SRC_DIR + '/**/_sprite*/*.{png,svg}',
-    '!' + SRC_DIR + '/**/fonts/icons/*.svg',
+    `${ SRC_DIR }/**/*.{png,jpg,svg}`,
+    `!${ SRC_DIR }/**/_sprite*/*.{png,svg}`,
+    `!${ SRC_DIR }/**/fonts/icons/*.svg`,
   ],
   dataSrc : [
-    SRC_DIR + '/**/_pug_data.json',
-    SRC_DIR + '/**/_pug_common_data.json',
+    `${ SRC_DIR }/**/_pug_data.json`,
+    `${ SRC_DIR }/**/_pug_common_data.json`,
   ],
   dist : DIST_DIR,
   base : SRC_DIR,
@@ -116,7 +116,7 @@ const prodOptions = {
   },
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

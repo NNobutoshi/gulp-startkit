@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>lib/watch_CL_task.js - Documentation</title>
+    <title>config/get_env_status - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,62 +35,227 @@
 
 <div id="main">
     
-    <h1 class="page-title">lib/watch_CL_task.js</h1>
+    <h1 class="page-title">config/get_env_status</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @module lib/watch_CL_task
- * @requires node:process
- * @requires gulp
- */
+        
+    
+</header>
 
-import process from 'node:process';
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-import { series } from 'gulp';
+            
+        
+        </div>
+    
 
-export { enableWatchForCommandLineTask as default };
+    
 
-/**
- * コマンドラインからGulp &lt;task> として、特定のタスクを個別に実行する際に、&lt;br>
- * watch や live reload も機能させる。&lt;br>
- * default としてエクスポート。
- * @memberof module:lib/watch_CL_task
- * @param {object} tasks - Gulp タスク
- */
-function enableWatchForCommandLineTask( tasks ) {
-  const
-    watchTasks = []
-    ,args = process.argv.slice( 2 )
-  ;
-  if ( args.length === 0 ) {
-    return;
-  }
-  for ( let i = 0, len = args.length; i &lt; len; i++ ) {
-    const taskName = args[ i ];
-    if ( tasks[ taskName ] ) {
-      watchTasks.push( tasks[ taskName ] );
-    }
-  }
-  if ( watchTasks.length === 0 ) {
-    return;
-  }
-  process.once( 'beforeExit',
-    series(
-      tasks.init_browsing,
-      tasks.task_watch( watchTasks, tasks.reload_browsing ),
-    )
-  );
-}
-</code></pre>
-        </article>
-    </section>
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:./constants.js</li>
+        </ul>
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getEnvStatus"><span class="type-signature type-signature-static">(static) </span>getEnvStatus<span class="signature">(envStatus)</span><span class="type-signature"> &rarr; {boolean|null}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>環境変数の値に応じた真偽値を返す。<br>
+環境変数が設定されていない場合はnull を返す。</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config_get_env_status.js.html">config/get_env_status.js</a>, <a href="config_get_env_status.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>envStatus</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">環境変数の数値の文字列。（例 '0'、'1'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    - 環境変数の値に応じた真偽値。環境変数が設定されていない場合はnull を返す
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">null</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

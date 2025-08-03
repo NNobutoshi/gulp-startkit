@@ -42,8 +42,8 @@ const devConfig = {
   base         : SRC_DIR,
   placeholder  : PLACEHOLDER,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  imgDist      : DIST_DIR + `${ PLACEHOLDER }/img`,
-  scssDist     : SRC_DIR  + `${ PLACEHOLDER }/css`,
+  imgDist      : `${ DIST_DIR }${ PLACEHOLDER }/img`,
+  scssDist     : `${ SRC_DIR  }${ PLACEHOLDER }/css`,
 };
 
 /**
@@ -105,7 +105,7 @@ const prodOptions = {
   },
 };
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )

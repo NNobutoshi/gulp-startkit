@@ -43,7 +43,7 @@ const
  * @name devConfig:js_webpack
  */
 const devConfig = {
-  src            : [ SRC_DIR + '/**/*.{js,json}' ],
+  src            : [ `${ SRC_DIR }/**/*.{js,json}` ],
   dist           : DIST_DIR,
   base           : SRC_DIR,
   entry          : '.entry.js',
@@ -135,7 +135,7 @@ const devOptions = {
  */
 const prodOptions = null;
 
-// すべては開発環境用の設定をベースにマージする。
+// 開発環境用の設定をベースにマージする。
 const
   mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
   ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
