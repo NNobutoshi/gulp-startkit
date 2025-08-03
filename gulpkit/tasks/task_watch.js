@@ -45,7 +45,7 @@ function task_watch( tasks, finish ) {
     process.emit( watchConfig.watchInitEventName );
     for ( let i = 0, len = tasks.length; i < len; i++ ) {
       const
-        task = tasks[ i ]
+        task      = tasks[ i ]
         ,taskName = tasks[ i ].name
       ;
       const
@@ -98,7 +98,7 @@ function _addTaskToSet( task, finish ) {
 function _runChainedTasks( finish ) {
   return function() {
     clearTimeout( timeoutId );
-    series( ...taskSet, watchWaiting )( () => finish?.() );
+    series( ...taskSet, watchStart )( () => finish?.() );
     taskSet.clear();
   };
 }
@@ -108,7 +108,7 @@ function _runChainedTasks( finish ) {
  * @private
  * @param {Function} done - gulp タスクの完了コールバック
  */
-function watchWaiting( done ) {
-  process.emit( watchConfig.watchWaitingEventName );
+function watchStart( done ) {
+  process.emit( watchConfig.watchStartEventName );
   done();
 }
