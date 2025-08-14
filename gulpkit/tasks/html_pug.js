@@ -213,7 +213,7 @@ function _formatHtml() {
     uglyAElementRegEx = options.formatHtml.uglyAElementRegEx
     ,endCommentRegEx  = options.formatHtml.endCommentRegEx
   ;
-  return through.obj( function( file, enc, callback ) {
+  return through.obj( function _transform( file, enc, callback ) {
     let contents = file.contents.toString();
     // オプションで指定があれば、
     // <div> などを内包する<a> の体裁を整える。
@@ -232,9 +232,8 @@ function _formatHtml() {
           ;
           return beautify.html( fixed, options.beautify ).replace( /^/mg, indent );
         },
-      )
-      ;
-    }
+      );
+    } // if
     // オプションで指定があれば、インデントをトル。
     if ( options.formatHtml.indent === false ) {
       contents = contents.replace( /^([^\S\n\r\f]+)/mg, '' );
@@ -302,7 +301,7 @@ function _injectImageSize() {
  * @param {object} match RegExp から得られるマッチした文字列が格納された配列
  * @param {object} file 参照するファイル（vinyl オブジェクト）
  * @param {Map} map match[0] をkey にし、値にwidth 、height が設定されたimg 要素の文字列を代入するMap オブジェクト
- * @param {Function} errorCallback ストリームにエラーを伝えるCallback
+ * @param {function} errorCallback ストリームにエラーを伝えるCallback
  * @returns {Promise<void>}
  */
 async function _addImageDimensions( match, file, map, errorCallback ) {

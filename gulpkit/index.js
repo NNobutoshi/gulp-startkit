@@ -15,7 +15,7 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
 /**
  * Gulp 実行時のdefault 用で全タスクを実行する。
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function main( done ) {
  *   series(
@@ -96,7 +96,7 @@ function main( done ) {
 /**
  * html 関連タスク用。
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function html( done ) {
  *   const members = [
@@ -131,7 +131,7 @@ function html( done ) {
 /**
  * img 関連タスク
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function img( done ) {
  *   const members = [
@@ -172,7 +172,7 @@ function img( done ) {
 /**
  * CSS 関連タスク
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function css( done ) {
  *   const members = [
@@ -207,7 +207,7 @@ function css( done ) {
 /**
  * JavaScript 関連タスク
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function js( done ) {
  *   const members = [
@@ -242,7 +242,7 @@ function js( done ) {
 /**
  * アイコン 関連タスク
  * @memberof module:gulpkit/index
- * @param {Function} done - gulp タスク完了のコールバック
+ * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function icon( done ) {
  *   const members = [

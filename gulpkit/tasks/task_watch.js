@@ -33,7 +33,7 @@ let
  * default としてエクスポート。
  * @memberof module:tasks/task_watch
  * @param {Array} tasks - タスクの配列
- * @param {Function} finish - 最後に実行する関数
+ * @param {function} finish - 最後に実行する関数
  * @returns {Function} - gulp タスク
  */
 function task_watch( tasks, finish ) {
@@ -76,8 +76,8 @@ function task_watch( tasks, finish ) {
 /**
  * 一定時間内の連続実行は間引きし、一定時間後に集めたタスクを実行する。
  * @private
- * @param {Function} task - タスク
- * @param {Function} finish - 最後に実行する関数
+ * @param {function} task - タスク
+ * @param {function} finish - 最後に実行する関数
  * @returns {Function} - gulp タスク
  */
 function _addTaskToSet( task, finish ) {
@@ -92,7 +92,7 @@ function _addTaskToSet( task, finish ) {
 /**
  * Gulp Watch で集めたタスクをGulp series でつなげて実行する。
  * @private
- * @param {Function} finish - 最後に実行する関数
+ * @param {function} finish - 最後に実行する関数
  * @returns {Function}
  */
 function _runChainedTasks( finish ) {
@@ -106,7 +106,7 @@ function _runChainedTasks( finish ) {
 /**
  * watch タスクの完了を待つ。
  * @private
- * @param {Function} done - gulp タスクの完了コールバック
+ * @param {function} done - gulp タスクの完了コールバック
  */
 function watchStart( done ) {
   process.emit( watchConfig.watchStartEventName );

@@ -83,7 +83,7 @@ function _mapJsonDataByUrl( data ) {
  * JSON データのプロパティを元にPug ファイルを作成する。
  * @private
  * @param {object} props - JSON データのプロパティ
- * @param {Function} pugFileCreator - Pug ファイルを作成する関数
+ * @param {function} pugFileCreator - Pug ファイルを作成する関数
  * @returns {Promise<void>}
  */
 async function _createPugFileByDataProps( props, pugFileCreator ) {

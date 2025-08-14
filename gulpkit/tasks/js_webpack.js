@@ -18,7 +18,7 @@
  * @description
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
  * watch はGulpのものを使用。<br>
- * entry や splitChunks をGulp.src() 後にvinylオブジェクトが通ってくるごとに作成し、<br>
+ * entry や splitChunks をGulp.src()のvinylオブジェクトが通ってくるごとに作成し、<br>
  * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
  */
 
@@ -164,7 +164,7 @@ function _setUpWebpackCompiler( splitChunksGroups, entries ) {
 /**
  * webpack のコンパイルを実行する。
  * @private
- * @param {Function} callback - Gulp stream のコールバック
+ * @param {function} callback - Gulp stream のコールバック
  */
 function _runWebpackCompiler( callback ) {
   webpackCompiler.run( ( err, stats ) => {

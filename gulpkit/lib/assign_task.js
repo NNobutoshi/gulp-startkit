@@ -20,29 +20,18 @@ const
 ;
 
 /**
- * 指定のグループに従ってsource を小分けにする 。<br>
+ * 指定のグループ名（部分なサブディレクトリ名）に従ってグループ分けにしたsource をコールバックに引数として渡す。<br>
+ * 設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。<br>
  * default としてエクスポート。
- * @memberof module:lib/assign_task_for
- * @param {string} groupDirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
+
+ * @private
+ * @param {string} groupSubdirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
- * @param {Function} branchTask - グループごと実行させるcallback
+ * @param {function} branchTask - グループごと実行させるcallback
+ * @returns {Stream} - 処理されたストリーム
  */
 function assignTaskForGroup( groupSubdirName, base, branchTask ) {
   const groupedSources = new Map();
-  return _groupSources( groupedSources, groupSubdirName, base, branchTask );
-}
-
-/**
- * 指定のグループに従ってsource を小分けにする。<br>
- * 設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。
- * @private
- * @param {Map} groupedSources - グループごとに分けられたソースの格納用
- * @param {string} groupSubdirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
- * @param {string} base - ソースファイルのベースディレクトリ
- * @param {Function} branchTask - グループごと実行させるcallback
- * @returns {Stream} - 処理されたストリーム
- */
-function _groupSources( groupedSources, groupSubdirName, base, branchTask ) {
   groupSubdirName = groupSubdirName.replace( /\//g, path.sep );
   return through.obj(
     function _transform( file, enc, callback ) {
@@ -84,8 +73,8 @@ function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base
  * branchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
  * @prive
  * @param {Map} groupedSources - 任意のディレクトリごとに分たソースの格納用
- * @param {Function} branchTask - Callback で実行するGulp タスク
- * @param {Function} callback - through2 で処理終了を伝えるコールバック
+ * @param {function} branchTask - Callback で実行するGulp タスク
+ * @param {function} callback - through2 で処理終了を伝えるコールバック
  * @returns {Promise<void>}
  */
 async function _runTaskforEachGroup( groupedSources, branchTask, callback ) {

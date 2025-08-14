@@ -169,7 +169,7 @@ function _createScssFile( templateData ) {
  * ファイルのタイムスタンプ(stats.mtime)を取得し、最も新しいものを返す。<br>
  * タイムスタンプの違いでdist に差分が生じるのを防ぐ。
  * @private
- * @param {Array} filePaths - ファイルパスの配列
+ * @param {array} filePaths - ファイルパスの配列
  * @returns {Promise<number>} - タイムスタンプ
  */
 async function _getLatestTimestamp( filePaths ) {

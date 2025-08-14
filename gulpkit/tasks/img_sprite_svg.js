@@ -49,7 +49,7 @@ function img_sprite_svg() {
 /**
  * 任意に命名されたフォルダごとに、SVG スプライトを作成する。
  * @private
- * @param {Array} branchSrc - 基のストリームから分けられたグループごとのソース
+ * @param {array} branchSrc - 基のストリームから分けられたグループごとのソース
  * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp ストリーム
  */

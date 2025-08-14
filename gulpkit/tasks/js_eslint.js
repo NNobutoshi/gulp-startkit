@@ -52,7 +52,7 @@ function _runEsLint( esLintOptions ) {
    * 各ファイルに対して ESLint を実行。
    * @param {object} file - 処理対象のファイル (Vinyl オブジェクト)
    * @param {string} enc - エンコーディングの種類
-   * @param {Function} callback - 実行して処理の完了を伝える
+   * @param {function} callback - 実行して処理の完了を伝える
    * @returns {Stream} - Gulp ストリーム
    */
   return through.obj( async function _transform( file, enc, callback ) {

@@ -46,7 +46,7 @@ function img_sprite() {
 /**
  * 任意の各フォルダごとに、PNG スプライトを作成する。<br>
  * @private
- * @param {Array} branchSrc - 基のストリームから分けられたグループごとのソース
+ * @param {array} branchSrc - 基のストリームから分けられたグループごとのソース
  * @param {string} baseDir - 設定した任意のフォルダ名を末尾に持つパス
  * @returns {Stream} - Gulp ストリーム
  */
