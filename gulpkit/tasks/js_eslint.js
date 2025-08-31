@@ -31,7 +31,7 @@ export { js_eslint as default };
  * @returns {Stream} - Gulp ストリーム
  */
 function js_eslint() {
-  return gulpSrc( config.src, options.gulplSrc )
+  return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )
     .pipe( _runEsLint( options.eslint ) )
