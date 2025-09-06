@@ -39,7 +39,7 @@ function assignTaskForGroup( groupSubdirName, base, branchTask ) {
       callback( null, file );
     },
     function _flush( callback ) {
-      _runTaskforEachGroup.bind( this )( groupedSources, branchTask, callback );
+      _runTaskForEachGroup.bind( this )( groupedSources, branchTask, callback );
     },
   );
 }
@@ -73,11 +73,11 @@ function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base
  * branchTask には、グループごとに必要な Gulp.src 用の新しいsource（配列） とdest 用のパス、更には基のstream を渡す。
  * @prive
  * @param {Map} groupedSources - 任意のディレクトリごとに分たソースの格納用
- * @param {function} branchTask - Callback で実行するGulp タスク
+ * @param {function} branchTask - コールバックで実行するGulp タスク
  * @param {function} callback - through2 で処理終了を伝えるコールバック
  * @returns {Promise<void>}
  */
-async function _runTaskforEachGroup( groupedSources, branchTask, callback ) {
+async function _runTaskForEachGroup( groupedSources, branchTask, callback ) {
   const
     trunkStream = this
     ,branchStreams = []

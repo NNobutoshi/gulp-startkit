@@ -36,7 +36,7 @@ const
  * Excel のデータを JSON に変換する。
  * @function _run
  * @param {object} workBook - Excel のデータ
- * @returns {object} JSON データ
+ * @returns {Promise<void>}
  */
 ( async function _run() {
   const workBook       = XLSX.readFile( XLSX_FILE_PATH );

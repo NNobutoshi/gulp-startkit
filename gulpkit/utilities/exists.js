@@ -11,7 +11,7 @@ export { exists as default };
  * ファイルの存在を確認する。<br>
  * default としてエクスポート。
  * @param {string} filePath - ファイルの絶対パス
- * @returns {boolean} - ファイルが存在するか否か
+ * @returns {Promise<boolean>} - ファイルが存在するか否か
  */
 async function exists( filePath ) {
   try {
