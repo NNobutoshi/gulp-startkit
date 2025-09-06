@@ -42,6 +42,7 @@ const
 ;
 let
   writingTimeoutId = null
+  ,writing_error
   ,diffBldProc = null
 ;
 export {
@@ -71,7 +72,7 @@ function diff_build( options, collect, select ) {
   ;
   const
     taskName = settings.name
-    ,isGrouped = ( settings.group && typeof settings.group === 'string' ) ? true : false
+    ,isGrouped = settings.group && typeof settings.group === 'string'
   ;
   let
     ref1, ref2
@@ -128,7 +129,6 @@ function diff_build( options, collect, select ) {
     // 依存等の関係を伴う他のファイルも流すストリームを作成する。
     return _createDependencyFilesStream( diffBldProc, settings );
   }
-
 }
 
 /**
@@ -692,10 +692,10 @@ async function _finalizeProcessor( diffBldProc, settings ) {
   );
   if ( settings.isRefsEnabled === false ) {
     lastDiff.set( diffBldProc.currentDiffData );
-    try {
-      await _writeDiffData();
-    } catch ( err ) {
-      throw err;
+    await _writeDiffData();
+    if ( writing_error ) {
+      // ファイルローカルの変数に保持していたエラーをここでthrow する。
+      throw writing_error;
     }
   }
 }
@@ -708,11 +708,13 @@ async function _finalizeProcessor( diffBldProc, settings ) {
  */
 async function _writeDiffData() {
   clearTimeout( writingTimeoutId );
-  writingTimeoutId = setTimeout( async() => {
+  writingTimeoutId = setTimeout( async function() {
     try {
       await lastDiff.write();
+      writing_error = null;
     } catch ( err ) {
-      throw err;
+      // throw が伝播しないので、エラーをファイルローカルの変数に保持しておく。
+      writing_error = err;
     } finally {
       writingTimeoutId = null;
     }

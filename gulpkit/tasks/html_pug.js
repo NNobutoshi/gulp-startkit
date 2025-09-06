@@ -72,9 +72,12 @@ function html_pug() {
  */
 function _loadPugData() {
   return through.obj( function _transform( file, enc, callback ) {
-    const
-      data = JSON.parse( file.contents.toString() )
-    ;
+    let data;
+    try {
+      data = JSON.parse( file.contents.toString() );
+    } catch ( err ) {
+      return callback( err );
+    }
     if ( file.path.includes( '_common_' ) ) {
       pugCommonDataMap.set( file.path, data );
     } else {

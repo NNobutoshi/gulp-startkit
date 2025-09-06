@@ -37,22 +37,20 @@ export default {
  * モジュールスコープ変数に代入されている差分ファイルリスト（object）を優先して取得。<br>
  * 未代入であれば、保存先ファイルから取得。<br>
  * 保存ファイルが存在しなければ、空のobject を返す。
- * @function _getLastDiffData
- * @returns {object} - lastDiffData
+ * @returns {object|Promise<object>} - lastDiffData
  */
 async function _getLastDiffData() {
   if ( lastDiffData ) {
     return lastDiffData;
   }
-  if ( await existsFile( FILEPATH ) ) {
-    try {
-      const fileContent = await readFile( FILEPATH, CHARSET );
-      lastDiffData = JSON.parse( fileContent );
-    } catch ( err ) {
-      throw err;
+  try {
+    if ( await existsFile( FILEPATH ) ) {
+      lastDiffData = JSON.parse( await readFile( FILEPATH, CHARSET ) );
+    } else {
+      lastDiffData = {};
     }
-  } else {
-    lastDiffData = {};
+  } catch ( err ) {
+    throw err;
   }
   return lastDiffData;
 }
@@ -67,12 +65,12 @@ function _setLastDiffData( data ) {
 
 /**
  * ファイルに書き込み。<br>
- * 保存先ディレクトリが存在しなければ、作成する。
+ * 保存先ディレクトリが存在しなければ作成する。
  * @returns {Promise<void>}
  */
 async function _writeDiffDataToFile() {
   if ( !lastDiffData ) {
-    return false;
+    throw new Error( 'No data to write.' );
   }
   try {
     if ( await existsFile( DIRNAME ) === false ) {
