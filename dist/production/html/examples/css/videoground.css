@@ -1,0 +1,133 @@
+.sg-page_head {
+  position: fixed;
+  z-index: 10;
+  background-color: #fff;
+  width: 100%;
+}
+
+.pl-mainVisual {
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+.pl-mainVisual::after {
+  content: "";
+  position: absolute;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
+  border-top: solid 5px rgba(0, 0, 0, 0.8);
+  border-right: solid 5px rgba(0, 0, 0, 0.8);
+  border-bottom: solid 5px rgba(0, 0, 0, 0.3);
+  border-left: solid 5px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  transform: translate3d(0, 0, 0);
+  animation: spin 1s linear 0s infinite;
+}
+.pl-mainVisual.js-pl-mainVisual_video--isDestroyed::after, .pl-mainVisual.js-pl-mainVisual_video--isPlaying::after {
+  display: none;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.pl-mainVisual_head {
+  z-index: 1;
+  position: absolute;
+  top: 50%;
+  width: 50vw;
+  min-width: 20em;
+  padding: 10px 25px;
+  background-color: #fff;
+  transform: translateY(-50%);
+}
+
+.pl-mainVisual_body {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: inherit;
+}
+.js .pl-mainVisual_body {
+  opacity: 0;
+  transition: opacity 3s ease-in;
+}
+.js-pl-mainVisual_video--isPlaying .pl-mainVisual_body {
+  opacity: 1;
+}
+
+.js-pl-mainVisual_video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: auto;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.pl-mainVisual_heading {
+  font-size: 2.5rem;
+  line-height: 1;
+  margin: 0;
+  color: #f00;
+}
+
+.pl-mainVisual_foot {
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 10px;
+  text-align: right;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.pl-mainVisual_copyright {
+  color: #fff;
+}
+.pl-mainVisual_copyright a:link {
+  color: #fff;
+  text-decoration: none;
+}
+.pl-mainVisual_copyright a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+.pl-mainVisual_copyright a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.pl-mainVisual_copyright a:visited:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.pl-mainVisual_copyright a:active {
+  color: #fff;
+  text-decoration: underline;
+}
+.pl-mainVisual_copyright a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+.pl-section {
+  position: relative;
+  z-index: 1;
+  height: 2000px;
+  background-color: #fff;
+}
+
+.pl-video {
+  display: block;
+  width: 100%;
+}

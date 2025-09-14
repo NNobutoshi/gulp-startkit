@@ -1,0 +1,16 @@
+.pl-nav_list {
+  display: flex;
+}
+
+.pl-nav_item {
+  flex: 1 0 auto;
+}
+
+.pl-nav_anchor {
+  display: block;
+  background-color: #fee;
+  padding: 4px 10px;
+}
+.js-current > .pl-nav_anchor {
+  background-color: #fcc;
+}

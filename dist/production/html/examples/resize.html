@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="ディスクリプション">
+    <meta name="keywords" content="キーワード">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="starter kit">
+    <meta property="og:title" content="starter kit | resize">
+    <meta property="og:description" content="ディスクリプション">
+    <meta property="og:url" content="http://localhost/examples/resize.html">
+    <meta property="og:image" content="">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="application-name" content="starter kit">
+    <meta name="apple-mobile-web-app-title" content="starter kit">
+    <title>starter kit | resize</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/examples/css/resize.css">
+    <script src="/js/common_modules_head.js"></script>
+    <script src="/js/common_head.js"></script>
+  </head>
+  <body>
+    <div class="sg-page" id="page">
+
+      <header class="sg-page_head">
+        <div class="sg-page_core sg-page_core--head">
+          <div class="sg-siteId sg-page_siteId"><a class="sg-siteId_anchor" href="/">site</a></div>
+        </div>
+      <!--/.sg-page_head--></header>
+
+      <main class="sg-page_body">
+        <div class="sg-page_core sg-page_core--body">
+          <div class="pl-test">resize
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">one</h1>
+              <p class="pl-test_p"> (max-width: 1200px) ==<span class="pl-test_span pl-test_span--one"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">turn</h1>
+              <p class="pl-test_p">(max-width: 979px) ==<span class="pl-test_span pl-test_span--turn"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">cross</h1>
+              <p class="pl-test_p">(min-width: 980px) ==<span class="pl-test_span pl-test_span--cross"></span></p>
+            </div>
+            <div class="pl-test_section">
+              <h1 class="pl-test_heading">on</h1>
+              <p class="pl-test_p">(max-width: 767px) ==<span class="pl-test_span pl-test_span--on"></span></p>
+            </div>
+            <div class="pl-test_section pl-test_section--display">
+              <div class="pl-test_display pl-test_display--1200">width 1200px
+                <div class="pl-test_display pl-test_display--980">width: 980px
+                  <div class="pl-test_display pl-test_display--768">width: 768px</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!--/.sg-page_body--></main>
+
+
+      <footer class="sg-page_foot">
+        <div class="sg-page_core sg-page_core--foot">
+          <a href="/">
+            <div>site</div>
+          </a>
+        </div>
+      <!--/.sg-page_foot--></footer>
+
+    <!--/.page#page--></div>
+
+    <script src="/js/common_modules_body.js"></script>
+    <script src="/js/common_body.js"></script>
+    <script src="/examples/js/common_modules.js"></script>
+    <script src="/examples/js/resize.js"></script>
+  </body>
+</html>

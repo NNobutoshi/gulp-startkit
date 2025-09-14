@@ -1,0 +1,32 @@
+.pl-section {
+  margin-top: 20vh;
+}
+
+.pl-hoverTarget {
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1;
+  transition: padding 0.25s ease-in-out;
+  background-color: #FFCCCC;
+  padding: 20px;
+  border: solid 1px #f00;
+  transform: translate3d();
+}
+.pl-hoverTarget > .pl-hoverTarget {
+  background-color: #FFA3A3;
+}
+.pl-hoverTarget > .pl-hoverTarget > .pl-hoverTarget {
+  background-color: #FF8383;
+}
+.pl-hoverTarget + .pl-hoverTarget {
+  margin-top: 20px;
+}
+.pl-hoverTarget span, .pl-hoverTarget a {
+  display: block;
+}
+.pl-hoverTarget span {
+  padding: 10px;
+}
+.pl-hoverTarget.js-hover {
+  padding: 40px;
+}

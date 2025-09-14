@@ -1,0 +1,43 @@
+.pl-inviewTarget {
+  margin-top: 100vh;
+  margin-bottom: 100vh;
+  height: 80vh;
+  background-color: #ddd;
+  transition: background-color 0.25s ease-in;
+  padding: 15px 30px;
+}
+.pl-inviewTarget.js-isInView {
+  background: rgb(253, 88, 88);
+}
+
+.pl-offsetElement {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: solid 1px #f00;
+  padding: 15px 10px;
+}
+.pl-offsetElement--start {
+  top: 50px;
+}
+
+.pl-offsetElement--end {
+  bottom: 0;
+}
+
+.pl-input {
+  width: 3em;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.pl-line {
+  position: fixed;
+  border-top: solid 1px #000;
+  width: 100%;
+}
+.pl-line--50 {
+  top: calc(50% + 25px);
+}
