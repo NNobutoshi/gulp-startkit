@@ -98,17 +98,10 @@ function _addTaskToSet( task, finish ) {
 function _runChainedTasks( finish ) {
   return function() {
     clearTimeout( timeoutId );
-    series( ...taskSet, watchStart )( () => finish?.() );
+    series( ...taskSet )( () =>  {
+      process.emit( watchConfig.watchStartEventName );
+      finish?.();
+    } );
     taskSet.clear();
   };
-}
-
-/**
- * watch タスクの完了を待つ。
- * @private
- * @param {function} done - gulp タスクの完了コールバック
- */
-function watchStart( done ) {
-  process.emit( watchConfig.watchStartEventName );
-  done();
 }

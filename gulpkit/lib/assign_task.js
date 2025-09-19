@@ -23,8 +23,6 @@ const
  * 指定のグループ名（部分なサブディレクトリ名）に従ってグループ分けにしたsource をコールバックに引数として渡す。<br>
  * 設定（config）で指定されたグループ名に則してディレクトリが構成されていることが大前提。<br>
  * default としてエクスポート。
-
- * @private
  * @param {string} groupSubdirName - 任意のグループ名(部分的なディレクトリ名)、例：'fonts/icons'
  * @param {string} base - ソースファイルのベースディレクトリ
  * @param {function} branchTask - グループごと実行させるcallback

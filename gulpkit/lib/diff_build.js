@@ -103,7 +103,7 @@ function diff_build( options, collect, select ) {
   // exec は処理が重いため、各タスクで1つのPromise を共有させる。
   if ( !diffBldProc.promiseToGetDiffData ) {
     diffBldProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
-    // refs （ブランチ間、コミット間）の比較が無効の場合にのみ直近の差分データを取得する。
+    // ブランチ間、コミット間の比較（refs）が無効の場合にのみ直近の差分データを取得する。
     if ( settings.isRefsEnabled === false ) {
       diffBldProc.promiseToGetLastDiffData = lastDiff.get();
     }
@@ -137,20 +137,20 @@ function diff_build( options, collect, select ) {
  * @private
  * @param {function} resetSharedState - リスナー関数
  * @param {string} onceEventName - 初回のタスクの実行時に発火するイベント名
- * @param {string} constantEventName - Src の更新時に発火するイベント名
+ * @param {string} repeatingEventName - Src の更新時に発火するイベント名
  */
-function _addResetStateListeners( resetSharedState, onceEventName, constantEventName ) {
+function _addResetStateListeners( resetSharedState, onceEventName, repeatingEventName ) {
   // 多重回数の呼び出しを抑止するため、1度remove しておく。
   process.removeListener( onceEventName, resetSharedState );
-  process.removeListener( constantEventName, resetSharedState );
+  process.removeListener( repeatingEventName, resetSharedState );
   // onceEventName のリスナーは1回の呼び出し。
-  // constantEventName のリスナーはSrc の更新ごとの呼び出し。
+  // repeatingEventName のリスナーはSrc の更新ごとに呼び出し。
   process.once( onceEventName, resetSharedState );
-  process.on( constantEventName, resetSharedState );
+  process.on( repeatingEventName, resetSharedState );
 }
 
 /**
- * git status 結果を整形<br>
+ * git status の結果を整形。<br>
  * git status -suall &lt;dir&gt;で得られるファイルパスをkey に、<br>
  * 属性（「M」 や「?」 など）をその値にして oject（差分データ） を作成。
  * @private
@@ -713,7 +713,7 @@ async function _writeDiffData() {
       await lastDiff.write();
       writing_error = null;
     } catch ( err ) {
-      // throw が伝播しないので、エラーをファイルローカルの変数に保持しておく。
+      // throw したエラーが伝播しないので、モジュールスコープの変数に保持しておく。
       writing_error = err;
     } finally {
       writingTimeoutId = null;
