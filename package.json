@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "project example",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development gulp",
-    "prd": "cross-env NODE_ENV=production gulp",
+    "dev": "cross-env NODE_ENV=development WATCH_ENABLED=1 BROWSING_ENABLED=1 DIFF_ENABLED=1 gulp",
+    "prd": "cross-env NODE_ENV=production WATCH_ENABLED=0 BROWSING_ENABLED=1 DIFF_ENABLED=0 gulp",
     "one": "cross-env NODE_ENV=development WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=0 gulp",
     "bld": "cross-env NODE_ENV=production WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=0 gulp",
     "one_refs": "cross-env NODE_ENV=development WATCH_ENABLED=0 BROWSING_ENABLED=0 DIFF_ENABLED=1 DIFF_REFS_ENABLED=1 node ./gulpkit/run_task_for_diff_refs.js",

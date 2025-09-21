@@ -16,11 +16,12 @@ import {
   DEV_ENV_NAME,  WATCH_START_EVENT_NAME,
 } from './constants.js';
 
+import getEnvStatus from './get_env_status.js';
+
 const
   NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_REFS_ENABLED = !!Number( env.DIFF_REFS_ENABLED )
+  ,ENV_DIFF_REFS_ENABLED  = getEnvStatus( env.DIFF_REFS_ENABLED )
+  ,ENV_DIFF_ENABLED = getEnvStatus( env.DIFF_ENABLED )
 ;
 
 /**
@@ -50,7 +51,7 @@ export const distDir = {
  * @memberof module:config
  * @name GIT_COMMAND
  */
-const GIT_COMMAND = ( DIFF_REFS_ENABLED )
+const GIT_COMMAND = ( ENV_DIFF_REFS_ENABLED )
   ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ srcDir[ NODE_ENV ] }/`
   : `git status -suall gulpkit/ ${ srcDir[ NODE_ENV ] }/`
 ;
@@ -63,7 +64,8 @@ const GIT_COMMAND = ( DIFF_REFS_ENABLED )
 export const commonOptions = {
   diff : {
     command : GIT_COMMAND,
-    isRefsEnabled : DIFF_REFS_ENABLED,
+    enabled       : ENV_DIFF_ENABLED,
+    isRefsEnabled : ENV_DIFF_REFS_ENABLED,
     firstTasksEndedEventName : WATCH_INIT_EVENT_NAME,
     tasksEndedEventName      : WATCH_START_EVENT_NAME,
   },

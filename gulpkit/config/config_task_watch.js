@@ -15,7 +15,7 @@ import getEnvStatus                                      from './get_env_status.
 export { mergedConf as config, mergedOptions as options };
 
 const
-  WATCH_STATUS = getEnvStatus( env.WATCH_ENABLED )
+  ENV_WATCH_ENABLED = getEnvStatus( env.WATCH_ENABLED )
 ;
 
 /**
@@ -42,8 +42,7 @@ const prodConfig = null;
  * @name devOptions:task_watch
  */
 const devOptions = {
-  //開発環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければtrue に。
-  enabled : WATCH_STATUS ?? true,
+  enabled : ENV_WATCH_ENABLED,
   runChainedTasksDelayTime : 100,
   gulpWatch : {
     usePolling : true,
@@ -57,10 +56,7 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:task_watch
  */
-const prodOptions = {
-  //本番環境では、環境変数でWATCH_ENABLED が設定されていればその値を、なければfalse に。
-  enabled : WATCH_STATUS ?? false,
-};
+const prodOptions = null;
 
 // 開発環境用の設定をベースにマージする。
 const

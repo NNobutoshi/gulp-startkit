@@ -9,18 +9,12 @@ import { env } from 'node:process';
 
 import { srcDir, distDir, commonOptions } from './common.js';
 import mergeByEnv                         from './merge_by_env.js';
-import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'copy_to'
-;
-const
-  NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
+  ,NODE_ENV = env.NODE_ENV
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -57,12 +51,11 @@ const devOptions = {
   diff : { ...commonOptions.diff,
     name     : TASK_NAME,
     oneToOne : true,
-    enabled  : DIFF_STATUS ?? true,
   },
   gulpSrc : {
     base     : SRC_DIR,
     encoding : false,
-    read     : !( DIFF_STATUS ?? true ),
+    read     : !commonOptions.diff.enabled, // diff build が有効な場合はコンテンツを読み込まない、無効であれば読み込む
   },
   logStreamData : {
     title       : TASK_NAME,
@@ -78,14 +71,7 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:copy_to
  */
-const prodOptions = {
-  diff : {
-    enabled : DIFF_STATUS ?? false,
-  },
-  gulpSrc : {
-    read : !( DIFF_STATUS ?? false ),
-  },
-};
+const prodOptions = null;
 
 // 開発環境用の設定をベースにマージする。
 const

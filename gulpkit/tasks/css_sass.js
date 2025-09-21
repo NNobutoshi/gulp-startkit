@@ -32,7 +32,7 @@ export { css_sass as default };
 const sass = gulpSass( dartSass );
 
 const
-  SOURCEMAPS_ENABLED = config.enabledSourcemaps
+  SOURCEMAPS_ENABLED = options.sourcemaps.enabled
 ;
 
 /**
@@ -48,7 +48,7 @@ function css_sass() {
     .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.init() ) )
     .pipe( sass( options.sass ) )
     .pipe( postcss( options.postcss.plugins ) )
-    .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.write( config.sourcemaps_dir ) ) )
+    .pipe( gulpIf( ( SOURCEMAPS_ENABLED === true ), sourcemaps.write( options.sourcemaps.dir ) ) )
     .pipe( dest( config.dist ) )
     .pipe( gulpIf( /\.css$/, logStreamData( options.logStreamData.scss ) ) )
     .pipe( gulpIf( /\.map$/, logStreamData( options.logStreamData.sourceMaps ) ) )

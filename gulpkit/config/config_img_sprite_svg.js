@@ -12,20 +12,14 @@ import path         from 'node:path';
 
 import { srcDir, distDir, commonOptions } from './common.js';
 import mergeByEnv                         from './merge_by_env.js';
-import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME  = 'img_sprite_svg'
   ,GROUP_DIR = 'img/_sprite_svg'
+  ,NODE_ENV  = env.NODE_ENV
   ,CWD = cwd()
-;
-const
-  NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -62,7 +56,6 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name    : TASK_NAME,
-    enabled : DIFF_STATUS ?? true,
     group   : GROUP_DIR,
   },
   svgSprite : {
@@ -144,9 +137,6 @@ const devOptions = {
  * @name prodOptions:img_sprite_svg
  */
 const prodOptions = {
-  diff : {
-    enabled : DIFF_STATUS ?? false,
-  },
   svgSprite : {
     mode : {
       symbol : {

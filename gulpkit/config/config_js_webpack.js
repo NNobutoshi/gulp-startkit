@@ -19,18 +19,12 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { srcDir, distDir, commonOptions } from './common.js';
 import { SOURCEMAPS_DIR }                 from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
-import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
 const
-  CWD = cwd()
-;
-const
   NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
+  ,CWD = cwd()
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -78,8 +72,8 @@ const devConfig = {
       ], //rules
     }, //module
     cache : {
-      // 開発環境では差分ビルド用の環境変数で無効と設定されていない限り、'filesystem'を使用。
-      type : ( DIFF_STATUS === false ) ? 'memory' : 'filesystem',
+      // 差分ビルド用の環境変数で有効とされていれば'filesystem'、いなければ'memory'を使用。
+      type : ( commonOptions.diff.enabled === true ) ? 'filesystem' : 'memory',
     },
     plugins : [
       new webpack.SourceMapDevToolPlugin( {
@@ -100,10 +94,6 @@ const devConfig = {
 const prodConfig = {
   webpackConfig : {
     devtool : false,
-    cache : {
-      // 本番環境では差分ビルド用の環境変数で有効と設定されていない限り、'memory'を使用。
-      type : ( DIFF_STATUS === true ) ? 'filesystem' : 'memory',
-    },
     plugins : [
       function() {},
     ],

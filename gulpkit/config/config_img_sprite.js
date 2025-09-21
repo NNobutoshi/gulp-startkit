@@ -12,19 +12,13 @@ import { env } from 'node:process';
 import { srcDir, distDir, commonOptions } from './common.js';
 import { PLACEHOLDER }                    from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
-import getEnvStatus                       from './get_env_status.js';
 
 export { mergedConfig as config, mergedOptions as options };
 
 const
-  TASK_NAME = 'img_sprite'
+  TASK_NAME  = 'img_sprite'
   ,GROUP_DIR = 'img/_sprite'
-;
-const
-  NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
+  ,NODE_ENV  = env.NODE_ENV
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -64,7 +58,6 @@ const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
     name    : TASK_NAME,
-    enabled : DIFF_STATUS ?? true,
     group   : GROUP_DIR,
   },
   sprite : {
@@ -99,11 +92,7 @@ const devOptions = {
  * @memberof module:config
  * @name prodOptions:img_sprite
  */
-const prodOptions = {
-  diff : {
-    enabled : DIFF_STATUS ?? false,
-  },
-};
+const prodOptions = null;
 
 // 開発環境用の設定をベースにマージする。
 const

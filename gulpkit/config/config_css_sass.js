@@ -12,7 +12,6 @@ import { env } from 'node:process';
 import { srcDir, distDir, commonOptions } from './common.js';
 import { SOURCEMAPS_DIR }                 from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
-import getEnvStatus                       from './get_env_status.js';
 
 import autoprefixer from 'autoprefixer';
 import mqpacker     from '@hail2u/css-mqpacker';
@@ -21,12 +20,7 @@ export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'css_sass'
-;
-const
-  NODE_ENV = env.NODE_ENV
-;
-const
-  DIFF_STATUS = getEnvStatus( env.DIFF_ENABLED )
+  ,NODE_ENV = env.NODE_ENV
 ;
 const
   SRC_DIR   = srcDir[ NODE_ENV ]
@@ -42,8 +36,6 @@ const devConfig = {
   src  : [ `${ SRC_DIR }/**/*.scss` ],
   dist : DIST_DIR,
   base : SRC_DIR,
-  enabledSourcemaps : true,
-  sourcemaps_dir    : '/' + SOURCEMAPS_DIR,
 };
 
 /**
@@ -53,9 +45,7 @@ const devConfig = {
  * @memberof module:config
  * @name prodConfig:css_sass
  */
-const prodConfig = {
-  enabledSourcemaps : false,
-};
+const prodConfig = null;
 
 /**
  * 開発環境用オプションオブジェクト。
@@ -65,13 +55,12 @@ const prodConfig = {
 const devOptions = {
   plumber : commonOptions.plumber,
   diff : { ...commonOptions.diff,
-    name    : TASK_NAME,
-    enabled  : DIFF_STATUS ?? true,
+    name : TASK_NAME,
   },
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
-    linefeed    : 'lf', // 'crlf', 'lf'
-    indentType  : 'space', // 'space', 'tab'
+    linefeed    : 'lf',       // 'crlf', 'lf'
+    indentType  : 'space',    // 'space', 'tab'
     indentWidth : 2,
     silenceDeprecations : [ 'legacy-js-api' ], // Dart Sass 2.0.0 までの間
   },
@@ -92,6 +81,10 @@ const devOptions = {
       forEachFile : false,
     },
   },
+  sourcemaps : {
+    enabled : true,
+    dir     : '/' + SOURCEMAPS_DIR,
+  },
 };
 
 /**
@@ -102,11 +95,11 @@ const devOptions = {
  * @name prodOptions:css_sass
  */
 const prodOptions = {
-  diff : {
-    enabled : DIFF_STATUS ?? false,
-  },
   sass : {
     outputStyle : 'compressed', // nested, compact, compressed, expanded
+  },
+  sourcemaps : {
+    enabled : false,
   },
 };
 
