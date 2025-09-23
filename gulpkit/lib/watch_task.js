@@ -7,7 +7,7 @@
 
 import { watch, series } from 'gulp';
 
-import { WATCH_INIT_EVENT_NAME, WATCH_START_EVENT_NAME } from '../config/constants.js';
+import { WATCH_INIT_EVENT_NAME, RAN_WATCH_TASK_EVENT_NAME } from '../config/constants.js';
 import { eventEmitter } from '../utilities/event_emitter.js';
 
 export { watch_task as default, init_watch };
@@ -57,7 +57,8 @@ function init_watch( done ) {
 }
 
 /**
- * 一定時間内の連続実行は間引きし、一定時間後に集めたタスクを実行する。
+ * 一定時間内の連続実行は間引きし、一定時間後に集めたタスクを実行する。<br>
+ * 同一ソースファイルを監視するタスクが複数登録されている場合に同じタスクが複数回実行されることを防ぐ。
  * @private
  * @param {function} task - タスク
  * @param {object} options - オプション
@@ -73,7 +74,8 @@ function _addTaskToSet( task, options ) {
 }
 
 /**
- * Gulp Watch で集めたタスクをGulp series でつなげて実行する。
+ * Gulp Watch で集めたタスクをGulp series でつなげて実行する。<br>
+ * タスク実行後にイベントを発行する。
  * @private
  * @returns {function}
  */
@@ -81,7 +83,7 @@ function _runChainedTasks() {
   return function() {
     clearTimeout( timeoutId );
     series( ...taskSet )( () => {
-      eventEmitter.emit( WATCH_START_EVENT_NAME );
+      eventEmitter.emit( RAN_WATCH_TASK_EVENT_NAME );
     } );
     taskSet.clear();
   };

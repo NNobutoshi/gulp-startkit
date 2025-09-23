@@ -14,10 +14,10 @@ import process from 'node:process';
 import { series, parallel } from 'gulp';
 
 import * as tasks from './tasks/index.js';
-import { BEFORE_EXIT_EVENT_NAME, WATCH_START_EVENT_NAME } from './config/constants.js';
-import { eventEmitter }                                   from './utilities/event_emitter.js';
-import { init_watch }                                     from './lib/watch_task.js';
-import { init_browsing, reload_browsing }                 from './tasks/browse.js';
+import { BEFORE_EXIT_EVENT_NAME, RAN_WATCH_TASK_EVENT_NAME } from './config/constants.js';
+import { eventEmitter }                                      from './utilities/event_emitter.js';
+import { init_watch }                                        from './lib/watch_task.js';
+import { init_browsing, reload_browsing }                    from './tasks/browse.js';
 
 export { main as default, html, img, css, js, icon };
 
@@ -188,4 +188,4 @@ eventEmitter.once( BEFORE_EXIT_EVENT_NAME, series( init_watch, init_browsing ) )
 /**
  * watch タスク開始のイベントでブラウザリロードを実行する。
  */
-eventEmitter.on( WATCH_START_EVENT_NAME, reload_browsing );
+eventEmitter.on( RAN_WATCH_TASK_EVENT_NAME, reload_browsing );

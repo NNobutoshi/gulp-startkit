@@ -15,7 +15,7 @@ import chalk    from 'chalk';
 
 import {
   PROD_ENV_NAME, WATCH_INIT_EVENT_NAME,
-  DEV_ENV_NAME,  WATCH_START_EVENT_NAME,
+  DEV_ENV_NAME,  RAN_WATCH_TASK_EVENT_NAME,
 } from './constants.js';
 
 import getEnvStatus     from './get_env_status.js';
@@ -72,12 +72,10 @@ export const commonOptions = {
     enabled       : ENV_DIFF_ENABLED,
     isRefsEnabled : ENV_DIFF_REFS_ENABLED,
     firstTasksEndedEventName : WATCH_INIT_EVENT_NAME,
-    tasksEndedEventName      : WATCH_START_EVENT_NAME,
+    tasksEndedEventName      : RAN_WATCH_TASK_EVENT_NAME,
   },
   watch : {
     enabled : ENV_WATCH_ENABLED,
-    watchInitEventName  : WATCH_INIT_EVENT_NAME,
-    watchStartEventName : WATCH_START_EVENT_NAME,
     runChainedTasksDelayTime : 400,
     gulpWatch : {
       usePolling : true,
