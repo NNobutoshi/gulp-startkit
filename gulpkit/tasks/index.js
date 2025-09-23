@@ -13,6 +13,3 @@ export { default as img_sprite }      from './img_sprite.js';
 export { default as img_sprite_svg }  from './img_sprite_svg.js';
 export { default as js_eslint }       from './js_eslint.js';
 export { default as js_webpack }      from './js_webpack.js';
-
-export { default as task_watch }          from './task_watch.js';
-export { init_browsing, reload_browsing } from './browse.js';

@@ -71,8 +71,9 @@ function diff_build( options, collect, select ) {
     settings = { ...defaultSettings, name : Symbol(), ...options }
   ;
   const
-    taskName = settings.name
+    taskName   = settings.name
     ,isGrouped = settings.group && typeof settings.group === 'string'
+    ,eventHub  = settings.eventHub
   ;
   let
     ref1, ref2
@@ -88,18 +89,20 @@ function diff_build( options, collect, select ) {
   if ( settings.isRefsEnabled === true ) {
     [ ref1, ref2 ] = process.argv.slice( 2 );
   }
-  // モジュールスコープであるdiffBldProc がnull の場合にのみ初期化。
+  // モジュールスコープであるdiffBldProc がnull の場合にのみインスタンス化。
   if ( !diffBldProc ) {
     diffBldProc = new DiffBuildProcessor();
+    if ( eventHub && settings.firstTasksEndedEventName && settings.tasksEndedEventName ) {
     // 共有する値を初期化するdiffBldProc のメンバ関数をリスナー登録。
-    _addResetStateListeners(
-    // this の参照が代わらないようdiffBldProc にbind 。
-      diffBldProc.resetSharedState.bind( diffBldProc ),
-      settings.firstTasksEndedEventName,
-      settings.tasksEndedEventName,
-    );
-  } // if
-
+      _addResetStateListeners(
+        eventHub,
+        // this の参照が代わらないようdiffBldProc にbind 。
+        diffBldProc.resetSharedState.bind( diffBldProc ),
+        settings.firstTasksEndedEventName,
+        settings.tasksEndedEventName,
+      );
+    }
+  }
   // exec は処理が重いため、各タスクで1つのPromise を共有させる。
   if ( !diffBldProc.promiseToGetDiffData ) {
     diffBldProc.promiseToGetDiffData = _getGitDiffData( settings, ref1, ref2 );
@@ -132,21 +135,24 @@ function diff_build( options, collect, select ) {
 }
 
 /**
- * 差分データの取得に伴って共有された値をリセットするリスナーを追加。<br>
+ * 差分データの取得に伴って共有された値をリセットするリスナーを登録。<br>
  * 各タスクの初回の実行時と、その後のSrc 更新時に共有データを初期化する。
  * @private
+ * @param {object} eventHub - イベント発行オブジェクト
  * @param {function} resetSharedState - リスナー関数
  * @param {string} onceEventName - 初回のタスクの実行時に発火するイベント名
  * @param {string} repeatingEventName - Src の更新時に発火するイベント名
  */
-function _addResetStateListeners( resetSharedState, onceEventName, repeatingEventName ) {
+function _addResetStateListeners(
+  eventHub, resetSharedState, onceEventName, repeatingEventName
+) {
   // 多重回数の呼び出しを抑止するため、1度remove しておく。
-  process.removeListener( onceEventName, resetSharedState );
-  process.removeListener( repeatingEventName, resetSharedState );
+  eventHub.removeListener( onceEventName, resetSharedState );
+  eventHub.removeListener( repeatingEventName, resetSharedState );
   // onceEventName のリスナーは1回の呼び出し。
   // repeatingEventName のリスナーはSrc の更新ごとに呼び出し。
-  process.once( onceEventName, resetSharedState );
-  process.on( repeatingEventName, resetSharedState );
+  eventHub.once( onceEventName, resetSharedState );
+  eventHub.on( repeatingEventName, resetSharedState );
 }
 
 /**

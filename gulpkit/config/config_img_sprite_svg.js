@@ -58,6 +58,7 @@ const devOptions = {
     name    : TASK_NAME,
     group   : GROUP_DIR,
   },
+  watch : commonOptions.watch,
   svgSprite : {
     mode : {
       symbol : {

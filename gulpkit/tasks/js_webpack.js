@@ -10,11 +10,8 @@
  * @requires through2
  * @requires lodash/merge.js
  * @requires lodash/isEqual.js
+ * @requires ../lib/watch_task.js
  * @requires ../config/config_js_webpack.js
- * @requires ../lib/diff_build.js
- * @requires ../lib/log_stream_data.js
- * @requires ../lib/prepare_webpack_config.js
- * @requires ../lib/webpack_config.js
  * @description
  * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
  * watch はGulpのものを使用。<br>
@@ -33,6 +30,8 @@ import fancyLog  from 'fancy-log';
 import through   from 'through2';
 import merge     from 'lodash/merge.js';
 import isEqual   from 'lodash/isEqual.js';
+
+import watchTask from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_js_webpack.js';
 
@@ -66,6 +65,11 @@ function js_webpack() {
     .pipe( plumber( options.plumber ) )
     .pipe( _runWebPack() )
   ;
+}
+
+
+if ( options.watch.enabled ) {
+  watchTask( config.src, options.watch, js_webpack );
 }
 
 /**

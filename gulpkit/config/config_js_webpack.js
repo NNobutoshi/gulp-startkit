@@ -114,6 +114,7 @@ const prodConfig = {
  */
 const devOptions = {
   plumber : commonOptions.plumber,
+  watch : commonOptions.watch,
 };
 
 /**

@@ -60,6 +60,7 @@ const devOptions = {
     name    : TASK_NAME,
     group   : GROUP_DIR,
   },
+  watch : commonOptions.watch,
   iconfont : {
     fontName       : `icons${ PLACEHOLDER }`,
     prependUnicode : false,

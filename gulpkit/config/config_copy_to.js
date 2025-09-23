@@ -52,6 +52,7 @@ const devOptions = {
     name     : TASK_NAME,
     oneToOne : true,
   },
+  watch : commonOptions.watch,
   gulpSrc : {
     base     : SRC_DIR,
     encoding : false,

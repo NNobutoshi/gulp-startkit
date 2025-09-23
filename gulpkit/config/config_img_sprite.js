@@ -60,6 +60,7 @@ const devOptions = {
     name    : TASK_NAME,
     group   : GROUP_DIR,
   },
+  watch : commonOptions.watch,
   sprite : {
     cssName     : '_mixins_sprite.scss',
     imgName     : 'common_pack.png',

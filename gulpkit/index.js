@@ -1,16 +1,25 @@
 /**
  * @module gulpkit/index
+ * @requires node:process
  * @requires gulp
  * @requires ./tasks/index.js
- * @requires ./lib/watch_CL_task.js
+ * @requires ./config/constants.js
+ * @requires ./utilities/event_emitter.js
+ * @requires ./lib/watch_task.js
+ * @requires ./tasks/browse.js
  */
+
+import process from 'node:process';
 
 import { series, parallel } from 'gulp';
 
 import * as tasks from './tasks/index.js';
-import enableWatchForCommandLineTask from './lib/watch_CL_task.js';
+import { BEFORE_EXIT_EVENT_NAME, WATCH_START_EVENT_NAME } from './config/constants.js';
+import { eventEmitter }                                   from './utilities/event_emitter.js';
+import { init_watch }                                     from './lib/watch_task.js';
+import { init_browsing, reload_browsing }                 from './tasks/browse.js';
 
-export { main as default, html, img, css, js, icon, watchForCommanLineTask };
+export { main as default, html, img, css, js, icon };
 
 /**
  * Gulp 実行時のdefault 用で全タスクを実行する。
@@ -36,22 +45,6 @@ export { main as default, html, img, css, js, icon, watchForCommanLineTask };
  *         tasks.js_webpack,
  *       )
  *     ),
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       [
- *         tasks.copy_to,
- *         tasks.img_min,
- *         tasks.html_pug,
- *         tasks.icon_font,
- *         tasks.img_sprite,
- *         tasks.img_sprite_svg,
- *         tasks.css_lint_scss,
- *         tasks.css_sass,
- *         tasks.js_eslint,
- *         tasks.js_webpack,
- *       ],
- *       tasks.reload_browsing,
- *     ),
  *   )( done );
  * }
  */
@@ -74,22 +67,6 @@ function main( done ) {
         tasks.js_webpack,
       )
     ),
-    tasks.init_browsing,
-    tasks.task_watch(
-      [
-        tasks.copy_to,
-        tasks.img_min,
-        tasks.html_pug,
-        tasks.icon_font,
-        tasks.img_sprite,
-        tasks.img_sprite_svg,
-        tasks.css_lint_scss,
-        tasks.css_sass,
-        tasks.js_eslint,
-        tasks.js_webpack,
-      ],
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
@@ -99,32 +76,15 @@ function main( done ) {
  * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function html( done ) {
- *   const members = [
+ *   series(
  *     tasks.img_min,
  *     tasks.html_pug,
- *   ];
- *   series(
- *     ...members,
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       members,
- *       tasks.reload_browsing,
- *     ),
  *   )( done );
  * }
- */
-function html( done ) {
-  const members = [
+ */ function html( done ) {
+  series(
     tasks.img_min,
     tasks.html_pug,
-  ];
-  series(
-    ...members,
-    tasks.init_browsing,
-    tasks.task_watch(
-      members,
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
@@ -134,38 +94,22 @@ function html( done ) {
  * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function img( done ) {
- *   const members = [
+ *   series(
  *     tasks.img_min,
  *     tasks.img_sprite,
  *     tasks.img_sprite_svg,
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
- *   ];
- *   series(
- *     ...members,
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       members,
- *       tasks.reload_browsing,
- *     ),
  *   )( done );
  * }
  */
 function img( done ) {
-  const members = [
+  series(
     tasks.img_min,
     tasks.img_sprite,
     tasks.img_sprite_svg,
     tasks.css_lint_scss,
     tasks.css_sass,
-  ];
-  series(
-    ...members,
-    tasks.init_browsing,
-    tasks.task_watch(
-      members,
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
@@ -175,32 +119,16 @@ function img( done ) {
  * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function css( done ) {
- *   const members = [
+ *   series(
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
- *   ];
- *   series(
- *     ...members,
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       members,
- *       tasks.reload_browsing,
- *     ),
  *   )( done );
  * }
  */
 function css( done ) {
-  const members = [
+  series(
     tasks.css_lint_scss,
     tasks.css_sass,
-  ];
-  series(
-    ...members,
-    tasks.init_browsing,
-    tasks.task_watch(
-      members,
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
@@ -210,32 +138,17 @@ function css( done ) {
  * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function js( done ) {
- *   const members = [
+ *   series(
  *     tasks.js_eslint,
  *     tasks.js_webpack,
- *   ];
- *   series(
- *     ...members,
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       members,
- *       tasks.reload_browsing,
  *     ),
  *   )( done );
  * }
  */
 function js( done ) {
-  const members = [
+  series(
     tasks.js_eslint,
     tasks.js_webpack,
-  ];
-  series(
-    ...members,
-    tasks.init_browsing,
-    tasks.task_watch(
-      members,
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
@@ -245,42 +158,34 @@ function js( done ) {
  * @param {function} done - gulp タスク完了のコールバック
  * @example
  * function icon( done ) {
- *   const members = [
+ *   series(
  *     tasks.icon_font,
  *     tasks.css_lint_scss,
  *     tasks.css_sass,
- *   ];
- *   series(
- *     ...members,
- *     tasks.init_browsing,
- *     tasks.task_watch(
- *       members,
- *       tasks.reload_browsing,
- *     ),
  *   )( done );
  * }
  */
 function icon( done ) {
-  const members = [
+  series(
     tasks.icon_font,
     tasks.css_lint_scss,
     tasks.css_sass,
-  ];
-  series(
-    ...members,
-    tasks.init_browsing,
-    tasks.task_watch(
-      members,
-      tasks.reload_browsing,
-    ),
   )( done );
 }
 
 /**
- * コマンドライン上 Gulp <task>
- * でタスクを個別に実行する際、watch や live reload も機能させる。
- * @memberof gulpkit/index
+ * プロセス終了直前にイベントを発行する。
  */
-function watchForCommanLineTask() {
-  enableWatchForCommandLineTask( tasks );
-}
+process.once( BEFORE_EXIT_EVENT_NAME, () => {
+  eventEmitter.emit( BEFORE_EXIT_EVENT_NAME );
+} );
+
+/**
+ * watch とブラウザリロードの初期化タスクを登録する。
+ */
+eventEmitter.once( BEFORE_EXIT_EVENT_NAME, series( init_watch, init_browsing ) );
+
+/**
+ * watch タスク開始のイベントでブラウザリロードを実行する。
+ */
+eventEmitter.on( WATCH_START_EVENT_NAME, reload_browsing );

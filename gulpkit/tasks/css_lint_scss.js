@@ -7,6 +7,7 @@
  * @requires fancy-log
  * @requires ../lib/diff_build.js
  * @requires ../lib/log_stream_data.js
+ * @requires ../lib/watch_task.js
  * @requires ../config/config_css_lint_scss.js
  */
 
@@ -18,6 +19,7 @@ import fancyLog  from 'fancy-log';
 
 import diff          from '../lib/diff_build.js';
 import logStreamData from '../lib/log_stream_data.js';
+import watchTask     from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_css_lint_scss.js';
 
@@ -36,6 +38,10 @@ function css_lint_scss() {
     .pipe( _lintScss() )
     .pipe( logStreamData( options.logStreamData ) )
   ;
+}
+
+if ( options.watch.enabled ) {
+  watchTask( config.src, options.watch, css_lint_scss );
 }
 
 /**

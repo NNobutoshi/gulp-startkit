@@ -68,6 +68,7 @@ const devOptions = {
   diff : { ...commonOptions.diff,
     name : TASK_NAME,
   },
+  watch : commonOptions.watch,
   imgSize : true,
   injectImageSize : {
     imgRegEx : /<(img|source)(.*?)(src|srcset)=(["'])([^"'?]*)(\??[^"'?]*)["'](.*?)>/g,

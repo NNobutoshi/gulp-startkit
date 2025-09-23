@@ -7,6 +7,7 @@
  * @requires ../lib/assign_task.js
  * @requires ../lib/diff_build.js
  * @requires ../lib/log_stream_data.js
+ * @requires ../lib/watch_task.js
  * @requires ../config/config_img_sprite.js
  */
 
@@ -18,6 +19,7 @@ import gulpIf      from 'gulp-if';
 import assignTaskForGroup from '../lib/assign_task.js';
 import diff               from '../lib/diff_build.js';
 import logStreamData      from '../lib/log_stream_data.js';
+import watchTask          from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_img_sprite.js';
 
@@ -41,6 +43,10 @@ function img_sprite() {
     .pipe( diff( options.diff ) )
     .pipe( assignTaskForGroup( config.group, config.base, _branchTask ) )
   ;
+}
+
+if ( options.watch.enabled ) {
+  watchTask( config.src, options.watch, img_sprite );
 }
 
 /**

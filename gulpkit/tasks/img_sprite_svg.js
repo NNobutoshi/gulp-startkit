@@ -8,6 +8,7 @@
  * @requires ../lib/assign_task.js
  * @requires ../lib/lint_svg.js
  * @requires ../lib/log_stream_data.js
+ * @requires ../lib/watch_task.js
  * @requires ../config/config_img_sprite_svg.js
  */
 
@@ -20,6 +21,7 @@ import diff               from '../lib/diff_build.js';
 import assignTaskForGroup from '../lib/assign_task.js';
 import lintSvg            from '../lib/lint_svg.js';
 import logStreamData      from '../lib/log_stream_data.js';
+import watchTask          from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_img_sprite_svg.js';
 
@@ -44,6 +46,10 @@ function img_sprite_svg() {
     .pipe( lintSvg( options.lintSvg ) )
     .pipe( assignTaskForGroup( config.group, config.base, _branchTask ) )
   ;
+}
+
+if ( options.watch.enabled ) {
+  watchTask( config.src, options.watch, img_sprite_svg );
 }
 
 /**

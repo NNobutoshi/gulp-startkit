@@ -4,6 +4,8 @@
  * @requires fancy-log
  * @requires chalk
  * @requires ./constants.js
+ * @requires ./get_env_status.js
+ * @requires ../utilities/event_emitter.js
  */
 
 import { env } from 'node:process';
@@ -16,12 +18,14 @@ import {
   DEV_ENV_NAME,  WATCH_START_EVENT_NAME,
 } from './constants.js';
 
-import getEnvStatus from './get_env_status.js';
+import getEnvStatus     from './get_env_status.js';
+import { eventEmitter } from '../utilities/event_emitter.js';
 
 const
   NODE_ENV = env.NODE_ENV
-  ,ENV_DIFF_REFS_ENABLED  = getEnvStatus( env.DIFF_REFS_ENABLED )
-  ,ENV_DIFF_ENABLED = getEnvStatus( env.DIFF_ENABLED )
+  ,ENV_DIFF_ENABLED      = getEnvStatus( env.DIFF_ENABLED )
+  ,ENV_DIFF_REFS_ENABLED = getEnvStatus( env.DIFF_REFS_ENABLED )
+  ,ENV_WATCH_ENABLED     = getEnvStatus( env.WATCH_ENABLED )
 ;
 
 /**
@@ -64,10 +68,20 @@ const GIT_COMMAND = ( ENV_DIFF_REFS_ENABLED )
 export const commonOptions = {
   diff : {
     command : GIT_COMMAND,
+    eventHub : eventEmitter,
     enabled       : ENV_DIFF_ENABLED,
     isRefsEnabled : ENV_DIFF_REFS_ENABLED,
     firstTasksEndedEventName : WATCH_INIT_EVENT_NAME,
     tasksEndedEventName      : WATCH_START_EVENT_NAME,
+  },
+  watch : {
+    enabled : ENV_WATCH_ENABLED,
+    watchInitEventName  : WATCH_INIT_EVENT_NAME,
+    watchStartEventName : WATCH_START_EVENT_NAME,
+    runChainedTasksDelayTime : 400,
+    gulpWatch : {
+      usePolling : true,
+    },
   },
   plumber : {
     errorHandler : function( err ) {

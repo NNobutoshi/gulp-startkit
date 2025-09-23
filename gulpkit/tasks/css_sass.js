@@ -9,6 +9,7 @@
  * @requires gulp-postcss
  * @requires ../lib/diff_build.js
  * @requires ../lib/log_stream_data.js
+ * @requires ../lib/watch_task.js
  * @requires ../config/config_css_sass.js
  */
 
@@ -24,6 +25,7 @@ import postcss       from 'gulp-postcss';
 
 import diff, { organizeSelectedFileMap } from '../lib/diff_build.js';
 import logStreamData                     from '../lib/log_stream_data.js';
+import watchTask                         from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_css_sass.js';
 
@@ -53,6 +55,10 @@ function css_sass() {
     .pipe( gulpIf( /\.css$/, logStreamData( options.logStreamData.scss ) ) )
     .pipe( gulpIf( /\.map$/, logStreamData( options.logStreamData.sourceMaps ) ) )
   ;
+}
+
+if ( options.watch.enabled ) {
+  watchTask( config.src, options.watch, css_sass );
 }
 
 /**

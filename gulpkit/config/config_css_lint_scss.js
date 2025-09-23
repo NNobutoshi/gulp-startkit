@@ -57,6 +57,7 @@ const devOptions = {
     name     : TASK_NAME,
     oneToOne : true,
   },
+  watch : commonOptions.watch,
   gulpSrc : {
     read : !commonOptions.diff.enabled, // diff build が有効な場合はコンテンツを読み込まない、無効であれば読み込む
   },

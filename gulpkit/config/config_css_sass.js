@@ -57,6 +57,7 @@ const devOptions = {
   diff : { ...commonOptions.diff,
     name : TASK_NAME,
   },
+  watch : commonOptions.watch,
   sass : {
     outputStyle : 'expanded', // nested, compact, compressed, expanded
     linefeed    : 'lf',       // 'crlf', 'lf'
