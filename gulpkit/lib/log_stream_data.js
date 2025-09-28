@@ -35,7 +35,7 @@ function logSteamData( options ) {
     settings = { ...defaultSettings, ...options }
   ;
   const
-    title = settings.title
+    title     = settings.title
     ,subtitle = settings.subtitle
   ;
   let fileCounter = 0;

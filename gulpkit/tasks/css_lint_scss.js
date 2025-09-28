@@ -40,7 +40,7 @@ function css_lint_scss() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, css_lint_scss );
 }
 
@@ -51,9 +51,13 @@ if ( options.watch.enabled ) {
 function _lintScss() {
   return through.obj( async function _transform( file, enc, callback ) {
     try {
-      const { report } = await stylelint.lint( { ...options.stylelint,
-        code : file.contents.toString(),
-      } );
+      const
+        { report } = await stylelint.lint(
+          { ...options.stylelint,
+            code : file.contents.toString(),
+          }
+        )
+      ;
       if ( report ) {
         // 不要な1行目の文字列はfile.path で置換する。
         fancyLog( report.replace( /<.+?>/, file.path ) );

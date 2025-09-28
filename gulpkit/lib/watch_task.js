@@ -1,20 +1,33 @@
 /**
  * @module tasks/task_watch
  * @requires gulp
- * @requires ../config/constants.js
+ * @requires fancy-log
+ * @requires chalk
  * @requires ../utilities/event_emitter.js
  */
 
 import { watch, series } from 'gulp';
 
-import { WATCH_INIT_EVENT_NAME, RAN_WATCH_TASK_EVENT_NAME } from '../config/constants.js';
+import fancyLog from 'fancy-log';
+import chalk    from 'chalk';
+
 import { eventEmitter } from '../utilities/event_emitter.js';
 
 export { watch_task as default, init_watch };
 
 const
-  taskSet = new Set()
-  ,taskMap = new Map()
+  selectionTasks   = new Set()
+  ,selectionEvents = new Set()
+  ,collectionTasks = new Map()
+  ,TEXT_COLOR_HEX = '#0000EE'
+  ,defaultSettings = {
+    enabled : false,
+    runTasksDelayTime : 300,
+    ranTaskEventName : '',
+    gulpWatch : {
+      usePolling : true,
+    },
+  }
 ;
 let
   timeoutId = null
@@ -29,31 +42,40 @@ let
  * @param {function} task - Gulp タスク
  */
 function watch_task( watchSrc, options, task ) {
-  _addTaskToMap( watchSrc, options, task );
-}
-
-
-/**
- * Map でタスクを収集する。
- * @param {array} watchSrc - 監視するファイルパス（glob ）の配列
- * @param {object} options - オプション
- * @param {function} task - Gulp タスク
- */
-function _addTaskToMap( watchSrc, options, task ) {
-  taskMap.set( task, { watchSrc : watchSrc, options : options } );
+  const
+    settings = { ...defaultSettings, ...options }
+  ;
+  settings.gulpWatch = { ...defaultSettings.gulpWatch, ...options?.gulpWatch };
+  _collectTaskOnMap( watchSrc, settings, task );
 }
 
 /**
  * タスクの数だけGulp watch に登録するが、タスクはまだ実行されない。
- * @param {function} done - gulp タスク完了のコールバック
  */
-function init_watch( done ) {
-  for ( const [ task, value ] of taskMap ) {
-    // Gulp Watch はいったんタスクのみを収集する。
-    watch( value.watchSrc, value.options.gulpWatch, _addTaskToSet( task, value.options ) );
+function init_watch() {
+  if ( collectionTasks.size === 0 ) {
+    return;
+  } else {
+    fancyLog( chalk.hex( TEXT_COLOR_HEX )( '[watch_task]: Watching files...' ) );
   }
-  eventEmitter.emit( WATCH_INIT_EVENT_NAME );
-  done();
+  for ( const [ task, value ] of collectionTasks ) {
+    // Gulp Watch はいったんタスクのみを収集する。
+    watch(
+      value.watchSrc,
+      value.settings.gulpWatch,
+      _addTaskAndEventToSet( task, value.settings )
+    );
+  }
+}
+
+/**
+ * Map でタスクを収集する。
+ * @param {array} watchSrc - 監視するファイルパス（glob ）の配列
+ * @param {object} settings - 設定オブジェクト
+ * @param {function} task - Gulp タスク
+ */
+function _collectTaskOnMap( watchSrc, settings, task ) {
+  collectionTasks.set( task, { watchSrc : watchSrc, settings : settings } );
 }
 
 /**
@@ -61,14 +83,20 @@ function init_watch( done ) {
  * 同一ソースファイルを監視するタスクが複数登録されている場合に同じタスクが複数回実行されることを防ぐ。
  * @private
  * @param {function} task - タスク
- * @param {object} options - オプション
+ * @param {object} settings - 設定オブジェクト
  * @returns {function} - gulp タスク
  */
-function _addTaskToSet( task, options ) {
+function _addTaskAndEventToSet( task, settings ) {
+  const
+    ranTaskEventName = settings.ranTaskEventName
+  ;
   return function addWatchTask( done ) {
-    taskSet.add( task );
+    selectionTasks.add( task );
+    if ( ranTaskEventName ) {
+      selectionEvents.add( ranTaskEventName );
+    }
     clearTimeout( timeoutId );
-    timeoutId = setTimeout( _runChainedTasks(), options.runChainedTasksDelayTime );
+    timeoutId = setTimeout( _runselectionTasksAll(), settings.runTasksDelayTime );
     done();
   };
 }
@@ -79,13 +107,17 @@ function _addTaskToSet( task, options ) {
  * @private
  * @returns {function}
  */
-function _runChainedTasks() {
+function _runselectionTasksAll() {
   return function() {
     clearTimeout( timeoutId );
-    series( ...taskSet )( () => {
-      eventEmitter.emit( RAN_WATCH_TASK_EVENT_NAME );
+    series( ...selectionTasks )( () => {
+      for ( const eventName of selectionEvents ) {
+        eventEmitter.emit( eventName );
+      }
+      selectionTasks.clear();
+      selectionEvents.clear();
+      clearTimeout( timeoutId );
     } );
-    taskSet.clear();
   };
 }
 

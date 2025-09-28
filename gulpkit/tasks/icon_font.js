@@ -62,7 +62,7 @@ function icon_font() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, icon_font );
 }
 

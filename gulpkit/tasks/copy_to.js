@@ -34,6 +34,6 @@ function copy_to() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, copy_to );
 }

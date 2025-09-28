@@ -67,8 +67,7 @@ function js_webpack() {
   ;
 }
 
-
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, js_webpack );
 }
 
@@ -88,7 +87,9 @@ function _runWebPack() {
   return through.obj(
     async function _transform( file, enc, callback ) {
       try  {
-        const filePath = file.path;
+        const
+          filePath = file.path
+        ;
         // chunk のpath が、splitChunks用のJSON データであれば。
         if ( filePath.endsWith( splitChunksFileNamePattern ) === true ) {
           await _createSplitChunks( filePath, splitChunksGroups );
@@ -118,9 +119,13 @@ function _runWebPack() {
  * @returns {Promise<void>}
  */
 async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
-  const chunkConfig = JSON.parse( await readFile( chunkConfigPath, CHARSET ) );
+  const
+    chunkConfig = JSON.parse( await readFile( chunkConfigPath, CHARSET ) )
+  ;
   for ( const [ key, value ] of Object.entries( chunkConfig ) ) {
-    const test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' );
+    const
+      test = value.test.join( '|' ).replace( /\//g, '[\\\\/]' )
+    ;
     chunkConfig[ key ].test = new RegExp( test );
   }
   merge( splitChunksGroups, chunkConfig );
@@ -133,7 +138,9 @@ async function _createSplitChunks( chunkConfigPath, splitChunksGroups ) {
  * @param {object} entries
  */
 async function _createEntries( filePath, entries ) {
-  const { entryName, relativeEntryPath } = _getEntriesKeyValue( filePath );
+  const
+    { entryName, relativeEntryPath } = _getEntriesKeyValue( filePath )
+  ;
   entries[ entryName ] = relativeEntryPath;
 }
 
@@ -176,7 +183,9 @@ function _runWebpackCompiler( callback ) {
       return callback( err );
     }
     if ( stats?.hasErrors?.() ) {
-      const messages = stats.toJson().errors.map( e => e.message );
+      const
+        messages = stats.toJson().errors.map( e => e.message )
+      ;
       return callback( new Error( messages.join( '\n' ) ) );
     }
     if ( stats ) {

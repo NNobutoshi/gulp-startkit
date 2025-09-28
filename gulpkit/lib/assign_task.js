@@ -29,7 +29,9 @@ const
  * @returns {Stream} - 処理されたストリーム
  */
 function assignTaskForGroup( groupSubdirName, base, branchTask ) {
-  const groupedSources = new Map();
+  const
+    groupedSources = new Map()
+  ;
   groupSubdirName = groupSubdirName.replace( /\//g, path.sep );
   return through.obj(
     function _transform( file, enc, callback ) {

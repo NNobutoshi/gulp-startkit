@@ -65,7 +65,7 @@ function html_pug() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src.concat( config.dataSrc, config.subsrc ), options.watch, html_pug );
 }
 
@@ -176,7 +176,9 @@ function _collectImporterFiles( file, collectedFiles ) {
     if ( _isExternalSrc( srcPath ) === true || !srcPath ) {
       continue;
     }
-    const dependencyFilePath = _getAbsolutePath( srcPath, config.base, file.dirname );
+    const
+      dependencyFilePath = _getAbsolutePath( srcPath, config.base, file.dirname )
+    ;
     if ( collectedFiles.has( dependencyFilePath ) === false ) {
       collectedFiles.set( dependencyFilePath, [] );
     }
@@ -190,18 +192,24 @@ function _collectImporterFiles( file, collectedFiles ) {
  * @returns {Stream} - Gulp ストリーム
  */
 function _renderPug() {
-  const ignoreFileRegEx = /^_|\.(png|jpg|svg)$/;
+  const
+    ignoreFileRegEx = /^_|\.(png|jpg|svg)$/
+  ;
   return through.obj( function _transform( file, enc, callback ) {
     if ( ignoreFileRegEx.test( file.basename ) === true ) {
       return callback();
     }
-    const pugOptions = { ...options.pug,
-      self     : true,
-      filename : file.path,
-      pageData : file.data.pageData,
-    };
+    const
+      pugOptions = { ...options.pug,
+        self     : true,
+        filename : file.path,
+        pageData : file.data.pageData,
+      }
+    ;
     try {
-      const html = pug.render( file.contents.toString(), pugOptions );
+      const
+        html = pug.render( file.contents.toString(), pugOptions )
+      ;
       file.contents = Buffer.from( html );
       file.path = file.path.replace( /\.pug$/, '.html' );
       callback( null, file );
@@ -262,7 +270,9 @@ function _formatHtml() {
  * @returns {Stream} - Gulp ストリーム
  */
 function _injectImageSize() {
-  const imageElementTagMap = new Map();
+  const
+    imageElementTagMap = new Map()
+  ;
   if ( options.imgSize === false ) {
     return through.obj();
   }

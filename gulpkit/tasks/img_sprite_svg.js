@@ -48,7 +48,7 @@ function img_sprite_svg() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, img_sprite_svg );
 }
 

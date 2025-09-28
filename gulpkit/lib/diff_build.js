@@ -11,6 +11,7 @@
  * @requires chalk
  * @requires p-limit
  * @requires ./last_diff.js
+ * @requires ../utilities/event_emitter.js
  */
 
 import process      from 'node:process';
@@ -23,11 +24,12 @@ import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 import pLimit   from 'p-limit';
 
-import lastDiff from './last_diff.js';
+import lastDiff         from './last_diff.js';
+import { eventEmitter } from '../utilities/event_emitter.js';
 
 const
   WRITING_DELAY_TIME = 1000
-  ,MAX_BUFFER_SIZE = 1024 * 1024 * 10
+  ,MAX_BUFFER_SIZE   = 1024 * 1024 * 10
   ,CWD = process.cwd()
 ;
 const
@@ -73,7 +75,6 @@ function diff_build( options, collect, select ) {
   const
     taskName   = settings.name
     ,isGrouped = settings.group && typeof settings.group === 'string'
-    ,eventHub  = settings.eventHub
   ;
   let
     ref1, ref2
@@ -92,10 +93,10 @@ function diff_build( options, collect, select ) {
   // モジュールスコープであるdiffBldProc がnull の場合にのみインスタンス化。
   if ( !diffBldProc ) {
     diffBldProc = new DiffBuildProcessor();
-    if ( eventHub && settings.firstTasksEndedEventName && settings.tasksEndedEventName ) {
+    if ( settings.firstTasksEndedEventName && settings.tasksEndedEventName ) {
     // 共有する値を初期化するdiffBldProc のメンバ関数をリスナー登録。
       _addResetStateListeners(
-        eventHub,
+        eventEmitter,
         // this の参照が代わらないようdiffBldProc にbind 。
         diffBldProc.resetSharedState.bind( diffBldProc ),
         settings.firstTasksEndedEventName,
@@ -138,21 +139,21 @@ function diff_build( options, collect, select ) {
  * 差分データの取得に伴って共有された値をリセットするリスナーを登録。<br>
  * 各タスクの初回の実行時と、その後のSrc 更新時に共有データを初期化する。
  * @private
- * @param {object} eventHub - イベント発行オブジェクト
+ * @param {object} eventEmmter - イベント発行オブジェクト
  * @param {function} resetSharedState - リスナー関数
  * @param {string} onceEventName - 初回のタスクの実行時に発火するイベント名
  * @param {string} repeatingEventName - Src の更新時に発火するイベント名
  */
 function _addResetStateListeners(
-  eventHub, resetSharedState, onceEventName, repeatingEventName
+  eventEmmter, resetSharedState, onceEventName, repeatingEventName
 ) {
   // 多重回数の呼び出しを抑止するため、1度remove しておく。
-  eventHub.removeListener( onceEventName, resetSharedState );
-  eventHub.removeListener( repeatingEventName, resetSharedState );
+  eventEmmter.removeListener( onceEventName, resetSharedState );
+  eventEmmter.removeListener( repeatingEventName, resetSharedState );
   // onceEventName のリスナーは1回の呼び出し。
   // repeatingEventName のリスナーはSrc の更新ごとに呼び出し。
-  eventHub.once( onceEventName, resetSharedState );
-  eventHub.on( repeatingEventName, resetSharedState );
+  eventEmmter.once( onceEventName, resetSharedState );
+  eventEmmter.on( repeatingEventName, resetSharedState );
 }
 
 /**
@@ -165,7 +166,9 @@ function _addResetStateListeners(
  * @returns {Promise<object>} - 差分ファイルリスト
  */
 function _getGitDiffData( settings, ref1, ref2 ) {
-  const name = settings.name;
+  const
+    name = settings.name
+  ;
   let
     command = settings.command
     ,isRefsEnabled = ( ref1 && ref2 )
@@ -357,7 +360,9 @@ class DiffBuildProcessor {
    * @param {object} settings - 設定オブジェクト
    */
   setUpChildMaps( settings ) {
-    const name = settings.name;
+    const
+      name = settings.name
+    ;
     this.#setChildMapTo( name, this.allFileMap );
     this.#setChildSetTo( name, this.targetFileMap );
     this.#setChildMapTo( name, this.collectedFileMap );
@@ -590,7 +595,9 @@ class DiffBuildProcessor {
       ,allPromisesToReadFiles = []
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
-      const limitedTask = limit( () => readAndPusher( filePath, allFileMap, stream ) );
+      const
+        limitedTask = limit( () => readAndPusher( filePath, allFileMap, stream ) )
+      ;
       allPromisesToReadFiles.push( limitedTask );
     }
     try {
@@ -636,14 +643,18 @@ class DiffBuildProcessor {
  * @param {Set} selectedFileMap - 最終選択ファイルのパスの格納用
  */
 function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) {
-  const visited = new Set();
+  const
+    visited = new Set()
+  ;
   _recurse( filepath );
   function _recurse( path ) {
     if ( visited.has( path ) === true ) {
       return;
     }
     visited.add( path );
-    const deps = collectedFileMap.get( path );
+    const
+      deps = collectedFileMap.get( path )
+    ;
     deps?.forEach( ( dep ) => {
       selectedFileMap.add( dep );
       if ( collectedFileMap.has( dep ) === true ) {

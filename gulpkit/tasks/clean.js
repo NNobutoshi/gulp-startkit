@@ -44,7 +44,9 @@ function _gitClean( comand ) {
         fancyLog.warn( chalk.yellow( `clean.js \n${ stderr.trim() }` ) );
       }
       if ( stdout ) {
-        const stdArray = stdout.trim().split( '\n' );
+        const
+          stdArray = stdout.trim().split( '\n' )
+        ;
         fancyLog( chalk.green( `git clean:Removed ${ stdArray.length } untracked files` ) );
         stdArray.forEach( ( line ) => {
           fancyLog( chalk.green( line ) );

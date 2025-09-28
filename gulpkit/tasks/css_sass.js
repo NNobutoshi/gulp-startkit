@@ -57,7 +57,7 @@ function css_sass() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, css_sass );
 }
 

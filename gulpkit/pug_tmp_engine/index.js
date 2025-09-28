@@ -72,7 +72,9 @@ async function _writePugDataFile( content ) {
  * @returns {object} 変換された JSON データ
  */
 function _mapJsonDataByUrl( data ) {
-  const res = {};
+  const
+    res = {}
+  ;
   data.forEach( ( item ) => {
     res[ item.url ] = item;
   } );
@@ -121,11 +123,15 @@ async function _createPugFileByDataProps( props, pugFileCreator ) {
  */
 async function _createPugFile( pugFilePath, templateFilePath ) {
   try {
-    const exists = await existsFile( pugFilePath );
+    const
+      exists = await existsFile( pugFilePath )
+    ;
     if ( exists && FORCED === false ) {
       return;
     }
-    const content = await _readTemplateFile( templateFilePath );
+    const
+      content = await _readTemplateFile( templateFilePath )
+    ;
     await _writePugFile( pugFilePath, content, exists );
   } catch ( err ) {
     fancyLog.error( err.stack );

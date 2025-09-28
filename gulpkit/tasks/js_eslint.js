@@ -41,7 +41,7 @@ function js_eslint() {
   ;
 }
 
-if ( options.watch.enabled ) {
+if ( options.watch.enabled === true ) {
   watchTask( config.src, options.watch, js_eslint );
 }
 
@@ -67,11 +67,11 @@ function _runEsLint( esLintOptions ) {
         eslint = new ESLint( esLintOptions )
       ;
       const
-        results = await eslint.lintText( file.contents.toString() )
+        results    = await eslint.lintText( file.contents.toString() )
+        ,formatter = await eslint.loadFormatter( 'stylish' )
       ;
       const
-        formatter = await eslint.loadFormatter( 'stylish' )
-        ,filteredResults = ESLint.getErrorResults( results )
+        filteredResults = ESLint.getErrorResults( results )
       ;
       const
         resultText = formatter.format( filteredResults )

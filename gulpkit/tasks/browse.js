@@ -2,8 +2,6 @@
  * @module tasks/browse
  * @requires node:url
  * @requires browser-sync
- * @requires fancy-log
- * @requires chalk
  * @requires ../utilities/exists.js
  */
 
@@ -28,17 +26,19 @@ const
  * @memberof module:tasks/browse
  * @returns {Promise<void>}
  */
-async function init_browsing( done ) {
+async function init_browsing() {
   try {
     if ( !await existsFile( CONFIG_FILE_PATH ) ) {
-      return done();
+      return;
     }
-    const { config, options } = await import( RELATIVE_CONFIG_FILE_PATH );
+    const
+      { config, options } = await import( RELATIVE_CONFIG_FILE_PATH )
+    ;
     if ( config.enabled === false ) {
-      return done();
+      return;
     }
     browserSync.init( options );
-    return done();
+    return;
   } catch ( err ) {
     throw err.stack || err;
   }
@@ -47,12 +47,10 @@ async function init_browsing( done ) {
 /**
  * BrowserSync をリロードする。
  * @memberof module:tasks/browse
- * @param {function} done - Gulp タスク完了のコールバック
  * @returns {undefined}
  */
-function reload_browsing( done ) {
+function reload_browsing() {
   if ( browserSync.active ) {
     browserSync.reload();
   }
-  return done?.();
 }
