@@ -33,6 +33,9 @@ export { js_eslint as default };
  * @returns {Stream} - Gulp ストリーム
  */
 function js_eslint() {
+  if ( options.watch.enabled === true && !js_eslint.watchIsEnabled ) {
+    js_eslint.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

@@ -61,6 +61,9 @@ if ( webpackConfig?.cache?.type === 'filesystem' ) {
  * @returns {Stream} - Gulp ストリーム
  */
 function js_webpack() {
+  if ( options.watch.enabled === true && !js_webpack.watchIsEnabled ) {
+    js_webpack.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, { read : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( _runWebPack() )

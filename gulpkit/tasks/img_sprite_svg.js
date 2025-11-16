@@ -40,6 +40,9 @@ const
  * @returns {Stream} - Gulp ストリーム
  */
 function img_sprite_svg() {
+  if ( options.watch.enabled === true && !img_sprite_svg.watchIsEnabled ) {
+    img_sprite_svg.watchIsEnabled = true;
+  }
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

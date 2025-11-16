@@ -59,6 +59,9 @@ function init_watch() {
     fancyLog( chalk.hex( TEXT_COLOR_HEX )( '[watch_task]: Watching files...' ) );
   }
   for ( const [ task, value ] of collectionTasks ) {
+    if ( !task.watchIsEnabled ) {
+      continue;
+    }
     // Gulp Watch はいったんタスクのみを収集する。
     watch(
       value.watchSrc,

@@ -38,6 +38,9 @@ const
  * @returns {Stream} - Gulp ストリーム
  */
 function img_sprite() {
+  if ( options.watch.enabled === true && !img_sprite.watchIsEnabled ) {
+    img_sprite.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, { encoding : false } )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

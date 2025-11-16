@@ -26,6 +26,9 @@ export { copy_to as default };
  * @returns {Stream} - Gulp ストリーム
  */
 function copy_to() {
+  if ( options.watch.enabled === true && !copy_to.watchIsEnabled ) {
+    copy_to.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

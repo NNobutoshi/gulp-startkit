@@ -32,6 +32,9 @@ export { css_lint_scss as default };
  * @returns {Stream} - Gulp ストリーム
  */
 function css_lint_scss() {
+  if ( options.watch.enabled === true && !css_lint_scss.watchIsEnabled ) {
+    css_lint_scss.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

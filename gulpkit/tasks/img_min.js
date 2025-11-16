@@ -28,6 +28,9 @@ export { img_min as default };
  * @returns {Stream} - Gulp ストリーム
  */
 function img_min() {
+  if ( options.watch.enabled === true && !img_min.watchIsEnabled ) {
+    img_min.watchIsEnabled = true;
+  }
   return gulpSrc( config.src, options.gulpSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

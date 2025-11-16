@@ -54,6 +54,9 @@ const
  * @returns {Stream} - Gulp ストリーム
  */
 function icon_font() {
+  if ( options.watch.enabled === true && !icon_font.watchIsEnabled ) {
+    icon_font.watchIsEnabled = true;
+  }
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff ) )

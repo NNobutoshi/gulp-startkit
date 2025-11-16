@@ -44,6 +44,9 @@ const
  * @returns {Stream} - Gulp ストリーム
  */
 function css_sass() {
+  if ( options.watch.enabled === true && !css_sass.watchIsEnabled ) {
+    css_sass.watchIsEnabled = true;
+  }
   return gulpSrc( config.src )
     .pipe( plumber( options.plumber ) )
     .pipe( diff( options.diff, _collectImporterFiles, organizeSelectedFileMap ) )

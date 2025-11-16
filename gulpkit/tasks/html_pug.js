@@ -52,6 +52,9 @@ let
  * @returns {Stream} - Gulp ストリーム
  */
 function html_pug() {
+  if ( options.watch.enabled === true && !html_pug.watchIsEnabled ) {
+    html_pug.watchIsEnabled = true;
+  }
   return gulpSrc( config.dataSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( _loadPugData() )
