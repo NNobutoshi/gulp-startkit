@@ -71,8 +71,8 @@ export default class AdaptiveHover {
 
   handleLeave( e, target ) {
     const
-      coverage = this.settings.coverage
-      ,isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, coverage )
+      coverage = this.settings.coverage,
+      isOriginPoint = _isOriginPoint( _getEventObj( e ), this.pageX, this.pageY, coverage )
     ;
     if (
       !isOriginPoint &&

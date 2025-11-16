@@ -16,11 +16,11 @@ import { eventEmitter } from '../utilities/event_emitter.js';
 export { watch_task as default, init_watch };
 
 const
-  selectionTasks   = new Set()
-  ,selectionEvents = new Set()
-  ,collectionTasks = new Map()
-  ,TEXT_COLOR_HEX = '#0000EE'
-  ,defaultSettings = {
+  selectionTasks  = new Set(),
+  selectionEvents = new Set(),
+  collectionTasks = new Map(),
+  TEXT_COLOR_HEX  = '#0000EE',
+  defaultSettings = {
     enabled : false,
     runTasksDelayTime : 300,
     ranTaskEventName : '',

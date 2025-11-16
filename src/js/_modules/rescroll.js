@@ -34,8 +34,8 @@ export default class Rescroll {
             return 1 - Math.pow( 1 - pos, 5 );
           }
         }
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorTrigger = settings.selectorTrigger;
@@ -109,15 +109,15 @@ export default class Rescroll {
 
   preprocess( e, target ) {
     const
-      hash = this.getHash()
-      ,arryShoulder = this.arryShoulderSelector
-      ,elemByHash = ( hash ) ? document.querySelector( hash ) : null
-      ,elemShoulder = arryShoulder.length && elemByHash &&
+      hash = this.getHash(),
+      arryShoulder = this.arryShoulderSelector,
+      elemByHash = ( hash ) ? document.querySelector( hash ) : null,
+      elemShoulder = arryShoulder.length && elemByHash &&
                       _getShoulderElement.bind( this )( elemByHash )
     ;
     let
-      lastScrollY = this.lastScrollY
-      ,currentScrollY = this.elemEventRoot.pageYOffset
+      lastScrollY = this.lastScrollY,
+      currentScrollY = this.elemEventRoot.pageYOffset
     ;
 
     /**
@@ -198,15 +198,15 @@ export default class Rescroll {
    */
   animatedScroll( elemTarget ) {
     const
-      duration = this.settings.animeOption.duration
-      ,easing = this.settings.animeOption.easing
-      ,startPoint = this.lastScrollY
-      ,finishPoint = position( elemTarget ).top - this.offset()
-      ,range = finishPoint - startPoint
+      duration = this.settings.animeOption.duration,
+      easing = this.settings.animeOption.easing,
+      startPoint = this.lastScrollY,
+      finishPoint = position( elemTarget ).top - this.offset(),
+      range = finishPoint - startPoint
     ;
     let
-      currentPoint = 0
-      ,startTime = null
+      currentPoint = 0,
+      startTime = null
     ;
     this.elemEventRoot.scrollTo( 0, startPoint );
 

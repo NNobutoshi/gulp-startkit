@@ -95,15 +95,15 @@ function _collectImporterFiles( file, collectedFiles ) {
   ;
   for ( const match of matches ) {
     const
-      extension = match[ 3 ]
-      ,srcPath  = match[ 2 ]
+      extension = match[ 3 ],
+      srcPath   = match[ 2 ]
     ;
     if ( !srcPath ) {
       continue;
     }
     let
-      dependencyFilePath = path.resolve( file.dirname, srcPath )
-      ,depFilePathBasename
+      dependencyFilePath = path.resolve( file.dirname, srcPath ),
+      depFilePathBasename
     ;
     // 拡張子がない場合は .scss を書き足す。
     if ( !extension ) {

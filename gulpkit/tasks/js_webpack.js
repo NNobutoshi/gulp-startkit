@@ -38,12 +38,12 @@ import { config, options } from '../config/config_js_webpack.js';
 export { js_webpack as default };
 
 const
-  CHARSET = 'utf-8'
-  ,CWD    = cwd()
+  CHARSET = 'utf-8',
+  CWD     = cwd()
 ;
 let
-  webpackCompiler = null
-  ,webpackConfig = config.webpackConfig
+  webpackCompiler = null,
+  webpackConfig = config.webpackConfig
 ;
 
 /**
@@ -82,10 +82,10 @@ if ( options.watch.enabled === true ) {
  */
 function _runWebPack() {
   const
-    entries = {}
-    ,splitChunksGroups = {}
-    ,splitChunksFileNamePattern = config.splitChunks
-    ,entryFileNamePattern = config.entry
+    entries = {},
+    splitChunksGroups = {},
+    splitChunksFileNamePattern = config.splitChunks,
+    entryFileNamePattern = config.entry
   ;
   return through.obj(
     async function _transform( file, enc, callback ) {

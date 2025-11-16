@@ -37,9 +37,9 @@ export default class EventManager {
         [ eventType, nameSpace ] = fullEventTypeName.split( '.' )
       ;
       let
-        objListeners
-        ,mapListener
-        ,target
+        objListeners,
+        mapListener,
+        target
       ;
 
       /**
@@ -118,8 +118,9 @@ export default class EventManager {
   }
 
   setEventListener( prefix, eventType, listener, options ) {
-    const arrElements = ( this.elemEventer.length ) ?
-      Array.from( this.elemEventer ) : [ this.elemEventer ]
+    const arrElements = ( this.elemEventer.length )
+      ? Array.from( this.elemEventer )
+      : [ this.elemEventer ]
     ;
     arrElements.forEach( ( elem ) => {
       elem[ `${ prefix }EventListener` ]( eventType, listener, options );

@@ -27,8 +27,8 @@ export default class Tab {
         defaultIndex      : 0,
         onAllChange       : null,
         onChange          : null,
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorWrapper = settings.selectorWrapper;
@@ -94,10 +94,10 @@ export default class Tab {
   run( elemCurrentTrigger, e ) {
 
     const
-      elemTarget = d.querySelector( this.getHash( elemCurrentTrigger.hash ) )
-      ,elemWrapper = elemTarget.closest( this.selectorWrapper )
-      ,elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger )
-      ,elemTargetAll = elemWrapper.querySelectorAll( this.selectorTarget )
+      elemTarget = d.querySelector( this.getHash( elemCurrentTrigger.hash ) ),
+      elemWrapper = elemTarget.closest( this.selectorWrapper ),
+      elemTriggerAll = elemWrapper.querySelectorAll( this.selectorTrigger ),
+      elemTargetAll = elemWrapper.querySelectorAll( this.selectorTarget )
     ;
 
     _setClassName( elemTriggerAll, elemCurrentTrigger, this.settings.className );

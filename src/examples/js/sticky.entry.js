@@ -1,14 +1,14 @@
 import ScrollManager from '../../js/_modules/libs/scrollmanager.js';
 
 const
-  mdls = {}
-  ,elemPointer1 = document.querySelector( '.pl-nav_outer--1' )
-  ,elemPointer2 = document.querySelector( '.pl-nav_outer--2' )
-  ,elemPointer3 = document.querySelector( '.pl-nav_outer--3' )
-  ,elemFloatNav1 = document.querySelector( '.pl-nav--1' )
-  ,elemFloatNav2 = document.querySelector( '.pl-nav--2' )
-  ,elemFloatNav3 = document.querySelector( '.pl-nav--3' )
-  ,className = 'js-pl-nav--isFixed'
+  mdls = {},
+  elemPointer1 = document.querySelector( '.pl-nav_outer--1' ),
+  elemPointer2 = document.querySelector( '.pl-nav_outer--2' ),
+  elemPointer3 = document.querySelector( '.pl-nav_outer--3' ),
+  elemFloatNav1 = document.querySelector( '.pl-nav--1' ),
+  elemFloatNav2 = document.querySelector( '.pl-nav--2' ),
+  elemFloatNav3 = document.querySelector( '.pl-nav--3' ),
+  className = 'js-pl-nav--isFixed'
 ;
 
 mdls.scrollManager = new ScrollManager( {

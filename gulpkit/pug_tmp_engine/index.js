@@ -18,18 +18,18 @@ import existsFile from '../utilities/exists.js';
 import { html }   from '../index.js';
 
 const
-  CHARSET               = 'utf-8'
-  ,CWD                  = cwd()
-  ,SRC_DIR_NAME         = 'src'
-  ,PUG_CONFIG_FILE_NAME = '_pug_data.json'
-  ,SITE_MAP_FILE_PATH   = argv[ 2 ]
+  CHARSET              = 'utf-8',
+  CWD                  = cwd(),
+  SRC_DIR_NAME         = 'src',
+  PUG_CONFIG_FILE_NAME = '_pug_data.json',
+  SITE_MAP_FILE_PATH   = argv[ 2 ]
 ;
 const
-  SRC_DIR          = path.resolve( CWD, SRC_DIR_NAME )
-  ,XLSX_FILE_PATH  = path.resolve( CWD, SITE_MAP_FILE_PATH )
-  ,DATA_FILE_PATH  = path.resolve( CWD, path.dirname( SITE_MAP_FILE_PATH ), PUG_CONFIG_FILE_NAME )
-  ,XLSX_SHEET_NAME = 'Sheet1'
-  ,FORCED = ( argv[ 3 ] === 'force'  ) ? true : false // 既存の各pug ファイルを刷新するか否か
+  SRC_DIR         = path.resolve( CWD, SRC_DIR_NAME ),
+  XLSX_FILE_PATH  = path.resolve( CWD, SITE_MAP_FILE_PATH ),
+  DATA_FILE_PATH  = path.resolve( CWD, path.dirname( SITE_MAP_FILE_PATH ), PUG_CONFIG_FILE_NAME ),
+  XLSX_SHEET_NAME = 'Sheet1',
+  FORCED = ( argv[ 3 ] === 'force'  ) ? true : false // 既存の各pug ファイルを刷新するか否か
 ;
 
 /**
@@ -90,10 +90,10 @@ function _mapJsonDataByUrl( data ) {
  */
 async function _createPugFileByDataProps( props, pugFileCreator ) {
   let
-    siteRootHtmlFilePath         = props.url
-    ,siteRootTemplatePugFilePath = props.template
-    ,siteRootPugFilePath         = ''
-    ,pugFilePath                 = ''
+    siteRootHtmlFilePath        = props.url,
+    siteRootTemplatePugFilePath = props.template,
+    siteRootPugFilePath         = '',
+    pugFilePath                 = ''
   ;
   const
     templateFilePath = path.join( SRC_DIR, siteRootTemplatePugFilePath )

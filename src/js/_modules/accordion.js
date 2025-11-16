@@ -22,8 +22,8 @@ export default class Accordion {
         toggleHeihgt      : true,
         otherClosing      : false,
         propertyTargetTransition : 'height',
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
 
     this.id = settings.name;

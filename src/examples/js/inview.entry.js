@@ -28,8 +28,8 @@ mdls.scrollManager
 
 function _handle( observed ) {
   const
-    elemInputHook = observed.elemInput || observed.target.querySelector( '.pl-input--hookPoint' )
-    ,hookPoint = parseInt( elemInputHook.value )
+    elemInputHook = observed.elemInput || observed.target.querySelector( '.pl-input--hookPoint' ),
+    hookPoint = parseInt( elemInputHook.value )
   ;
   observed.elemInput = elemInputHook;
   catchPoint = parseInt( elemInputCatch.value );

@@ -20,10 +20,10 @@ import {
 import getEnvStatus     from './get_env_status.js';
 
 const
-  NODE_ENV = env.NODE_ENV
-  ,ENV_DIFF_ENABLED      = getEnvStatus( env.DIFF_ENABLED )
-  ,ENV_DIFF_REFS_ENABLED = getEnvStatus( env.DIFF_REFS_ENABLED )
-  ,ENV_WATCH_ENABLED     = getEnvStatus( env.WATCH_ENABLED )
+  NODE_ENV = env.NODE_ENV,
+  ENV_DIFF_ENABLED      = getEnvStatus( env.DIFF_ENABLED ),
+  ENV_DIFF_REFS_ENABLED = getEnvStatus( env.DIFF_REFS_ENABLED ),
+  ENV_WATCH_ENABLED     = getEnvStatus( env.WATCH_ENABLED )
 ;
 
 /**

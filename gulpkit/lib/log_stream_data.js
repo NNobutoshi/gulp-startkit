@@ -35,8 +35,8 @@ function logSteamData( options ) {
     settings = { ...defaultSettings, ...options }
   ;
   const
-    title     = settings.title
-    ,subtitle = settings.subtitle
+    title    = settings.title,
+    subtitle = settings.subtitle
   ;
   let fileCounter = 0;
   // Stream データでは無い場合。

@@ -164,8 +164,8 @@ export default class OptimizedResize {
 
   run() {
     const
-      delayTime = this.settings.delayTime
-      ,func = this.runCallbacksAll.bind( this )
+      delayTime = this.settings.delayTime,
+      func = this.runCallbacksAll.bind( this )
     ;
     let startTime = null;
     if ( this.isRunning === true ) {

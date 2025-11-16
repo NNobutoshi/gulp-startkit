@@ -70,8 +70,8 @@ function _runEsLint( esLintOptions ) {
         eslint = new ESLint( esLintOptions )
       ;
       const
-        results    = await eslint.lintText( file.contents.toString() )
-        ,formatter = await eslint.loadFormatter( 'stylish' )
+        results   = await eslint.lintText( file.contents.toString() ),
+        formatter = await eslint.loadFormatter( 'stylish' )
       ;
       const
         filteredResults = ESLint.getErrorResults( results )

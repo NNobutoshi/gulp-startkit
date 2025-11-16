@@ -41,10 +41,10 @@ import { config, options } from '../config/config_icon_font.js';
 export { icon_font as default };
 
 const
-  CHARSET = 'utf-8'
-  ,CWD = cwd()
-  ,PLACEHOLDER = config.placeholder
-  ,SCSS_FILE_REGEX = /\.scss$/
+  CHARSET = 'utf-8',
+  CWD = cwd(),
+  PLACEHOLDER = config.placeholder,
+  SCSS_FILE_REGEX = /\.scss$/
 ;
 
 /**
@@ -87,15 +87,15 @@ async function _branchTask( branchSrc, baseDir, trunkStream ) {
       iconFontOptions = { ...options.iconfont,
         fontName  : branchFontName,
         timestamp : await _getLatestTimestamp( branchSrc ),
-      }
-      ,templateData = { ...options.iconFontScss,
+      },
+      templateData = { ...options.iconFontScss,
         fontName : branchFontName,
         scssDist : config.scssDist.replace( PLACEHOLDER, baseDir ),
       }
     ;
     const
-      fontDist  = config.fontsDist.replace( PLACEHOLDER, baseDir )
-      ,scssDist = templateData.scssDist
+      fontDist = config.fontsDist.replace( PLACEHOLDER, baseDir ),
+      scssDist = templateData.scssDist
     ;
     const
       iconfont = ( await import( 'gulp-iconfont' ) ).default
@@ -156,9 +156,9 @@ function _createScssFile( templateData ) {
     async function _flush( callback ) {
       try {
         const
-          content = await readFile( templateData.templatePath, CHARSET )
-          ,sourceCode = Handlebars.compile( content )( templateData )
-          ,file = new Vinyl( {
+          content = await readFile( templateData.templatePath, CHARSET ),
+          sourceCode = Handlebars.compile( content )( templateData ),
+          file = new Vinyl( {
             cwd  : CWD,
             base : CWD,
             path : templateData.scssFileName,
@@ -187,8 +187,8 @@ async function _getLatestTimestamp( filePaths ) {
   ;
   for ( const filePath of filePaths ) {
     const
-      stats = await stat( filePath )
-      ,fileTimestamp = Math.round( stats.mtime / 1000 )
+      stats = await stat( filePath ),
+      fileTimestamp = Math.round( stats.mtime / 1000 )
     ;
     if ( fileTimestamp > latestTimestamp ) {
       latestTimestamp = fileTimestamp;

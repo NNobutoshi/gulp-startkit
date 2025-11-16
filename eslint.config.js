@@ -8,9 +8,9 @@ import js               from '@eslint/js';
 import globals from 'globals';
 
 const
-  __filename = fileURLToPath( import.meta.url )
-  ,__dirname = path.dirname( __filename )
-  ,compat    = new FlatCompat( {
+  __filename = fileURLToPath( import.meta.url ),
+  __dirname  = path.dirname( __filename ),
+  compat     = new FlatCompat( {
     baseDirectory     : __dirname,
     recommendedConfig : js.configs.recommended,
     allConfig         : js.configs.all
@@ -37,7 +37,7 @@ export default defineConfig(
       quotes            : [ 'error', 'single' ],
       semi              : [ 'error', 'always' ],
       'comma-spacing'   : [ 'off' ],
-      'comma-style'     : [ 'off' ],
+      // 'comma-style'     : [ 'off' ],
       'key-spacing' : [
         'error',
         {

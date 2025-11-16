@@ -36,13 +36,13 @@ import { config, options } from '../config/config_html_pug.js';
 export { html_pug as default };
 
 const
-  CWD = cwd()
-  ,BASE_COMMON_DATA_NAME = '_pug_common_data'
+  CWD = cwd(),
+  BASE_COMMON_DATA_NAME = '_pug_common_data'
 ;
 
 let
-  pugCommonDataMap = new Map()
-  ,pugPageData = {}
+  pugCommonDataMap = new Map(),
+  pugPageData = {}
 ;
 
 /**
@@ -141,7 +141,8 @@ function _setPugData() {
 function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
   const
     reslovedCommonDataFilePath = path.join(
-      path.resolve( CWD, config.base ), commonDataFilePath
+      path.resolve( CWD, config.base ),
+      commonDataFilePath,
     )
   ;
   return pugCommonDataMap.get( reslovedCommonDataFilePath );
@@ -247,9 +248,10 @@ function _formatHtml() {
       contents = contents.replace(
         uglyAElementRegEx,
         ( _all, indent, element, linefeed ) => {
-          const fixed = element
-            .replace( '><a ', '>' + linefeed + '<a ' )
-            .replace( '</a>', '</a>' + linefeed )
+          const
+            fixed = element
+              .replace( '><a ', '>' + linefeed + '<a ' )
+              .replace( '</a>', '</a>' + linefeed )
           ;
           return beautify.html( fixed, options.beautify ).replace( /^/mg, indent );
         },
@@ -282,15 +284,15 @@ function _injectImageSize() {
   }
   return through.obj( async function _transform( file, enc, callback ) {
     const
-      imgRegEx = options.injectImageSize.imgRegEx
-      ,allPromisesToReplacing = []
+      imgRegEx = options.injectImageSize.imgRegEx,
+      allPromisesToReplacing = []
     ;
     let contents = file.contents.toString();
     for ( const match of contents.matchAll( imgRegEx ) ) {
       const
-        frontPart = match[ 2 ]
-        ,srcPath  = match[ 5 ]
-        ,rearPart = match[ 7 ]
+        frontPart = match[ 2 ],
+        srcPath   = match[ 5 ],
+        rearPart  = match[ 7 ]
       ;
       if (
         _isExternalSrc( srcPath ) === true
@@ -329,15 +331,15 @@ function _injectImageSize() {
  */
 async function _addImageDimensions( match, file, map, errorCallback ) {
   const
-    fullStr    = match[ 0 ]
-    ,tagName   = match[ 1 ]
-    ,frontPart = match[ 2 ]
-    ,attrName  = match[ 3 ]
-    ,quote     = match[ 4 ]
-    ,srcPath   = match[ 5 ]
-    ,query     = match[ 6 ]
-    ,rearPart  = match[ 7 ]
-    ,absoluteSrcPath = _getAbsolutePath( srcPath, config.base, file.dirname )
+    fullStr   = match[ 0 ],
+    tagName   = match[ 1 ],
+    frontPart = match[ 2 ],
+    attrName  = match[ 3 ],
+    quote     = match[ 4 ],
+    srcPath   = match[ 5 ],
+    query     = match[ 6 ],
+    rearPart  = match[ 7 ],
+    absoluteSrcPath = _getAbsolutePath( srcPath, config.base, file.dirname )
   ;
   try {
     const
@@ -370,8 +372,8 @@ async function _addImageDimensions( match, file, map, errorCallback ) {
  */
 function _formatEndComment( _full, closingTag, lineFeed, indent, comment ) {
   const
-    htmlComment = `<!--${ comment }-->`
-    ,{ commentPosition, commentOnOneLine, blankLineAfterComment } = options.formatHtml
+    htmlComment = `<!--${ comment }-->`,
+    { commentPosition, commentOnOneLine, blankLineAfterComment } = options.formatHtml
   ;
   const
     commentIsInside = ( commentPosition === 'inside' )

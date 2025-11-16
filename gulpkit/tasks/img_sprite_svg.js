@@ -28,9 +28,9 @@ import { config, options } from '../config/config_img_sprite_svg.js';
 export { img_sprite_svg as default };
 
 const
-  SVG_FILE_REGEX   = /\.svg$/
-  ,SCSS_FILE_REGEX = /\.scss$/
-  ,HTML_FILE_REGEX = /\.html$/
+  SVG_FILE_REGEX  = /\.svg$/,
+  SCSS_FILE_REGEX = /\.scss$/,
+  HTML_FILE_REGEX = /\.html$/
 ;
 
 /**

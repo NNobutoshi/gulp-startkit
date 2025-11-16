@@ -26,9 +26,9 @@ import { config, options } from '../config/config_img_sprite.js';
 export { img_sprite as default };
 
 const
-  PLACEHOLDER = config.placeholder
-  ,PNG_FILE_REGEX  = /\.png$/
-  ,SCSS_FILE_REGEX = /\.scss$/
+  PLACEHOLDER = config.placeholder,
+  PNG_FILE_REGEX  = /\.png$/,
+  SCSS_FILE_REGEX = /\.scss$/
 ;
 
 /**
@@ -61,8 +61,8 @@ if ( options.watch.enabled === true ) {
  */
 function _branchTask( branchSrc, baseDir ) {
   const
-    imgDist   = config.imgDist.replace( PLACEHOLDER, baseDir )
-    ,scssDist = config.scssDist.replace( PLACEHOLDER, baseDir )
+    imgDist  = config.imgDist.replace( PLACEHOLDER, baseDir ),
+    scssDist = config.scssDist.replace( PLACEHOLDER, baseDir )
   ;
   return gulpSrc( branchSrc, { encoding : false } )
     .pipe( spriteSmith( options.sprite ) )

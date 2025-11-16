@@ -15,8 +15,8 @@ import path from 'node:path';
 import existsFile from '../utilities/exists.js';
 
 const
-  FILEPATH = path.resolve( cwd(), '.last_diff/.diffmap' )
-  ,CHARSET = 'utf-8'
+  FILEPATH = path.resolve( cwd(), '.last_diff/.diffmap' ),
+  CHARSET  = 'utf-8'
 ;
 const
   DIRNAME = path.dirname( FILEPATH )

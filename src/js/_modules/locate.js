@@ -11,8 +11,8 @@ export default class Locate {
         selectorParent  : '',
         elemTargetAll   : null,
         indexRegex      : /index\.[^/]+?$/,
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorTarget = settings.selectorTarget;
@@ -24,15 +24,15 @@ export default class Locate {
 
   run( callback ) {
     const
-      hostNameByLocal = location.host
-      ,pathnameByLocal = location.pathname.replace( this.settings.indexRegex, '' )
+      hostNameByLocal = location.host,
+      pathnameByLocal = location.pathname.replace( this.settings.indexRegex, '' )
     ;
     this.elemCurrent = null;
     this.elemParentAll = null;
     for ( const elemTarget of this.elemTargetAll ) {
       const
-        pathNameByElement = elemTarget.pathname.replace( this.settings.indexRegex, '' )
-        ,hostNameByElement = elemTarget.host
+        pathNameByElement = elemTarget.pathname.replace( this.settings.indexRegex, '' ),
+        hostNameByElement = elemTarget.host
       ;
       if ( hostNameByLocal !== hostNameByElement ) {
         continue;

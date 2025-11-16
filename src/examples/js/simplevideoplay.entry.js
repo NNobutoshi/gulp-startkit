@@ -1,11 +1,11 @@
 import SimpleVideoPlay from '../../js/_modules/simplevideoplay.js';
 
 const
-  CLASSNAME_COVER    = 'js-video_cover'
-  ,CLASSNAME_CANPLAY = 'js-video--canPlay'
-  ,CLASSNAME_PLAY    = 'js-video--isPlaying'
-  ,CLASSNAME_PAUSED  = 'js-video--isPaused'
-  ,CLASSNAME_ENDED   = 'js-video--isEnded'
+  CLASSNAME_COVER   = 'js-video_cover',
+  CLASSNAME_CANPLAY = 'js-video--canPlay',
+  CLASSNAME_PLAY    = 'js-video--isPlaying',
+  CLASSNAME_PAUSED  = 'js-video--isPaused',
+  CLASSNAME_ENDED   = 'js-video--isEnded'
 ;
 
 new SimpleVideoPlay( {

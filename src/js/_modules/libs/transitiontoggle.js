@@ -27,8 +27,8 @@ export default class TtransitionToggle {
         eventNameFinish   : 'transitionend.{name}',
         toggleHeight      : false,
         propertyTargetTransition : '',
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorParent = settings.selectorParent;
@@ -100,13 +100,13 @@ export default class TtransitionToggle {
 
   before( e ) {
     const
-      that = this
-      ,styleDefaultTransition = window.getComputedStyle( this.elemTarget ).transition
-      ,style = this.elemTarget.style
+      that = this,
+      styleDefaultTransition = window.getComputedStyle( this.elemTarget ).transition,
+      style = this.elemTarget.style
     ;
     let
-      height
-      ,startTime = null
+      height,
+      startTime = null
     ;
     if ( this.settings.toggleHeight === true ) {
       style.transitionProperty = 'none';

@@ -2,12 +2,12 @@ import Locate from '../../js/_modules/locate.js';
 import EM from '../../js/_modules/libs/eventmanager.js';
 
 const
-  mdls = {}
-  ,SELECTORTARGET = '.pl-nav_anchor'
-  ,SELECTORPARENT = '.pl-nav_item'
-  ,elemTarget = document.querySelectorAll( SELECTORTARGET )
-  ,evtWindow = new EM( window )
-  ,evtTarget = new EM( elemTarget )
+  mdls = {},
+  SELECTORTARGET = '.pl-nav_anchor',
+  SELECTORPARENT = '.pl-nav_item',
+  elemTarget = document.querySelectorAll( SELECTORTARGET ),
+  evtWindow = new EM( window ),
+  evtTarget = new EM( elemTarget )
 ;
 
 mdls.locate = new Locate( {

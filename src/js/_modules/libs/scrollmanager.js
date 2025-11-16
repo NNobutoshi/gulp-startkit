@@ -31,8 +31,8 @@ export default class ScrollManager {
         eventName            : 'scroll.{name}',
         delayTime            : 0,
         catchPoint           : '100%',
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorEventRoot = settings.selectorEventRoot;
@@ -52,25 +52,25 @@ export default class ScrollManager {
 
   runCallbacksAll() {
     const
-      scTop        = this.elemEventRoot.pageYOffset
-      ,innerHeight = this.elemEventRoot.innerHeight
+      scTop       = this.elemEventRoot.pageYOffset,
+      innerHeight = this.elemEventRoot.innerHeight
     ;
     for ( let key in this.callbacks ) {
       const
-        entry = this.callbacks[ key ]
-        ,selectorOffsetTop    = entry.selectorOffsetTop || this.selectorOffsetTop
-        ,selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom
-        ,offsetTop    = _getMaxOffset( selectorOffsetTop, innerHeight, 'top' )
-        ,offsetBottom = _getMaxOffset( selectorOffsetBottom, innerHeight, 'bottom' )
-        ,viewTop      = scTop + offsetTop
-        ,viewHeight   = innerHeight - offsetTop - offsetBottom
-        ,catchPoint   =  _calcPoint( viewHeight, this.catchPoint )
-        ,elemTarget   = entry.elemTarget || document.createElement( 'div' )
-        ,rect         = elemTarget.getBoundingClientRect()
-        ,hookPoint    = _calcPoint( rect.height, entry.observed.hookPoint || entry.hookPoint )
-        ,range        = catchPoint + ( rect.height - hookPoint )
-        ,scrollFrom   = ( viewTop + catchPoint ) - ( hookPoint + position( elemTarget ).top )
-        ,ratio        = scrollFrom / range
+        entry = this.callbacks[ key ],
+        selectorOffsetTop    = entry.selectorOffsetTop || this.selectorOffsetTop,
+        selectorOffsetBottom = entry.selectorOffsetBottom || this.selectorOffsetBottom,
+        offsetTop    = _getMaxOffset( selectorOffsetTop, innerHeight, 'top' ),
+        offsetBottom = _getMaxOffset( selectorOffsetBottom, innerHeight, 'bottom' ),
+        viewTop      = scTop + offsetTop,
+        viewHeight   = innerHeight - offsetTop - offsetBottom,
+        catchPoint   =  _calcPoint( viewHeight, this.catchPoint ),
+        elemTarget   = entry.elemTarget || document.createElement( 'div' ),
+        rect         = elemTarget.getBoundingClientRect(),
+        hookPoint    = _calcPoint( rect.height, entry.observed.hookPoint || entry.hookPoint ),
+        range        = catchPoint + ( rect.height - hookPoint ),
+        scrollFrom   = ( viewTop + catchPoint ) - ( hookPoint + position( elemTarget ).top ),
+        ratio        = scrollFrom / range
       ;
       entry.observed = merge( entry.observed, {
         name       : entry.name,
@@ -109,8 +109,8 @@ export default class ScrollManager {
         elemTarget : elemTarget,
         flag       : false,
         observed   : {},
-      }
-      ,entry = merge( {}, defaultOptions, options )
+      },
+      entry = merge( {}, defaultOptions, options )
     ;
     entry.callback = callback;
     this.setUp();
@@ -146,8 +146,8 @@ export default class ScrollManager {
 
   handle() {
     const
-      func = this.runCallbacksAll.bind( this )
-      ,delayTime = this.settings.delayTime
+      func = this.runCallbacksAll.bind( this ),
+      delayTime = this.settings.delayTime
     ;
     let startTime = null;
     if ( this.isRunning === true ) {
@@ -178,13 +178,13 @@ export default class ScrollManager {
 
 function _getMaxOffset( selector, vwHeight, pos ) {
   const
-    elems = selector && document.querySelectorAll( selector )
-    ,[ base, maxOrMin ] = ( pos === 'top' ) ? [ 'bottom', 'max' ] : [ 'top','min' ]
-    ;
+    elems = selector && document.querySelectorAll( selector ),
+    [ base, maxOrMin ] = ( pos === 'top' ) ? [ 'bottom', 'max' ] : [ 'top','min' ]
+  ;
   let
-    ret = 0
-    ,arryPositionNumber = []
-    ;
+    ret = 0,
+    arryPositionNumber = []
+  ;
   if ( !elems ) {
     return ret;
   }

@@ -57,8 +57,8 @@ function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base
     splits = file.path.split( groupSubdirName )
   ;
   const
-    parent = splits[ 0 ] + groupSubdirName
-    ,child = splits[ 1 ]
+    parent = splits[ 0 ] + groupSubdirName,
+    child  = splits[ 1 ]
   ;
   if ( groupedSources.has( parent ) === false ) {
     groupedSources.set( parent, {
@@ -79,8 +79,8 @@ function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base
  */
 async function _runTaskForEachGroup( groupedSources, branchTask, callback ) {
   const
-    trunkStream = this
-    ,branchStreams = []
+    trunkStream   = this,
+    branchStreams = []
   ;
   for ( const [ parentPath ,groupData ] of groupedSources ) {
     branchStreams.push(

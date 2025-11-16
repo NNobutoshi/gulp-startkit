@@ -20,8 +20,8 @@ export default class VideoGround {
         aspectRatio        : 720 / 1280,
         actualHeightRatio  : 1 / 1,
         attrVideo          : [ 'muted', 'playsinline', 'loop' ],
-      }
-      ,settings = this.settings = merge( {}, defaultSettings, options )
+      },
+      settings = this.settings = merge( {}, defaultSettings, options )
     ;
     this.id = settings.name;
     this.selectorParent = settings.selectorParent;
@@ -45,9 +45,9 @@ export default class VideoGround {
    */
   run() {
     const
-      settings = this.settings
-      ,elemVideo = this.elemVideo
-      ,elemVideoFrame = this.elemVideoFrame
+      settings = this.settings,
+      elemVideo = this.elemVideo,
+      elemVideoFrame = this.elemVideoFrame
     ;
 
     this.autoDestroy();
@@ -71,12 +71,12 @@ export default class VideoGround {
   testPlay() {
     return new Promise( ( resolve ) => {
       const
-        retries    = 3
-        ,testVideo = _createVideo( this.settings.attrVideo )
+        retries   = 3,
+        testVideo = _createVideo( this.settings.attrVideo )
       ;
       let
-        timeoutId = null
-        ,counterOfTries = 0
+        timeoutId = null,
+        counterOfTries = 0
       ;
       testVideo.play();
       ( function _try() {
@@ -147,10 +147,10 @@ export default class VideoGround {
    */
   resize() {
     const
-      settings = this.settings
-      ,frameWidth = this.elemParent.offsetWidth
-      ,frameHeight = this.elemParent.offsetHeight
-      ,frameAspectRatio = frameHeight / frameWidth
+      settings = this.settings,
+      frameWidth = this.elemParent.offsetWidth,
+      frameHeight = this.elemParent.offsetHeight,
+      frameAspectRatio = frameHeight / frameWidth
     ;
     if ( frameAspectRatio > settings.aspectRatio ) {
       this.elemVideo.style.width = 'auto';

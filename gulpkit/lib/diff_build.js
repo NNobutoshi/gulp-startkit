@@ -28,9 +28,9 @@ import lastDiff         from './last_diff.js';
 import { eventEmitter } from '../utilities/event_emitter.js';
 
 const
-  WRITING_DELAY_TIME = 1000
-  ,MAX_BUFFER_SIZE   = 1024 * 1024 * 10
-  ,CWD = process.cwd()
+  WRITING_DELAY_TIME = 1000,
+  MAX_BUFFER_SIZE    = 1024 * 1024 * 10,
+  CWD = process.cwd()
 ;
 const
   defaultSettings = {
@@ -43,9 +43,9 @@ const
   }
 ;
 let
-  writingTimeoutId = null
-  ,writing_error
-  ,diffBldProc = null
+  writingTimeoutId = null,
+  writing_error,
+  diffBldProc = null
 ;
 export {
   diff_build as default,
@@ -73,8 +73,8 @@ function diff_build( options, collect, select ) {
     settings = { ...defaultSettings, name : Symbol(), ...options }
   ;
   const
-    taskName   = settings.name
-    ,isGrouped = settings.group && typeof settings.group === 'string'
+    taskName  = settings.name,
+    isGrouped = settings.group && typeof settings.group === 'string'
   ;
   let
     ref1, ref2
@@ -170,8 +170,8 @@ function _getGitDiffData( settings, ref1, ref2 ) {
     name = settings.name
   ;
   let
-    command = settings.command
-    ,isRefsEnabled = ( ref1 && ref2 )
+    command = settings.command,
+    isRefsEnabled = ( ref1 && ref2 )
   ;
   if ( isRefsEnabled ) {
     command = command.replace( '<ref1>', ref1 ).replace( '<ref2>', ref2 );
@@ -201,8 +201,8 @@ function _getGitDiffData( settings, ref1, ref2 ) {
  */
 function _createOneToOneFilesStream( diffBldProc, settings ) {
   const
-    selectedFileSet = diffBldProc.selectedFileMap.get( settings.name )
-    ,targetFileSet  = diffBldProc.targetFileMap.get( settings.name )
+    selectedFileSet = diffBldProc.selectedFileMap.get( settings.name ),
+    targetFileSet   = diffBldProc.targetFileMap.get( settings.name )
   ;
   return through.obj(
     async function _transform( file, enc, callback ) {
@@ -393,8 +393,8 @@ class DiffBuildProcessor {
    */
   isFileInDiffData( filePath ) {
     const
-      relativePath = path.relative( CWD, filePath ).replace( /[\\]/g, '/' )
-      ,mergedDiffData = this.mergedDiffData
+      relativePath   = path.relative( CWD, filePath ).replace( /[\\]/g, '/' ),
+      mergedDiffData = this.mergedDiffData
     ;
     return mergedDiffData && Object.keys( mergedDiffData ).includes( relativePath );
   }
@@ -459,10 +459,10 @@ class DiffBuildProcessor {
       name = settings.name
     ;
     const
-      targetFileSet     = this.targetFileMap.get( name )
-      ,collectedFileMap = this.collectedFileMap.get( name )
-      ,selectedFileSet  = this.selectedFileMap.get( name )
-      ,allFileMap       = this.allFileMap.get( name )
+      targetFileSet    = this.targetFileMap.get( name ),
+      collectedFileMap = this.collectedFileMap.get( name ),
+      selectedFileSet  = this.selectedFileMap.get( name ),
+      allFileMap       = this.allFileMap.get( name )
     ;
     for ( const targetFilePath of targetFileSet ) {
       const
@@ -491,13 +491,13 @@ class DiffBuildProcessor {
    */
   setAssignedGroupToAllFiles( file, settings ) {
     const
-      name      = settings.name
-      ,group    = settings.group
-      ,filePath = file.path
+      name     = settings.name,
+      group    = settings.group,
+      filePath = file.path
     ;
     const
-      allFileMap  = this.allFileMap.get( name )
-      ,groupIndex = filePath.indexOf( group )
+      allFileMap = this.allFileMap.get( name ),
+      groupIndex = filePath.indexOf( group )
     ;
     const
       // groupPath は設定された任意のグループ名（ディレクトリ名）を末尾に持つ絶対パス。
@@ -516,9 +516,9 @@ class DiffBuildProcessor {
       name = settings.name
     ;
     const
-      targetFileSet   = this.targetFileMap.get( name )
-      ,allFileMap     = this.allFileMap.get( name )
-      ,mergedDiffData = this.mergedDiffData
+      targetFileSet  = this.targetFileMap.get( name ),
+      allFileMap     = this.allFileMap.get( name ),
+      mergedDiffData = this.mergedDiffData
     ;
     for ( const [ relativeDiffFilePath, info ] of Object.entries( mergedDiffData ) ) {
       if ( info.status.includes( 'D' ) === false && info.status.includes( '?' ) === false ) {
@@ -552,15 +552,15 @@ class DiffBuildProcessor {
       name = settings.name
     ;
     const
-      targetFileSet    = this.targetFileMap.get( name )
-      ,allFileMap      = this.allFileMap.get( name )
-      ,selectedFileSet = this.selectedFileMap.get( name )
-      ,group = settings.group
+      targetFileSet   = this.targetFileMap.get( name ),
+      allFileMap      = this.allFileMap.get( name ),
+      selectedFileSet = this.selectedFileMap.get( name ),
+      group = settings.group
     ;
     for ( const targetFilePath of targetFileSet ) {
       const
-        targetGroup = allFileMap.get( targetFilePath )?.group // targetGroup は絶対パス。
-        ,groupIndex = targetFilePath.indexOf( group )
+        targetGroup = allFileMap.get( targetFilePath )?.group, // targetGroup は絶対パス。
+        groupIndex  = targetFilePath.indexOf( group )
       ;
       const
         myGroup = targetFilePath.slice( 0, groupIndex + group.length ) // teargetFilePath も絶対パス。
@@ -586,13 +586,13 @@ class DiffBuildProcessor {
    */
   async pushFilesFromSelectionToStream( stream, settings, readAndPusher ) {
     const
-      name        = settings.name
-      ,pLimitSize = settings.pLimitSize
+      name       = settings.name,
+      pLimitSize = settings.pLimitSize
     ;
     const
-      allFileMap = this.allFileMap.get( name )
-      ,limit = pLimit( pLimitSize )
-      ,allPromisesToReadFiles = []
+      allFileMap = this.allFileMap.get( name ),
+      limit = pLimit( pLimitSize ),
+      allPromisesToReadFiles = []
     ;
     for ( const filePath of this.selectedFileMap.get( name ) ) {
       const
@@ -675,8 +675,8 @@ function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) 
 async function _readAndPushFilesToStream( filePath, allFiles, stream ) {
   try {
     const
-      contents = await readFile( filePath )
-      ,file = allFiles.get( filePath )
+      contents = await readFile( filePath ),
+      file = allFiles.get( filePath )
     ;
     file.contents = contents;
     stream.push( file );
@@ -699,8 +699,8 @@ async function _finalizeProcessor( diffBldProc, settings ) {
     name = settings.name
   ;
   const
-    targetFileSet = diffBldProc.targetFileMap.get( name )
-    ,selectedFileSet = diffBldProc.selectedFileMap.get( name )
+    targetFileSet   = diffBldProc.targetFileMap.get( name ),
+    selectedFileSet = diffBldProc.selectedFileMap.get( name )
   ;
   _logFileCount(
     name,
@@ -763,9 +763,9 @@ function _logFileCount( name, detected, total ) {
  */
 function _createObjectFromDiffStdout( str, isRefsEnabled ) {
   const
-    matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg )
-    ,renameSeparator = ( isRefsEnabled === true ) ? /\s+/ : /\s+->\s+/ //コマンドによって区切り文字が違うため。
-    ,retObj = {}
+    matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg ),
+    renameSeparator = ( isRefsEnabled === true ) ? /\s+/ : /\s+->\s+/, //コマンドによって区切り文字が違うため。
+    retObj = {}
   ;
   for ( const match of matches ) {
     let path = match[ 2 ];

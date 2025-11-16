@@ -13,12 +13,12 @@ import mergeByEnv                         from './merge_by_env.js';
 export { mergedConfig as config, mergedOptions as options };
 
 const
-  TASK_NAME = 'copy_to'
-  ,NODE_ENV = env.NODE_ENV
+  TASK_NAME = 'copy_to',
+  NODE_ENV  = env.NODE_ENV
 ;
 const
-  SRC_DIR   = srcDir[ NODE_ENV ]
-  ,DIST_DIR = distDir[ NODE_ENV ]
+  SRC_DIR  = srcDir[ NODE_ENV ],
+  DIST_DIR = distDir[ NODE_ENV ]
 ;
 
 /**
@@ -76,6 +76,6 @@ const prodOptions = null;
 
 // 開発環境用の設定をベースにマージする。
 const
-  mergedConfig   = mergeByEnv( NODE_ENV, devConfig, prodConfig )
-  ,mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
+  mergedConfig  = mergeByEnv( NODE_ENV, devConfig, prodConfig ),
+  mergedOptions = mergeByEnv( NODE_ENV, devOptions, prodOptions )
 ;
