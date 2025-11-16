@@ -32,10 +32,8 @@ const
 const devConfig = {
   src : [
     `${ SRC_DIR }/**/*.pug`,
-    `${ SRC_DIR }/**/_pug_data.json`,
-    `${ SRC_DIR }/**/_pug_common_data.json`,
   ],
-  subsrc : [
+  imgSrc : [
     `${ SRC_DIR }/**/*.{png,jpg,svg}`,
     `!${ SRC_DIR }/**/_sprite*/*.{png,svg}`,
     `!${ SRC_DIR }/**/fonts/icons/*.svg`,

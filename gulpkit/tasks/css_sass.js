@@ -86,7 +86,9 @@ function _collectImporterFiles( file, collectedFiles ) {
   }
   const
     importRuleRegEx = /^.*?@(use|forward)\s*['"]([^:\n]+)(\.?s?c?s?s?)['"]/mg
-    ,matches = contents.matchAll( importRuleRegEx )
+  ;
+  const
+    matches = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const

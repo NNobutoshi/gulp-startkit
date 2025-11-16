@@ -37,7 +37,9 @@ export { html_pug as default };
 
 const
   CWD = cwd()
+  ,BASE_COMMON_DATA_NAME = '_pug_common_data'
 ;
+
 let
   pugCommonDataMap = new Map()
   ,pugPageData = {}
@@ -53,8 +55,8 @@ function html_pug() {
   return gulpSrc( config.dataSrc )
     .pipe( plumber( options.plumber ) )
     .pipe( _loadPugData() )
-    .pipe( gulpSrc( config.src ) )
-    .pipe( gulpSrc( config.subsrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
+    .pipe( gulpSrc( config.src.concat( config.dataSrc ) ) )
+    .pipe( gulpSrc( config.imgSrc, { read : false } ) ) // 画像ファイルの更新も検知させる。
     .pipe( diff( options.diff ,_collectImporterFiles ,organizeSelectedFileMap ) )
     .pipe( _setPugData() )
     .pipe( _renderPug() )
@@ -66,7 +68,7 @@ function html_pug() {
 }
 
 if ( options.watch.enabled === true ) {
-  watchTask( config.src.concat( config.dataSrc, config.subsrc ), options.watch, html_pug );
+  watchTask( config.src.concat( config.dataSrc, config.imgSrc ), options.watch, html_pug );
 }
 
 /**
@@ -84,7 +86,7 @@ function _loadPugData() {
     } catch ( err ) {
       return callback( err );
     }
-    if ( file.path.includes( '_common_' ) ) {
+    if ( file.path.includes( BASE_COMMON_DATA_NAME ) === true ) {
       pugCommonDataMap.set( file.path, data );
     } else {
       pugPageData = { ...pugPageData, ...data };
@@ -100,27 +102,28 @@ function _loadPugData() {
  */
 function _setPugData() {
   return through.obj( function _transform( file, enc, callback ) {
-    if ( file.path.endsWith( '.pug' ) === true ) {
-      const
-        keyFilePath = file.path
-          .replace( path.resolve( CWD, config.base ), '' )
-          .replace( /\\/g, '/' )
-          .replace( /\.pug$/, '.html' )
-      ;
-      const
-        commonDataFilePath = pugPageData[ keyFilePath ]?.common
-      ;
-      if ( !commonDataFilePath ) {
-        return callback( null, file );
-      }
-      const
-        pugCommonData = _getPugCommonData( commonDataFilePath, pugCommonDataMap )
-      ;
-      file.data = {
-        // common 用を基にpage 用をマージする。
-        pageData : { ...pugCommonData, ...pugPageData[ keyFilePath ] },
-      };
+    if ( file.path.endsWith( '.pug' ) === false ) {
+      return callback( null, file );
     }
+    const
+      keyFilePath = file.path
+        .replace( path.resolve( CWD, config.base ), '' )
+        .replace( /\\/g, '/' )
+        .replace( /\.pug$/, '.html' )
+    ;
+    const
+      commonDataFilePath = pugPageData[ keyFilePath ]?.common
+    ;
+    if ( !commonDataFilePath ) {
+      return callback( null, file );
+    }
+    const
+      pugCommonData = _getPugCommonData( commonDataFilePath, pugCommonDataMap )
+    ;
+    file.data = {
+      // common 用を基にpage 用をマージする。
+      pageData : { ...pugCommonData, ...pugPageData[ keyFilePath ] },
+    };
     callback( null, file );
   } );
 }
@@ -167,7 +170,9 @@ function _collectImporterFiles( file, collectedFiles ) {
   }
   const
     importRuleRegEx = /(^.*?(extends|include)\s*(.+)$)|((img|source)\s*?\(.*?(src|srcset)=["']([^"'?]+)\??[^"'?]*["'].*?\))/mg
-    ,matches = contents.matchAll( importRuleRegEx )
+  ;
+  const
+    matches = contents.matchAll( importRuleRegEx )
   ;
   for ( const match of matches ) {
     const
@@ -192,11 +197,8 @@ function _collectImporterFiles( file, collectedFiles ) {
  * @returns {Stream} - Gulp ストリーム
  */
 function _renderPug() {
-  const
-    ignoreFileRegEx = /^_|\.(png|jpg|svg)$/
-  ;
   return through.obj( function _transform( file, enc, callback ) {
-    if ( ignoreFileRegEx.test( file.basename ) === true ) {
+    if ( file.basename.startsWith( '_' ) === true || file.basename.endsWith( '.pug' ) === false ) {
       return callback();
     }
     const
@@ -227,8 +229,7 @@ function _renderPug() {
  */
 function _formatHtml() {
   const
-    uglyAElementRegEx = options.formatHtml.uglyAElementRegEx
-    ,endCommentRegEx  = options.formatHtml.endCommentRegEx
+    { uglyAElementRegEx, endCommentRegEx, commentPosition } = options.formatHtml
   ;
   return through.obj( function _transform( file, enc, callback ) {
     let contents = file.contents.toString();
@@ -256,7 +257,7 @@ function _formatHtml() {
       contents = contents.replace( /^([^\S\n\r\f]+)/mg, '' );
     }
     // 閉じタグ付近に付けるコメントに関する体裁。
-    if ( options.formatHtml.commentPosition ) {
+    if ( commentPosition === 'inside' || commentPosition === 'outside' ) {
       contents = contents.replace( endCommentRegEx, _formatEndComment );
     }
     file.contents = Buffer.from( contents );
@@ -329,7 +330,7 @@ async function _addImageDimensions( match, file, map, errorCallback ) {
     ,tagName   = match[ 1 ]
     ,frontPart = match[ 2 ]
     ,attrName  = match[ 3 ]
-    ,q         = match[ 4 ]
+    ,quote     = match[ 4 ]
     ,srcPath   = match[ 5 ]
     ,query     = match[ 6 ]
     ,rearPart  = match[ 7 ]
@@ -343,9 +344,9 @@ async function _addImageDimensions( match, file, map, errorCallback ) {
       elementWithSize = ''
         + '<'
         + `${ tagName }${ frontPart }${ attrName }=`
-        + `${ q }${ srcPath }${ query }${ q } `
-        + `width=${ q }${ dimensions.width }${ q } `
-        + `height=${ q }${ dimensions.height }${ q }${ rearPart }`
+        + `${ quote }${ srcPath }${ query }${ quote } `
+        + `width=${ quote }${ dimensions.width }${ quote } `
+        + `height=${ quote }${ dimensions.height }${ quote }${ rearPart }`
         + '>'
     ;
     map.set( fullStr, elementWithSize );
@@ -366,52 +367,31 @@ async function _addImageDimensions( match, file, map, errorCallback ) {
  */
 function _formatEndComment( _full, closingTag, lineFeed, indent, comment ) {
   const
-    htmlComment     = '<!--' + comment + '-->'
-    ,positionInside = options.formatHtml.commentPosition === 'inside'
-    ,oneLine        = options.formatHtml.commentOnOneLine === true
-    ,blankLine      = options.formatHtml.blankLineAfterComment === true
+    htmlComment = `<!--${ comment }-->`
+    ,{ commentPosition, commentOnOneLine, blankLineAfterComment } = options.formatHtml
   ;
-  // コメントを閉じタグ内側に付けたい場合。
-  if ( positionInside === true ) {
-    // コメントと閉じタグを1行にまとめるか否か。
-    // <!-- --></div>
-    // or
-    // <!-- -->
-    // </div>
-    if ( oneLine === true ) {
-      // コメントの付いた閉じタグ後に空行をつけるか否か。
-      return ( blankLine === true )
-        ? htmlComment + closingTag + lineFeed
-        : htmlComment + closingTag
-      ;
-    } else {
-      //コメントの付いた閉じタグ後に空行をつけるか否か。
-      return ( blankLine === true )
-        ? htmlComment + lineFeed + indent + closingTag + lineFeed
-        : htmlComment + lineFeed + indent + closingTag
-      ;
-    }
-  // コメントを閉じタグ外側に付けたい場合。
-  } else {
-    // コメントと閉じタグを1行にまとめるか否か。
-    // </div><!-- -->
-    // or
-    // </div>
-    // <!-- -->
-    if ( oneLine === true ) {
-      // コメントの付いた閉じタグ後に空行をつけるか否か。
-      return ( blankLine === true )
-        ? closingTag + htmlComment + lineFeed
-        : closingTag + htmlComment
-      ;
-    } else {
-      // コメントの付いた閉じタグ後に空行をつけるか否か。
-      return ( blankLine === true )
-        ? closingTag + lineFeed + indent + htmlComment + lineFeed
-        : closingTag + lineFeed + indent + htmlComment
-      ;
-    }
+  const
+    commentIsInside = ( commentPosition === 'inside' )
+  ;
+  const
+    // コメントと閉じタグの順序を決定。
+    parts = ( commentIsInside === true )
+      ? [ htmlComment, closingTag ]
+      : [ closingTag, htmlComment ],
+    joiner = ( commentOnOneLine === true )
+      ? ''
+      : `${ lineFeed }${ indent }`
+  ;
+  // 改行の有無を決定。
+  let
+    result = parts.join( joiner )
+  ;
+  // 空行を付ける場合。
+  if ( blankLineAfterComment === true ) {
+    result += lineFeed;
   }
+
+  return result;
 }
 
 /**

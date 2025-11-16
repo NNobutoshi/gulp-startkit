@@ -179,13 +179,16 @@ function icon( done ) {
 process.once( BEFORE_EXIT_EVENT_NAME, () => eventEmitter.emit( BEFORE_EXIT_EVENT_NAME ) );
 
 /**
- * プロセス終了直前に発行されるイベントにwatch とブラウザリロードの初期化用タスクを登録する。
+ * プロセス終了直前に発行されるイベントにwatch タスクを登録する。
  */
-eventEmitter.once( BEFORE_EXIT_EVENT_NAME, () => {
-  init_watch();
-  init_browsing();
-} );
+eventEmitter.once( BEFORE_EXIT_EVENT_NAME, init_watch );
 
-/** * watch されているタスクの実行後に発行されるイベントにブラウザリロードを登録する。
+/**
+ * プロセス終了直前にブラウザリロードの初期化用タスクを登録する。
+ */
+eventEmitter.once( BEFORE_EXIT_EVENT_NAME, init_browsing );
+
+/**
+ * watch されているタスクの実行後に発行されるイベントにブラウザリロードを登録する。
  */
 eventEmitter.on( RAN_WATCH_TASK_EVENT_NAME, reload_browsing );
