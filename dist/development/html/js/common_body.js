@@ -2,11 +2,11 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/common_body.entry.js":
+/***/ "./src/js/common_body.entry.js"
 /*!*************************************!*\
   !*** ./src/js/common_body.entry.js ***!
   \*************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_foo_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./_modules/foo.js */ "./src/js/_modules/foo.js");
@@ -20,7 +20,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
   console.info('image loaded');
 });
 
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -42,6 +42,12 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
 /******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
@@ -64,9 +70,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
 /******/ 			}
 /******/ 			var notFulfilled = Infinity;
 /******/ 			for (var i = 0; i < deferred.length; i++) {
-/******/ 				var chunkIds = deferred[i][0];
-/******/ 				var fn = deferred[i][1];
-/******/ 				var priority = deferred[i][2];
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
 /******/ 				var fulfilled = true;
 /******/ 				for (var j = 0; j < chunkIds.length; j++) {
 /******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
@@ -139,9 +143,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var chunkIds = data[0];
-/******/ 			var moreModules = data[1];
-/******/ 			var runtime = data[2];
+/******/ 			var [chunkIds, moreModules, runtime] = data;
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
