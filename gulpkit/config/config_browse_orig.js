@@ -30,7 +30,7 @@ import getEnvStatus from './get_env_status.js';
 export { mergedConfig as config, mergedOptions as options };
 
 const
-  ENV_BROWSING_ENABLED = getEnvStatus( env.BROWSING_ENABLED )
+  IS_PREVIEW_ENABLED = getEnvStatus( env.ENABLE_PREVIEW )
 ;
 
 /**
@@ -38,7 +38,7 @@ const
  * @memberof module:config_browse_orig
  */
 const devConfig = {
-  enabled : ENV_BROWSING_ENABLED,
+  enabled : IS_PREVIEW_ENABLED,
 };
 
 /**

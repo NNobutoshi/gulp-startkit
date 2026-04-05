@@ -17,7 +17,7 @@ import webpack      from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 
 import { srcDir, distDir, commonOptions } from './common.js';
-import { SOURCEMAPS_DIR }                 from './constants.js';
+import { DIR_SOURCEMAPS }                 from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
 
 export { mergedConfig as config, mergedOptions as options };
@@ -77,7 +77,7 @@ const devConfig = {
     },
     plugins : [
       new webpack.SourceMapDevToolPlugin( {
-        filename : SOURCEMAPS_DIR + '/[file].map',
+        filename : DIR_SOURCEMAPS + '/[file].map',
       } ),
     ],
     optimization : {},

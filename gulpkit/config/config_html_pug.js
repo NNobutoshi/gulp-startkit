@@ -16,8 +16,8 @@ export { mergedConfig as config, mergedOptions as options };
 
 const
   TASK_NAME = 'html_pug',
-  NODE_ENV = env.NODE_ENV,
-  CWD = cwd()
+  NODE_ENV  = env.NODE_ENV,
+  CWD       = cwd()
 ;
 const
   SRC_DIR  = srcDir[ NODE_ENV ],

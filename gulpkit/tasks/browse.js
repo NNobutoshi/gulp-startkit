@@ -11,7 +11,7 @@ import browserSync from 'browser-sync';
 
 import existsFile from '../utilities/exists.js';
 
-export { init_browsing, reload_browsing };
+export { init_preview, reload_preview };
 
 const
   RELATIVE_CONFIG_FILE_PATH = '../config/config_browse.js'
@@ -22,11 +22,11 @@ const
 
 /**
  * BrowserSync を初期化する。<br>
- * コンフィグファイルが無い場合（live reload機能が必要のない場合）はCallback のdone を実行してタスクを終了する。
+ * コンフィグファイルが無い場合（live reload 機能が必要のない場合）は何もしない。
  * @memberof module:tasks/browse
  * @returns {Promise<void>}
  */
-async function init_browsing() {
+async function init_preview() {
   try {
     if ( !await existsFile( CONFIG_FILE_PATH ) ) {
       return;
@@ -49,7 +49,7 @@ async function init_browsing() {
  * @memberof module:tasks/browse
  * @returns {undefined}
  */
-function reload_browsing() {
+function reload_preview() {
   if ( browserSync.active ) {
     browserSync.reload();
   }

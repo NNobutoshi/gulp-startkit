@@ -10,7 +10,7 @@
 import { env } from 'node:process';
 
 import { srcDir, distDir, commonOptions } from './common.js';
-import { SOURCEMAPS_DIR }                 from './constants.js';
+import { DIR_SOURCEMAPS }                 from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
 
 import autoprefixer from 'autoprefixer';
@@ -84,7 +84,7 @@ const devOptions = {
   },
   sourcemaps : {
     enabled : true,
-    dir     : '/' + SOURCEMAPS_DIR,
+    dir     : '/' + DIR_SOURCEMAPS,
   },
 };
 

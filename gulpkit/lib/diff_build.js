@@ -28,18 +28,18 @@ import lastDiff         from './last_diff.js';
 import { eventEmitter } from '../utilities/event_emitter.js';
 
 const
-  WRITING_DELAY_TIME = 1000,
-  MAX_BUFFER_SIZE    = 1024 * 1024 * 10,
   CWD = process.cwd()
 ;
 const
   defaultSettings = {
-    group         : '',
-    enabled       : true,
-    isRefsEnabled : false,
-    command       : 'git status -suall',
-    oneToOne      : false,
-    pLimitSize    : 5,
+    group                : '',
+    enabled              : true,
+    isRefsEnabled        : false,
+    command              : 'git status -suall',
+    commandMaxBufferSize : 1024 * 1024 * 10,
+    writingDelayTime   : 1000,
+    oneToOne             : false,
+    pLimitSize           : 5,
   }
 ;
 let
@@ -93,14 +93,14 @@ function diff_build( options, collect, select ) {
   // モジュールスコープであるdiffBldProc がnull の場合にのみインスタンス化。
   if ( !diffBldProc ) {
     diffBldProc = new DiffBuildProcessor();
-    if ( settings.firstTasksEndedEventName && settings.tasksEndedEventName ) {
+    if ( settings.eventFinishFirstTasks && settings.eventRanWatchedTask ) {
     // 共有する値を初期化するdiffBldProc のメンバ関数をリスナー登録。
       _addResetStateListeners(
         eventEmitter,
-        // this の参照が代わらないようdiffBldProc にbind 。
+        // this の参照が変わらないようdiffBldProc にbind 。
         diffBldProc.resetSharedState.bind( diffBldProc ),
-        settings.firstTasksEndedEventName,
-        settings.tasksEndedEventName,
+        settings.eventFinishFirstTasks,
+        settings.eventRanWatchedTask,
       );
     }
   }
@@ -167,17 +167,20 @@ function _addResetStateListeners(
  */
 function _getGitDiffData( settings, ref1, ref2 ) {
   const
-    name = settings.name
+    name          = settings.name,
+    maxBufferSize = settings.commandMaxBufferSize
   ;
   let
     command = settings.command,
-    isRefsEnabled = ( ref1 && ref2 )
+    isRefsEnabled = ( ref1 && ref2 ),
+    renameSeparator =  /\s+->\s+/
   ;
-  if ( isRefsEnabled ) {
+  if ( isRefsEnabled === true ) {
     command = command.replace( '<ref1>', ref1 ).replace( '<ref2>', ref2 );
+    renameSeparator = /\s+/; // コマンドによって区切り文字が違うため。
   }
   return new Promise( ( resolvePromise, rejectPromise ) => {
-    exec( command, { maxBuffer : MAX_BUFFER_SIZE }, ( err, stdout, stderr ) => {
+    exec( command, { maxBuffer : maxBufferSize }, ( err, stdout, stderr ) => {
       if ( err ) {
         return rejectPromise( err );
       }
@@ -185,7 +188,7 @@ function _getGitDiffData( settings, ref1, ref2 ) {
         fancyLog.warn( chalk.yellow( `${ name }\n${ stderr }` ) );
       }
       if ( stdout ) {
-        return resolvePromise( _createObjectFromDiffStdout( stdout, isRefsEnabled ) );
+        return resolvePromise( _createObjectFromDiffStdout( stdout, renameSeparator ) );
       }
       return resolvePromise( {} );
     } );
@@ -285,6 +288,10 @@ function _createDependencyFilesStream( diffBldProc, settings ) {
 /**
  * 任意で設定したグループに属する他のファイルも流すストリームを作成。<br>
  * 例えば、iconFont 、sprite.smith などのタスク用。
+ * @private
+ * @param {diffBldProc} diffBldProc - 差分ビルド処理を行うクラスのインスタンス
+ * @param {object} settings - 設定オブジェクト
+ * @returns {Stream} - 処理されたストリーム
  */
 function _createGroupedFilesStream( diffBldProc, settings ) {
   const
@@ -638,15 +645,15 @@ class DiffBuildProcessor {
  * through2.obj()の flush function 内部で実行。<br>
  * 各タスクで汎用的に使用できるため、エクスポートする。
  * @memberof module:lib/diff_build
- * @param {string} filePath - ファイルパス
+ * @param {string} filePath - ファイルの絶対パス
  * @param {Map} collectedFileMap - 収集した依存関係
  * @param {Set} selectedFileMap - 最終選択ファイルのパスの格納用
  */
-function organizeSelectedFileMap( filepath, collectedFileMap, selectedFileMap ) {
+function organizeSelectedFileMap( filePath, collectedFileMap, selectedFileMap ) {
   const
     visited = new Set()
   ;
-  _recurse( filepath );
+  _recurse( filePath );
   function _recurse( path ) {
     if ( visited.has( path ) === true ) {
       return;
@@ -707,9 +714,13 @@ async function _finalizeProcessor( diffBldProc, settings ) {
     targetFileSet.size,
     selectedFileSet.size,
   );
+
+  /**
+   * refs が有効な場合は、ブランチやコミット間の差分が対象のため、直近の差分データをlastDiff にセットして書き込む必要はない。
+   */
   if ( settings.isRefsEnabled === false ) {
     lastDiff.set( diffBldProc.currentDiffData );
-    await _writeDiffData();
+    await _writeDiffData( settings.writingDelayTime );
     if ( writing_error ) {
       // ファイルローカルの変数に保持していたエラーをここでthrow する。
       throw writing_error;
@@ -723,7 +734,7 @@ async function _finalizeProcessor( diffBldProc, settings ) {
  * @private
  * @returns {Promise<void>} - Promise
  */
-async function _writeDiffData() {
+async function _writeDiffData( writingDelayTime ) {
   clearTimeout( writingTimeoutId );
   writingTimeoutId = setTimeout( async function() {
     try {
@@ -735,7 +746,7 @@ async function _writeDiffData() {
     } finally {
       writingTimeoutId = null;
     }
-  }, WRITING_DELAY_TIME );
+  }, writingDelayTime );
 }
 
 /**
@@ -761,10 +772,9 @@ function _logFileCount( name, detected, total ) {
  * @param {string} str - 基にする文字列
  * @returns {object} - 生成したObject
  */
-function _createObjectFromDiffStdout( str, isRefsEnabled ) {
+function _createObjectFromDiffStdout( str, renameSeparator ) {
   const
     matches = str.matchAll( /^([^\r\n]+?)[^\f\r\n\S]+([^\r\n]+)\n/mg ),
-    renameSeparator = ( isRefsEnabled === true ) ? /\s+/ : /\s+->\s+/, //コマンドによって区切り文字が違うため。
     retObj = {}
   ;
   for ( const match of matches ) {

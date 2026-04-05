@@ -10,7 +10,7 @@
 import { env } from 'node:process';
 
 import { srcDir, distDir, commonOptions } from './common.js';
-import { PLACEHOLDER }                    from './constants.js';
+import { PLACEHOLDER_SUBDIR }             from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
 
 export { mergedConfig as config, mergedOptions as options };
@@ -34,9 +34,9 @@ const devConfig = {
   src          : [ `${ SRC_DIR }/**/${ GROUP_DIR }/*.svg` ],
   base         : SRC_DIR,
   dist         : DIST_DIR,
-  placeholder  : PLACEHOLDER,
-  fontsDist    : `${ DIST_DIR }${ PLACEHOLDER }/fonts`,
-  scssDist     : `${ SRC_DIR  }${ PLACEHOLDER }/css`,
+  placeholder  : PLACEHOLDER_SUBDIR,
+  fontsDist    : `${ DIST_DIR }${ PLACEHOLDER_SUBDIR }/fonts`,
+  scssDist     : `${ SRC_DIR  }${ PLACEHOLDER_SUBDIR }/css`,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
 };
 
@@ -62,7 +62,7 @@ const devOptions = {
   },
   watch : commonOptions.watch,
   iconfont : {
-    fontName       : `icons${ PLACEHOLDER }`,
+    fontName       : `icons${ PLACEHOLDER_SUBDIR }`,
     prependUnicode : false,
     formats        : [ 'ttf', 'eot', 'woff', 'woff2' ],
     normalize      : true,

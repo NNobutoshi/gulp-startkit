@@ -10,7 +10,7 @@
 import { env } from 'node:process';
 
 import { srcDir, distDir, commonOptions } from './common.js';
-import { PLACEHOLDER }                    from './constants.js';
+import { PLACEHOLDER_SUBDIR }             from './constants.js';
 import mergeByEnv                         from './merge_by_env.js';
 
 export { mergedConfig as config, mergedOptions as options };
@@ -34,10 +34,10 @@ const devConfig = {
   src          : [ `${ SRC_DIR }/**/${ GROUP_DIR }/*.png` ],
   dist         : DIST_DIR,
   base         : SRC_DIR,
-  placeholder  : PLACEHOLDER,
+  placeholder  : PLACEHOLDER_SUBDIR,
   group        : GROUP_DIR, // この命名ルールのディレクトリごとに。
-  imgDist      : `${ DIST_DIR }${ PLACEHOLDER }/img`,
-  scssDist     : `${ SRC_DIR  }${ PLACEHOLDER }/css`,
+  imgDist      : `${ DIST_DIR }${ PLACEHOLDER_SUBDIR }/img`,
+  scssDist     : `${ SRC_DIR  }${ PLACEHOLDER_SUBDIR }/css`,
 };
 
 /**

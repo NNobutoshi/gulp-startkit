@@ -13,17 +13,17 @@ import fancyLog from 'fancy-log';
 import chalk    from 'chalk';
 
 import {
-  PROD_ENV_NAME, BEFORE_EXIT_EVENT_NAME,
-  DEV_ENV_NAME,  RAN_WATCH_TASK_EVENT_NAME,
+  NODE_ENV_PROD, EVENT_START_WATCHING,
+  NODE_ENV_DEV,  EVENT_RAN_WATCHED_TASKE,
 } from './constants.js';
 
-import getEnvStatus     from './get_env_status.js';
+import getEnvStatus from './get_env_status.js';
 
 const
   NODE_ENV = env.NODE_ENV,
-  ENV_DIFF_ENABLED      = getEnvStatus( env.DIFF_ENABLED ),
-  ENV_DIFF_REFS_ENABLED = getEnvStatus( env.DIFF_REFS_ENABLED ),
-  ENV_WATCH_ENABLED     = getEnvStatus( env.WATCH_ENABLED )
+  IS_DIFF_ENABLED      = getEnvStatus( env.ENABLE_DIFF ),
+  IS_DIFF_REFS_ENABLED = getEnvStatus( env.ENABLE_DIFF_REFS ),
+  IS_WATCH_ENABLED     = getEnvStatus( env.ENABLE_WATCH )
 ;
 
 /**
@@ -32,8 +32,8 @@ const
  * @name srcDir
  */
 export const srcDir  = {
-  [ PROD_ENV_NAME ] : 'src',
-  [ DEV_ENV_NAME ]  : 'src',
+  [ NODE_ENV_PROD ] : 'src',
+  [ NODE_ENV_DEV ]  : 'src',
 };
 
 /**
@@ -42,8 +42,8 @@ export const srcDir  = {
  * @name distDir
  */
 export const distDir = {
-  [ PROD_ENV_NAME ] : 'dist/production/html',
-  [ DEV_ENV_NAME ]  : 'dist/development/html',
+  [ NODE_ENV_PROD ] : 'dist/production/html',
+  [ NODE_ENV_DEV ]  : 'dist/development/html',
 };
 
 /**
@@ -53,7 +53,7 @@ export const distDir = {
  * @memberof module:config
  * @name GIT_COMMAND
  */
-const GIT_COMMAND = ( ENV_DIFF_REFS_ENABLED )
+const GIT_COMMAND = ( IS_DIFF_REFS_ENABLED )
   ? `git diff --name-status <ref1> <ref2> gulpkit/ ${ srcDir[ NODE_ENV ] }/`
   : `git status -suall gulpkit/ ${ srcDir[ NODE_ENV ] }/`
 ;
@@ -66,20 +66,20 @@ const GIT_COMMAND = ( ENV_DIFF_REFS_ENABLED )
 export const commonOptions = {
   diff : {
     command : GIT_COMMAND,
-    enabled       : ENV_DIFF_ENABLED,
-    isRefsEnabled : ENV_DIFF_REFS_ENABLED,
-    firstTasksEndedEventName : BEFORE_EXIT_EVENT_NAME,
-    tasksEndedEventName      : RAN_WATCH_TASK_EVENT_NAME,
+    enabled       : IS_DIFF_ENABLED,
+    isRefsEnabled : IS_DIFF_REFS_ENABLED,
+    eventFinishFirstTasks : EVENT_START_WATCHING,
+    eventRanWatchedTask   : EVENT_RAN_WATCHED_TASKE,
   },
   watch : {
-    enabled : ENV_WATCH_ENABLED,
-    ranTaskEventName : RAN_WATCH_TASK_EVENT_NAME,
-    runTasksDelayTime : 400,
+    enabled : IS_WATCH_ENABLED,
+    ranTaskEventName : EVENT_RAN_WATCHED_TASKE,
+    runTasksDelayTime : 200,
   },
   plumber : {
     errorHandler : function( err ) {
       fancyLog.error( chalk.hex( '#FF0000' )( err.stack ) );
       this.emit( 'end' );
     },
-  }
+  },
 };

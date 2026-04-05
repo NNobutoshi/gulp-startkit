@@ -1,7 +1,11 @@
-export const PROD_ENV_NAME = 'production';
-export const DEV_ENV_NAME  = 'development';
-export const SOURCEMAPS_DIR = 'sourcemaps';
-export const PLACEHOLDER = '[subdir]';
-export const WATCH_INIT_EVENT_NAME     = 'watchInit';
-export const RAN_WATCH_TASK_EVENT_NAME = 'ranWatchTask';
-export const BEFORE_EXIT_EVENT_NAME = 'beforeExit';
+export const NODE_ENV_PROD = 'production';
+export const NODE_ENV_DEV  = 'development';
+
+export const DIR_SOURCEMAPS = 'sourcemaps';
+
+export const PLACEHOLDER_SUBDIR = '[subdir]';
+
+export const EVENT_START_WATCHING    = 'startWatching';
+export const EVENT_START_PREVIEWING  = 'startPreviewing';
+export const EVENT_RAN_WATCHED_TASKE = 'ranWatchedTask';
+export const EVENT_BEFORE_EXIT       = 'beforeExit';

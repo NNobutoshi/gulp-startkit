@@ -6,7 +6,7 @@
 
 import merge from 'lodash/merge.js';
 
-import { PROD_ENV_NAME, DEV_ENV_NAME  } from './constants.js';
+import { NODE_ENV_PROD, NODE_ENV_DEV  } from './constants.js';
 
 export { mergeByEnv as default };
 
@@ -19,15 +19,12 @@ export { mergeByEnv as default };
  * @returns {object} - マージを行ったオブジェクト
  */
 function mergeByEnv( env, baseObj, sourceObj ) {
-  const result = {};
   switch ( env ) {
-  case PROD_ENV_NAME:
-    merge( result, baseObj, sourceObj );
-    break;
-  case  DEV_ENV_NAME:
-    merge( result, baseObj );
-    break;
+  case NODE_ENV_PROD:
+    return merge( {}, baseObj, sourceObj );
+  case NODE_ENV_DEV:
+    return baseObj;
   default:
+    throw new Error( `Invalid environment name: ${ env }` );
   }
-  return result;
 }

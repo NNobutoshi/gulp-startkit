@@ -14,10 +14,15 @@ import process from 'node:process';
 import { series, parallel } from 'gulp';
 
 import * as tasks from './tasks/index.js';
-import { BEFORE_EXIT_EVENT_NAME, RAN_WATCH_TASK_EVENT_NAME } from './config/constants.js';
-import { eventEmitter }                                      from './utilities/event_emitter.js';
-import { init_watch }                                        from './lib/watch_task.js';
-import { init_browsing, reload_browsing }                    from './tasks/browse.js';
+
+import {
+  EVENT_BEFORE_EXIT,       EVENT_START_WATCHING,
+  EVENT_RAN_WATCHED_TASKE, EVENT_START_PREVIEWING
+} from './config/constants.js';
+
+import { eventEmitter }                 from './utilities/event_emitter.js';
+import { init_watch }                   from './lib/watch_task.js';
+import { init_preview, reload_preview } from './tasks/browse.js';
 
 export { main as default, html, img, css, js, icon };
 
@@ -176,19 +181,22 @@ function icon( done ) {
 /**
  * プロセス終了直前にイベントを発行する。
  */
-process.once( BEFORE_EXIT_EVENT_NAME, () => eventEmitter.emit( BEFORE_EXIT_EVENT_NAME ) );
+process.once( EVENT_BEFORE_EXIT, () => {
+  eventEmitter.emit( EVENT_START_WATCHING );
+  eventEmitter.emit( EVENT_START_PREVIEWING );
+} );
 
 /**
  * プロセス終了直前に発行されるイベントにwatch タスクを登録する。
  */
-eventEmitter.once( BEFORE_EXIT_EVENT_NAME, init_watch );
+eventEmitter.once( EVENT_START_WATCHING, init_watch );
 
 /**
  * プロセス終了直前にブラウザリロードの初期化用タスクを登録する。
  */
-eventEmitter.once( BEFORE_EXIT_EVENT_NAME, init_browsing );
+eventEmitter.once( EVENT_START_PREVIEWING, init_preview );
 
 /**
  * watch されているタスクの実行後に発行されるイベントにブラウザリロードを登録する。
  */
-eventEmitter.on( RAN_WATCH_TASK_EVENT_NAME, reload_browsing );
+eventEmitter.on( EVENT_RAN_WATCHED_TASKE, reload_preview );
