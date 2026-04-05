@@ -8,4 +8,4 @@ sourcemaps
 /package-lock.json
 /config.yml
 /vagrant_config.yml
-/gulpkit/config/config_browse.js
+/gulpkit/config/config_preview.js

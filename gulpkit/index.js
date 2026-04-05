@@ -6,7 +6,7 @@
  * @requires ./config/constants.js
  * @requires ./utilities/event_emitter.js
  * @requires ./lib/watch_task.js
- * @requires ./tasks/browse.js
+ * @requires ./tasks/preview.js
  */
 
 import process from 'node:process';
@@ -22,7 +22,7 @@ import {
 
 import { eventEmitter }                 from './utilities/event_emitter.js';
 import { init_watch }                   from './lib/watch_task.js';
-import { init_preview, reload_preview } from './tasks/browse.js';
+import { init_preview, reload_preview } from './tasks/preview.js';
 
 export { main as default, html, img, css, js, icon };
 

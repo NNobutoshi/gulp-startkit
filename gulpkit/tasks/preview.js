@@ -1,8 +1,9 @@
 /**
- * @module tasks/browse
+ * @module tasks/preview
  * @requires node:url
  * @requires browser-sync
  * @requires ../utilities/exists.js
+ * @requires ../config/config/config_preview.js
  */
 
 import { fileURLToPath } from 'node:url';
@@ -14,7 +15,7 @@ import existsFile from '../utilities/exists.js';
 export { init_preview, reload_preview };
 
 const
-  RELATIVE_CONFIG_FILE_PATH = '../config/config_browse.js'
+  RELATIVE_CONFIG_FILE_PATH = '../config/config_preview.js'
 ;
 const
   CONFIG_FILE_PATH = fileURLToPath( import.meta.resolve( RELATIVE_CONFIG_FILE_PATH ) )
@@ -23,7 +24,7 @@ const
 /**
  * BrowserSync を初期化する。<br>
  * コンフィグファイルが無い場合（live reload 機能が必要のない場合）は何もしない。
- * @memberof module:tasks/browse
+ * @memberof module:tasks/preview
  * @returns {Promise<void>}
  */
 async function init_preview() {
@@ -46,7 +47,7 @@ async function init_preview() {
 
 /**
  * BrowserSync をリロードする。
- * @memberof module:tasks/browse
+ * @memberof module:tasks/preview
  * @returns {undefined}
  */
 function reload_preview() {
