@@ -3,6 +3,7 @@
  * @requires node:fs/promises
  * @requires node:path
  * @requires fancy-log
+ * @requires chalk
  * @requires xlsx
  * @requires ../utilities/exists.js
  */
@@ -12,6 +13,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path                           from 'node:path';
 
 import fancyLog from 'fancy-log';
+import chalk    from 'chalk';
 import XLSX     from 'xlsx';
 
 import existsFile from '../utilities/exists.js';
@@ -22,7 +24,8 @@ const
   CWD                  = cwd(),
   SRC_DIR_NAME         = 'src',
   PUG_CONFIG_FILE_NAME = '_pug_data.json',
-  SITE_MAP_FILE_PATH   = argv[ 2 ]
+  SITE_MAP_FILE_PATH   = argv[ 2 ],
+  ERROR_COLOR          = '#FF0000'
 ;
 const
   SRC_DIR         = path.resolve( CWD, SRC_DIR_NAME ),
@@ -33,22 +36,66 @@ const
 ;
 
 /**
- * Excel のデータを JSON に変換する。
+ * Excel のデータを JSON に変換する。<br>
+ * 変換された JSON データを基にPug データファイル（各HTML ファイルの属性値等をひとまとめにしたJSON）、およびPug ファイルを作成する。<br>
+ * Pug データファイルは、Pug の実行時にPug に渡すデータとして使用する。
  * @function _run
- * @param {object} workBook - Excel のデータ
  * @returns {Promise<void>}
  */
 ( async function _run() {
+  try {
+    _validatePath( SITE_MAP_FILE_PATH );
+  } catch ( err ) {
+    fancyLog.error( chalk.hex( ERROR_COLOR )( err.stack ) );
+  }
   const workBook       = XLSX.readFile( XLSX_FILE_PATH );
   const jsonDataOrigin = XLSX.utils.sheet_to_json( workBook.Sheets[ XLSX_SHEET_NAME ] );
   const jsonData       = _mapJsonDataByUrl( jsonDataOrigin );
   const dataStrings    = JSON.stringify( jsonData, null, 2 );
   await _writePugDataFile( dataStrings );
+  fancyLog( `configured  "${ path.relative( CWD, DATA_FILE_PATH ) }"` );
   for ( let url in jsonData ) {
-    await _createPugFileByDataProps( jsonData[ url ], _createPugFile );
-  }
+    try {
+      const
+        templateFilePath = path.join( SRC_DIR, jsonData[ url ].template ),
+        pugFilePath      = _getPugFilePath( jsonData[ url ].url )
+     ;
+      const
+        exists = await existsFile( pugFilePath )
+     ;
+      if ( exists && FORCED === false ) {
+        continue;
+      }
+      await _createPugFile( pugFilePath, templateFilePath );
+      if ( exists ) {
+        fancyLog( `updated       "${ path.relative( CWD, pugFilePath ) }"` );
+      } else {
+        fancyLog( `newly created "${ path.relative( CWD, pugFilePath ) }"` );
+      }
+    } catch ( err ) {
+      fancyLog.error( chalk.hex( ERROR_COLOR )( err.stack ) );
+    }
+  } // for
+
+  /**
+   * 生成されたPug ファイルを基にHTML ファイルを生成する。
+   */
   html();
 } )();
+
+/**
+ * 絶対パスもしくはExcel ファイルパス以外はエラーを返す。
+ * @param {string} filePath - ファイルパス
+ * @throws {Error} 相対パスもしくはExcel ファイル以外のパスの場合にエラーを返す
+ */
+function _validatePath( filePath ) {
+  if ( path.isAbsolute( filePath ) === true || /\.xlsx?$/.test( filePath ) === false ) {
+    throw new Error(
+      `The file path "${ filePath }" is not a relative path or an Excel file path.
+      Please provide a valid path.`
+    );
+  }
+}
 
 /**
  * Pug のデータファイルに書き込む。
@@ -58,10 +105,9 @@ const
  */
 async function _writePugDataFile( content ) {
   try {
-    await writeFile( DATA_FILE_PATH, content, CHARSET );
-    fancyLog( `configured  "${ path.relative( CWD, DATA_FILE_PATH ) }"` );
+    await writeFile( DATA_FILE_PATH, content + '\n', CHARSET );
   } catch ( err ) {
-    fancyLog.error( err.stack );
+    throw err;
   }
 }
 
@@ -82,36 +128,20 @@ function _mapJsonDataByUrl( data ) {
 }
 
 /**
- * JSON データのプロパティを元にPug ファイルを作成する。
+ * HTML ファイルのサイトルートパスを基にPug ファイルのパスを生成する。
  * @private
- * @param {object} props - JSON データのプロパティ
- * @param {function} pugFileCreator - Pug ファイルを作成する関数
- * @returns {Promise<void>}
+ * @param {string} siteRootHtmlFilePath - HTMLファイルのサイトルートパス
+ * @returns {string} Pug ファイルのパス
  */
-async function _createPugFileByDataProps( props, pugFileCreator ) {
-  let
-    siteRootHtmlFilePath        = props.url,
-    siteRootTemplatePugFilePath = props.template,
-    siteRootPugFilePath         = '',
-    pugFilePath                 = ''
-  ;
-  const
-    templateFilePath = path.join( SRC_DIR, siteRootTemplatePugFilePath )
-  ;
-  if ( siteRootHtmlFilePath.match( /\/$/ ) ) {
+function _getPugFilePath( siteRootHtmlFilePath ) {
+  let siteRootPugFilePath = '';
+  if ( /\/$/.test( siteRootHtmlFilePath ) === true ) {
     siteRootPugFilePath = siteRootHtmlFilePath.replace( /\/$/, '/index.pug' );
   }
-  if ( siteRootHtmlFilePath.match( /\.html?$/ ) ) {
+  if ( /\.html?$/.test( siteRootHtmlFilePath ) === true ) {
     siteRootPugFilePath = siteRootHtmlFilePath.replace( /\.html?$/, '.pug' );
   }
-  pugFilePath = path.join( SRC_DIR, siteRootPugFilePath );
-  try {
-    await mkdir( path.dirname( pugFilePath ),{ recursive : true } );
-    await pugFileCreator( pugFilePath, templateFilePath );
-  } catch ( err ) {
-    fancyLog.error( err.stack );
-    throw err;
-  }
+  return path.join( SRC_DIR, siteRootPugFilePath );
 }
 
 /**
@@ -124,17 +154,11 @@ async function _createPugFileByDataProps( props, pugFileCreator ) {
 async function _createPugFile( pugFilePath, templateFilePath ) {
   try {
     const
-      exists = await existsFile( pugFilePath )
-    ;
-    if ( exists && FORCED === false ) {
-      return;
-    }
-    const
       content = await _readTemplateFile( templateFilePath )
     ;
-    await _writePugFile( pugFilePath, content, exists );
+    await mkdir( path.dirname( pugFilePath ), { recursive : true } );
+    await writeFile( pugFilePath, content, CHARSET );
   } catch ( err ) {
-    fancyLog.error( err.stack );
     throw err;
   }
 }
@@ -147,31 +171,9 @@ async function _createPugFile( pugFilePath, templateFilePath ) {
  */
 async function _readTemplateFile( templateFilePath ) {
   try {
+    console.info( 'remplateFile === ', templateFilePath );
     return await readFile( templateFilePath, CHARSET );
   } catch ( err ) {
-    fancyLog.error( err.stack );
-    throw err;
-  }
-}
-
-/**
- * Pug ファイルを書き込む。
- * @private
- * @param {string} content - Pug ファイルの内容
- * @param {string} pugFilePath - Pug ファイルの絶対パス
- * @param {boolean} exists - Pug ファイルが既存か否か
- * @returns {Promise<void>} テンプレートファイルの内容
- */
-async function _writePugFile( pugFilePath, content, exists ) {
-  try {
-    await writeFile( pugFilePath, content, CHARSET );
-    if ( exists ) {
-      fancyLog( `updated       "${ path.relative( CWD, pugFilePath ) }"` );
-    } else {
-      fancyLog( `newly created "${ path.relative( CWD, pugFilePath ) }"` );
-    }
-  } catch ( err ) {
-    fancyLog.error( err.stack );
     throw err;
   }
 }
