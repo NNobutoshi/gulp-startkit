@@ -75,7 +75,7 @@ if ( options.watch.enabled === true ) {
 }
 
 /**
- * webpackConfig ファイルをストリームのファイル（vinyl オブジェクト）情報を元に整形して備え、<br>
+ * webpackConfig ファイルをストリームのファイル（vinyl オブジェクト）情報を基に整形して備え、<br>
  * webpack を実行する。
  * @private
  * @returns {Stream} - Gulp ストリーム

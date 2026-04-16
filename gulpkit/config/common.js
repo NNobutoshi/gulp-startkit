@@ -25,6 +25,9 @@ const
   IS_DIFF_REFS_ENABLED = getEnvStatus( env.ENABLE_DIFF_REFS ),
   IS_WATCH_ENABLED     = getEnvStatus( env.ENABLE_WATCH )
 ;
+const
+  ERROR_COLOR = '#FF0000'
+;
 
 /**
  * ソースディレクトリを環境変数に応じて切り替える。
@@ -78,7 +81,7 @@ export const commonOptions = {
   },
   plumber : {
     errorHandler : function( err ) {
-      fancyLog.error( chalk.hex( '#FF0000' )( err.stack ) );
+      fancyLog.error( chalk.hex( ERROR_COLOR )( err.stack ) );
       this.emit( 'end' );
     },
   },

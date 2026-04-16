@@ -78,24 +78,28 @@ function _setChildSourceToParentMap( file, groupedSources, groupSubdirName, base
  * @returns {Promise<void>}
  */
 async function _runTaskForEachGroup( groupedSources, branchTask, callback ) {
-  const
-    trunkStream   = this,
-    branchStreams = []
-  ;
-  for ( const [ parentPath ,groupData ] of groupedSources ) {
-    branchStreams.push(
-      await branchTask(
-        groupData.children.map( ( childPath ) => parentPath + childPath ),
-        groupData.baseDir.replace( /\\/g, '/' ).replace( /\/$/, '' ),
-        trunkStream,
-      )
-    );
-  }
-  // _groupSrc から渡された基のstream のcallback をここで実行。
-  if ( branchStreams.length > 0 ) {
-    mergeStream( ...branchStreams ).on( 'finish', callback );
-  } else {
-    callback();
+  try {
+    const
+      trunkStream   = this,
+      branchStreams = []
+   ;
+    for ( const [ parentPath ,groupData ] of groupedSources ) {
+      branchStreams.push(
+        await branchTask(
+          groupData.children.map( ( childPath ) => parentPath + childPath ),
+          groupData.baseDir.replace( /\\/g, '/' ).replace( /\/$/, '' ),
+          trunkStream,
+        )
+      );
+    }
+    // _groupSrc から渡された基のstream のcallback をここで実行。
+    if ( branchStreams.length > 0 ) {
+      mergeStream( ...branchStreams ).on( 'finish', callback );
+    } else {
+      callback();
+    }
+  } catch ( err ) {
+    callback( err );
   }
 
 }

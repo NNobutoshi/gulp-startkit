@@ -8,8 +8,12 @@ import js               from '@eslint/js';
 import globals from 'globals';
 
 const
-  __filename = fileURLToPath( import.meta.url ),
-  __dirname  = path.dirname( __filename ),
+  __filename = fileURLToPath( import.meta.url )
+;
+const
+  __dirname  = path.dirname( __filename )
+;
+const
   compat     = new FlatCompat( {
     baseDirectory     : __dirname,
     recommendedConfig : js.configs.recommended,
@@ -26,7 +30,6 @@ export default defineConfig(
         ...globals.node,
         $ : true,
       },
-
       ecmaVersion : 2022,
       sourceType : 'module',
     },
@@ -41,33 +44,43 @@ export default defineConfig(
       'key-spacing' : [
         'error',
         {
-          'mode' : 'minimum',
+          'mode'        : 'minimum',
           'beforeColon' : true,
           'afterColon'  : true
         }
       ],
       'comma-dangle'    : [ 'off' ],
-      'no-unused-vars'  : [ 'error', {
-        args              : 'all',
-        argsIgnorePattern : '^_|^e|^index',
-      } ],
+      'no-unused-vars'  : [
+        'error',
+        {
+          args              : 'all',
+          argsIgnorePattern : '^_|^e|^index',
+        }
+      ],
 
       camelcase : [ 'off' ],
 
-      'lines-around-comment' : [ 'error', {
-        beforeLineComment : false,
-      } ],
+      'lines-around-comment' : [
+        'error', {
+          beforeLineComment : false,
+        }
+      ],
 
-      'operator-linebreak' : [ 'error', 'after', {
-        overrides : {
-          '?'  : 'ignore',
-          ':'  : 'ignore',
-          '||' : 'ignore',
-          '&&' : 'ignore',
-          '+'  : 'ignore',
-          '-'  : 'ignore',
-        },
-      } ],
+      'operator-linebreak' : [
+        'error',
+        'after',
+        {
+          overrides : {
+            '?'  : 'ignore',
+            ':'  : 'ignore',
+            '||' : 'ignore',
+            '&&' : 'ignore',
+            '+'  : 'ignore',
+            '-'  : 'ignore',
+          },
+        }
+      ],
+
     },
   } ]
 );
