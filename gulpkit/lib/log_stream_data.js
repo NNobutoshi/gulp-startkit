@@ -23,6 +23,7 @@ const defaultSettings = {
   onStream     : true,
   forEachFile  : true,
   textColorHex : '#000088',
+  countTotal   : true,
 };
 
 /**
@@ -39,20 +40,22 @@ function logSteamData( options ) {
     subtitle = settings.subtitle
   ;
   let fileCounter = 0;
-  // Stream データでは無い場合。
+  // Stream データではない場合。
   if ( settings.onStream === false ) {
     fancyLog( chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` ) );
     return;
   }
   return through.obj(
     function _transform( file, enc, callback ) {
-      fileCounter += 1;
-      // ファイルが何をされたかfile ごとの出力が必要ない場合。
+      // 処理されたファイルの数をカウントする必要がある場合はカウントアップする。
+      if ( settings.countTotal === true ) {
+        fileCounter += 1;
+      }
+      // ファイルごとの出力が必要ない場合はスキップする。
       if ( settings.forEachFile === false ) {
         callback( null, file );
         return;
       }
-      // ファイルが何をされたかfile ごとの出力が必要な場合。
       fancyLog(
         chalk.hex( settings.textColorHex )( `[${ title }]: ${ subtitle }` )
         + ` ${ path.relative( CWD, file.path ) }`
@@ -60,6 +63,7 @@ function logSteamData( options ) {
       callback( null, file );
     },
     function _flush( callback ) {
+      // ファイル数を出力する設定がされていない場合は処理を終了する。
       if ( fileCounter === 0 ) {
         callback();
         return;

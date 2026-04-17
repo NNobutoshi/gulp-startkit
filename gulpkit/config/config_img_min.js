@@ -80,6 +80,11 @@ const devOptions = {
       },
     ],
   },
+  logStreamData : {
+    title      : TASK_NAME,
+    subtitle   : 'minified',
+    countTotal : false,
+  },
 };
 
 /**

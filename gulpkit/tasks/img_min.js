@@ -15,6 +15,7 @@ import plumber                                        from 'gulp-plumber';
 import imageminPngquant                               from 'imagemin-pngquant';
 
 import diff          from '../lib/diff_build.js';
+import logStreamData from '../lib/log_stream_data.js';
 import watchTask     from '../lib/watch_task.js';
 
 import { config, options } from '../config/config_img_min.js';
@@ -42,6 +43,7 @@ function img_min() {
       gifsicle(),
     ] ) )
     .pipe( dest( config.dist ) )
+    .pipe( logStreamData( options.logStreamData ) )
   ;
 }
 
