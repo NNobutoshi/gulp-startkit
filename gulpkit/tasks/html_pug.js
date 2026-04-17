@@ -122,11 +122,15 @@ function _setPugData( pugCommonDataMap, pugPageData ) {
       return callback( null, file );
     }
     const siteRootPath = _getSiteRootPath( file.path ).replace( /\.pug$/, '.html' );
-    const myPageData = pugPageData.get( siteRootPath );
-    const commonDataFilePath = myPageData?.common;
+    const myPageData   = pugPageData.get( siteRootPath );
+    const
+      commonDataFilePath = ( myPageData.common )
+        ? _getAbsolutePath( myPageData?.common, config.base, file.dirname )
+        : ''
+    ;
     const
       commonData = ( commonDataFilePath )
-        ? _getPugCommonData( myPageData.common, pugCommonDataMap )
+        ? pugCommonDataMap.get( commonDataFilePath )
         : {}
     ;
     if ( !myPageData ) {
@@ -152,23 +156,6 @@ function _setPugData( pugCommonDataMap, pugPageData ) {
     };
     callback( null, file );
   } );
-}
-
-/**
- * 各ページ共通用のJSON ファイルのパスをキーにしている値を、_loadPugData() で準備したpugCommonDataMap から取得する。<br>
- * 共通用のJSON データのパスは各ページごと個別にcommon プロパティで指定されている。
- * @param {string} commonDataFilePath - 各ページごと個別に定されている共通用JSONデータのパス
- * @param {Map} pugCommonDataMap - ページ共通のデータが格納されたMap
- * @returns {object} - 引数で渡されたパスをkey にするMap の値
- */
-function _getPugCommonData( commonDataFilePath, pugCommonDataMap ) {
-  const
-    reslovedCommonDataFilePath = path.join(
-      path.resolve( CWD, config.base ),
-      commonDataFilePath,
-    )
-  ;
-  return pugCommonDataMap.get( reslovedCommonDataFilePath );
 }
 
 /**
@@ -205,7 +192,7 @@ function _collectImporterFiles( file, collectedFiles ) {
     const
       srcPath = match[ 3 ] || match[ 7 ]
     ;
-    if ( _isExternalSrc( srcPath ) === true || !srcPath ) {
+    if ( _isURL( srcPath ) === true || !srcPath ) {
       continue;
     }
     const
@@ -318,7 +305,7 @@ function _injectImageSize() {
         rearPart  = match[ 7 ]
       ;
       if (
-        _isExternalSrc( srcPath ) === true
+        _isURL( srcPath ) === true
         || ( frontPart.includes( 'width' ) === true || frontPart.includes( 'height' ) === true )
         || ( rearPart.includes( 'width' )  === true || rearPart.includes( 'height' )  === true )
       ) {
@@ -418,22 +405,11 @@ function _formatEndComment( _full, closingTag, lineFeed, indent, comment ) {
   if ( blankLineAfterComment === true ) {
     result += lineFeed;
   }
-
   return result;
 }
 
 /**
- * srcPath が外部の src か否かを調べる。
- * @private
- * @param {string} srcPath
- * @returns {boolean}
- */
-function _isExternalSrc( srcPath ) {
-  return /^\/\/|^https?:\/\//.test( srcPath );
-}
-
-/**
- * サイトルートパスにする。
+ * filePath をサイトルートパスにする。
  * @private
  * @param {string} filePath 絶対パス
  * @returns {string} サイトルートパス
@@ -446,26 +422,37 @@ function _getSiteRootPath( filePath ) {
 }
 
 /**
- * srcPath を絶対パスにする。
+ * filePath を絶対パスにする。
  * @private
- * @param {string} srcPath
- * @param {string} base
- * @param {string} dirname
+ * @param {string} filePath 調べるファイルのパス。
+ * @param {string} base base ディレクトリ
+ * @param {string} dirname filePath が相対パスの場合の基準となるディレクトリ名
  * @returns {string} - 絶対パス
  */
-function _getAbsolutePath( srcPath, base, dirname ) {
-  return ( _isRootPath( srcPath ) )
+function _getAbsolutePath( filePath, base, dirname ) {
+  return ( _isRootPath( filePath ) )
   // ルートパスであれば
-    ? path.join( path.resolve( CWD, base ), srcPath )
+    ? path.join( path.resolve( CWD, base ), filePath )
   // 相対パスであれば
-    : path.resolve( dirname, srcPath );
+    : path.resolve( dirname, filePath );
 }
 
-/** srcPath がルートパスか否かを調べる。
+/** filePath がルートパスか否かを調べる。
  * @private
- * @param {string} srcPath
+ * @param {string} filePath 調べるファイルのパス。
  * @returns {boolean}
  */
-function _isRootPath( srcPath ) {
-  return /^\//.test( srcPath );
+function _isRootPath( filePath ) {
+  return /^\//.test( filePath );
 }
+
+/**
+ * filePath url か否かを調べる。
+ * @private
+ * @param {string} filePath 調べるファイルのパス。
+ * @returns {boolean}
+ */
+function _isURL( filePath ) {
+  return /^\/\/|^https?:\/\//.test( filePath );
+}
+
