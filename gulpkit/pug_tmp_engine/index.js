@@ -17,14 +17,13 @@ import chalk    from 'chalk';
 import XLSX     from 'xlsx';
 
 import existsFile from '../utilities/exists.js';
-import { html }   from '../index.js';
 
 const
   CHARSET              = 'utf-8',
   CWD                  = cwd(),
   SRC_DIR_NAME         = 'src',
   PUG_CONFIG_FILE_NAME = '_pug_data.json',
-  SITE_MAP_FILE_PATH   = argv[ 2 ],
+  SITE_MAP_FILE_PATH   = argv[ 2 ] || '',
   ERROR_COLOR          = '#FF0000'
 ;
 const
@@ -32,13 +31,14 @@ const
   XLSX_FILE_PATH  = path.resolve( CWD, SITE_MAP_FILE_PATH ),
   DATA_FILE_PATH  = path.resolve( CWD, path.dirname( SITE_MAP_FILE_PATH ), PUG_CONFIG_FILE_NAME ),
   XLSX_SHEET_NAME = 'Sheet1',
-  FORCED = ( argv[ 3 ] === 'force'  ) ? true : false // 既存の各pug ファイルを刷新するか否か
+  FORCED          = ( argv[ 3 ] === 'force'  ) ? true : false, // 既存の各pug ファイルを刷新するか否か
+  RUN_HTML_TASK   = ( argv[ 3 ] === 'html' || argv[ 4 ] === 'html' )   ? true : false // HTML タスクを実行するか否か
 ;
 
 /**
  * Excel のデータを JSON に変換する。<br>
  * 変換された JSON データを基にPug データファイル（各HTML ファイルの属性値等をひとまとめにしたJSON）、およびPug ファイルを作成する。<br>
- * Pug データファイルは、Pug の実行時にPug に渡すデータとして使用する。
+ * Pug データファイルは、Pug の実行時に各HTML ファイルの属性値等を参照するためのファイル。
  * @function _run
  * @returns {Promise<void>}
  */
@@ -47,6 +47,7 @@ const
     _validatePath( SITE_MAP_FILE_PATH );
   } catch ( err ) {
     fancyLog.error( chalk.hex( ERROR_COLOR )( err.stack ) );
+    return;
   }
   const workBook       = XLSX.readFile( XLSX_FILE_PATH );
   const jsonDataOrigin = XLSX.utils.sheet_to_json( workBook.Sheets[ XLSX_SHEET_NAME ] );
@@ -78,9 +79,14 @@ const
   } // for
 
   /**
-   * 生成されたPug ファイルを基にHTML ファイルを生成する。
+   * コマンドラインの引数で "html" が指定されていれば、Pug ファイルの生成が完了した後、HTML タスクを実行する。
    */
-  html();
+  if ( RUN_HTML_TASK === true ) {
+    const
+      { html } = await import( '../index.js' )
+    ;
+    html();
+  }
 } )();
 
 /**
@@ -171,7 +177,6 @@ async function _createPugFile( pugFilePath, templateFilePath ) {
  */
 async function _readTemplateFile( templateFilePath ) {
   try {
-    console.info( 'remplateFile === ', templateFilePath );
     return await readFile( templateFilePath, CHARSET );
   } catch ( err ) {
     throw err;
