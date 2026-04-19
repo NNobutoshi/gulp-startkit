@@ -1,7 +1,7 @@
 {
-  "examples" : {
+  "common_lib" : {
     "test"    : [ "/node_modules/lodash/" ],
-    "name"    : "./examples/js/common_modules",
+    "name"    : "./examples/js/common_lib",
     "chunks"  : "initial",
     "enforce" : true
   }

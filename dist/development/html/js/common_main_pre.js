@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/common_head.entry.js"
-/*!*************************************!*\
-  !*** ./src/js/common_head.entry.js ***!
-  \*************************************/
+/***/ "./src/js/common_main_pre.entry.js"
+/*!*****************************************!*\
+  !*** ./src/js/common_main_pre.entry.js ***!
+  \*****************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -119,7 +119,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"js/common_head": 0
+/******/ 			"js/common_main_pre": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -169,9 +169,9 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_modules_body","./js/common_modules_head"], () => (__webpack_require__("./src/js/common_head.entry.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_lib_post","./js/common_lib_pre"], () => (__webpack_require__("./src/js/common_main_pre.entry.js")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=../sourcemaps/js/common_head.js.map
+//# sourceMappingURL=../sourcemaps/js/common_main_pre.js.map

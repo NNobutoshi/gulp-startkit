@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/js/common_body.entry.js"
-/*!*************************************!*\
-  !*** ./src/js/common_body.entry.js ***!
-  \*************************************/
+/***/ "./src/js/common_main_post.entry.js"
+/*!******************************************!*\
+  !*** ./src/js/common_main_post.entry.js ***!
+  \******************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -126,7 +126,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"js/common_body": 0
+/******/ 			"js/common_main_post": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -176,9 +176,9 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_1__(document.querySelector('#page'), () =>
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_modules_body"], () => (__webpack_require__("./src/js/common_body.entry.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["./js/common_lib_post"], () => (__webpack_require__("./src/js/common_main_post.entry.js")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=../sourcemaps/js/common_body.js.map
+//# sourceMappingURL=../sourcemaps/js/common_main_post.js.map

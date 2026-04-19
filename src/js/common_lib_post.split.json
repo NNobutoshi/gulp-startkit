@@ -1,12 +1,12 @@
 {
-  "common_modules_body" : {
+  "common_lib_post" : {
     "test"    : [
       "/js/_modules/",
       "/js/_vendor/raf.js",
       "/node_modules/imagesloaded/",
       "/node_modules/ev-emitter/ev-emitter.js"
     ],
-    "name"    : "./js/common_modules_body",
+    "name"    : "./js/common_lib_post",
     "chunks"  : "initial",
     "enforce" : true
   }

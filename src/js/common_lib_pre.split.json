@@ -1,7 +1,7 @@
 {
-  "common_modules_head" : {
+  "common_lib_pre" : {
     "test"    : [ "/node_modules/ua-parser-js/" ],
-    "name"    : "./js/common_modules_head",
+    "name"    : "./js/common_lib_pre",
     "chunks"  : "initial",
     "enforce" : true
   }
