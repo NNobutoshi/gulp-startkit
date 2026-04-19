@@ -63,7 +63,7 @@ function logSteamData( options ) {
       callback( null, file );
     },
     function _flush( callback ) {
-      // ファイル数を出力する設定がされていない場合は処理を終了する。
+      // ファイル数を出力する設定がされていない場合はfileCounter の値は0なので処理を終了する。
       if ( fileCounter === 0 ) {
         callback();
         return;

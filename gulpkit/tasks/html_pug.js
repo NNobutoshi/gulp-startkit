@@ -78,8 +78,7 @@ if ( options.watch.enabled === true ) {
 
 /**
  * Gulp src で流れてくるPug データ用JSON ファイルを読み込み、パースを行う。<br>
- * パースしたデータは、各ページ共通で値を利用するpugCoomonDataMap と、<br>
- * 各ページ固有に利用するpugPageData とで別々に格納する。<br>
+ * パースしたデータは、各ページ共通で値を利用するpugCoomonDataMap と、各ページ固有に利用するpugPageData とで別々に格納する。<br>
  * データはPug の実行時にPug に渡すデータとして使用する。
  * @private
  * @param {Map} pugCommonDataMap - 各ページ共通で値を利用するデータのMap
@@ -236,7 +235,7 @@ function _renderPug() {
 }
 
 /**
- * Pug の実行後、HTML ファイルに対して実行。
+ * Pug の実行後、HTML ファイルに対して実行。<br>
  * HTML の体裁を整える。
  * @private
  * @returns {Stream} - Gulp ストリーム

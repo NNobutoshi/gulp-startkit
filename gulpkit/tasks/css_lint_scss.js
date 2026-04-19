@@ -62,7 +62,7 @@ function _lintScss() {
         )
       ;
       if ( report ) {
-        // 不要な1行目の文字列はfile.path で置換する。
+        // 意味をなさない1行目の文字列はfile.path で置換する。
         fancyLog( report.replace( /<.+?>/, file.path ) );
       }
       callback( null, file );

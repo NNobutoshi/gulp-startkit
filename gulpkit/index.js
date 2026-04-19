@@ -86,7 +86,8 @@ function main( done ) {
  *     tasks.html_pug,
  *   )( done );
  * }
- */ function html( done ) {
+ */
+function html( done ) {
   series(
     tasks.img_min,
     tasks.html_pug,

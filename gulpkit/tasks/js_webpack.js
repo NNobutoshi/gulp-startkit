@@ -13,10 +13,8 @@
  * @requires ../lib/watch_task.js
  * @requires ../config/config_js_webpack.js
  * @description
- * cache 機能や差分ビルド機能は、Webpack の備えているものを。<br>
- * watch はGulpのものを使用。<br>
- * entry や splitChunks をGulp.src()のvinylオブジェクトが通ってくるごとに作成し、<br>
- * 既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
+ * cache 機能や差分ビルド機能は、Webpack の備えているものを、watch はGulpのものを使用。<br>
+ * entry や splitChunks をGulp.src()のvinylオブジェクトが通ってくるごとに作成し、既存の webpackConfigと 比較して差異があればwebpackConfig を再構築する。
  */
 
 import { cwd }      from 'node:process';
@@ -24,12 +22,12 @@ import path         from 'node:path';
 import { readFile } from 'node:fs/promises';
 
 import { src as gulpSrc } from 'gulp';
-import plumber   from 'gulp-plumber';
-import webpack   from 'webpack';
-import fancyLog  from 'fancy-log';
-import through   from 'through2';
-import merge     from 'lodash/merge.js';
-import isEqual   from 'lodash/isEqual.js';
+import plumber  from 'gulp-plumber';
+import webpack  from 'webpack';
+import fancyLog from 'fancy-log';
+import through  from 'through2';
+import merge    from 'lodash/merge.js';
+import isEqual  from 'lodash/isEqual.js';
 
 import watchTask from '../lib/watch_task.js';
 

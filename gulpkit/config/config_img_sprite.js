@@ -41,12 +41,12 @@ const devConfig = {
 };
 
 /**
- * 本番環境用コンフィグオブジェクト。<br>
- * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
- * 同一設定の場合はnull を明示的に代入。
-  * @memberof module:config
-  * @name prodConfig:img_sprite
-  */
+ * 本番環境用のコンフィグオブジェクト（差分）。<br>
+ * 開発環境（devConfig）と異なるプロパティのみを定義。<br>
+ * 差分がない場合は null を設定。
+ * @memberof module:config
+ * @name prodConfig:img_sprite
+ */
 const prodConfig = null;
 
 /**
@@ -87,9 +87,9 @@ const devOptions = {
 };
 
 /**
- * 本番環境用オプションオブジェクト。<br>
- * 開発環境と異なる設定を行う場合に、その異なるプロパティ部分だけの同一構造のオブジェクトを代入。<br>
- * 同一設定の場合はnull を明示的に代入。
+ * 本番環境用のオプションオブジェクト（差分）。<br>
+ * 開発環境（devOptions）と異なるプロパティのみを定義。<br>
+ * 差分がない場合は null を設定。
  * @memberof module:config
  * @name prodOptions:img_sprite
  */
