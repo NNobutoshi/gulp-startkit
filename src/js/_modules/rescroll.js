@@ -86,7 +86,7 @@ export default class Rescroll {
 
   handleClick( e, target ) {
     const hash = target && target.hash && this.getHash( target.hash );
-    if ( !hash && !document.querySelector( hash ) ) {
+    if ( !hash || !document.querySelector( hash ) ) {
       return;
     }
     this.enabled = true;
@@ -112,8 +112,9 @@ export default class Rescroll {
       hash = this.getHash(),
       arryShoulder = this.arryShoulderSelector,
       elemByHash = ( hash ) ? document.querySelector( hash ) : null,
-      elemShoulder = arryShoulder.length && elemByHash &&
-                      _getShoulderElement.bind( this )( elemByHash )
+      elemShoulder = arryShoulder.length
+        && elemByHash
+        && _getShoulderElement.bind( this )( elemByHash )
     ;
     let
       lastScrollY = this.lastScrollY,

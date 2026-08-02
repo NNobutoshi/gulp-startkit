@@ -590,14 +590,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/main/ua-parser.mjs");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var ua_parser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ua-parser-js */ "./node_modules/ua-parser-js/src/main/ua-parser.mjs");
 
-const uAParser = new ua_parser_js__WEBPACK_IMPORTED_MODULE_0__.UAParser();
+
+const uAParser = new ua_parser_js__WEBPACK_IMPORTED_MODULE_1__.UAParser();
 /* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(className) {
   const elemHtml = document.documentElement,
     browser = uAParser.getBrowser();
   elemHtml.classList.add(className);
-  elemHtml.classList.add(browser.name + browser.major);
+  elemHtml.classList.add(browser.name.replace(' ', '_') + browser.major);
 }
 
 /***/ },
@@ -1599,7 +1601,7 @@ class Rescroll {
   }
   handleClick(e, target) {
     const hash = target && target.hash && this.getHash(target.hash);
-    if (!hash && !document.querySelector(hash)) {
+    if (!hash || !document.querySelector(hash)) {
       return;
     }
     this.enabled = true;

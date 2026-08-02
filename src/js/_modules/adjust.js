@@ -8,5 +8,5 @@ export default function( className ) {
     browser  = uAParser.getBrowser()
   ;
   elemHtml.classList.add( className );
-  elemHtml.classList.add( browser.name + browser.major );
+  elemHtml.classList.add( browser.name.replace( ' ','_' ) + browser.major );
 }
